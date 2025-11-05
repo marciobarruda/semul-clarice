@@ -718,9 +718,13 @@
                     </select>
                   </div>
                   <div class="col-12 col-md-3">
-                    <label for="dataAtendimento" class="form-label required">Data e hora do atendimento</label>
-                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" placeholder="AAAA-MM-DD HH:mm" required aria-describedby="dataAtendimentoHelp" />
+                    <label for="dataAtendimento" class="form-label required">Data do atendimento</label>
+                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" placeholder="dd/mm/aaaa" required aria-describedby="dataAtendimentoHelp" />
                     <div id="dataAtendimentoHelp" class="form-text">Preenchido automaticamente ao iniciar um novo registro.</div>
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="horaAtendimento" class="form-label required">Hora do atendimento</label>
+                    <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" placeholder="HH:mm" required />
                   </div>
                   <div class="col-12">
                     <span class="form-label required d-block">Avaliação inicial</span>
@@ -1535,12 +1539,19 @@
         }
 
         const dataAtendimentoInput = document.getElementById('dataAtendimento');
+        const horaAtendimentoInput = document.getElementById('horaAtendimento');
         const setCurrentDateTime = () => {
-          if (!dataAtendimentoInput) return;
+          if (!dataAtendimentoInput && !horaAtendimentoInput) return;
           const agora = new Date();
           const pad = (num) => String(num).padStart(2, '0');
-          const valor = `${agora.getFullYear()}-${pad(agora.getMonth() + 1)}-${pad(agora.getDate())} ${pad(agora.getHours())}:${pad(agora.getMinutes())}`;
-          dataAtendimentoInput.value = valor;
+          const dataValor = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()}`;
+          const horaValor = `${pad(agora.getHours())}:${pad(agora.getMinutes())}`;
+          if (dataAtendimentoInput) {
+            dataAtendimentoInput.value = dataValor;
+          }
+          if (horaAtendimentoInput) {
+            horaAtendimentoInput.value = horaValor;
+          }
         };
 
         const tabFormTrigger = document.getElementById('form-tab');
@@ -1613,6 +1624,8 @@
           { selector: '#cep', mask: '00000-000' },
           { selector: '#telefone', mask: '(00) 00000-0000' },
           { selector: '#telefoneSecundario', mask: '(00) 00000-0000' },
+          { selector: '#dataAtendimento', mask: '00/00/0000' },
+          { selector: '#horaAtendimento', mask: '00:00' },
           { selector: '#dataNascimento', mask: '00/00/0000' },
           { selector: '#dataOcorrencia', mask: '00/00/0000' },
         ];
@@ -1656,6 +1669,7 @@
             .addField('#numeroProntuario', [{ rule: 'required', errorMessage: 'Informe o número do prontuário.' }])
             .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
             .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
+            .addField('#horaAtendimento', [{ rule: 'required', errorMessage: 'Informe a hora do atendimento.' }])
             .addField('#nomeUsuario', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
             .addField('#cpfUsuario', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
             .addField('#dataNascimento', [{ rule: 'required', errorMessage: 'Informe a data de nascimento.' }])
