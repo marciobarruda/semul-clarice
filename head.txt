@@ -1,0 +1,335 @@
+ <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SAS • CNH Social</title>
+    <link
+      rel="icon"
+      href="https://statics.recife.pe.gov.br/images/dynamics/conecta/icons/favicon.png?w=32&h=32&fit=fill&border=2,transparent,shrink"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+      :root {
+        --brand-primary: #0053a4;
+        --brand-secondary: #003a73;
+        --brand-highlight: #00a3ff;
+        --surface: #f4f7fb;
+        --surface-strong: #ffffff;
+        --border-color: #d0d7e2;
+        --text-strong: #1b263b;
+        --text-muted: #5b6c8c;
+      }
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Public Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--surface);
+        color: var(--text-strong);
+        min-height: 100vh;
+      }
+
+      header.site-header {
+        background: url("https://statics.recife.pe.gov.br/images/dynamics/automacao/header.png?w=3000")
+          center/cover no-repeat;
+        color: #ffffff;
+        padding: 3.5rem 0 2.75rem;
+      }
+
+      header .lead {
+        color: rgba(255, 255, 255, 0.82);
+        max-width: 100%;
+        font-size: 1rem;
+        line-height: 1.65;
+        text-align: justify;
+      }
+
+      .badge-open {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        background-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .user-greeting {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, rgba(0, 83, 164, 0.09), rgba(0, 163, 255, 0.12));
+        color: var(--text-strong);
+        box-shadow: 0 10px 30px rgba(0, 45, 98, 0.08);
+      }
+
+      .user-greeting::before {
+        content: "👋";
+        font-size: 1.4rem;
+      }
+
+      .minhas-inscricoes-grid {
+        margin-top: 1rem;
+      }
+
+      .minhas-inscricao-card {
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        border: 1px solid rgba(0, 83, 164, 0.12);
+        border-radius: 4px;
+      }
+
+      .minhas-inscricao-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
+      }
+
+      .minhas-inscricao-card.is-loading {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .minhas-inscricoes-placeholder {
+        padding: 1.25rem;
+        border-radius: 4px;
+        background: rgba(0, 83, 164, 0.05);
+        border: 1px dashed rgba(0, 83, 164, 0.2);
+        color: var(--text-muted);
+      }
+
+      .resumo-inscricao-list dt {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .resumo-inscricao-list dd {
+        font-weight: 600;
+        color: var(--text-strong);
+      }
+
+      .resumo-inscricao-pre {
+        white-space: pre-wrap;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.95rem;
+        background: rgba(0, 83, 164, 0.08);
+        color: var(--brand-secondary);
+        padding: 1rem;
+        border-radius: 0.75rem;
+      }
+
+      .publicacoes-panel,
+      .updates-panel {
+        border-radius: 4px;
+      }
+
+      .download-card strong {
+        font-size: 1rem;
+        color: var(--text-strong);
+      }
+
+      .download-card p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .download-card a {
+        font-weight: 600;
+      }
+
+      .btn-submit[aria-disabled="true"] {
+        cursor: not-allowed;
+        opacity: 0.65;
+        box-shadow: none;
+      }
+
+      .btn-submit[aria-disabled="true"]:focus-visible {
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.35);
+      }
+
+      #publicacoes-list li + li {
+        margin-top: 0.75rem;
+      }
+
+      .publicacoes-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .publicacoes-item-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+      }
+
+      .publicacoes-item-icon {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        flex-shrink: 0;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+
+      .publicacoes-item-icon--pdf {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23d32f2f' d='M6 2h7l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z'/%3E%3Cpath fill='%23ef5350' d='M13 2v5h5'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-family='Arial, sans-serif' font-size='7' font-weight='700' fill='%23fff'%3EPDF%3C/text%3E%3C/svg%3E");
+      }
+
+      .publicacoes-item-icon--image {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='4' width='18' height='16' rx='2' fill='%23215695'/%3E%3Crect x='4.5' y='5.5' width='15' height='13' rx='1.2' fill='%233968c8'/%3E%3Ccircle cx='9' cy='11' r='2.2' fill='%23fff59d'/%3E%3Cpath fill='%23c5cae9' d='M6 18l4.2-4.6 2.7 3.2 2.6-3L18 18z'/%3E%3C/svg%3E");
+      }
+
+      .publicacoes-item-icon--generic {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233f51b5' d='M7 2h7l5 5v15a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z'/%3E%3Cpath fill='%235c6bc0' d='M14 2v5h5'/%3E%3Crect x='8.5' y='12' width='7' height='1.5' rx='.75' fill='%23c5cae9'/%3E%3Crect x='8.5' y='15' width='5' height='1.5' rx='.75' fill='%23c5cae9'/%3E%3C/svg%3E");
+      }
+
+      .publicacoes-item time {
+        flex-shrink: 0;
+      }
+
+      @media (min-width: 576px) {
+        .publicacoes-item {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+
+      @media (max-width: 575.98px) {
+        .publicacoes-item-link {
+          align-items: flex-start;
+        }
+      }
+
+      .updates-panel {
+        border-left: 3px solid var(--brand-highlight);
+        padding-left: 1.2rem;
+        color: var(--text-muted);
+      }
+
+      .updates-panel time {
+        font-size: 0.85rem;
+        color: var(--brand-secondary);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      footer {
+        color: var(--text-muted);
+        padding: 2.5rem 0 2rem;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        header.site-header {
+          padding: 2.5rem 0 2rem;
+        }
+
+        .badge-open {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .section-title {
+          justify-content: flex-start;
+        }
+      }
+
+      main {
+        padding-bottom: 4rem;
+      }
+
+      .card-section {
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        background: var(--surface-strong);
+        box-shadow: 0 12px 30px rgba(24, 64, 120, 0.08);
+      }
+
+      .card-section + .card-section {
+        margin-top: 1.5rem;
+      }
+
+      .section-header {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .required::after {
+        content: "*";
+        color: #d32f2f;
+        margin-left: 0.25rem;
+      }
+
+      .form-text {
+        color: var(--text-muted);
+      }
+
+      .file-input-wrapper {
+        border: 1px dashed var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        background: rgba(0, 83, 164, 0.03);
+      }
+
+      .file-input-wrapper label {
+        font-weight: 600;
+      }
+
+      .file-name {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+      }
+
+      .toast-container {
+        z-index: 1080;
+      }
+
+      .legend-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.85rem;
+        color: var(--brand-secondary);
+        background: rgba(0, 83, 164, 0.12);
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+      }
+
+      .tooltip-inner {
+        text-align: left;
+      }
+
+      .btn-outline-primary:focus-visible,
+      .form-control:focus,
+      .form-select:focus,
+      .form-check-input:focus {
+        box-shadow: 0 0 0 0.25rem rgba(0, 83, 164, 0.25);
+        border-color: var(--brand-highlight);
+      }
+
+      .border-dashed {
+        border-style: dashed !important;
+      }
+    </style>
+  </head>
