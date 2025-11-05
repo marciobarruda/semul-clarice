@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
     <style>
       :root {
         --brand-primary: #0053a4;
@@ -347,6 +348,7 @@
       }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/imask@7.1.3/dist/imask.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/dayjs.min.js" defer></script>
@@ -1325,27 +1327,384 @@
               <section class="card-section mb-4" aria-labelledby="dados-saude">
                 <h2 class="form-section-title" id="dados-saude"><i class="bi bi-heart-pulse"></i>Dados de saúde</h2>
                 <div class="row g-3">
-                  <div class="col-12 col-md-6">
-                    <label for="deficiencia" class="form-label">Pessoa com deficiência</label>
-                    <select id="deficiencia" name="deficiencia" class="form-select">
+                  <div class="col-12 col-lg-4">
+                    <label for="numeroSus" class="form-label required">Número do Cartão SUS</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="numeroSus"
+                      name="numeroSus"
+                      placeholder="Digite o número completo"
+                      required
+                    />
+                  </div>
+                  <div class="col-12 col-lg-4">
+                    <span class="form-label required d-block">Apresenta alguma deficiência/síndrome?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-labelledby="dados-saude">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="deficienciaSindrome" id="deficienciaSim" value="Sim" />
+                        <label class="form-check-label" for="deficienciaSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="deficienciaSindrome" id="deficienciaNao" value="Não" />
+                        <label class="form-check-label" for="deficienciaNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-4">
+                    <span class="form-label d-block">Deficiência em decorrência da violência sofrida?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="deficienciaViolencia" id="deficienciaViolenciaSim" value="Sim" />
+                        <label class="form-check-label" for="deficienciaViolenciaSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="deficienciaViolencia" id="deficienciaViolenciaNao" value="Não" />
+                        <label class="form-check-label" for="deficienciaViolenciaNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="deficienciaQualGroup">
+                    <label for="deficienciaQual" class="form-label required">Qual?</label>
+                    <select id="deficienciaQual" name="deficienciaQual" class="form-select" data-choices="true">
                       <option value="">Selecione</option>
-                      <option>Não</option>
-                      <option>Sim</option>
+                      <option>Deficiência física</option>
+                      <option>Deficiência auditiva</option>
+                      <option>Deficiência visual</option>
+                      <option>Deficiência intelectual</option>
+                      <option>Deficiência psicossocial</option>
+                      <option>Transtorno do espectro autista</option>
+                      <option>Outra deficiência</option>
                     </select>
                   </div>
-                  <div class="col-12 col-md-6">
-                    <label for="acompanhamentoSaude" class="form-label">Acompanhamento em saúde</label>
-                    <select id="acompanhamentoSaude" name="acompanhamentoSaude" class="form-select">
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Apresenta problema de saúde?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="problemaSaude" id="problemaSaudeSim" value="Sim" />
+                        <label class="form-check-label" for="problemaSaudeSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="problemaSaude" id="problemaSaudeNao" value="Não" />
+                        <label class="form-check-label" for="problemaSaudeNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="problemaSaudeQualGroup">
+                    <label for="problemaSaudeQual" class="form-label required">Qual?</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="problemaSaudeQual"
+                      name="problemaSaudeQual"
+                      placeholder="Descreva a condição"
+                    />
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Já foi atendido por psicólogo?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="atendimentoPsicologo" id="atendimentoPsicologoSim" value="Sim" />
+                        <label class="form-check-label" for="atendimentoPsicologoSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="atendimentoPsicologo" id="atendimentoPsicologoNao" value="Não" />
+                        <label class="form-check-label" for="atendimentoPsicologoNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="tempoPsicologoGroup">
+                    <label for="tempoPsicologo" class="form-label required">Quanto tempo?</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="tempoPsicologo"
+                      name="tempoPsicologo"
+                      placeholder="Ex.: 6 meses"
+                    />
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Já foi atendido por psiquiatra?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="atendimentoPsiquiatra" id="atendimentoPsiquiatraSim" value="Sim" />
+                        <label class="form-check-label" for="atendimentoPsiquiatraSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="atendimentoPsiquiatra" id="atendimentoPsiquiatraNao" value="Não" />
+                        <label class="form-check-label" for="atendimentoPsiquiatraNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="tempoPsiquiatraGroup">
+                    <label for="tempoPsiquiatra" class="form-label required">Quanto tempo?</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="tempoPsiquiatra"
+                      name="tempoPsiquiatra"
+                      placeholder="Ex.: 1 ano"
+                    />
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Faz uso de medicamento?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="usoMedicamento" id="usoMedicamentoSim" value="Sim" />
+                        <label class="form-check-label" for="usoMedicamentoSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="usoMedicamento" id="usoMedicamentoNao" value="Não" />
+                        <label class="form-check-label" for="usoMedicamentoNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="medicamentosQuaisGroup">
+                    <label for="medicamentosQuais" class="form-label required">Quais?</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="medicamentosQuais"
+                      name="medicamentosQuais"
+                      placeholder="Liste os medicamentos em uso"
+                    />
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Faz uso de drogas lícitas?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="usoDrogasLicitas" id="usoDrogasLicitasSim" value="Sim" />
+                        <label class="form-check-label" for="usoDrogasLicitasSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="usoDrogasLicitas" id="usoDrogasLicitasNao" value="Não" />
+                        <label class="form-check-label" for="usoDrogasLicitasNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="drogasLicitasGroup">
+                    <span class="form-label required d-block">Quais?</span>
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaLicitaTabaco" name="drogasLicitas[]" value="Tabaco" />
+                          <label class="form-check-label" for="drogaLicitaTabaco">Tabaco</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaLicitaMedicamento" name="drogasLicitas[]" value="Medicamento" />
+                          <label class="form-check-label" for="drogaLicitaMedicamento">Medicamento</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaLicitaAlcool" name="drogasLicitas[]" value="Álcool" />
+                          <label class="form-check-label" for="drogaLicitaAlcool">Álcool</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaLicitaOutras" name="drogasLicitas[]" value="Outras" />
+                          <label class="form-check-label" for="drogaLicitaOutras">Outras</label>
+                        </div>
+                      </div>
+                      <div class="col-12 d-none" id="drogasLicitasOutrasGroup">
+                        <label for="drogasLicitasOutrasTexto" class="form-label required">Outras (especifique)</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="drogasLicitasOutrasTexto"
+                          name="drogasLicitasOutrasTexto"
+                          placeholder="Informe outras drogas lícitas"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Faz uso de drogas ilícitas?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="usoDrogasIlicitas" id="usoDrogasIlicitasSim" value="Sim" />
+                        <label class="form-check-label" for="usoDrogasIlicitasSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="usoDrogasIlicitas" id="usoDrogasIlicitasNao" value="Não" />
+                        <label class="form-check-label" for="usoDrogasIlicitasNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="drogasIlicitasGroup">
+                    <span class="form-label required d-block">Quais?</span>
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaIlicitaCocaina" name="drogasIlicitas[]" value="Cocaína" />
+                          <label class="form-check-label" for="drogaIlicitaCocaina">Cocaína</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaIlicitaCrack" name="drogasIlicitas[]" value="Crack" />
+                          <label class="form-check-label" for="drogaIlicitaCrack">Crack</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaIlicitaMaconha" name="drogasIlicitas[]" value="Maconha" />
+                          <label class="form-check-label" for="drogaIlicitaMaconha">Maconha</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="drogaIlicitaOutras" name="drogasIlicitas[]" value="Outras" />
+                          <label class="form-check-label" for="drogaIlicitaOutras">Outras</label>
+                        </div>
+                      </div>
+                      <div class="col-12 d-none" id="drogasIlicitasOutrasGroup">
+                        <label for="drogasIlicitasOutrasTexto" class="form-label required">Outras (especifique)</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="drogasIlicitasOutrasTexto"
+                          name="drogasIlicitasOutrasTexto"
+                          placeholder="Informe outras drogas ilícitas"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Gestante?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gestante" id="gestanteSim" value="Sim" />
+                        <label class="form-check-label" for="gestanteSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gestante" id="gestanteNao" value="Não" />
+                        <label class="form-check-label" for="gestanteNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="tempoGestacaoGroup">
+                    <label for="tempoGestacao" class="form-label required">Tempo de gestação</label>
+                    <select id="tempoGestacao" name="tempoGestacao" class="form-select" data-choices="true">
                       <option value="">Selecione</option>
-                      <option>UBS/Equipe Saúde da Família</option>
-                      <option>UPA</option>
-                      <option>Hospital</option>
-                      <option>Outro serviço</option>
+                      <option>Até 12 semanas</option>
+                      <option>13 a 20 semanas</option>
+                      <option>21 a 28 semanas</option>
+                      <option>29 a 36 semanas</option>
+                      <option>37 semanas ou mais</option>
                     </select>
                   </div>
-                  <div class="col-12">
-                    <label for="medicacoes" class="form-label">Medicamentos/Condições relevantes</label>
-                    <textarea id="medicacoes" name="medicacoes" class="form-control" rows="2"></textarea>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Decorrente de violência, já sofreu algum aborto?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="abortoViolencia" id="abortoViolenciaSim" value="Sim" />
+                        <label class="form-check-label" for="abortoViolenciaSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="abortoViolencia" id="abortoViolenciaNao" value="Não" />
+                        <label class="form-check-label" for="abortoViolenciaNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="preventivoGroup">
+                    <span class="form-label d-block">Preventivo câncer do colo do útero</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="preventivoColo" id="preventivoColoSim" value="Sim" />
+                        <label class="form-check-label" for="preventivoColoSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="preventivoColo" id="preventivoColoNao" value="Não" />
+                        <label class="form-check-label" for="preventivoColoNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="preventivoAnoGroup">
+                    <label for="preventivoAno" class="form-label required">Quando (ano)?</label>
+                    <input type="text" class="form-control" id="preventivoAno" name="preventivoAno" placeholder="Ex.: 2023" />
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="mamografiaGroup">
+                    <span class="form-label d-block">Mamografia</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mamografia" id="mamografiaSim" value="Sim" />
+                        <label class="form-check-label" for="mamografiaSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mamografia" id="mamografiaNao" value="Não" />
+                        <label class="form-check-label" for="mamografiaNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="mamografiaAnoGroup">
+                    <label for="mamografiaAno" class="form-label required">Quando (ano)?</label>
+                    <input type="text" class="form-control" id="mamografiaAno" name="mamografiaAno" placeholder="Ex.: 2022" />
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Realizou exame de HIV?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="exameHiv" id="exameHivSim" value="Sim" />
+                        <label class="form-check-label" for="exameHivSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="exameHiv" id="exameHivNao" value="Não" />
+                        <label class="form-check-label" for="exameHivNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="resultadoHivGroup">
+                    <span class="form-label required d-block">Qual o resultado?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="resultadoHiv" id="resultadoHivNegativo" value="Negativo" />
+                        <label class="form-check-label" for="resultadoHivNegativo">Negativo</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="resultadoHiv" id="resultadoHivPositivo" value="Positivo" />
+                        <label class="form-check-label" for="resultadoHivPositivo">Positivo</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="contraiuAgressorGroup">
+                    <span class="form-label required d-block">Contraiu com o agressor?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="contraiuAgressor" id="contraiuAgressorSim" value="Sim" />
+                        <label class="form-check-label" for="contraiuAgressorSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="contraiuAgressor" id="contraiuAgressorNao" value="Não" />
+                        <label class="form-check-label" for="contraiuAgressorNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label required d-block">Faz acompanhamento?</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="acompanhamentoSaudeContinuo" id="acompanhamentoSaudeContinuoSim" value="Sim" />
+                        <label class="form-check-label" for="acompanhamentoSaudeContinuoSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="acompanhamentoSaudeContinuo" id="acompanhamentoSaudeContinuoNao" value="Não" />
+                        <label class="form-check-label" for="acompanhamentoSaudeContinuoNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 d-none" id="tempoAcompanhamentoGroup">
+                    <label for="tempoAcompanhamento" class="form-label required">Há quanto tempo faz tratamento?</label>
+                    <select id="tempoAcompanhamento" name="tempoAcompanhamento" class="form-select" data-choices="true">
+                      <option value="">Selecione</option>
+                      <option>Menos de 6 meses</option>
+                      <option>Entre 6 meses e 1 ano</option>
+                      <option>Entre 1 e 2 anos</option>
+                      <option>Mais de 2 anos</option>
+                    </select>
                   </div>
                 </div>
               </section>
@@ -1592,6 +1951,237 @@
         if (updateLabel && window.dayjs) {
           updateLabel.textContent = dayjs().format('DD/MM/YYYY HH:mm');
         }
+
+        const choicesInstances = new Map();
+        if (window.Choices) {
+          document.querySelectorAll('select[data-choices="true"]').forEach((select) => {
+            const instance = new Choices(select, {
+              shouldSort: false,
+              allowHTML: false,
+              itemSelectText: '',
+              searchPlaceholderValue: 'Buscar...',
+              placeholder: true,
+              placeholderValue: 'Selecione',
+            });
+            choicesInstances.set(select.id, instance);
+          });
+        }
+
+        const resetSelect = (element) => {
+          if (!element) return;
+          const instance = choicesInstances.get(element.id);
+          if (instance) {
+            instance.removeActiveItems();
+            try {
+              instance.setChoiceByValue('');
+            } catch (error) {
+              /* noop */
+            }
+          } else {
+            element.value = '';
+          }
+        };
+
+        const clearGroupInputs = (group) => {
+          if (!group) return;
+          const inputs = group.querySelectorAll('input, select, textarea');
+          inputs.forEach((input) => {
+            if (input.type === 'radio' || input.type === 'checkbox') {
+              input.checked = false;
+            } else if (input.tagName === 'SELECT') {
+              resetSelect(input);
+            } else {
+              input.value = '';
+            }
+          });
+        };
+
+        const toggleGroup = (group, show) => {
+          if (!group) return;
+          group.classList.toggle('d-none', !show);
+          if (!show) {
+            clearGroupInputs(group);
+          }
+        };
+
+        const getCheckedValue = (name) => {
+          const selected = document.querySelector(`input[name="${name}"]:checked`);
+          return selected ? selected.value : null;
+        };
+
+        const deficienciaQualGroup = document.getElementById('deficienciaQualGroup');
+        const deficienciaRadios = document.querySelectorAll('input[name="deficienciaSindrome"]');
+        const deficienciaViolenciaRadios = document.querySelectorAll('input[name="deficienciaViolencia"]');
+        const updateDeficiencia = () => {
+          const valor = getCheckedValue('deficienciaSindrome');
+          const mostrarQual = valor === 'Sim';
+          toggleGroup(deficienciaQualGroup, mostrarQual);
+          deficienciaViolenciaRadios.forEach((radio) => {
+            const habilitar = valor === 'Sim';
+            radio.disabled = !habilitar;
+            if (!habilitar) {
+              radio.checked = false;
+            }
+          });
+        };
+        deficienciaRadios.forEach((radio) => radio.addEventListener('change', updateDeficiencia));
+
+        const problemaSaudeQualGroup = document.getElementById('problemaSaudeQualGroup');
+        const problemaSaudeRadios = document.querySelectorAll('input[name="problemaSaude"]');
+        const updateProblemaSaude = () => {
+          toggleGroup(problemaSaudeQualGroup, getCheckedValue('problemaSaude') === 'Sim');
+        };
+        problemaSaudeRadios.forEach((radio) => radio.addEventListener('change', updateProblemaSaude));
+
+        const tempoPsicologoGroup = document.getElementById('tempoPsicologoGroup');
+        const psicologoRadios = document.querySelectorAll('input[name="atendimentoPsicologo"]');
+        const updatePsicologo = () => {
+          toggleGroup(tempoPsicologoGroup, getCheckedValue('atendimentoPsicologo') === 'Sim');
+        };
+        psicologoRadios.forEach((radio) => radio.addEventListener('change', updatePsicologo));
+
+        const tempoPsiquiatraGroup = document.getElementById('tempoPsiquiatraGroup');
+        const psiquiatraRadios = document.querySelectorAll('input[name="atendimentoPsiquiatra"]');
+        const updatePsiquiatra = () => {
+          toggleGroup(tempoPsiquiatraGroup, getCheckedValue('atendimentoPsiquiatra') === 'Sim');
+        };
+        psiquiatraRadios.forEach((radio) => radio.addEventListener('change', updatePsiquiatra));
+
+        const medicamentosQuaisGroup = document.getElementById('medicamentosQuaisGroup');
+        const medicamentosRadios = document.querySelectorAll('input[name="usoMedicamento"]');
+        const updateMedicamentos = () => {
+          toggleGroup(medicamentosQuaisGroup, getCheckedValue('usoMedicamento') === 'Sim');
+        };
+        medicamentosRadios.forEach((radio) => radio.addEventListener('change', updateMedicamentos));
+
+        const drogasLicitasGroup = document.getElementById('drogasLicitasGroup');
+        const drogasLicitasRadios = document.querySelectorAll('input[name="usoDrogasLicitas"]');
+        const drogasLicitasOutrasGroup = document.getElementById('drogasLicitasOutrasGroup');
+        const drogaLicitaOutrasCheckbox = document.getElementById('drogaLicitaOutras');
+        const updateDrogasLicitas = () => {
+          const mostrar = getCheckedValue('usoDrogasLicitas') === 'Sim';
+          toggleGroup(drogasLicitasGroup, mostrar);
+          if (!mostrar) {
+            toggleGroup(drogasLicitasOutrasGroup, false);
+          }
+        };
+        drogasLicitasRadios.forEach((radio) => radio.addEventListener('change', updateDrogasLicitas));
+        if (drogaLicitaOutrasCheckbox) {
+          drogaLicitaOutrasCheckbox.addEventListener('change', () => {
+            toggleGroup(drogasLicitasOutrasGroup, drogaLicitaOutrasCheckbox.checked);
+          });
+        }
+
+        const drogasIlicitasGroup = document.getElementById('drogasIlicitasGroup');
+        const drogasIlicitasRadios = document.querySelectorAll('input[name="usoDrogasIlicitas"]');
+        const drogasIlicitasOutrasGroup = document.getElementById('drogasIlicitasOutrasGroup');
+        const drogaIlicitaOutrasCheckbox = document.getElementById('drogaIlicitaOutras');
+        const updateDrogasIlicitas = () => {
+          const mostrar = getCheckedValue('usoDrogasIlicitas') === 'Sim';
+          toggleGroup(drogasIlicitasGroup, mostrar);
+          if (!mostrar) {
+            toggleGroup(drogasIlicitasOutrasGroup, false);
+          }
+        };
+        drogasIlicitasRadios.forEach((radio) => radio.addEventListener('change', updateDrogasIlicitas));
+        if (drogaIlicitaOutrasCheckbox) {
+          drogaIlicitaOutrasCheckbox.addEventListener('change', () => {
+            toggleGroup(drogasIlicitasOutrasGroup, drogaIlicitaOutrasCheckbox.checked);
+          });
+        }
+
+        const tempoGestacaoGroup = document.getElementById('tempoGestacaoGroup');
+        const gestanteRadios = document.querySelectorAll('input[name="gestante"]');
+        const updateGestante = () => {
+          toggleGroup(tempoGestacaoGroup, getCheckedValue('gestante') === 'Sim');
+        };
+        gestanteRadios.forEach((radio) => radio.addEventListener('change', updateGestante));
+
+        const identidadeGeneroSelect = document.getElementById('identidadeGenero');
+        const preventivoGroup = document.getElementById('preventivoGroup');
+        const preventivoAnoGroup = document.getElementById('preventivoAnoGroup');
+        const preventivoRadios = document.querySelectorAll('input[name="preventivoColo"]');
+        const mamografiaGroup = document.getElementById('mamografiaGroup');
+        const mamografiaAnoGroup = document.getElementById('mamografiaAnoGroup');
+        const mamografiaRadios = document.querySelectorAll('input[name="mamografia"]');
+        const isPerfilFeminino = () => {
+          if (!identidadeGeneroSelect) return false;
+          const valor = identidadeGeneroSelect.value;
+          return ['Mulher cisgênero', 'Mulher trans', 'Travesti'].includes(valor);
+        };
+        const atualizarExamesFemininos = () => {
+          const feminino = isPerfilFeminino();
+          toggleGroup(preventivoGroup, feminino);
+          toggleGroup(mamografiaGroup, feminino);
+          if (!feminino) {
+            toggleGroup(preventivoAnoGroup, false);
+            toggleGroup(mamografiaAnoGroup, false);
+          }
+        };
+        const updatePreventivoAno = () => {
+          toggleGroup(preventivoAnoGroup, getCheckedValue('preventivoColo') === 'Sim');
+        };
+        const updateMamografiaAno = () => {
+          toggleGroup(mamografiaAnoGroup, getCheckedValue('mamografia') === 'Sim');
+        };
+        preventivoRadios.forEach((radio) => radio.addEventListener('change', updatePreventivoAno));
+        mamografiaRadios.forEach((radio) => radio.addEventListener('change', updateMamografiaAno));
+        if (identidadeGeneroSelect) {
+          identidadeGeneroSelect.addEventListener('change', atualizarExamesFemininos);
+        }
+
+        const resultadoHivGroup = document.getElementById('resultadoHivGroup');
+        const exameHivRadios = document.querySelectorAll('input[name="exameHiv"]');
+        const contraiuAgressorGroup = document.getElementById('contraiuAgressorGroup');
+        const resultadoHivRadios = document.querySelectorAll('input[name="resultadoHiv"]');
+        const updateResultadoHiv = () => {
+          const mostrar = getCheckedValue('exameHiv') === 'Sim';
+          toggleGroup(resultadoHivGroup, mostrar);
+          if (!mostrar) {
+            toggleGroup(contraiuAgressorGroup, false);
+          }
+        };
+        const updateContraiuAgressor = () => {
+          toggleGroup(contraiuAgressorGroup, getCheckedValue('resultadoHiv') === 'Positivo');
+        };
+        exameHivRadios.forEach((radio) => radio.addEventListener('change', updateResultadoHiv));
+        resultadoHivRadios.forEach((radio) => radio.addEventListener('change', updateContraiuAgressor));
+
+        const tempoAcompanhamentoGroup = document.getElementById('tempoAcompanhamentoGroup');
+        const acompanhamentoRadios = document.querySelectorAll('input[name="acompanhamentoSaudeContinuo"]');
+        const updateAcompanhamento = () => {
+          toggleGroup(tempoAcompanhamentoGroup, getCheckedValue('acompanhamentoSaudeContinuo') === 'Sim');
+        };
+        acompanhamentoRadios.forEach((radio) => radio.addEventListener('change', updateAcompanhamento));
+
+        updateDeficiencia();
+        updateProblemaSaude();
+        updatePsicologo();
+        updatePsiquiatra();
+        updateMedicamentos();
+        updateDrogasLicitas();
+        if (drogaLicitaOutrasCheckbox) {
+          toggleGroup(
+            drogasLicitasOutrasGroup,
+            getCheckedValue('usoDrogasLicitas') === 'Sim' && drogaLicitaOutrasCheckbox.checked
+          );
+        }
+        updateDrogasIlicitas();
+        if (drogaIlicitaOutrasCheckbox) {
+          toggleGroup(
+            drogasIlicitasOutrasGroup,
+            getCheckedValue('usoDrogasIlicitas') === 'Sim' && drogaIlicitaOutrasCheckbox.checked
+          );
+        }
+        updateGestante();
+        if (identidadeGeneroSelect) {
+          atualizarExamesFemininos();
+        }
+        updatePreventivoAno();
+        updateMamografiaAno();
+        updateResultadoHiv();
+        updateContraiuAgressor();
+        updateAcompanhamento();
 
         const estados = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
         const citiesByState = {
@@ -2105,6 +2695,7 @@
 
           validator
             .addField('#numeroProntuario', [{ rule: 'required', errorMessage: 'Informe o número do prontuário.' }])
+            .addField('#numeroSus', [{ rule: 'required', errorMessage: 'Informe o número do Cartão SUS.' }])
             .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
             .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
             .addField('#horaAtendimento', [{ rule: 'required', errorMessage: 'Informe a hora do atendimento.' }])
@@ -2116,6 +2707,212 @@
             .addField('#bairro', [{ rule: 'required', errorMessage: 'Informe o bairro.' }])
             .addField('#cidade', [{ rule: 'required', errorMessage: 'Informe a cidade.' }])
             .addField('#uf', [{ rule: 'required', errorMessage: 'Informe a UF.' }])
+            .addRequiredGroup('input[name="deficienciaSindrome"]', 'Informe se há deficiência ou síndrome.')
+            .addField('#deficienciaQual', [
+              {
+                rule: 'function',
+                errorMessage: 'Selecione a deficiência.',
+                validator: () => {
+                  if (getCheckedValue('deficienciaSindrome') !== 'Sim') return true;
+                  const select = document.getElementById('deficienciaQual');
+                  return select ? select.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addField('#deficienciaViolenciaSim', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe se a deficiência decorre da violência.',
+                validator: () => {
+                  if (getCheckedValue('deficienciaSindrome') !== 'Sim') return true;
+                  return document.querySelector('input[name="deficienciaViolencia"]:checked') !== null;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="problemaSaude"]', 'Informe se apresenta problema de saúde.')
+            .addField('#problemaSaudeQual', [
+              {
+                rule: 'function',
+                errorMessage: 'Descreva o problema de saúde.',
+                validator: () => {
+                  if (getCheckedValue('problemaSaude') !== 'Sim') return true;
+                  const input = document.getElementById('problemaSaudeQual');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="atendimentoPsicologo"]', 'Informe se houve atendimento psicológico.')
+            .addField('#tempoPsicologo', [
+              {
+                rule: 'function',
+                errorMessage: 'Detalhe o tempo de atendimento psicológico.',
+                validator: () => {
+                  if (getCheckedValue('atendimentoPsicologo') !== 'Sim') return true;
+                  const input = document.getElementById('tempoPsicologo');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="atendimentoPsiquiatra"]', 'Informe se houve atendimento psiquiátrico.')
+            .addField('#tempoPsiquiatra', [
+              {
+                rule: 'function',
+                errorMessage: 'Detalhe o tempo de atendimento psiquiátrico.',
+                validator: () => {
+                  if (getCheckedValue('atendimentoPsiquiatra') !== 'Sim') return true;
+                  const input = document.getElementById('tempoPsiquiatra');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="usoMedicamento"]', 'Informe se faz uso de medicamentos.')
+            .addField('#medicamentosQuais', [
+              {
+                rule: 'function',
+                errorMessage: 'Liste os medicamentos em uso.',
+                validator: () => {
+                  if (getCheckedValue('usoMedicamento') !== 'Sim') return true;
+                  const input = document.getElementById('medicamentosQuais');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="usoDrogasLicitas"]', 'Informe o uso de drogas lícitas.')
+            .addField('#drogaLicitaTabaco', [
+              {
+                rule: 'function',
+                errorMessage: 'Selecione ao menos uma droga lícita.',
+                validator: () => {
+                  if (getCheckedValue('usoDrogasLicitas') !== 'Sim') return true;
+                  return (
+                    Array.from(document.querySelectorAll('input[name="drogasLicitas[]"]:checked')).length > 0
+                  );
+                },
+              },
+            ])
+            .addField('#drogasLicitasOutrasTexto', [
+              {
+                rule: 'function',
+                errorMessage: 'Detalhe as outras drogas lícitas.',
+                validator: () => {
+                  if (!drogaLicitaOutrasCheckbox || !drogaLicitaOutrasCheckbox.checked) return true;
+                  const input = document.getElementById('drogasLicitasOutrasTexto');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="usoDrogasIlicitas"]', 'Informe o uso de drogas ilícitas.')
+            .addField('#drogaIlicitaCocaina', [
+              {
+                rule: 'function',
+                errorMessage: 'Selecione ao menos uma droga ilícita.',
+                validator: () => {
+                  if (getCheckedValue('usoDrogasIlicitas') !== 'Sim') return true;
+                  return (
+                    Array.from(document.querySelectorAll('input[name="drogasIlicitas[]"]:checked')).length > 0
+                  );
+                },
+              },
+            ])
+            .addField('#drogasIlicitasOutrasTexto', [
+              {
+                rule: 'function',
+                errorMessage: 'Detalhe as outras drogas ilícitas.',
+                validator: () => {
+                  if (!drogaIlicitaOutrasCheckbox || !drogaIlicitaOutrasCheckbox.checked) return true;
+                  const input = document.getElementById('drogasIlicitasOutrasTexto');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="gestante"]', 'Informe se está gestante.')
+            .addField('#tempoGestacao', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe o tempo de gestação.',
+                validator: () => {
+                  if (getCheckedValue('gestante') !== 'Sim') return true;
+                  const select = document.getElementById('tempoGestacao');
+                  return select ? select.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="abortoViolencia"]', 'Informe se houve aborto decorrente da violência.')
+            .addField('#preventivoColoSim', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe se realizou preventivo.',
+                validator: () => {
+                  if (!preventivoGroup || preventivoGroup.classList.contains('d-none')) return true;
+                  return document.querySelector('input[name="preventivoColo"]:checked') !== null;
+                },
+              },
+            ])
+            .addField('#preventivoAno', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe o ano do preventivo.',
+                validator: () => {
+                  if (getCheckedValue('preventivoColo') !== 'Sim') return true;
+                  const input = document.getElementById('preventivoAno');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addField('#mamografiaSim', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe se realizou mamografia.',
+                validator: () => {
+                  if (!mamografiaGroup || mamografiaGroup.classList.contains('d-none')) return true;
+                  return document.querySelector('input[name="mamografia"]:checked') !== null;
+                },
+              },
+            ])
+            .addField('#mamografiaAno', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe o ano da mamografia.',
+                validator: () => {
+                  if (getCheckedValue('mamografia') !== 'Sim') return true;
+                  const input = document.getElementById('mamografiaAno');
+                  return input ? input.value.trim().length > 0 : true;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="exameHiv"]', 'Informe se realizou exame de HIV.')
+            .addField('#resultadoHivNegativo', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe o resultado do exame de HIV.',
+                validator: () => {
+                  if (getCheckedValue('exameHiv') !== 'Sim') return true;
+                  return document.querySelector('input[name="resultadoHiv"]:checked') !== null;
+                },
+              },
+            ])
+            .addField('#contraiuAgressorSim', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe se contraiu com o agressor.',
+                validator: () => {
+                  if (getCheckedValue('resultadoHiv') !== 'Positivo') return true;
+                  return document.querySelector('input[name="contraiuAgressor"]:checked') !== null;
+                },
+              },
+            ])
+            .addRequiredGroup('input[name="acompanhamentoSaudeContinuo"]', 'Informe se faz acompanhamento.')
+            .addField('#tempoAcompanhamento', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe há quanto tempo realiza o tratamento.',
+                validator: () => {
+                  if (getCheckedValue('acompanhamentoSaudeContinuo') !== 'Sim') return true;
+                  const select = document.getElementById('tempoAcompanhamento');
+                  return select ? select.value.trim().length > 0 : true;
+                },
+              },
+            ])
             .addField('#escolaridade', [{ rule: 'required', errorMessage: 'Informe a escolaridade.' }])
             .addField('#tipoViolencia', [{ rule: 'required', errorMessage: 'Selecione o tipo de violência.' }])
             .addField('#localViolencia', [{ rule: 'required', errorMessage: 'Informe o local da violência.' }])
@@ -2203,6 +3000,22 @@
               atualizarEncaminhamentos();
               atualizarSituacaoHabitacionalOutro();
               restaurarTabelaFamilia();
+              updateDeficiencia();
+              updateProblemaSaude();
+              updatePsicologo();
+              updatePsiquiatra();
+              updateMedicamentos();
+              updateDrogasLicitas();
+              updateDrogasIlicitas();
+              updateGestante();
+              if (identidadeGeneroSelect) {
+                atualizarExamesFemininos();
+              }
+              updatePreventivoAno();
+              updateMamografiaAno();
+              updateResultadoHiv();
+              updateContraiuAgressor();
+              updateAcompanhamento();
               if (cidadeNascimentoSelect) {
                 cidadeNascimentoSelect.innerHTML = '';
                 const option = document.createElement('option');
