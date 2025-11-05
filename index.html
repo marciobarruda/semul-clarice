@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SAS • CNH Social</title>
+    <link
+      rel="icon"
+      href="https://statics.recife.pe.gov.br/images/dynamics/conecta/icons/favicon.png?w=32&h=32&fit=fill&border=2,transparent,shrink"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+      :root {
+        --brand-primary: #0053a4;
+        --brand-secondary: #003a73;
+        --brand-highlight: #00a3ff;
+        --surface: #f4f7fb;
+        --surface-strong: #ffffff;
+        --border-color: #d0d7e2;
+        --text-strong: #1b263b;
+        --text-muted: #5b6c8c;
+      }
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Public Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--surface);
+        color: var(--text-strong);
+        min-height: 100vh;
+      }
+
+      header.site-header {
+        background: url("https://statics.recife.pe.gov.br/images/dynamics/automacao/header.png?w=3000")
+          center/cover no-repeat;
+        color: #ffffff;
+        padding: 3.5rem 0 2.75rem;
+      }
+
+      header .lead {
+        color: rgba(255, 255, 255, 0.82);
+        max-width: 100%;
+        font-size: 1rem;
+        line-height: 1.65;
+        text-align: justify;
+      }
+
+      .badge-open {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        background-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .user-greeting {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, rgba(0, 83, 164, 0.09), rgba(0, 163, 255, 0.12));
+        color: var(--text-strong);
+        box-shadow: 0 10px 30px rgba(0, 45, 98, 0.08);
+      }
+
+      .user-greeting::before {
+        content: "👋";
+        font-size: 1.4rem;
+      }
+
+      .minhas-inscricoes-grid {
+        margin-top: 1rem;
+      }
+
+      .minhas-inscricao-card {
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        border: 1px solid rgba(0, 83, 164, 0.12);
+        border-radius: 4px;
+      }
+
+      .minhas-inscricao-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
+      }
+
+      .minhas-inscricao-card.is-loading {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .minhas-inscricoes-placeholder {
+        padding: 1.25rem;
+        border-radius: 4px;
+        background: rgba(0, 83, 164, 0.05);
+        border: 1px dashed rgba(0, 83, 164, 0.2);
+        color: var(--text-muted);
+      }
+
+      .resumo-inscricao-list dt {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .resumo-inscricao-list dd {
+        font-weight: 600;
+        color: var(--text-strong);
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .section-title .icon-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        background: rgba(0, 83, 164, 0.12);
+        color: var(--brand-primary);
+        font-size: 1.25rem;
+      }
+
+      .kpi-card {
+        border-radius: 1rem;
+        background: var(--surface-strong);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 0 12px 30px rgba(24, 64, 120, 0.08);
+        padding: 1.5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px rgba(24, 64, 120, 0.12);
+      }
+
+      .kpi-card .icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.85rem;
+        background: rgba(0, 83, 164, 0.12);
+        color: var(--brand-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .kpi-card .value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .card-section {
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        background: var(--surface-strong);
+        box-shadow: 0 12px 30px rgba(24, 64, 120, 0.08);
+        padding: 1.75rem;
+        height: 100%;
+      }
+
+      .card-section + .card-section {
+        margin-top: 1.5rem;
+      }
+
+      .section-header {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .required::after {
+        content: "*";
+        color: #d32f2f;
+        margin-left: 0.25rem;
+      }
+
+      .legend-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.85rem;
+        color: var(--brand-secondary);
+        background: rgba(0, 83, 164, 0.12);
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+      }
+
+      .tooltip-inner {
+        text-align: left;
+      }
+
+      .btn-outline-primary:focus-visible,
+      .form-control:focus,
+      .form-select:focus,
+      .form-check-input:focus {
+        box-shadow: 0 0 0 0.25rem rgba(0, 83, 164, 0.25);
+        border-color: var(--brand-highlight);
+      }
+
+      .border-dashed {
+        border-style: dashed !important;
+      }
+
+      .banner-card {
+        background: linear-gradient(135deg, rgba(120, 58, 163, 0.85), rgba(235, 129, 162, 0.9)),
+          url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80") center/cover;
+        border-radius: 1rem;
+        color: #fff;
+        padding: 2rem;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 18px 45px rgba(94, 33, 123, 0.28);
+      }
+
+      .banner-card .btn {
+        align-self: flex-start;
+      }
+
+      .timeline-item {
+        position: relative;
+        padding-left: 1.75rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: 0.5rem;
+        top: 0.35rem;
+        width: 0.5rem;
+        height: 0.5rem;
+        background: var(--brand-highlight);
+        border-radius: 50%;
+      }
+
+      .timeline-item + .timeline-item {
+        margin-top: 1rem;
+      }
+
+      footer {
+        color: var(--text-muted);
+        padding: 2.5rem 0 2rem;
+        font-size: 0.9rem;
+      }
+
+      .tab-content {
+        margin-top: 2rem;
+      }
+
+      .nav-tabs .nav-link.active {
+        background: var(--surface-strong);
+        border-color: var(--border-color) var(--border-color) var(--surface-strong);
+        color: var(--brand-primary);
+        font-weight: 600;
+      }
+
+      .nav-tabs .nav-link {
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      .form-section-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .form-section-title .bi {
+        color: var(--brand-primary);
+      }
+
+      .floating-toolbar {
+        position: sticky;
+        top: 1rem;
+        z-index: 1020;
+      }
+
+      .toast-header {
+        background: var(--brand-primary);
+        color: #fff;
+      }
+
+      @media (max-width: 992px) {
+        header.site-header {
+          padding: 2.5rem 0 2rem;
+        }
+
+        .badge-open {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .banner-card {
+          margin-top: 1.5rem;
+        }
+
+        .floating-toolbar {
+          position: static;
+          margin-top: 1.5rem;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/imask@7.1.3/dist/imask.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/dayjs.min.js" defer></script>
+  </head>
+  <body>
+    <div class="toast-container position-fixed top-0 end-0 p-3" aria-live="polite" aria-atomic="true">
+      <div class="toast align-items-center" id="successToast" role="status" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <strong class="me-auto">Registro salvo</strong>
+          <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Fechar"></button>
+        </div>
+        <div class="toast-body">Dados enviados com sucesso para a Rede de Enfrentamento.</div>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <img
+              src="https://statics.recife.pe.gov.br/images/dynamics/conecta/logo_prefeitura_recife.png?w=280"
+              alt="Prefeitura do Recife"
+              class="img-fluid"
+              style="max-width: 180px"
+            />
+            <div>
+              <span class="badge-open text-uppercase">Secretaria da Mulher</span>
+              <h1 class="h3 mb-1">Rede de Enfrentamento à Violência Contra a Mulher</h1>
+              <p class="lead mb-0">Centro de Referência Clarice Lispector — acolhimento, proteção e ações integradas para as mulheres do Recife.</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2 text-white">
+            <button class="btn btn-outline-light btn-sm" type="button" aria-label="Central de notificações">
+              <i class="bi bi-bell-fill"></i>
+            </button>
+            <button class="btn btn-outline-light btn-sm" type="button" aria-label="Acesso rápido ao perfil">
+              <i class="bi bi-person-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container py-5">
+        <div class="user-greeting" role="status">Bem-vinda, Ana Paula — acompanhe os casos e encaminhamentos da rede de proteção.</div>
+
+        <div class="d-flex flex-column flex-lg-row gap-3 mb-4 align-items-lg-center">
+          <ul class="nav nav-tabs" id="portalTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                <i class="bi bi-house-door me-1"></i>
+                Home
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="prontuarios-tab" data-bs-toggle="tab" data-bs-target="#prontuarios" type="button" role="tab" aria-controls="prontuarios" aria-selected="false">
+                <i class="bi bi-folder2-open me-1"></i>
+                Prontuários
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="bi-tab" data-bs-toggle="tab" data-bs-target="#bi" type="button" role="tab" aria-controls="bi" aria-selected="false">
+                <i class="bi bi-graph-up-arrow me-1"></i>
+                BI — Dados Gerais
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="form-tab" data-bs-toggle="tab" data-bs-target="#formulario" type="button" role="tab" aria-controls="formulario" aria-selected="false">
+                <i class="bi bi-journal-medical me-1"></i>
+                Novo Registro
+              </button>
+            </li>
+          </ul>
+          <div class="ms-lg-auto floating-toolbar d-flex gap-2">
+            <button class="btn btn-primary" type="button" id="openFormBtn">
+              <i class="bi bi-plus-circle me-2"></i>
+              Novo Registro / Formulário
+            </button>
+            <button class="btn btn-outline-primary" type="button">
+              <i class="bi bi-cloud-arrow-down me-2"></i>
+              Exportar BI
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="portalTabsContent">
+          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row g-4 mb-4">
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="kpi-card h-100" role="group" aria-label="Total de prontuários cadastrados">
+                  <div class="icon"><i class="bi bi-people-fill"></i></div>
+                  <div class="value" aria-live="polite">1.482</div>
+                  <p class="mb-0 text-muted">Prontuários cadastrados</p>
+                  <small class="text-success fw-semibold"><i class="bi bi-arrow-up-right me-1"></i>+8% vs. mês anterior</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="kpi-card h-100" role="group" aria-label="Atendimentos ativos">
+                  <div class="icon"><i class="bi bi-activity"></i></div>
+                  <div class="value">327</div>
+                  <p class="mb-0 text-muted">Atendimentos ativos</p>
+                  <small class="text-success fw-semibold"><i class="bi bi-lightning-charge-fill me-1"></i>Ativações em tempo real</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="kpi-card h-100" role="group" aria-label="Medidas protetivas">
+                  <div class="icon"><i class="bi bi-shield-lock"></i></div>
+                  <div class="value">214</div>
+                  <p class="mb-0 text-muted">Medidas protetivas acompanhadas</p>
+                  <small class="text-muted">34 aguardando despacho</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="kpi-card h-100" role="group" aria-label="Encaminhamentos">
+                  <div class="icon"><i class="bi bi-signpost-2"></i></div>
+                  <div class="value">96</div>
+                  <p class="mb-0 text-muted">Encaminhamentos realizados</p>
+                  <small class="text-danger fw-semibold"><i class="bi bi-arrow-down-right me-1"></i>-3% vs. último mês</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+              <div class="col-12 col-xl-8 d-flex flex-column gap-4">
+                <section class="card-section" aria-labelledby="busca-casos">
+                  <div class="section-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0" id="busca-casos">Busca e filtros inteligentes</h2>
+                    <span class="legend-badge"><i class="bi bi-search me-1"></i>Pesquisa avançada</span>
+                  </div>
+                  <form class="row g-3" role="search" aria-label="Buscar prontuários">
+                    <div class="col-12 col-md-4">
+                      <label for="buscaNome" class="form-label">Nome da usuária</label>
+                      <input type="text" class="form-control" id="buscaNome" placeholder="Maria Silva" />
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label for="buscaDocumento" class="form-label">CPF</label>
+                      <input type="text" class="form-control" id="buscaDocumento" placeholder="000.000.000-00" />
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label for="buscaSituacao" class="form-label">Situação</label>
+                      <select class="form-select" id="buscaSituacao">
+                        <option value="">Todas</option>
+                        <option>Ativo</option>
+                        <option>Em análise</option>
+                        <option>Encerrado</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label for="buscaTipificacao" class="form-label">Tipificação</label>
+                      <select class="form-select" id="buscaTipificacao">
+                        <option value="">Todas</option>
+                        <option>Violência física</option>
+                        <option>Violência psicológica</option>
+                        <option>Violência sexual</option>
+                        <option>Violência moral</option>
+                        <option>Violência patrimonial</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label for="buscaPeriodo" class="form-label">Período</label>
+                      <input type="month" class="form-control" id="buscaPeriodo" />
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label for="buscaEncaminhamento" class="form-label">Encaminhamento</label>
+                      <select class="form-select" id="buscaEncaminhamento">
+                        <option value="">Todos</option>
+                        <option>Delegacia da Mulher</option>
+                        <option>CREAS</option>
+                        <option>Saúde</option>
+                        <option>Assistência social</option>
+                      </select>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end gap-2">
+                      <button class="btn btn-outline-secondary" type="reset">Limpar</button>
+                      <button class="btn btn-primary" type="button">Aplicar filtros</button>
+                    </div>
+                  </form>
+                </section>
+
+                <section class="card-section" aria-labelledby="minhas-tarefas">
+                  <div class="section-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0" id="minhas-tarefas">Minhas tarefas</h2>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Ver agenda</a>
+                  </div>
+                  <div class="row g-4">
+                    <div class="col-12 col-lg-6">
+                      <div class="border rounded-3 p-3 h-100">
+                        <h3 class="h6 d-flex align-items-center gap-2 mb-1">
+                          <i class="bi bi-calendar-check text-primary"></i>
+                          Retorno psicossocial
+                        </h3>
+                        <p class="mb-2 text-muted">Agendado para 14/05 às 10h — Unidade Casa Amarela.</p>
+                        <span class="badge bg-primary-subtle text-primary">Prontuário #2023-541</span>
+                      </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                      <div class="border rounded-3 p-3 h-100">
+                        <h3 class="h6 d-flex align-items-center gap-2 mb-1">
+                          <i class="bi bi-chat-square-text text-primary"></i>
+                          Atualizar medidas protetivas
+                        </h3>
+                        <p class="mb-2 text-muted">Acompanhar despacho da 1ª Vara — prazo em 2 dias.</p>
+                        <span class="badge bg-warning-subtle text-warning">Urgente</span>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="border rounded-3 p-3">
+                        <h3 class="h6 d-flex align-items-center gap-2 mb-2">
+                          <i class="bi bi-people text-primary"></i>
+                          Encontros da rede — Maio
+                        </h3>
+                        <div class="timeline-item">
+                          <strong>15/05</strong> — Reunião com Delegacia Especializada no auditório central.
+                        </div>
+                        <div class="timeline-item">
+                          <strong>20/05</strong> — Oficina de atualização de fluxos com CREAS e Saúde.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="col-12 col-xl-4">
+                <aside class="banner-card" aria-label="Campanha SoMar">
+                  <div>
+                    <span class="badge bg-light text-dark mb-3">Campanha Clarice Lispector</span>
+                    <h2 class="h4">Projeto SoMar — Fortalecendo vínculos e autonomia das mulheres</h2>
+                    <p class="mb-0">Conheça ações de capacitação, acolhimento psicossocial e articulação comunitária realizadas na rede.</p>
+                  </div>
+                  <a class="btn btn-light btn-lg mt-4" href="#" role="button">
+                    <i class="bi bi-arrow-up-right-circle me-2"></i>
+                    Acessar materiais
+                  </a>
+                </aside>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="prontuarios" role="tabpanel" aria-labelledby="prontuarios-tab">
+            <section class="card-section mb-4" aria-labelledby="painel-prontuarios">
+              <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h2 class="h5 mb-0" id="painel-prontuarios">Prontuários — Consultar &amp; editar</h2>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-sm" type="button"><i class="bi bi-printer me-1"></i>Imprimir</button>
+                  <button class="btn btn-primary btn-sm" type="button"><i class="bi bi-upload me-1"></i>Importar dados</button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table align-middle">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nº</th>
+                      <th scope="col">Usuária</th>
+                      <th scope="col">Tipificação principal</th>
+                      <th scope="col">Encaminhamento</th>
+                      <th scope="col">Atualização</th>
+                      <th scope="col" class="text-end">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">2024-118</th>
+                      <td>Maria Ferreira</td>
+                      <td>Violência psicológica</td>
+                      <td>CREAS</td>
+                      <td>10/05/2024</td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-primary" type="button"><i class="bi bi-pencil"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2024-119</th>
+                      <td>Juliana Moura</td>
+                      <td>Violência física</td>
+                      <td>Saúde</td>
+                      <td>08/05/2024</td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-primary" type="button"><i class="bi bi-pencil"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2024-120</th>
+                      <td>Carla Bezerra</td>
+                      <td>Violência sexual</td>
+                      <td>Delegacia da Mulher</td>
+                      <td>06/05/2024</td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-primary" type="button"><i class="bi bi-pencil"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section class="card-section" aria-labelledby="historico-recentes">
+              <div class="section-header">
+                <h2 class="h5 mb-0" id="historico-recentes">Últimas atualizações</h2>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div>
+                    <h3 class="h6 mb-1">Anexo adicionado</h3>
+                    <p class="mb-0 text-muted">Laudo psicossocial anexado ao prontuário #2024-119.</p>
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary">há 2h</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div>
+                    <h3 class="h6 mb-1">Encaminhamento confirmado</h3>
+                    <p class="mb-0 text-muted">CREAS Sede confirmou atendimento inicial para 16/05.</p>
+                  </div>
+                  <span class="badge bg-success-subtle text-success">há 5h</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div>
+                    <h3 class="h6 mb-1">Registro atualizado</h3>
+                    <p class="mb-0 text-muted">Medida protetiva renovada para prontuário #2023-541.</p>
+                  </div>
+                  <span class="badge bg-warning-subtle text-warning">ontem</span>
+                </li>
+              </ul>
+            </section>
+          </div>
+
+          <div class="tab-pane fade" id="bi" role="tabpanel" aria-labelledby="bi-tab">
+            <div class="row g-4">
+              <div class="col-12 col-xl-6">
+                <section class="card-section" aria-labelledby="grafico-violencia">
+                  <div class="section-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0" id="grafico-violencia">Tipificação das violências</h2>
+                    <span class="text-muted small"><i class="bi bi-calendar3 me-1"></i>Atualizado em <span id="chartUpdate"></span></span>
+                  </div>
+                  <canvas id="chartViolenceTypes" role="img" aria-label="Gráfico de pizza das violências"></canvas>
+                  <div class="mt-3 d-flex flex-wrap gap-2" aria-hidden="true">
+                    <span class="legend-badge"><span class="badge rounded-pill" style="background:#6f42c1">&nbsp;</span>Psicológica</span>
+                    <span class="legend-badge"><span class="badge rounded-pill" style="background:#d63384">&nbsp;</span>Física</span>
+                    <span class="legend-badge"><span class="badge rounded-pill" style="background:#fd7e14">&nbsp;</span>Sexual</span>
+                    <span class="legend-badge"><span class="badge rounded-pill" style="background:#198754">&nbsp;</span>Moral</span>
+                    <span class="legend-badge"><span class="badge rounded-pill" style="background:#0dcaf0">&nbsp;</span>Patrimonial</span>
+                  </div>
+                </section>
+              </div>
+              <div class="col-12 col-xl-6">
+                <section class="card-section" aria-labelledby="grafico-encaminhamentos">
+                  <div class="section-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0" id="grafico-encaminhamentos">Encaminhamentos por rede</h2>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Seleção de período">
+                      <button class="btn btn-outline-primary active" type="button">Mês</button>
+                      <button class="btn btn-outline-primary" type="button">Trim.</button>
+                      <button class="btn btn-outline-primary" type="button">Ano</button>
+                    </div>
+                  </div>
+                  <canvas id="chartReferrals" role="img" aria-label="Gráfico de barras de encaminhamentos"></canvas>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="form-tab">
+            <form id="registroForm" class="needs-validation" novalidate>
+              <section class="card-section mb-4" aria-labelledby="dados-preliminares">
+                <h2 class="form-section-title" id="dados-preliminares"><i class="bi bi-person-vcard"></i>Dados preliminares e de identificação</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-lg-4">
+                    <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
+                    <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option>Centro de Referência Clarice Lispector</option>
+                      <option>Casa de Passagem</option>
+                      <option>Outro equipamento</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-lg-4">
+                    <label for="dataAtendimento" class="form-label required">Data do atendimento</label>
+                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" placeholder="dd/mm/aaaa" required />
+                  </div>
+                  <div class="col-12 col-sm-6 col-lg-4">
+                    <label for="horaAtendimento" class="form-label">Hora do atendimento</label>
+                    <input type="time" class="form-control" id="horaAtendimento" name="horaAtendimento" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="nomeUsuario" class="form-label required">Nome completo</label>
+                    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="cpfUsuario" class="form-label required">CPF</label>
+                    <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" placeholder="000.000.000-00" required />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="dataNascimento" class="form-label required">Data de nascimento</label>
+                    <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" placeholder="dd/mm/aaaa" required />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Rua, número, bairro" />
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-3">
+                    <label for="cep" class="form-label">CEP</label>
+                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" />
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-3">
+                    <label for="telefone" class="form-label">Telefone principal</label>
+                    <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000" />
+                  </div>
+                  <div class="col-12">
+                    <label for="responsavelRegistro" class="form-label required">Responsável pelo registro</label>
+                    <input type="text" class="form-control" id="responsavelRegistro" name="responsavelRegistro" required />
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="dados-escolaridade">
+                <h2 class="form-section-title" id="dados-escolaridade"><i class="bi bi-mortarboard"></i>Dados de escolaridade e profissionais</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label for="escolaridade" class="form-label required">Escolaridade</label>
+                    <select id="escolaridade" name="escolaridade" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option>Sem instrução</option>
+                      <option>Ensino fundamental</option>
+                      <option>Ensino médio</option>
+                      <option>Ensino superior</option>
+                      <option>Pós-graduação</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="profissao" class="form-label">Profissão/Ocupação</label>
+                    <input type="text" class="form-control" id="profissao" name="profissao" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="situacaoTrabalho" class="form-label">Situação de trabalho</label>
+                    <select id="situacaoTrabalho" name="situacaoTrabalho" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Trabalhando</option>
+                      <option>Desempregada</option>
+                      <option>Trabalhadora informal</option>
+                      <option>Dona de casa</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="renda" class="form-label">Renda mensal aproximada</label>
+                    <input type="number" class="form-control" id="renda" name="renda" min="0" step="0.01" placeholder="0,00" />
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="caracterizacao-violencia">
+                <h2 class="form-section-title" id="caracterizacao-violencia"><i class="bi bi-exclamation-triangle"></i>Caracterização da violência</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-4">
+                    <label for="localViolencia" class="form-label required">Local principal</label>
+                    <input type="text" class="form-control" id="localViolencia" name="localViolencia" required />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="frequencia" class="form-label">Frequência</label>
+                    <select id="frequencia" name="frequencia" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Recente</option>
+                      <option>Recorrente</option>
+                      <option>Eventual</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="dataOcorrencia" class="form-label">Data da última ocorrência</label>
+                    <input type="text" class="form-control" id="dataOcorrencia" name="dataOcorrencia" placeholder="dd/mm/aaaa" />
+                  </div>
+                  <div class="col-12">
+                    <label for="relato" class="form-label">Relato resumido</label>
+                    <textarea id="relato" name="relato" class="form-control" rows="3" placeholder="Descreva a situação de violência..."></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="dados-saude">
+                <h2 class="form-section-title" id="dados-saude"><i class="bi bi-heart-pulse"></i>Dados de saúde</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label for="deficiencia" class="form-label">Pessoa com deficiência</label>
+                    <select id="deficiencia" name="deficiencia" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Não</option>
+                      <option>Sim</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="acompanhamentoSaude" class="form-label">Acompanhamento em saúde</label>
+                    <select id="acompanhamentoSaude" name="acompanhamentoSaude" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>UBS/Equipe Saúde da Família</option>
+                      <option>UPA</option>
+                      <option>Hospital</option>
+                      <option>Outro serviço</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label for="medicacoes" class="form-label">Medicamentos/Condições relevantes</label>
+                    <textarea id="medicacoes" name="medicacoes" class="form-control" rows="2"></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="dados-sociais">
+                <h2 class="form-section-title" id="dados-sociais"><i class="bi bi-people"></i>Dados sociais da família</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label for="beneficios" class="form-label">Benefícios sociais</label>
+                    <select id="beneficios" name="beneficios" class="form-select" aria-describedby="beneficiosHelp">
+                      <option value="">Selecione</option>
+                      <option>Bolsa Família</option>
+                      <option>BPC</option>
+                      <option>Auxílio municipal</option>
+                      <option>Outro</option>
+                    </select>
+                    <div id="beneficiosHelp" class="form-text">Selecione o principal benefício recebido.</div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="composicaoFamiliar" class="form-label">Composição familiar</label>
+                    <input type="text" class="form-control" id="composicaoFamiliar" name="composicaoFamiliar" placeholder="Ex.: 2 filhos, mãe" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="numeroDependentes" class="form-label">Dependentes</label>
+                    <input type="number" class="form-control" id="numeroDependentes" name="numeroDependentes" min="0" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="moradia" class="form-label">Condição de moradia</label>
+                    <select id="moradia" name="moradia" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Própria</option>
+                      <option>Alugada</option>
+                      <option>Cedida</option>
+                      <option>Situação de rua</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="redeApoio" class="form-label">Rede de apoio</label>
+                    <input type="text" class="form-control" id="redeApoio" name="redeApoio" placeholder="Familiares, vizinhança..." />
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="dados-autor">
+                <h2 class="form-section-title" id="dados-autor"><i class="bi bi-person-exclamation"></i>Dados do(a) autor(a)</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label for="relacaoAutor" class="form-label required">Relação com a usuária</label>
+                    <select id="relacaoAutor" name="relacaoAutor" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option>Convivente/Cônjuge</option>
+                      <option>Ex-companheiro(a)</option>
+                      <option>Familiar</option>
+                      <option>Outro</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="medidaRestritiva" class="form-label">Medida protetiva vigente?</label>
+                    <select id="medidaRestritiva" name="medidaRestritiva" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Sim</option>
+                      <option>Não</option>
+                      <option>Solicitada</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label for="historicoAutor" class="form-label">Histórico conhecido</label>
+                    <textarea id="historicoAutor" name="historicoAutor" class="form-control" rows="3"></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="tipificacao-violencia">
+                <h2 class="form-section-title" id="tipificacao-violencia"><i class="bi bi-list-check"></i>Tipificação da violência</h2>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label required">Tipos identificados</label>
+                    <div class="row">
+                      <div class="col-12 col-md-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="fisica" id="violenciaFisica" name="tiposViolencia" />
+                          <label class="form-check-label" for="violenciaFisica">Violência física</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="psicologica" id="violenciaPsicologica" name="tiposViolencia" />
+                          <label class="form-check-label" for="violenciaPsicologica">Violência psicológica</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="sexual" id="violenciaSexual" name="tiposViolencia" />
+                          <label class="form-check-label" for="violenciaSexual">Violência sexual</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="moral" id="violenciaMoral" name="tiposViolencia" />
+                          <label class="form-check-label" for="violenciaMoral">Violência moral</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="patrimonial" id="violenciaPatrimonial" name="tiposViolencia" />
+                          <label class="form-check-label" for="violenciaPatrimonial">Violência patrimonial</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="outra" id="violenciaOutra" name="tiposViolencia" />
+                          <label class="form-check-label" for="violenciaOutra">Outra</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="localFato" class="form-label">Local da ocorrência</label>
+                    <input type="text" class="form-control" id="localFato" name="localFato" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="horarioFato" class="form-label">Horário</label>
+                    <input type="time" class="form-control" id="horarioFato" name="horarioFato" />
+                  </div>
+                  <div class="col-12">
+                    <label for="fatoresRelacionados" class="form-label">Fatores relacionados</label>
+                    <textarea id="fatoresRelacionados" name="fatoresRelacionados" class="form-control" rows="2" placeholder="Ex.: uso de álcool, ciúmes, disputa patrimonial..."></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="evolucoes">
+                <h2 class="form-section-title" id="evolucoes"><i class="bi bi-journal-text"></i>Evoluções / Consolidado</h2>
+                <p class="text-muted mb-0">Registros de evoluções e consolidado serão preenchidos pela equipe técnica após o atendimento inicial. Utilize o módulo de prontuários para acompanhar as atualizações.</p>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="dados-juridicos">
+                <h2 class="form-section-title" id="dados-juridicos"><i class="bi bi-balance-scale"></i>Dados jurídicos</h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label for="delegacia" class="form-label">Delegacia responsável</label>
+                    <input type="text" class="form-control" id="delegacia" name="delegacia" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="numeroBoletim" class="form-label">Número do boletim</label>
+                    <input type="text" class="form-control" id="numeroBoletim" name="numeroBoletim" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="medidasProtetivas" class="form-label">Medidas protetivas solicitadas</label>
+                    <input type="text" class="form-control" id="medidasProtetivas" name="medidasProtetivas" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="encaminhamentos" class="form-label">Encaminhamentos realizados</label>
+                    <input type="text" class="form-control" id="encaminhamentos" name="encaminhamentos" />
+                  </div>
+                </div>
+              </section>
+
+              <div class="d-flex justify-content-end gap-2">
+                <button type="reset" class="btn btn-outline-secondary">Limpar</button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-send me-2"></i>
+                  Enviar registro
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="border-top bg-white">
+      <div class="container">
+        <div class="row g-3 align-items-center">
+          <div class="col-12 col-lg-8">
+            <p class="mb-0">Secretaria da Mulher — Centro de Referência Clarice Lispector. Rede de Enfrentamento à Violência Contra a Mulher do Recife.</p>
+          </div>
+          <div class="col-12 col-lg-4 text-lg-end">
+            <p class="mb-0">Contato: redeclarice@recife.pe.gov.br • (81) 0000-0000</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Update charts
+        const updateLabel = document.getElementById('chartUpdate');
+        if (updateLabel && window.dayjs) {
+          updateLabel.textContent = dayjs().format('DD/MM/YYYY');
+        }
+
+        if (window.Chart) {
+          const ctxPie = document.getElementById('chartViolenceTypes');
+          if (ctxPie) {
+            new Chart(ctxPie, {
+              type: 'pie',
+              data: {
+                labels: ['Psicológica', 'Física', 'Sexual', 'Moral', 'Patrimonial'],
+                datasets: [
+                  {
+                    data: [38, 26, 14, 12, 10],
+                    backgroundColor: ['#6f42c1', '#d63384', '#fd7e14', '#198754', '#0dcaf0'],
+                    borderWidth: 0,
+                  },
+                ],
+              },
+              options: {
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    callbacks: {
+                      label: (context) => `${context.label}: ${context.parsed}%`,
+                    },
+                  },
+                },
+              },
+            });
+          }
+
+          const ctxBar = document.getElementById('chartReferrals');
+          if (ctxBar) {
+            new Chart(ctxBar, {
+              type: 'bar',
+              data: {
+                labels: ['Delegacia da Mulher', 'Saúde', 'CREAS', 'Defensoria', 'Judiciário'],
+                datasets: [
+                  {
+                    label: 'Encaminhamentos',
+                    data: [42, 35, 28, 22, 18],
+                    backgroundColor: '#0053a4',
+                    borderRadius: 8,
+                  },
+                ],
+              },
+              options: {
+                plugins: {
+                  legend: { display: false },
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 10,
+                    },
+                  },
+                },
+              },
+            });
+          }
+        }
+
+        // Masks
+        const maskConfig = [
+          { selector: '#cpfUsuario', mask: '000.000.000-00' },
+          { selector: '#cep', mask: '00000-000' },
+          { selector: '#telefone', mask: '(00) 00000-0000' },
+          { selector: '#dataAtendimento', mask: '00/00/0000' },
+          { selector: '#dataNascimento', mask: '00/00/0000' },
+          { selector: '#dataOcorrencia', mask: '00/00/0000' },
+        ];
+
+        maskConfig.forEach(({ selector, mask }) => {
+          const element = document.querySelector(selector);
+          if (element && window.IMask) {
+            IMask(element, { mask });
+          }
+        });
+
+        // Tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach((tooltipTriggerEl) => {
+          new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Validation
+        if (window.JustValidate) {
+          const validator = new JustValidate('#registroForm', {
+            errorFieldCssClass: 'is-invalid',
+            focusInvalidField: true,
+            lockForm: true,
+            tooltip: {
+              position: 'top',
+            },
+          });
+
+          validator
+            .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
+            .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
+            .addField('#nomeUsuario', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
+            .addField('#cpfUsuario', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
+            .addField('#dataNascimento', [{ rule: 'required', errorMessage: 'Informe a data de nascimento.' }])
+            .addField('#responsavelRegistro', [{ rule: 'required', errorMessage: 'Informe o responsável pelo registro.' }])
+            .addField('#escolaridade', [{ rule: 'required', errorMessage: 'Informe a escolaridade.' }])
+            .addField('#localViolencia', [{ rule: 'required', errorMessage: 'Informe o local da violência.' }])
+            .addField('#relacaoAutor', [{ rule: 'required', errorMessage: 'Informe a relação com o autor.' }])
+            .onSuccess((event) => {
+              event.preventDefault();
+              const form = event.target;
+              const formData = new FormData(form);
+              const payload = {};
+              formData.forEach((value, key) => {
+                if (payload[key]) {
+                  if (!Array.isArray(payload[key])) {
+                    payload[key] = [payload[key]];
+                  }
+                  payload[key].push(value);
+                } else {
+                  payload[key] = value;
+                }
+              });
+
+              console.log('Registro submetido:', JSON.stringify(payload, null, 2));
+
+              const toastEl = document.getElementById('successToast');
+              if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+              }
+
+              form.reset();
+              const invalidEls = form.querySelectorAll('.is-invalid');
+              invalidEls.forEach((el) => el.classList.remove('is-invalid'));
+            });
+        }
+
+        // Shortcut button to open form tab
+        const openFormBtn = document.getElementById('openFormBtn');
+        if (openFormBtn) {
+          openFormBtn.addEventListener('click', () => {
+            const formTabTrigger = document.querySelector('#form-tab');
+            if (formTabTrigger) {
+              const tab = new bootstrap.Tab(formTabTrigger);
+              tab.show();
+              document.getElementById('registroForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
