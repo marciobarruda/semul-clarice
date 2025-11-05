@@ -699,50 +699,274 @@
               <section class="card-section mb-4" aria-labelledby="dados-preliminares">
                 <h2 class="form-section-title" id="dados-preliminares"><i class="bi bi-person-vcard"></i>Dados preliminares e de identificação</h2>
                 <div class="row g-3">
-                  <div class="col-12 col-lg-4">
+                  <div class="col-12 col-md-3">
+                    <label for="numeroProntuario" class="form-label required">Nº do prontuário</label>
+                    <input type="text" class="form-control" id="numeroProntuario" name="numeroProntuario" placeholder="PR-0000" required />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="demandante" class="form-label">Demandante</label>
+                    <input type="text" class="form-control" id="demandante" name="demandante" placeholder="Nome do solicitante" />
+                  </div>
+                  <div class="col-12 col-md-3">
                     <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
                     <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
                       <option value="">Selecione</option>
                       <option>Centro de Referência Clarice Lispector</option>
                       <option>Casa de Passagem</option>
+                      <option>Casa Abrigo Sempre Viva</option>
                       <option>Outro equipamento</option>
                     </select>
                   </div>
-                  <div class="col-12 col-sm-6 col-lg-4">
-                    <label for="dataAtendimento" class="form-label required">Data do atendimento</label>
-                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" placeholder="dd/mm/aaaa" required />
+                  <div class="col-12 col-md-3">
+                    <label for="dataAtendimento" class="form-label required">Data e hora do atendimento</label>
+                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" placeholder="AAAA-MM-DD HH:mm" required aria-describedby="dataAtendimentoHelp" />
+                    <div id="dataAtendimentoHelp" class="form-text">Preenchido automaticamente ao iniciar um novo registro.</div>
                   </div>
-                  <div class="col-12 col-sm-6 col-lg-4">
-                    <label for="horaAtendimento" class="form-label">Hora do atendimento</label>
-                    <input type="time" class="form-control" id="horaAtendimento" name="horaAtendimento" />
+                  <div class="col-12">
+                    <span class="form-label required d-block">Avaliação inicial</span>
+                    <div class="d-flex flex-wrap gap-3" role="group" aria-label="Avaliação inicial">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoRisco" value="Risco iminente" required />
+                        <label class="form-check-label" for="avaliacaoRisco">Risco iminente</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoAcompanhamento" value="Acompanhamento" required />
+                        <label class="form-check-label" for="avaliacaoAcompanhamento">Acompanhamento</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoOutra" value="Outra" required />
+                        <label class="form-check-label" for="avaliacaoOutra">Outra</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label">Atendimento</span>
+                    <div class="row g-2">
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input atendimento-check" type="checkbox" value="Doméstica/Familiar" id="atendimentoDomestica" name="atendimento[]" />
+                          <label class="form-check-label" for="atendimentoDomestica">Doméstica/Familiar</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input atendimento-check" type="checkbox" value="Sexista" id="atendimentoSexista" name="atendimento[]" />
+                          <label class="form-check-label" for="atendimentoSexista">Sexista</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input atendimento-check" type="checkbox" value="Acolhida/Orientação" id="atendimentoAcolhida" name="atendimento[]" />
+                          <label class="form-check-label" for="atendimentoAcolhida">Acolhida/Orientação</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input atendimento-check" type="checkbox" value="Outros Municípios" id="atendimentoOutros" name="atendimento[]" />
+                          <label class="form-check-label" for="atendimentoOutros">Outros Municípios</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <span class="form-label">Como soube do serviço</span>
+                    <div class="row g-2">
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="Parente" id="origemParente" name="origemServico[]" />
+                          <label class="form-check-label" for="origemParente">Parente</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="Campanhas" id="origemCampanhas" name="origemServico[]" />
+                          <label class="form-check-label" for="origemCampanhas">Campanhas</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="Amiga(o)" id="origemAmiga" name="origemServico[]" />
+                          <label class="form-check-label" for="origemAmiga">Amiga(o)</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="Outras(os)" id="origemOutras" name="origemServico[]" />
+                          <label class="form-check-label" for="origemOutras">Outras(os)</label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-12 col-md-6">
                     <label for="nomeUsuario" class="form-label required">Nome completo</label>
-                    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
+                    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" placeholder="Nome da usuária" required />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="nomeSocial" class="form-label">Nome social</label>
+                    <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" placeholder="Como prefere ser chamada" />
                   </div>
                   <div class="col-12 col-md-3">
                     <label for="cpfUsuario" class="form-label required">CPF</label>
                     <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" placeholder="000.000.000-00" required />
                   </div>
                   <div class="col-12 col-md-3">
+                    <label for="rgUsuario" class="form-label">RG</label>
+                    <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" placeholder="Documento de identidade" />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
+                    <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" placeholder="SSP" />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="ufExpedicao" class="form-label">UF de expedição</label>
+                    <select id="ufExpedicao" name="ufExpedicao" class="form-select">
+                      <option value="">Selecione</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-3">
                     <label for="dataNascimento" class="form-label required">Data de nascimento</label>
                     <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" placeholder="dd/mm/aaaa" required />
                   </div>
+                  <div class="col-12 col-md-3">
+                    <label for="idade" class="form-label">Idade</label>
+                    <input type="text" class="form-control" id="idade" name="idade" placeholder="Calculada automaticamente" readonly />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="nacionalidade" class="form-label">Nacionalidade</label>
+                    <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" placeholder="Brasileira" />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="estadoCivil" class="form-label">Estado civil</label>
+                    <select id="estadoCivil" name="estadoCivil" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Solteira</option>
+                      <option>Casada</option>
+                      <option>União estável</option>
+                      <option>Separada</option>
+                      <option>Divorciada</option>
+                      <option>Viúva</option>
+                    </select>
+                  </div>
                   <div class="col-12 col-md-6">
-                    <label for="endereco" class="form-label">Endereço</label>
-                    <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Rua, número, bairro" />
+                    <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
+                    <input type="text" class="form-control" id="conjuge" name="conjuge" placeholder="Nome do(a) companheiro(a)" />
                   </div>
-                  <div class="col-12 col-sm-6 col-md-3">
-                    <label for="cep" class="form-label">CEP</label>
-                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" />
+                  <div class="col-12 col-md-6">
+                    <label for="identidadeGenero" class="form-label">Identidade de gênero</label>
+                    <select id="identidadeGenero" name="identidadeGenero" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Mulher cisgênero</option>
+                      <option>Mulher trans</option>
+                      <option>Travesti</option>
+                      <option>Não-binária</option>
+                      <option>Outra</option>
+                      <option>Prefere não informar</option>
+                    </select>
                   </div>
-                  <div class="col-12 col-sm-6 col-md-3">
+                  <div class="col-12 col-md-6">
+                    <label for="orientacaoSexual" class="form-label">Orientação sexual</label>
+                    <select id="orientacaoSexual" name="orientacaoSexual" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Heterossexual</option>
+                      <option>Lésbica</option>
+                      <option>Bissexual</option>
+                      <option>Assexual</option>
+                      <option>Outra</option>
+                      <option>Prefere não informar</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="corRaca" class="form-label">Cor/raça</label>
+                    <select id="corRaca" name="corRaca" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Branca</option>
+                      <option>Preta</option>
+                      <option>Parda</option>
+                      <option>Amarela</option>
+                      <option>Indígena</option>
+                      <option>Prefere não informar</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="religiao" class="form-label">Religião</label>
+                    <input type="text" class="form-control" id="religiao" name="religiao" placeholder="Religião/credo" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="nomeMae" class="form-label">Nome da mãe</label>
+                    <input type="text" class="form-control" id="nomeMae" name="nomeMae" placeholder="Nome completo" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="nomePai" class="form-label">Nome do pai</label>
+                    <input type="text" class="form-control" id="nomePai" name="nomePai" placeholder="Nome completo" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="cep" class="form-label required">CEP</label>
+                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" required aria-describedby="cepHelp" />
+                    <div id="cepHelp" class="form-text">O CEP preenche logradouro, bairro, cidade e UF automaticamente.</div>
+                  </div>
+                  <div class="col-12 col-md-8">
+                    <label for="logradouro" class="form-label required">Logradouro</label>
+                    <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Rua, avenida, travessa" required />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="numeroEndereco" class="form-label">Número</label>
+                    <input type="text" class="form-control" id="numeroEndereco" name="numeroEndereco" placeholder="000" />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="complementoEndereco" class="form-label">Complemento</label>
+                    <input type="text" class="form-control" id="complementoEndereco" name="complementoEndereco" placeholder="Apto, bloco" />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="bairro" class="form-label required">Bairro</label>
+                    <input type="text" class="form-control" id="bairro" name="bairro" required />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="rpa" class="form-label">RPA</label>
+                    <input type="text" class="form-control" id="rpa" name="rpa" placeholder="Ex.: RPA 1" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="cidade" class="form-label required">Cidade</label>
+                    <input type="text" class="form-control" id="cidade" name="cidade" required />
+                  </div>
+                  <div class="col-12 col-md-2">
+                    <label for="uf" class="form-label required">UF</label>
+                    <select id="uf" name="uf" class="form-select" required>
+                      <option value="">UF</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="pontoReferencia" class="form-label">Ponto de referência</label>
+                    <input type="text" class="form-control" id="pontoReferencia" name="pontoReferencia" placeholder="Próximo a..." />
+                  </div>
+                  <div class="col-12 col-md-6">
                     <label for="telefone" class="form-label">Telefone principal</label>
                     <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000" />
                   </div>
-                  <div class="col-12">
-                    <label for="responsavelRegistro" class="form-label required">Responsável pelo registro</label>
-                    <input type="text" class="form-control" id="responsavelRegistro" name="responsavelRegistro" required />
+                  <div class="col-12 col-md-6">
+                    <label for="telefoneSecundario" class="form-label">Telefone alternativo</label>
+                    <input type="text" class="form-control" id="telefoneSecundario" name="telefoneSecundario" placeholder="(00) 00000-0000" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="nome@email.com" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="emailConfirmacao" class="form-label">Confirmação de e-mail</label>
+                    <input type="email" class="form-control" id="emailConfirmacao" name="emailConfirmacao" placeholder="Repita o e-mail" aria-describedby="emailConfirmacaoHelp" />
+                    <div id="emailConfirmacaoHelp" class="form-text">Informe o mesmo endereço para confirmação.</div>
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="ufNascimento" class="form-label">UF de nascimento</label>
+                    <select id="ufNascimento" name="ufNascimento" class="form-select" aria-describedby="ufNascimentoHelp">
+                      <option value="">Selecione</option>
+                    </select>
+                    <div id="ufNascimentoHelp" class="form-text">Ao selecionar a UF, escolha a cidade correspondente.</div>
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
+                    <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
+                      <option value="">Selecione a UF primeiro</option>
+                    </select>
                   </div>
                 </div>
               </section>
@@ -762,22 +986,85 @@
                     </select>
                   </div>
                   <div class="col-12 col-md-6">
-                    <label for="profissao" class="form-label">Profissão/Ocupação</label>
-                    <input type="text" class="form-control" id="profissao" name="profissao" />
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label for="situacaoTrabalho" class="form-label">Situação de trabalho</label>
-                    <select id="situacaoTrabalho" name="situacaoTrabalho" class="form-select">
+                    <label for="situacaoOcupacional" class="form-label">Situação ocupacional</label>
+                    <select id="situacaoOcupacional" name="situacaoOcupacional" class="form-select">
                       <option value="">Selecione</option>
-                      <option>Trabalhando</option>
+                      <option>Empregada com carteira</option>
+                      <option>Empregada informal</option>
+                      <option>Autônoma</option>
+                      <option>Estudante</option>
+                      <option>Dona de casa/cuidadora</option>
                       <option>Desempregada</option>
-                      <option>Trabalhadora informal</option>
-                      <option>Dona de casa</option>
+                      <option>Aposentada/Pensionista</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <span class="form-label d-block">Interesse em capacitação profissional</span>
+                    <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-label="Interesse em capacitação profissional">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="interesseCapacitacao" id="capacitacaoSim" value="Sim" />
+                        <label class="form-check-label" for="capacitacaoSim">Sim</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="interesseCapacitacao" id="capacitacaoNao" value="Não" />
+                        <label class="form-check-label" for="capacitacaoNao">Não</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 d-none" id="cursosWrapper">
+                    <label for="cursoCapacitacao" class="form-label required">Curso de interesse</label>
+                    <div class="d-flex flex-column gap-2">
+                      <input type="text" class="form-control" id="cursoCapacitacao" name="cursos[]" placeholder="Ex.: Informática básica" />
+                      <div id="cursosExtras" class="d-flex flex-column gap-2"></div>
+                      <button type="button" class="btn btn-sm btn-outline-primary align-self-start" id="adicionarCurso" aria-describedby="cursoHelp">
+                        <i class="bi bi-plus-circle me-1"></i>Adicionar outro
+                      </button>
+                      <div id="cursoHelp" class="form-text">É possível cadastrar até três cursos de interesse.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row g-3 mt-1 d-none" id="detalhesProfissionais">
+                  <div class="col-12 col-md-6">
+                    <label for="situacaoEscolar" class="form-label">Situação escolar</label>
+                    <select id="situacaoEscolar" name="situacaoEscolar" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Concluído</option>
+                      <option>Em andamento</option>
+                      <option>Interrompido</option>
                     </select>
                   </div>
                   <div class="col-12 col-md-6">
-                    <label for="renda" class="form-label">Renda mensal aproximada</label>
-                    <input type="number" class="form-control" id="renda" name="renda" min="0" step="0.01" placeholder="0,00" />
+                    <label for="tipoPosGraduacao" class="form-label">Tipo de pós-graduação</label>
+                    <select id="tipoPosGraduacao" name="tipoPosGraduacao" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Especialização</option>
+                      <option>Mestrado</option>
+                      <option>Doutorado</option>
+                      <option>Outra</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="anoPeriodo" class="form-label">Ano/período</label>
+                    <input type="text" class="form-control" id="anoPeriodo" name="anoPeriodo" placeholder="Ex.: 3º período" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="profissao" class="form-label">Ocupação/profissão</label>
+                    <input type="text" class="form-control" id="profissao" name="profissao" placeholder="Profissão atual" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="situacaoTrabalho" class="form-label">Situação trabalhista</label>
+                    <select id="situacaoTrabalho" name="situacaoTrabalho" class="form-select">
+                      <option value="">Selecione</option>
+                      <option>Com carteira assinada</option>
+                      <option>Autônoma</option>
+                      <option>Microempreendedora</option>
+                      <option>Desempregada</option>
+                      <option>Trabalho doméstico</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label for="rendaIndividual" class="form-label">Renda individual</label>
+                    <input type="text" class="form-control" id="rendaIndividual" name="rendaIndividual" placeholder="R$ 0,00" />
                   </div>
                 </div>
               </section>
@@ -785,6 +1072,17 @@
               <section class="card-section mb-4" aria-labelledby="caracterizacao-violencia">
                 <h2 class="form-section-title" id="caracterizacao-violencia"><i class="bi bi-exclamation-triangle"></i>Caracterização da violência</h2>
                 <div class="row g-3">
+                  <div class="col-12 col-md-4">
+                    <label for="tipoViolencia" class="form-label required">Tipo de violência</label>
+                    <select id="tipoViolencia" name="tipoViolencia" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option>Violência física</option>
+                      <option>Violência psicológica</option>
+                      <option>Violência sexual</option>
+                      <option>Violência moral</option>
+                      <option>Violência patrimonial</option>
+                    </select>
+                  </div>
                   <div class="col-12 col-md-4">
                     <label for="localViolencia" class="form-label required">Local principal</label>
                     <input type="text" class="form-control" id="localViolencia" name="localViolencia" required />
@@ -805,6 +1103,11 @@
                   <div class="col-12">
                     <label for="relato" class="form-label">Relato resumido</label>
                     <textarea id="relato" name="relato" class="form-control" rows="3" placeholder="Descreva a situação de violência..."></textarea>
+                  </div>
+                  <div class="col-12">
+                    <div class="alert alert-info d-none" id="encaminhamentosAlert" role="status">
+                      <strong>Encaminhamentos prioritários:</strong> orientar acolhida imediata, registrar encaminhamento para rede municipal e comunicar município de origem quando aplicável.
+                    </div>
                   </div>
                 </div>
               </section>
@@ -1014,10 +1317,235 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // Update charts
+        const tabTriggerList = [].slice.call(document.querySelectorAll('#portalTabs button[data-bs-toggle="tab"]'));
+        tabTriggerList.forEach((tabTriggerEl) => {
+          tabTriggerEl.addEventListener('shown.bs.tab', (event) => {
+            event.target.classList.add('active');
+            if (event.target.id === 'form-tab') {
+              setCurrentDateTime();
+            }
+          });
+        });
+
         const updateLabel = document.getElementById('chartUpdate');
         if (updateLabel && window.dayjs) {
-          updateLabel.textContent = dayjs().format('DD/MM/YYYY');
+          updateLabel.textContent = dayjs().format('DD/MM/YYYY HH:mm');
+        }
+
+        const estados = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
+        const citiesByState = {
+          PE: ['Recife', 'Olinda', 'Caruaru', 'Jaboatão dos Guararapes', 'Petrolina'],
+          PB: ['João Pessoa', 'Campina Grande', 'Patos', 'Sousa'],
+          AL: ['Maceió', 'Arapiraca', 'Palmeira dos Índios'],
+          CE: ['Fortaleza', 'Juazeiro do Norte', 'Sobral'],
+          BA: ['Salvador', 'Feira de Santana', 'Vitória da Conquista'],
+          SP: ['São Paulo', 'Campinas', 'Santos'],
+          RJ: ['Rio de Janeiro', 'Niterói', 'Campos dos Goytacazes'],
+        };
+
+        const ufSelects = ['uf', 'ufNascimento', 'ufExpedicao']
+          .map((id) => document.getElementById(id))
+          .filter(Boolean);
+        ufSelects.forEach((select) => {
+          estados.forEach((estado) => {
+            const option = document.createElement('option');
+            option.value = estado;
+            option.textContent = estado;
+            select.appendChild(option);
+          });
+        });
+
+        const cidadeNascimentoSelect = document.getElementById('cidadeNascimento');
+        const ufNascimentoSelect = document.getElementById('ufNascimento');
+        if (ufNascimentoSelect && cidadeNascimentoSelect) {
+          ufNascimentoSelect.addEventListener('change', (event) => {
+            const ufSelecionada = event.target.value;
+            cidadeNascimentoSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = ufSelecionada ? 'Selecione' : 'Selecione a UF primeiro';
+            cidadeNascimentoSelect.appendChild(placeholder);
+            if (citiesByState[ufSelecionada]) {
+              citiesByState[ufSelecionada].forEach((cidade) => {
+                const option = document.createElement('option');
+                option.value = cidade;
+                option.textContent = cidade;
+                cidadeNascimentoSelect.appendChild(option);
+              });
+            }
+          });
+        }
+
+        const dataNascimentoInput = document.getElementById('dataNascimento');
+        const idadeInput = document.getElementById('idade');
+        const calcularIdade = () => {
+          if (!dataNascimentoInput || !idadeInput) return;
+          const valor = dataNascimentoInput.value.trim();
+          if (!valor || valor.length < 8) {
+            idadeInput.value = '';
+            return;
+          }
+          const partes = valor.split('/');
+          if (partes.length !== 3) {
+            idadeInput.value = '';
+            return;
+          }
+          const [dia, mes, ano] = partes;
+          const iso = `${ano}-${mes}-${dia}`;
+          const dataNasc = dayjs(iso);
+          if (!dataNasc.isValid()) {
+            idadeInput.value = '';
+            return;
+          }
+          const idade = dayjs().diff(dataNasc, 'year');
+          idadeInput.value = Number.isFinite(idade) ? `${idade} anos` : '';
+        };
+        if (dataNascimentoInput) {
+          dataNascimentoInput.addEventListener('input', calcularIdade);
+          dataNascimentoInput.addEventListener('change', calcularIdade);
+          dataNascimentoInput.addEventListener('blur', calcularIdade);
+        }
+
+        const cepInput = document.getElementById('cep');
+        const logradouroInput = document.getElementById('logradouro');
+        const bairroInput = document.getElementById('bairro');
+        const cidadeInput = document.getElementById('cidade');
+        const ufInput = document.getElementById('uf');
+        const cepHelp = document.getElementById('cepHelp');
+        const limparEndereco = () => {
+          if (logradouroInput) logradouroInput.value = '';
+          if (bairroInput) bairroInput.value = '';
+          if (cidadeInput) cidadeInput.value = '';
+          if (ufInput) ufInput.value = '';
+        };
+        if (cepInput) {
+          cepInput.addEventListener('blur', async () => {
+            const cepNumeros = cepInput.value.replace(/\D/g, '');
+            if (cepNumeros.length !== 8) {
+              if (cepHelp) {
+                cepHelp.textContent = 'Digite um CEP válido com 8 dígitos.';
+              }
+              limparEndereco();
+              return;
+            }
+            if (cepHelp) {
+              cepHelp.textContent = 'Consultando CEP na Brasil API...';
+            }
+            try {
+              const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cepNumeros}`);
+              if (!response.ok) {
+                throw new Error('CEP não encontrado');
+              }
+              const data = await response.json();
+              if (logradouroInput) logradouroInput.value = data.street || '';
+              if (bairroInput) bairroInput.value = data.neighborhood || '';
+              if (cidadeInput) cidadeInput.value = data.city || '';
+              if (ufInput) ufInput.value = data.state || '';
+              if (cepHelp) {
+                cepHelp.textContent = 'O CEP preenche logradouro, bairro, cidade e UF automaticamente.';
+              }
+            } catch (error) {
+              limparEndereco();
+              if (cepHelp) {
+                cepHelp.textContent = 'Não foi possível localizar o CEP. Preencha os dados manualmente.';
+              }
+            }
+          });
+        }
+
+        const atendimentoChecks = document.querySelectorAll('.atendimento-check');
+        const encaminhamentosAlert = document.getElementById('encaminhamentosAlert');
+        const atualizarEncaminhamentos = () => {
+          if (!encaminhamentosAlert) return;
+          const deveExibir = Array.from(atendimentoChecks).some((check) =>
+            check.checked && (check.value === 'Acolhida/Orientação' || check.value === 'Outros Municípios')
+          );
+          encaminhamentosAlert.classList.toggle('d-none', !deveExibir);
+        };
+        atendimentoChecks.forEach((check) => {
+          check.addEventListener('change', atualizarEncaminhamentos);
+        });
+
+        const escolaridadeSelect = document.getElementById('escolaridade');
+        const situacaoOcupacionalSelect = document.getElementById('situacaoOcupacional');
+        const detalhesProfissionais = document.getElementById('detalhesProfissionais');
+        const situacaoTrabalhoSelect = document.getElementById('situacaoTrabalho');
+        const toggleDetalhes = () => {
+          if (!detalhesProfissionais) return;
+          const mostrar =
+            (escolaridadeSelect && escolaridadeSelect.value !== '') ||
+            (situacaoOcupacionalSelect && situacaoOcupacionalSelect.value !== '') ||
+            (situacaoTrabalhoSelect && situacaoTrabalhoSelect.value !== '');
+          detalhesProfissionais.classList.toggle('d-none', !mostrar);
+        };
+        if (escolaridadeSelect) {
+          escolaridadeSelect.addEventListener('change', toggleDetalhes);
+        }
+        if (situacaoOcupacionalSelect) {
+          situacaoOcupacionalSelect.addEventListener('change', toggleDetalhes);
+        }
+        if (situacaoTrabalhoSelect) {
+          situacaoTrabalhoSelect.addEventListener('change', toggleDetalhes);
+        }
+
+        const cursosWrapper = document.getElementById('cursosWrapper');
+        const adicionarCursoBtn = document.getElementById('adicionarCurso');
+        const cursosExtras = document.getElementById('cursosExtras');
+        const cursoCapacitacao = document.getElementById('cursoCapacitacao');
+        let cursosAdicionados = 1;
+        const atualizarWrapperCursos = (mostrar) => {
+          if (!cursosWrapper) return;
+          cursosWrapper.classList.toggle('d-none', !mostrar);
+          if (!mostrar) {
+            cursosAdicionados = 1;
+            if (cursoCapacitacao) {
+              cursoCapacitacao.value = '';
+            }
+            if (cursosExtras) {
+              cursosExtras.innerHTML = '';
+            }
+            if (adicionarCursoBtn) {
+              adicionarCursoBtn.disabled = false;
+            }
+          }
+        };
+        const interesseRadios = document.querySelectorAll('input[name="interesseCapacitacao"]');
+        interesseRadios.forEach((radio) => {
+          radio.addEventListener('change', () => {
+            atualizarWrapperCursos(radio.value === 'Sim');
+          });
+        });
+        if (adicionarCursoBtn && cursosExtras) {
+          adicionarCursoBtn.addEventListener('click', () => {
+            if (cursosAdicionados >= 3) {
+              adicionarCursoBtn.disabled = true;
+              return;
+            }
+            cursosAdicionados += 1;
+            const novoInput = document.createElement('input');
+            novoInput.type = 'text';
+            novoInput.className = 'form-control';
+            novoInput.name = 'cursos[]';
+            novoInput.placeholder = `Outro curso (${cursosAdicionados}º)`;
+            cursosExtras.appendChild(novoInput);
+            if (cursosAdicionados >= 3) {
+              adicionarCursoBtn.disabled = true;
+            }
+          });
+        }
+
+        const dataAtendimentoInput = document.getElementById('dataAtendimento');
+        const setCurrentDateTime = () => {
+          if (!dataAtendimentoInput) return;
+          const agora = new Date();
+          const pad = (num) => String(num).padStart(2, '0');
+          const valor = `${agora.getFullYear()}-${pad(agora.getMonth() + 1)}-${pad(agora.getDate())} ${pad(agora.getHours())}:${pad(agora.getMinutes())}`;
+          dataAtendimentoInput.value = valor;
+        };
+
+        const tabFormTrigger = document.getElementById('form-tab');
+        if (tabFormTrigger) {
+          tabFormTrigger.addEventListener('shown.bs.tab', setCurrentDateTime);
         }
 
         if (window.Chart) {
@@ -1080,12 +1608,11 @@
           }
         }
 
-        // Masks
         const maskConfig = [
           { selector: '#cpfUsuario', mask: '000.000.000-00' },
           { selector: '#cep', mask: '00000-000' },
           { selector: '#telefone', mask: '(00) 00000-0000' },
-          { selector: '#dataAtendimento', mask: '00/00/0000' },
+          { selector: '#telefoneSecundario', mask: '(00) 00000-0000' },
           { selector: '#dataNascimento', mask: '00/00/0000' },
           { selector: '#dataOcorrencia', mask: '00/00/0000' },
         ];
@@ -1097,13 +1624,24 @@
           }
         });
 
-        // Tooltips
+        const rendaField = document.getElementById('rendaIndividual');
+        if (rendaField && window.IMask) {
+          IMask(rendaField, {
+            mask: Number,
+            scale: 2,
+            thousandsSeparator: '.',
+            padFractionalZeros: true,
+            radix: ',',
+            mapToRadix: ['.'],
+            min: 0,
+          });
+        }
+
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.forEach((tooltipTriggerEl) => {
           new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
-        // Validation
         if (window.JustValidate) {
           const validator = new JustValidate('#registroForm', {
             errorFieldCssClass: 'is-invalid',
@@ -1115,15 +1653,47 @@
           });
 
           validator
+            .addField('#numeroProntuario', [{ rule: 'required', errorMessage: 'Informe o número do prontuário.' }])
             .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
             .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
             .addField('#nomeUsuario', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
             .addField('#cpfUsuario', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
             .addField('#dataNascimento', [{ rule: 'required', errorMessage: 'Informe a data de nascimento.' }])
-            .addField('#responsavelRegistro', [{ rule: 'required', errorMessage: 'Informe o responsável pelo registro.' }])
+            .addField('#cep', [{ rule: 'required', errorMessage: 'Informe o CEP.' }])
+            .addField('#logradouro', [{ rule: 'required', errorMessage: 'Informe o logradouro.' }])
+            .addField('#bairro', [{ rule: 'required', errorMessage: 'Informe o bairro.' }])
+            .addField('#cidade', [{ rule: 'required', errorMessage: 'Informe a cidade.' }])
+            .addField('#uf', [{ rule: 'required', errorMessage: 'Informe a UF.' }])
             .addField('#escolaridade', [{ rule: 'required', errorMessage: 'Informe a escolaridade.' }])
+            .addField('#tipoViolencia', [{ rule: 'required', errorMessage: 'Selecione o tipo de violência.' }])
             .addField('#localViolencia', [{ rule: 'required', errorMessage: 'Informe o local da violência.' }])
             .addField('#relacaoAutor', [{ rule: 'required', errorMessage: 'Informe a relação com o autor.' }])
+            .addRequiredGroup('input[name="avaliacaoInicial"]', 'Selecione a avaliação inicial.')
+            .addField('#emailConfirmacao', [
+              {
+                rule: 'function',
+                errorMessage: 'O e-mail deve coincidir.',
+                validator: () => {
+                  const emailField = document.getElementById('email');
+                  const confirmField = document.getElementById('emailConfirmacao');
+                  if (!emailField || !confirmField) return true;
+                  if (!emailField.value && !confirmField.value) return true;
+                  return emailField.value === confirmField.value;
+                },
+              },
+            ])
+            .addField('#cursoCapacitacao', [
+              {
+                rule: 'function',
+                errorMessage: 'Informe ao menos um curso.',
+                validator: () => {
+                  if (!cursosWrapper || cursosWrapper.classList.contains('d-none')) {
+                    return true;
+                  }
+                  return !!cursoCapacitacao && cursoCapacitacao.value.trim().length > 0;
+                },
+              },
+            ])
             .onSuccess((event) => {
               event.preventDefault();
               const form = event.target;
@@ -1151,13 +1721,24 @@
               form.reset();
               const invalidEls = form.querySelectorAll('.is-invalid');
               invalidEls.forEach((el) => el.classList.remove('is-invalid'));
+              atualizarWrapperCursos(false);
+              toggleDetalhes();
+              atualizarEncaminhamentos();
+              if (cidadeNascimentoSelect) {
+                cidadeNascimentoSelect.innerHTML = '';
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Selecione a UF primeiro';
+                cidadeNascimentoSelect.appendChild(option);
+              }
+              setCurrentDateTime();
             });
         }
 
-        // Shortcut button to open form tab
         const openFormBtn = document.getElementById('openFormBtn');
         if (openFormBtn) {
           openFormBtn.addEventListener('click', () => {
+            setCurrentDateTime();
             const formTabTrigger = document.querySelector('#form-tab');
             if (formTabTrigger) {
               const tab = new bootstrap.Tab(formTabTrigger);
@@ -1166,6 +1747,8 @@
             }
           });
         }
+
+        setCurrentDateTime();
       });
     </script>
   </body>
