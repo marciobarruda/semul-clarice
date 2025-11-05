@@ -188,6 +188,22 @@
         margin-top: 1.5rem;
       }
 
+      .subsection-card {
+        border: 1px dashed rgba(0, 83, 164, 0.25);
+        border-radius: 0.85rem;
+        background: rgba(0, 83, 164, 0.04);
+        padding: 1.25rem;
+      }
+
+      .subsection-heading {
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--brand-primary);
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+      }
+
       .section-header {
         border-bottom: 1px solid var(--border-color);
         padding-bottom: 0.75rem;
@@ -840,6 +856,19 @@
                     <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" placeholder="Brasileira" />
                   </div>
                   <div class="col-12 col-md-3">
+                    <label for="ufNascimento" class="form-label">UF de nascimento</label>
+                    <select id="ufNascimento" name="ufNascimento" class="form-select" aria-describedby="ufNascimentoHelp">
+                      <option value="">Selecione</option>
+                    </select>
+                    <div id="ufNascimentoHelp" class="form-text">Ao selecionar a UF, escolha a cidade correspondente.</div>
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
+                    <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
+                      <option value="">Selecione a UF primeiro</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-md-3">
                     <label for="estadoCivil" class="form-label">Estado civil</label>
                     <select id="estadoCivil" name="estadoCivil" class="form-select">
                       <option value="">Selecione</option>
@@ -895,14 +924,24 @@
                     <label for="religiao" class="form-label">Religião</label>
                     <input type="text" class="form-control" id="religiao" name="religiao" placeholder="Religião/credo" />
                   </div>
-                  <div class="col-12 col-md-6">
-                    <label for="nomeMae" class="form-label">Nome da mãe</label>
-                    <input type="text" class="form-control" id="nomeMae" name="nomeMae" placeholder="Nome completo" />
+                  <div class="col-12">
+                    <div class="row g-3 align-items-end">
+                      <div class="col-12 col-md-6">
+                        <label for="nomeMae" class="form-label">Nome da mãe</label>
+                        <input type="text" class="form-control" id="nomeMae" name="nomeMae" placeholder="Nome completo" />
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="nomePai" class="form-label">Nome do pai</label>
+                        <input type="text" class="form-control" id="nomePai" name="nomePai" placeholder="Nome completo" />
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-6">
-                    <label for="nomePai" class="form-label">Nome do pai</label>
-                    <input type="text" class="form-control" id="nomePai" name="nomePai" placeholder="Nome completo" />
-                  </div>
+                </div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="dados-endereco">
+                <h2 class="form-section-title" id="dados-endereco"><i class="bi bi-geo-alt"></i>Dados de endereço e contatos</h2>
+                <div class="row g-3">
                   <div class="col-12 col-md-4">
                     <label for="cep" class="form-label required">CEP</label>
                     <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" required aria-describedby="cepHelp" />
@@ -959,116 +998,119 @@
                     <input type="email" class="form-control" id="emailConfirmacao" name="emailConfirmacao" placeholder="Repita o e-mail" aria-describedby="emailConfirmacaoHelp" />
                     <div id="emailConfirmacaoHelp" class="form-text">Informe o mesmo endereço para confirmação.</div>
                   </div>
-                  <div class="col-12 col-md-3">
-                    <label for="ufNascimento" class="form-label">UF de nascimento</label>
-                    <select id="ufNascimento" name="ufNascimento" class="form-select" aria-describedby="ufNascimentoHelp">
-                      <option value="">Selecione</option>
-                    </select>
-                    <div id="ufNascimentoHelp" class="form-text">Ao selecionar a UF, escolha a cidade correspondente.</div>
-                  </div>
-                  <div class="col-12 col-md-3">
-                    <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
-                    <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
-                      <option value="">Selecione a UF primeiro</option>
-                    </select>
-                  </div>
                 </div>
               </section>
 
               <section class="card-section mb-4" aria-labelledby="dados-escolaridade">
                 <h2 class="form-section-title" id="dados-escolaridade"><i class="bi bi-mortarboard"></i>Dados de escolaridade e profissionais</h2>
-                <div class="row g-3">
-                  <div class="col-12 col-md-6">
-                    <label for="escolaridade" class="form-label required">Escolaridade</label>
-                    <select id="escolaridade" name="escolaridade" class="form-select" required>
-                      <option value="">Selecione</option>
-                      <option>Sem instrução</option>
-                      <option>Ensino fundamental</option>
-                      <option>Ensino médio</option>
-                      <option>Ensino superior</option>
-                      <option>Pós-graduação</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label for="situacaoOcupacional" class="form-label">Situação ocupacional</label>
-                    <select id="situacaoOcupacional" name="situacaoOcupacional" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Empregada com carteira</option>
-                      <option>Empregada informal</option>
-                      <option>Autônoma</option>
-                      <option>Estudante</option>
-                      <option>Dona de casa/cuidadora</option>
-                      <option>Desempregada</option>
-                      <option>Aposentada/Pensionista</option>
-                    </select>
-                  </div>
-                  <div class="col-12">
-                    <span class="form-label d-block">Interesse em capacitação profissional</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-label="Interesse em capacitação profissional">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="interesseCapacitacao" id="capacitacaoSim" value="Sim" />
-                        <label class="form-check-label" for="capacitacaoSim">Sim</label>
+                <div class="row g-4">
+                  <div class="col-12 col-xl-6">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-heading">Escolarização</h3>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <label for="escolaridade" class="form-label required">Escolaridade</label>
+                          <select id="escolaridade" name="escolaridade" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option>Sem instrução</option>
+                            <option>Ensino fundamental</option>
+                            <option>Ensino médio</option>
+                            <option>Ensino superior</option>
+                            <option>Pós-graduação</option>
+                          </select>
+                        </div>
                       </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="interesseCapacitacao" id="capacitacaoNao" value="Não" />
-                        <label class="form-check-label" for="capacitacaoNao">Não</label>
+                      <div class="row g-3 mt-1 d-none" id="detalhesEscolares">
+                        <div class="col-12 col-md-6">
+                          <label for="situacaoEscolar" class="form-label">Situação escolar</label>
+                          <select id="situacaoEscolar" name="situacaoEscolar" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Concluído</option>
+                            <option>Em andamento</option>
+                            <option>Interrompido</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="tipoPosGraduacao" class="form-label">Tipo de pós-graduação</label>
+                          <select id="tipoPosGraduacao" name="tipoPosGraduacao" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Especialização</option>
+                            <option>Mestrado</option>
+                            <option>Doutorado</option>
+                            <option>Outra</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="anoPeriodo" class="form-label">Ano/período</label>
+                          <input type="text" class="form-control" id="anoPeriodo" name="anoPeriodo" placeholder="Ex.: 3º período" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 d-none" id="cursosWrapper">
-                    <label for="cursoCapacitacao" class="form-label required">Curso de interesse</label>
-                    <div class="d-flex flex-column gap-2">
-                      <input type="text" class="form-control" id="cursoCapacitacao" name="cursos[]" placeholder="Ex.: Informática básica" />
-                      <div id="cursosExtras" class="d-flex flex-column gap-2"></div>
-                      <button type="button" class="btn btn-sm btn-outline-primary align-self-start" id="adicionarCurso" aria-describedby="cursoHelp">
-                        <i class="bi bi-plus-circle me-1"></i>Adicionar outro
-                      </button>
-                      <div id="cursoHelp" class="form-text">É possível cadastrar até três cursos de interesse.</div>
+                  <div class="col-12 col-xl-6">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-heading">Trabalho e renda</h3>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <label for="situacaoOcupacional" class="form-label">Situação ocupacional</label>
+                          <select id="situacaoOcupacional" name="situacaoOcupacional" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Empregada com carteira</option>
+                            <option>Empregada informal</option>
+                            <option>Autônoma</option>
+                            <option>Estudante</option>
+                            <option>Dona de casa/cuidadora</option>
+                            <option>Desempregada</option>
+                            <option>Aposentada/Pensionista</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-1 d-none" id="detalhesTrabalho">
+                        <div class="col-12 col-md-6">
+                          <label for="profissao" class="form-label">Ocupação/profissão</label>
+                          <input type="text" class="form-control" id="profissao" name="profissao" placeholder="Profissão atual" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="situacaoTrabalho" class="form-label">Situação trabalhista</label>
+                          <select id="situacaoTrabalho" name="situacaoTrabalho" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Com carteira assinada</option>
+                            <option>Autônoma</option>
+                            <option>Microempreendedora</option>
+                            <option>Desempregada</option>
+                            <option>Trabalho doméstico</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="rendaIndividual" class="form-label">Renda individual</label>
+                          <input type="text" class="form-control" id="rendaIndividual" name="rendaIndividual" placeholder="R$ 0,00" />
+                        </div>
+                      </div>
+                      <div class="mt-3">
+                        <span class="form-label d-block">Interesse em capacitação profissional</span>
+                        <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-label="Interesse em capacitação profissional">
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="interesseCapacitacao" id="capacitacaoSim" value="Sim" />
+                            <label class="form-check-label" for="capacitacaoSim">Sim</label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="interesseCapacitacao" id="capacitacaoNao" value="Não" />
+                            <label class="form-check-label" for="capacitacaoNao">Não</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mt-3 d-none" id="cursosWrapper">
+                        <label for="cursoCapacitacao" class="form-label required">Curso de interesse</label>
+                        <div class="d-flex flex-column gap-2">
+                          <input type="text" class="form-control" id="cursoCapacitacao" name="cursos[]" placeholder="Ex.: Informática básica" />
+                          <div id="cursosExtras" class="d-flex flex-column gap-2"></div>
+                          <button type="button" class="btn btn-sm btn-outline-primary align-self-start" id="adicionarCurso" aria-describedby="cursoHelp">
+                            <i class="bi bi-plus-circle me-1"></i>Adicionar outro
+                          </button>
+                          <div id="cursoHelp" class="form-text">É possível cadastrar até três cursos de interesse.</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="row g-3 mt-1 d-none" id="detalhesProfissionais">
-                  <div class="col-12 col-md-6">
-                    <label for="situacaoEscolar" class="form-label">Situação escolar</label>
-                    <select id="situacaoEscolar" name="situacaoEscolar" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Concluído</option>
-                      <option>Em andamento</option>
-                      <option>Interrompido</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label for="tipoPosGraduacao" class="form-label">Tipo de pós-graduação</label>
-                    <select id="tipoPosGraduacao" name="tipoPosGraduacao" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Especialização</option>
-                      <option>Mestrado</option>
-                      <option>Doutorado</option>
-                      <option>Outra</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <label for="anoPeriodo" class="form-label">Ano/período</label>
-                    <input type="text" class="form-control" id="anoPeriodo" name="anoPeriodo" placeholder="Ex.: 3º período" />
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <label for="profissao" class="form-label">Ocupação/profissão</label>
-                    <input type="text" class="form-control" id="profissao" name="profissao" placeholder="Profissão atual" />
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <label for="situacaoTrabalho" class="form-label">Situação trabalhista</label>
-                    <select id="situacaoTrabalho" name="situacaoTrabalho" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Com carteira assinada</option>
-                      <option>Autônoma</option>
-                      <option>Microempreendedora</option>
-                      <option>Desempregada</option>
-                      <option>Trabalho doméstico</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <label for="rendaIndividual" class="form-label">Renda individual</label>
-                    <input type="text" class="form-control" id="rendaIndividual" name="rendaIndividual" placeholder="R$ 0,00" />
                   </div>
                 </div>
               </section>
@@ -1472,15 +1514,20 @@
 
         const escolaridadeSelect = document.getElementById('escolaridade');
         const situacaoOcupacionalSelect = document.getElementById('situacaoOcupacional');
-        const detalhesProfissionais = document.getElementById('detalhesProfissionais');
+        const detalhesEscolares = document.getElementById('detalhesEscolares');
+        const detalhesTrabalho = document.getElementById('detalhesTrabalho');
         const situacaoTrabalhoSelect = document.getElementById('situacaoTrabalho');
         const toggleDetalhes = () => {
-          if (!detalhesProfissionais) return;
-          const mostrar =
-            (escolaridadeSelect && escolaridadeSelect.value !== '') ||
+          const mostrarEscolares = escolaridadeSelect && escolaridadeSelect.value !== '';
+          if (detalhesEscolares) {
+            detalhesEscolares.classList.toggle('d-none', !mostrarEscolares);
+          }
+          const mostrarTrabalho =
             (situacaoOcupacionalSelect && situacaoOcupacionalSelect.value !== '') ||
             (situacaoTrabalhoSelect && situacaoTrabalhoSelect.value !== '');
-          detalhesProfissionais.classList.toggle('d-none', !mostrar);
+          if (detalhesTrabalho) {
+            detalhesTrabalho.classList.toggle('d-none', !mostrarTrabalho);
+          }
         };
         if (escolaridadeSelect) {
           escolaridadeSelect.addEventListener('change', toggleDetalhes);
@@ -1491,6 +1538,7 @@
         if (situacaoTrabalhoSelect) {
           situacaoTrabalhoSelect.addEventListener('change', toggleDetalhes);
         }
+        toggleDetalhes();
 
         const cursosWrapper = document.getElementById('cursosWrapper');
         const adicionarCursoBtn = document.getElementById('adicionarCurso');
