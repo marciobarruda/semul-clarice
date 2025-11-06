@@ -192,6 +192,13 @@
         margin-top: 1.5rem;
       }
 
+      #registroFieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        min-width: auto;
+      }
+
       .field-cpf,
       .nome-completo-field,
       .nome-social-field {
@@ -659,12 +666,6 @@
                 Prontuários
               </button>
             </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="form-tab" data-bs-toggle="tab" data-bs-target="#formulario" type="button" role="tab" aria-controls="formulario" aria-selected="false">
-                <i class="bi bi-journal-medical me-1"></i>
-                Novo Registro
-              </button>
-            </li>
           </ul>
         </div>
 
@@ -864,11 +865,24 @@
                   </tbody>
                 </table>
               </div>
+              <div class="d-flex justify-content-end mt-4">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-2"
+                  id="novoRegistroBtn"
+                >
+                  <i class="bi bi-journal-medical"></i>
+                  Novo registro
+                </button>
+              </div>
             </section>
           </div>
+        </div>
 
-          <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="form-tab">
-            <form id="registroForm" class="needs-validation" novalidate>
+        <section id="formularioWrapper" class="mt-5 d-none">
+          <form id="registroForm" class="needs-validation" novalidate>
+            <div id="formularioStatus" class="alert d-none align-items-center gap-2 mb-4" role="status"></div>
+            <fieldset id="registroFieldset">
               <div class="row g-4 form-sections-layout">
                 <aside class="col-12 col-xl-3 form-section-sidebar">
                   <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
@@ -3274,16 +3288,16 @@
 
               <div class="d-flex justify-content-end gap-2">
                 <button type="reset" class="btn btn-outline-secondary">Limpar</button>
-                    <button type="submit" class="btn btn-primary">
-                      <i class="bi bi-send me-2"></i>
-                      Enviar registro
-                    </button>
-                  </div>
-                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-send me-2"></i>
+                  Enviar registro
+                </button>
               </div>
-            </form>
+            </div>
           </div>
-        </div>
+        </fieldset>
+      </form>
+    </section>
       </div>
     </main>
 
@@ -4048,9 +4062,6 @@
         tabTriggerList.forEach((tabTriggerEl) => {
           tabTriggerEl.addEventListener('shown.bs.tab', (event) => {
             event.target.classList.add('active');
-            if (event.target.id === 'form-tab') {
-              setCurrentDateTime();
-            }
           });
         });
 
@@ -6062,11 +6073,6 @@
           }
         };
 
-        const tabFormTrigger = document.getElementById('form-tab');
-        if (tabFormTrigger) {
-          tabFormTrigger.addEventListener('shown.bs.tab', setCurrentDateTime);
-        }
-
         const maskConfig = [
           { selector: '#cpfUsuario', mask: '000.000.000-00' },
           { selector: '#autorCpf', mask: '000.000.000-00' },
@@ -6581,52 +6587,301 @@
               setCurrentDateTime();
             });
 
-          const registroForm = document.getElementById('registroForm');
+        const refreshFormInteractions = () => {
+          restaurarTabelaFamilia();
+          restaurarTabelaAutores();
+          restaurarTabelaEvolucoes();
+          restaurarTabelaAnexos();
+          updateViolenciaFisicaOutras();
+          updateViolenciaPsicologicaOutras();
+          updateViolenciaSexualOutras();
+          updateLocalAgressaoOutros();
+          updateFatoresRelacionadosOutros();
+          updateConhecimentoAgressao();
+          updateSolicitarCiods();
+          updateEditarRelato();
+          updateNumeroBoGroup();
+          updateOrigemProcedimento();
+          updateExameCorpoDelito();
+          updateFianca();
+          updateMedidaSolicitada();
+          updateDescumprimento();
+          updateDescumprimentoBo();
+          updateDecisaoGravosa();
+          updateAcaoPenal();
+          updateQueixaCrime();
+          updateAbrigamento();
+          updateViolenciaInstitucional();
+        };
+
+        const registroForm = document.getElementById('registroForm');
+        const formWrapper = document.getElementById('formularioWrapper');
+        const formStatus = document.getElementById('formularioStatus');
+        const registroFieldset = document.getElementById('registroFieldset');
+        const novoRegistroBtn = document.getElementById('novoRegistroBtn');
+
         if (registroForm) {
           registroForm.addEventListener('reset', () => {
             setTimeout(() => {
-              restaurarTabelaFamilia();
-              restaurarTabelaAutores();
-              restaurarTabelaEvolucoes();
-              restaurarTabelaAnexos();
-              updateViolenciaFisicaOutras();
-              updateViolenciaPsicologicaOutras();
-              updateViolenciaSexualOutras();
-              updateLocalAgressaoOutros();
-              updateFatoresRelacionadosOutros();
-              updateConhecimentoAgressao();
-              updateSolicitarCiods();
-              updateEditarRelato();
-              updateNumeroBoGroup();
-              updateOrigemProcedimento();
-              updateExameCorpoDelito();
-              updateFianca();
-              updateMedidaSolicitada();
-              updateDescumprimento();
-              updateDescumprimentoBo();
-              updateDecisaoGravosa();
-              updateAcaoPenal();
-              updateQueixaCrime();
-              updateAbrigamento();
-              updateViolenciaInstitucional();
+              refreshFormInteractions();
+              if (registroForm.dataset.mode === 'create') {
+                setCurrentDateTime();
+              }
             }, 0);
           });
         }
-        }
 
-        const openFormBtn = document.getElementById('openFormBtn');
-        if (openFormBtn) {
-          openFormBtn.addEventListener('click', () => {
-            setCurrentDateTime();
-            const formTabTrigger = document.querySelector('#form-tab');
-            if (formTabTrigger) {
-              const tab = new bootstrap.Tab(formTabTrigger);
-              tab.show();
-              document.getElementById('registroForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const cssEscape = (value) => {
+          if (window.CSS && typeof window.CSS.escape === 'function') {
+            return window.CSS.escape(value);
+          }
+          return (value || '').toString().replace(/([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g, '\$1');
+        };
+
+        const updateNumeroProntuarioDisplay = (valor) => {
+          if (!numeroProntuarioDisplay) return;
+          const texto = valor && valor.toString().trim();
+          numeroProntuarioDisplay.textContent = texto && texto.length ? texto : '—';
+        };
+
+        const findElementsForKey = (key) => {
+          if (!registroForm || key == null) return [];
+          const normalizedKey = key.toString().trim();
+          if (!normalizedKey) return [];
+          const selectors = new Set();
+          selectors.add(`[name="${normalizedKey}"]`);
+          selectors.add(`#${cssEscape(normalizedKey)}`);
+          if (normalizedKey.includes('_') || normalizedKey.includes(' ')) {
+            const camel = normalizedKey.replace(/[_\s]+(.)?/g, (_, chr) => (chr ? chr.toUpperCase() : ''));
+            selectors.add(`[name="${camel}"]`);
+            selectors.add(`#${cssEscape(camel)}`);
+            const kebab = normalizedKey.replace(/[_\s]+/g, '-');
+            selectors.add(`[name="${kebab}"]`);
+            selectors.add(`#${cssEscape(kebab)}`);
+          }
+          const elements = [];
+          selectors.forEach((selector) => {
+            if (selector.startsWith('#')) {
+              try {
+                const element = registroForm.querySelector(selector);
+                if (element && !elements.includes(element)) {
+                  elements.push(element);
+                }
+              } catch (error) {
+                /* invalid selector */
+              }
+            } else {
+              registroForm.querySelectorAll(selector).forEach((element) => {
+                if (!elements.includes(element)) {
+                  elements.push(element);
+                }
+              });
             }
           });
-        }
+          return elements;
+        };
 
+        const assignValueToElements = (elements, value) => {
+          if (!elements || !elements.length) return;
+          const normalizedArray = Array.isArray(value)
+            ? value.map((item) => (item != null ? item.toString() : ''))
+            : typeof value === 'string'
+            ? value
+                .split(/[,;]+/)
+                .map((item) => item.trim())
+                .filter(Boolean)
+            : value != null
+            ? [value.toString()]
+            : [''];
+          elements.forEach((element) => {
+            if (element.type === 'checkbox') {
+              element.checked = normalizedArray.includes(element.value);
+              element.dispatchEvent(new Event('change', { bubbles: true }));
+            } else if (element.type === 'radio') {
+              element.checked = normalizedArray.length ? element.value === normalizedArray[0] : false;
+              if (element.checked) {
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            } else if (element.tagName === 'SELECT') {
+              setSelectValue(element, normalizedArray.length ? normalizedArray[0] : '');
+              element.dispatchEvent(new Event('change', { bubbles: true }));
+            } else if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+              element.value = normalizedArray.length ? normalizedArray[0] : '';
+              element.dispatchEvent(new Event('input', { bubbles: true }));
+              element.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          });
+        };
+
+        const normalizeRegistroPayload = (payload) => {
+          if (!payload && payload !== 0) return {};
+          if (typeof payload === 'string') {
+            try {
+              return normalizeRegistroPayload(JSON.parse(payload));
+            } catch (error) {
+              return {};
+            }
+          }
+          if (Array.isArray(payload)) {
+            if (!payload.length) return {};
+            return normalizeRegistroPayload(payload[0]);
+          }
+          if (typeof payload === 'object') {
+            if (Array.isArray(payload.data) && payload.data.length) {
+              return normalizeRegistroPayload(payload.data[0]);
+            }
+            if (Array.isArray(payload.resultado) && payload.resultado.length) {
+              return normalizeRegistroPayload(payload.resultado[0]);
+            }
+            if (Array.isArray(payload.records) && payload.records.length) {
+              return normalizeRegistroPayload(payload.records[0]);
+            }
+            return payload;
+          }
+          return {};
+        };
+
+        const populateFormWithData = (dataObj = {}) => {
+          if (!registroForm || !dataObj || typeof dataObj !== 'object') return;
+          const processEntry = (key, value) => {
+            if (value == null) return;
+            if (Array.isArray(value)) {
+              const elements = findElementsForKey(key);
+              if (elements.length && (elements[0].type === 'checkbox' || elements[0].type === 'radio' || elements[0].tagName === 'SELECT')) {
+                assignValueToElements(elements, value);
+              } else {
+                value.forEach((item) => {
+                  if (item && typeof item === 'object' && !Array.isArray(item)) {
+                    Object.entries(item).forEach(([childKey, childValue]) => processEntry(childKey, childValue));
+                  }
+                });
+              }
+              return;
+            }
+            if (typeof value === 'object') {
+              Object.entries(value).forEach(([childKey, childValue]) => processEntry(childKey, childValue));
+              return;
+            }
+            const elements = findElementsForKey(key);
+            if (elements.length) {
+              assignValueToElements(elements, value);
+            }
+          };
+          Object.entries(dataObj).forEach(([key, value]) => processEntry(key, value));
+          updateNumeroProntuarioDisplay(numeroProntuarioInput ? numeroProntuarioInput.value : '');
+        };
+
+        const buildStatusMessage = (prefix, prontuario) => {
+          if (!prefix) return '';
+          const valor = prontuario && prontuario.toString().trim();
+          return valor && valor.length ? `${prefix} ${valor}.` : `${prefix}.`;
+        };
+
+        const statusConfig = {
+          create: { alertClass: 'alert-primary', icon: 'bi-plus-circle', prefix: 'Novo registro em edição' },
+          edit: { alertClass: 'alert-warning', icon: 'bi-pencil-square', prefix: 'Editando prontuário' },
+          view: { alertClass: 'alert-info', icon: 'bi-eye', prefix: 'Visualizando prontuário' },
+        };
+
+        const setFormMode = (mode) => {
+          if (registroForm) {
+            registroForm.dataset.mode = mode;
+          }
+          const isViewMode = mode === 'view';
+          if (registroFieldset) {
+            registroFieldset.disabled = isViewMode;
+          }
+          if (registroForm) {
+            registroForm.classList.toggle('form-readonly', isViewMode);
+          }
+        };
+
+        const ensureFormVisible = () => {
+          if (formWrapper) {
+            formWrapper.classList.remove('d-none');
+          }
+        };
+
+        const scrollToForm = () => {
+          if (formWrapper) {
+            formWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        };
+
+        const updateFormStatus = (mode, prontuario) => {
+          if (!formStatus) return;
+          const config = statusConfig[mode] || statusConfig.view;
+          const message = buildStatusMessage(config.prefix, prontuario);
+          formStatus.className = `alert ${config.alertClass} align-items-center gap-2 mb-4`;
+          formStatus.innerHTML = `<i class="bi ${config.icon}"></i><span>${message}</span>`;
+          formStatus.classList.remove('d-none');
+        };
+
+        const startNovoRegistro = () => {
+          if (!registroForm) return;
+          registroForm.reset();
+          setFormMode('create');
+          setCurrentDateTime();
+          updateFormStatus('create', numeroProntuarioInput ? numeroProntuarioInput.value : '');
+          ensureFormVisible();
+          scrollToForm();
+          setTimeout(() => {
+            refreshFormInteractions();
+          }, 0);
+        };
+
+        const openExistingProntuario = (payload, mode = 'view', fallbackProntuario = '') => {
+          if (!registroForm) return;
+          const normalizedMode = mode === 'edit' ? 'edit' : 'view';
+          registroForm.reset();
+          setFormMode(normalizedMode);
+          const normalizedPayload = normalizeRegistroPayload(payload);
+          populateFormWithData(normalizedPayload);
+          const candidatos = ['numeroProntuario', 'prontuario', 'numero_prontuario', 'numero'];
+          let prontuarioValor = '';
+          for (const chave of candidatos) {
+            if (normalizedPayload && normalizedPayload[chave]) {
+              prontuarioValor = normalizedPayload[chave];
+              break;
+            }
+            const elementos = findElementsForKey(chave);
+            if (elementos.length) {
+              const referencia = elementos[0];
+              const valor = referencia.value || referencia.textContent;
+              if (valor) {
+                prontuarioValor = valor;
+                break;
+              }
+            }
+          }
+          if (!prontuarioValor) {
+            prontuarioValor = fallbackProntuario;
+          }
+          if (numeroProntuarioInput && prontuarioValor) {
+            numeroProntuarioInput.value = prontuarioValor;
+          }
+          updateNumeroProntuarioDisplay(prontuarioValor);
+          updateFormStatus(normalizedMode, prontuarioValor);
+          ensureFormVisible();
+          scrollToForm();
+          setTimeout(() => {
+            refreshFormInteractions();
+          }, 0);
+        };
+
+        const prontuarioFormManager = {
+          startNovoRegistro,
+          openExistingProntuario,
+        };
+
+        window.prontuarioFormManager = prontuarioFormManager;
+        document.dispatchEvent(new CustomEvent('prontuarioFormManagerReady', { detail: prontuarioFormManager }));
+
+        if (novoRegistroBtn) {
+          novoRegistroBtn.addEventListener('click', () => {
+            startNovoRegistro();
+          });
+        }
         setCurrentDateTime();
       });
     </script>
@@ -6637,6 +6892,11 @@
         const btn = document.querySelector('#btn-buscar-prontuarios');
         const tbody = document.querySelector('#tbody-prontuarios');
         const stateAlert = document.querySelector('#consultaProntuariosEstado');
+        let prontuarioManager = window.prontuarioFormManager || null;
+
+        document.addEventListener('prontuarioFormManagerReady', (event) => {
+          prontuarioManager = event.detail;
+        });
 
         if (!input || !btn || !tbody) return;
 
@@ -6687,10 +6947,10 @@
         <td>${formatCPF(item.cpf)}</td>
         <td>${item.mae || ''}</td>
         <td class="text-end">
-          <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${item.prontuario}">
+          <button class="btn btn-link p-0 me-2 prontuario-acao" type="button" title="Visualizar" data-acao="visualizar" data-prontuario="${item.prontuario || ''}">
             <i class="bi bi-eye"></i>
           </button>
-          <button class="btn btn-link p-0" title="Editar" data-prontuario="${item.prontuario}">
+          <button class="btn btn-link p-0 prontuario-acao" type="button" title="Editar" data-acao="editar" data-prontuario="${item.prontuario || ''}">
             <i class="bi bi-pencil-square"></i>
           </button>
         </td>
@@ -6699,6 +6959,35 @@
           }
           tbody.appendChild(frag);
           showState(`Exibindo ${data.length} registro(s).`, 'success');
+        }
+
+        async function carregarProntuario(prontuario, acao) {
+          if (!prontuario) return;
+          const modo = acao === 'edit' ? 'edit' : 'view';
+          showState(`Carregando prontuário ${prontuario}...`, 'info');
+
+          try {
+            const resposta = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/buscar-prontuario', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prontuario }),
+            });
+
+            if (!resposta.ok) {
+              throw new Error('Falha ao buscar prontuário.');
+            }
+
+            const payload = await resposta.json();
+            if (prontuarioManager && typeof prontuarioManager.openExistingProntuario === 'function') {
+              prontuarioManager.openExistingProntuario(payload, modo, prontuario);
+              showState(`Prontuário ${prontuario} carregado.`, 'success');
+            } else {
+              showState('Formulário indisponível para exibir o prontuário.', 'warning');
+            }
+          } catch (error) {
+            console.error(error);
+            showState('Falha ao carregar o prontuário selecionado.', 'danger');
+          }
         }
 
         async function handleBuscar() {
@@ -6756,6 +7045,14 @@
             handleBuscar();
           });
         }
+
+        tbody.addEventListener('click', (event) => {
+          const botao = event.target.closest('button.prontuario-acao');
+          if (!botao) return;
+          const prontuario = botao.dataset.prontuario;
+          const acao = botao.dataset.acao === 'editar' ? 'edit' : 'view';
+          carregarProntuario(prontuario, acao);
+        });
       })();
     </script>
   </body>
