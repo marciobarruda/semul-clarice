@@ -192,28 +192,17 @@
         margin-top: 1.5rem;
       }
 
-      .field-cpf {
-        flex: 0 0 auto;
+      .field-cpf,
+      .nome-completo-field,
+      .nome-social-field {
+        flex: 0 0 100%;
+        max-width: 100%;
       }
 
       .field-cpf .cpf-input {
+        width: 100%;
         min-width: 14.5ch;
         max-width: 16.5ch;
-      }
-
-      @media (min-width: 768px) {
-        .field-cpf {
-          max-width: 17rem;
-        }
-      }
-
-      .nome-completo-field,
-      .nome-social-field {
-        flex: 1 1 0;
-      }
-
-      .nome-social-field {
-        min-width: min(20rem, 100%);
       }
 
       .form-sections-layout {
@@ -272,18 +261,6 @@
 
       .dados-saude-section .form-label {
         white-space: normal;
-      }
-
-      @media (min-width: 1200px) {
-        .col-orgao-expedidor {
-          flex: 0 0 16%;
-          max-width: 16%;
-        }
-
-        .col-uf-expedicao {
-          flex: 0 0 14%;
-          max-width: 14%;
-        }
       }
 
       .section-nav-link {
@@ -1085,35 +1062,27 @@
                           <label for="nomeSocial" class="form-label">Nome social</label>
                           <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                         </div>
-                        <div class="col-12">
-                          <div class="row g-3 align-items-end">
-                            <div class="col-12 col-md-6 col-lg-7">
-                              <label for="dataNascimento" class="form-label required">Data de nascimento</label>
-                              <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-5 ms-md-auto">
-                              <label for="idade" class="form-label">Idade</label>
-                              <input type="text" class="form-control" id="idade" name="idade" readonly />
-                            </div>
-                          </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                          <label for="dataNascimento" class="form-label required">Data de nascimento</label>
+                          <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
                         </div>
-                        <div class="col-12">
-                          <div class="row g-3">
-                            <div class="col-12 col-md-4 col-lg-4">
-                              <label for="rgUsuario" class="form-label">RG</label>
-                              <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
-                            </div>
-                            <div class="col-12 col-md-5 col-lg-5 col-orgao-expedidor">
-                              <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
-                              <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 col-uf-expedicao">
-                              <label for="ufExpedicao" class="form-label">UF</label>
-                              <select id="ufExpedicao" name="ufExpedicao" class="form-select">
-                                <option value="">Selecione</option>
-                              </select>
-                            </div>
-                          </div>
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-3 ms-md-auto">
+                          <label for="idade" class="form-label">Idade</label>
+                          <input type="text" class="form-control" id="idade" name="idade" readonly />
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4 col-xl-3">
+                          <label for="rgUsuario" class="form-label">RG</label>
+                          <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
+                        </div>
+                        <div class="col-12 col-md-5 col-lg-5 col-xl-5">
+                          <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
+                          <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3 col-xl-2">
+                          <label for="ufExpedicao" class="form-label">UF</label>
+                          <select id="ufExpedicao" name="ufExpedicao" class="form-select">
+                            <option value="">Selecione</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -1127,41 +1096,33 @@
                           <label for="nacionalidade" class="form-label">Nacionalidade</label>
                           <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" />
                         </div>
-                        <div class="col-12">
-                          <div class="row g-3">
-                            <div class="col-12 col-md-5 col-lg-4">
-                              <label for="ufNascimento" class="form-label">UF de nascimento</label>
-                              <select id="ufNascimento" name="ufNascimento" class="form-select">
-                                <option value="">Selecione</option>
-                              </select>
-                            </div>
-                            <div class="col-12 col-md-7 col-lg-8">
-                              <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
-                              <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
-                                <option value="">Selecione a UF primeiro</option>
-                              </select>
-                            </div>
-                          </div>
+                        <div class="col-12 col-md-6 col-lg-5">
+                          <label for="ufNascimento" class="form-label">UF de nascimento</label>
+                          <select id="ufNascimento" name="ufNascimento" class="form-select">
+                            <option value="">Selecione</option>
+                          </select>
                         </div>
-                        <div class="col-12">
-                          <div class="row g-3">
-                            <div class="col-12 col-md-5 col-lg-4">
-                              <label for="estadoCivil" class="form-label">Estado civil</label>
-                              <select id="estadoCivil" name="estadoCivil" class="form-select">
-                                <option value="">Selecione</option>
-                                <option>Solteira</option>
-                                <option>Casada</option>
-                                <option>União estável</option>
-                                <option>Separada</option>
-                                <option>Divorciada</option>
-                                <option>Viúva</option>
-                              </select>
-                            </div>
-                            <div class="col-12 col-md-7 col-lg-8">
-                              <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
-                              <input type="text" class="form-control" id="conjuge" name="conjuge" />
-                            </div>
-                          </div>
+                        <div class="col-12 col-md-6 col-lg-7">
+                          <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
+                          <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
+                            <option value="">Selecione a UF primeiro</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-5">
+                          <label for="estadoCivil" class="form-label">Estado civil</label>
+                          <select id="estadoCivil" name="estadoCivil" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Solteira</option>
+                            <option>Casada</option>
+                            <option>União estável</option>
+                            <option>Separada</option>
+                            <option>Divorciada</option>
+                            <option>Viúva</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-7">
+                          <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
+                          <input type="text" class="form-control" id="conjuge" name="conjuge" />
                         </div>
                       </div>
                     </div>
@@ -6785,6 +6746,70 @@
           return tr;
         }
 
+        function normalizeProntuarios(payload) {
+          const results = [];
+          const seen = new Set();
+          const visited = new WeakSet();
+
+          const pushRecord = (record) => {
+            const sanitized = {
+              prontuario: record.prontuario ?? '',
+              nome: record.nome ?? '',
+              cpf: record.cpf ?? '',
+              mae: record.mae ?? ''
+            };
+            const key = `${sanitized.prontuario}|${sanitized.cpf}|${sanitized.nome}|${sanitized.mae}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              results.push(sanitized);
+            }
+          };
+
+          const traverse = (value) => {
+            if (value == null) {
+              return;
+            }
+
+            if (typeof value === 'string') {
+              const trimmed = value.trim();
+              if (!trimmed) return;
+              if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                try {
+                  traverse(JSON.parse(trimmed));
+                } catch (error) {
+                  console.warn('Não foi possível interpretar a resposta da busca:', error);
+                }
+              }
+              return;
+            }
+
+            if (Array.isArray(value)) {
+              for (const item of value) {
+                traverse(item);
+              }
+              return;
+            }
+
+            if (typeof value === 'object') {
+              if (visited.has(value)) {
+                return;
+              }
+              visited.add(value);
+
+              if ('prontuario' in value || 'cpf' in value || 'nome' in value || 'mae' in value) {
+                pushRecord(value);
+              }
+
+              for (const key of Object.keys(value)) {
+                traverse(value[key]);
+              }
+            }
+          };
+
+          traverse(payload);
+          return results;
+        }
+
         function renderProntuarios(items) {
           tbody.innerHTML = '';
           const data = Array.isArray(items) ? items : [];
@@ -6842,7 +6867,8 @@
 
             if (!resp.ok) throw new Error('Erro na requisição');
             const data = await resp.json();
-            renderProntuarios(data);
+            const registros = normalizeProntuarios(data);
+            renderProntuarios(registros);
           } catch (err) {
             console.error(err);
             tbody.innerHTML = '';
