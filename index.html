@@ -6766,16 +6766,13 @@
         const input = document.querySelector('#busca-prontuario');
         const btn = document.querySelector('#btn-buscar-prontuarios');
         const tbody = document.querySelector('#tbody-prontuarios');
-        const emptyRow = document.querySelector('#consultaProntuariosVazio');
         const stateAlert = document.querySelector('#consultaProntuariosEstado');
 
-        if (!form || !input || !btn || !tbody) return;
+        if (!input || !btn || !tbody) return;
 
         function formatCPF(value) {
           const digits = String(value || '').replace(/\D/g, '').slice(0, 11);
-          if (digits.length !== 11) {
-            return String(value || '').trim();
-          }
+          if (digits.length !== 11) return String(value || '').trim();
           return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         }
 
@@ -6806,31 +6803,28 @@
           }
         }
 
-        function ensureEmptyRow() {
-          if (!emptyRow) return;
-          if (!tbody.contains(emptyRow)) {
-            tbody.innerHTML = '';
-            tbody.appendChild(emptyRow);
-          }
+        function emptyRow(message) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 5;
+          td.classList.add('text-center', 'text-muted', 'py-4');
+          td.textContent = message;
+          tr.appendChild(td);
+          return tr;
         }
 
-        function clearTable() {
-          if (!tbody) return;
-          tbody.innerHTML = '';
-        }
-
-        function buildRow(registro) {
+        function buildRow(item) {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${registro.prontuario || ''}</td>
-            <td>${registro.nome || ''}</td>
-            <td>${formatCPF(registro.cpf)}</td>
-            <td>${registro.mae || ''}</td>
+            <td>${item.prontuario || ''}</td>
+            <td>${item.nome || ''}</td>
+            <td>${formatCPF(item.cpf)}</td>
+            <td>${item.mae || ''}</td>
             <td class="text-end">
-              <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${registro.prontuario || ''}">
+              <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${item.prontuario || ''}">
                 <i class="bi bi-eye"></i>
               </button>
-              <button class="btn btn-link p-0" title="Editar" data-prontuario="${registro.prontuario || ''}">
+              <button class="btn btn-link p-0" title="Editar" data-prontuario="${item.prontuario || ''}">
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
@@ -6838,27 +6832,26 @@
           return tr;
         }
 
-        function parseMaybeJson(value) {
-          if (value == null) return null;
-          if (typeof value === 'string') {
-            const trimmed = value.trim();
-            if (!trimmed) return null;
-            try {
-              return JSON.parse(trimmed);
-            } catch (error) {
-              return trimmed;
-            }
-          }
-          return value;
-        }
-
-        function collectCandidates(payload) {
+        function normalizePayload(payload) {
           const results = [];
           const queue = [];
           const visited = new Set();
+          const nestedKeys = ['data', 'resultado', 'result', 'records', 'items', 'lista', 'values'];
 
           function enqueue(item) {
             if (item == null) return;
+            if (typeof item === 'string') {
+              const trimmed = item.trim();
+              if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                try {
+                  enqueue(JSON.parse(trimmed));
+                } catch (error) {
+                  console.warn('Não foi possível analisar o payload de prontuários.', error);
+                }
+              }
+              return;
+            }
+
             if (visited.has(item)) return;
             visited.add(item);
             queue.push(item);
@@ -6870,31 +6863,16 @@
             const current = queue.shift();
             if (current == null) continue;
 
-            if (typeof current === 'string') {
-              const parsed = parseMaybeJson(current);
-              if (parsed && parsed !== current) {
-                enqueue(parsed);
-              }
-              continue;
-            }
-
             if (Array.isArray(current)) {
               current.forEach(enqueue);
               continue;
             }
 
             if (typeof current === 'object') {
-              const nestedKeys = ['data', 'resultado', 'result', 'records', 'items', 'lista', 'values'];
-              nestedKeys.forEach((key) => {
-                if (Array.isArray(current[key])) {
-                  current[key].forEach(enqueue);
-                }
-              });
-
-              const prontuario = current.prontuario ?? current.numero ?? current.id ?? '';
-              const nome = current.nome ?? current.nomeCompleto ?? current.titular ?? '';
-              const mae = current.mae ?? current.nomeMae ?? current.mae_nome ?? '';
-              const cpf = current.cpf ?? current.documento ?? current.cpf_cidada ?? '';
+              const prontuario = current.prontuario ?? current.numero ?? '';
+              const nome = current.nome ?? current.nomeCompleto ?? '';
+              const cpf = current.cpf ?? current.documento ?? '';
+              const mae = current.mae ?? current.nomeMae ?? '';
 
               if (prontuario || nome || cpf || mae) {
                 results.push({
@@ -6904,6 +6882,13 @@
                   mae: String(mae || '').trim()
                 });
               }
+
+              nestedKeys.forEach((key) => {
+                const value = current[key];
+                if (Array.isArray(value) || (value && typeof value === 'object')) {
+                  enqueue(value);
+                }
+              });
             }
           }
 
@@ -6928,7 +6913,7 @@
           }
 
           toggleState();
-          clearTable();
+          tbody.innerHTML = '';
           setLoading(true);
 
           try {
@@ -6942,12 +6927,18 @@
               throw new Error(`Erro na requisição (${response.status})`);
             }
 
-            const raw = await response.text();
-            const parsed = parseMaybeJson(raw) ?? raw;
-            const registros = collectCandidates(parsed);
+            let data;
+            try {
+              data = await response.json();
+            } catch (error) {
+              const text = await response.text();
+              data = text;
+            }
+
+            const registros = normalizePayload(data);
 
             if (!registros.length) {
-              ensureEmptyRow();
+              tbody.appendChild(emptyRow('Nenhum registro encontrado'));
               toggleState('Nenhum registro encontrado para os filtros informados.', 'info');
               return;
             }
@@ -6958,15 +6949,18 @@
             toggleState(`Exibindo ${registros.length} registro(s).`, 'success');
           } catch (error) {
             console.error('Falha ao buscar prontuários:', error);
-            ensureEmptyRow();
+            tbody.innerHTML = '';
+            tbody.appendChild(emptyRow('Falha ao buscar. Tente novamente.'));
             toggleState('Falha ao buscar. Tente novamente.', 'danger');
           } finally {
             setLoading(false);
           }
         }
 
-        form.addEventListener('submit', handleBuscar);
         btn.addEventListener('click', handleBuscar);
+        if (form) {
+          form.addEventListener('submit', handleBuscar);
+        }
       })();
     </script>
   </body>
