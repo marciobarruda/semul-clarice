@@ -183,10 +183,86 @@
         box-shadow: 0 12px 30px rgba(24, 64, 120, 0.08);
         padding: 1.75rem;
         height: 100%;
+        scroll-margin-top: 6.5rem;
       }
 
       .card-section + .card-section {
         margin-top: 1.5rem;
+      }
+
+      .form-section-nav {
+        position: sticky;
+        top: 5.5rem;
+        z-index: 1030;
+        background: rgba(244, 247, 251, 0.94);
+        border: 1px solid rgba(0, 83, 164, 0.15);
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px rgba(0, 45, 98, 0.12);
+        backdrop-filter: blur(6px);
+      }
+
+      .form-section-nav .nav-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .section-nav-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .section-nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.45rem 0.95rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        background: rgba(0, 83, 164, 0.08);
+        color: var(--brand-primary);
+        transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .section-nav-link .bi {
+        font-size: 1rem;
+      }
+
+      .section-nav-link:hover,
+      .section-nav-link:focus {
+        background: rgba(0, 83, 164, 0.18);
+        color: var(--brand-secondary);
+        box-shadow: 0 6px 16px rgba(0, 45, 98, 0.15);
+      }
+
+      .section-nav-link.active {
+        background: var(--brand-primary);
+        color: #ffffff;
+        box-shadow: 0 8px 18px rgba(0, 45, 98, 0.2);
+      }
+
+      @media (max-width: 576px) {
+        .form-section-nav {
+          top: 4.25rem;
+          padding: 0.75rem 1rem;
+        }
+
+        .section-nav-list {
+          gap: 0.75rem 0.5rem;
+        }
+
+        .section-nav-link {
+          flex: 1 1 calc(50% - 0.5rem);
+          justify-content: center;
+        }
       }
 
       .subsection-card {
@@ -310,6 +386,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        scroll-margin-top: 6.5rem;
       }
 
       .form-section-title .bi {
@@ -853,6 +930,41 @@
 
           <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="form-tab">
             <form id="registroForm" class="needs-validation" novalidate>
+              <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
+                <span class="nav-label">Ir para</span>
+                <div class="section-nav-list">
+                  <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
+                    ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
+                  >
+                  <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
+                    ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
+                  >
+                  <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
+                    ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
+                  >
+                  <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
+                    ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
+                  >
+                  <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
+                    ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
+                  >
+                  <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
+                    ><i class="bi bi-people"></i><span>Dados sociais</span></a
+                  >
+                  <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
+                    ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
+                  >
+                  <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
+                    ><i class="bi bi-list-check"></i><span>Tipificação</span></a
+                  >
+                  <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
+                    ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
+                  >
+                  <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
+                    ><i class="bi bi-balance-scale"></i><span>Dados jurídicos</span></a
+                  >
+                </div>
+              </nav>
               <section class="card-section mb-4" aria-labelledby="dados-preliminares">
                 <h2 class="form-section-title" id="dados-preliminares"><i class="bi bi-person-vcard"></i>Dados preliminares e de identificação</h2>
                 <div class="row g-3 align-items-end">
@@ -1768,13 +1880,7 @@
                 <div class="mt-4">
                   <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
                     <h3 class="h6 mb-0">Composição familiar (todos da residência)</h3>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary btn-sm ms-auto"
-                      id="adicionarMembroFamilia"
-                      data-bs-toggle="modal"
-                      data-bs-target="#familiaModal"
-                    >
+                    <button type="button" class="btn btn-outline-primary btn-sm ms-auto" id="adicionarMembroFamilia">
                       <i class="bi bi-person-plus me-1"></i>Adicionar membro da família
                     </button>
                   </div>
@@ -1950,6 +2056,75 @@
         const updateLabel = document.getElementById('chartUpdate');
         if (updateLabel && window.dayjs) {
           updateLabel.textContent = dayjs().format('DD/MM/YYYY HH:mm');
+        }
+
+        const sectionNavLinks = document.querySelectorAll('.section-nav-link');
+        if (sectionNavLinks.length) {
+          const canObserve = 'IntersectionObserver' in window;
+          let observer = null;
+          const setActiveLink = (target) => {
+            sectionNavLinks.forEach((link) => {
+              const isActive = link === target;
+              link.classList.toggle('active', isActive);
+              if (isActive) {
+                link.setAttribute('aria-current', 'true');
+              } else {
+                link.removeAttribute('aria-current');
+              }
+            });
+          };
+          if (canObserve) {
+            observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    const id = entry.target.dataset.sectionId || entry.target.id;
+                    const targetLink = Array.from(sectionNavLinks).find((link) => link.dataset.section === id);
+                    if (targetLink) {
+                      setActiveLink(targetLink);
+                    }
+                  }
+                });
+              },
+              { rootMargin: '-55% 0px -35% 0px', threshold: 0.25 }
+            );
+          }
+
+          let defaultLink = null;
+          sectionNavLinks.forEach((link, index) => {
+            const id = link.dataset.section;
+            if (!id) return;
+            const heading = document.getElementById(id);
+            if (!heading) return;
+            const section = heading.closest('section') || heading;
+            section.dataset.sectionId = id;
+            if (observer) {
+              observer.observe(section);
+            }
+            link.addEventListener('click', (event) => {
+              event.preventDefault();
+              heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              setActiveLink(link);
+              if (heading instanceof HTMLElement) {
+                heading.setAttribute('tabindex', '-1');
+                heading.focus({ preventScroll: true });
+                heading.addEventListener(
+                  'blur',
+                  () => {
+                    heading.removeAttribute('tabindex');
+                  },
+                  { once: true }
+                );
+              }
+            });
+            if (index === 0) {
+              defaultLink = link;
+            }
+          });
+
+          if (defaultLink) {
+            setActiveLink(defaultLink);
+          }
         }
 
         const choicesInstances = new Map();
@@ -2293,7 +2468,7 @@
               if (cidadeInput) cidadeInput.value = data.city || '';
               if (ufInput) ufInput.value = data.state || '';
               if (cepHelp) {
-                cepHelp.textContent = 'Endereço localizado automaticamente.';
+                cepHelp.textContent = '';
               }
             } catch (error) {
               limparEndereco();
@@ -2462,6 +2637,26 @@
         const familiaHiddenInputs = document.getElementById('familiaHiddenInputs');
         const familiaModalElement = document.getElementById('familiaModal');
         const familiaModalForm = document.getElementById('familiaModalForm');
+        const adicionarMembroFamiliaBtn = document.getElementById('adicionarMembroFamilia');
+        let familiaModalInstance = null;
+
+        const ensureFamiliaModal = () => {
+          if (!familiaModalElement || typeof bootstrap === 'undefined' || !bootstrap.Modal) {
+            return null;
+          }
+          familiaModalInstance = bootstrap.Modal.getOrCreateInstance(familiaModalElement);
+          return familiaModalInstance;
+        };
+
+        if (adicionarMembroFamiliaBtn) {
+          adicionarMembroFamiliaBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const modal = ensureFamiliaModal();
+            if (modal) {
+              modal.show();
+            }
+          });
+        }
 
         const restaurarTabelaFamilia = () => {
           if (familiaTabelaBody) {
@@ -2553,9 +2748,10 @@
               familiaHiddenInputs.appendChild(wrapper);
             }
 
-            const modalInstance =
-              bootstrap.Modal.getInstance(familiaModalElement) || new bootstrap.Modal(familiaModalElement);
-            modalInstance.hide();
+            const modalInstance = ensureFamiliaModal();
+            if (modalInstance) {
+              modalInstance.hide();
+            }
             familiaModalForm.reset();
           });
         }
