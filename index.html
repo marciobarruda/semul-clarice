@@ -192,6 +192,30 @@
         margin-top: 1.5rem;
       }
 
+      .field-cpf {
+        flex: 0 0 auto;
+      }
+
+      .field-cpf .cpf-input {
+        min-width: 14.5ch;
+        max-width: 16.5ch;
+      }
+
+      @media (min-width: 768px) {
+        .field-cpf {
+          max-width: 17rem;
+        }
+      }
+
+      .nome-completo-field,
+      .nome-social-field {
+        flex: 1 1 0;
+      }
+
+      .nome-social-field {
+        min-width: min(20rem, 100%);
+      }
+
       .form-sections-layout {
         align-items: flex-start;
       }
@@ -1065,15 +1089,15 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
+                  <div class="col-12 col-md-auto field-cpf">
                     <label for="cpfUsuario" class="form-label required">CPF</label>
-                    <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" required />
+                    <input type="text" class="form-control cpf-input" id="cpfUsuario" name="cpfUsuario" required />
                   </div>
-                  <div class="col-12 col-md-5 col-lg-6 col-xl-5 col-xxl-5">
+                  <div class="col-12 col-md col-lg nome-completo-field">
                     <label for="nomeUsuario" class="form-label required">Nome completo</label>
                     <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                   </div>
-                  <div class="col-12 col-md-4 col-lg-4 col-xl-5 col-xxl-5">
+                  <div class="col-12 col-md col-lg nome-social-field">
                     <label for="nomeSocial" class="form-label">Nome social</label>
                     <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                   </div>
