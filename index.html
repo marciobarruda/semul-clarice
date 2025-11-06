@@ -4286,10 +4286,28 @@
                 throw new Error(`Erro ${resposta.status}`);
               }
 
-              const dados = await resposta.json();
+              let dados;
+              try {
+                dados = await resposta.json();
+              } catch (parseError) {
+                console.error('Não foi possível interpretar a resposta do serviço.', parseError);
+                atualizarEstadoConsulta('danger', 'Retorno inesperado do serviço de prontuários.');
+                return;
+              }
+
+              const registros = Array.isArray(dados)
+                ? dados
+                : Array.isArray(dados?.data)
+                ? dados.data
+                : Array.isArray(dados?.resultado)
+                ? dados.resultado
+                : Array.isArray(dados?.records)
+                ? dados.records
+                : [];
+
               atualizarEstadoConsulta('success', 'Resultados atualizados com sucesso.');
               setTimeout(() => atualizarEstadoConsulta(null, ''), 2500);
-              atualizarTabelaConsulta(Array.isArray(dados) ? dados : []);
+              atualizarTabelaConsulta(registros);
             } catch (erro) {
               console.error('Erro ao consultar prontuários', erro);
               atualizarEstadoConsulta('danger', 'Não foi possível consultar os prontuários. Tente novamente mais tarde.');
