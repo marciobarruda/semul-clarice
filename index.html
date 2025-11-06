@@ -559,16 +559,6 @@
               </button>
             </li>
           </ul>
-          <div class="ms-lg-auto floating-toolbar d-flex gap-2">
-            <button class="btn btn-primary" type="button" id="openFormBtn">
-              <i class="bi bi-plus-circle me-2"></i>
-              Novo Registro / Formulário
-            </button>
-            <button class="btn btn-outline-primary" type="button">
-              <i class="bi bi-cloud-arrow-down me-2"></i>
-              Exportar BI
-            </button>
-          </div>
         </div>
 
         <div class="tab-content" id="portalTabsContent">
@@ -618,11 +608,11 @@
                   <form class="row g-3" role="search" aria-label="Buscar prontuários">
                     <div class="col-12 col-md-4">
                       <label for="buscaNome" class="form-label">Nome da usuária</label>
-                      <input type="text" class="form-control" id="buscaNome" placeholder="Maria Silva" />
+                      <input type="text" class="form-control" id="buscaNome" />
                     </div>
                     <div class="col-12 col-md-4">
                       <label for="buscaDocumento" class="form-label">CPF</label>
-                      <input type="text" class="form-control" id="buscaDocumento" placeholder="000.000.000-00" />
+                      <input type="text" class="form-control" id="buscaDocumento" />
                     </div>
                     <div class="col-12 col-md-4">
                       <label for="buscaSituacao" class="form-label">Situação</label>
@@ -889,11 +879,11 @@
                 <div class="row g-3 align-items-end">
                   <div class="col-12 col-lg-2 col-xxl-2">
                     <label for="numeroProntuario" class="form-label required">Nº do prontuário</label>
-                    <input type="text" class="form-control" id="numeroProntuario" name="numeroProntuario" placeholder="PR-0000" required readonly />
+                    <input type="text" class="form-control" id="numeroProntuario" name="numeroProntuario" required readonly />
                   </div>
                   <div class="col-12 col-lg-4 col-xxl-4">
                     <label for="demandante" class="form-label">Demandante</label>
-                    <input type="text" class="form-control" id="demandante" name="demandante" placeholder="Nome do solicitante" />
+                    <input type="text" class="form-control" id="demandante" name="demandante" />
                   </div>
                   <div class="col-12 col-lg-3 col-xxl-3">
                     <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
@@ -907,11 +897,11 @@
                   </div>
                   <div class="col-12 col-lg-2 col-xxl-2">
                     <label for="dataAtendimento" class="form-label required">Data do atendimento</label>
-                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" placeholder="dd/mm/aaaa" required readonly />
+                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" required readonly />
                   </div>
                   <div class="col-12 col-lg-1 col-xxl-1">
                     <label for="horaAtendimento" class="form-label required">Hora do atendimento</label>
-                    <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" placeholder="HH:mm" required readonly />
+                    <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" required readonly />
                   </div>
                   <div class="col-12">
                     <span class="form-label required d-block">Avaliação inicial</span>
@@ -988,25 +978,25 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-3 col-xxl-2">
+                  <div class="col-12 col-lg-2 col-xxl-2">
                     <label for="cpfUsuario" class="form-label required">CPF</label>
-                    <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" placeholder="000.000.000-00" required />
+                    <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" required />
                   </div>
                   <div class="col-12 col-lg-5 col-xxl-5">
                     <label for="nomeUsuario" class="form-label required">Nome completo</label>
-                    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" placeholder="Nome da usuária" required />
+                    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                   </div>
-                  <div class="col-12 col-lg-4 col-xxl-5">
+                  <div class="col-12 col-lg-5 col-xxl-5">
                     <label for="nomeSocial" class="form-label">Nome social</label>
-                    <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" placeholder="Como prefere ser chamada" />
+                    <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                   </div>
                   <div class="col-12 col-md-3">
                     <label for="rgUsuario" class="form-label">RG</label>
-                    <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" placeholder="Documento de identidade" />
+                    <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                   </div>
                   <div class="col-12 col-md-3">
                     <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
-                    <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" placeholder="SSP" />
+                    <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
                   </div>
                   <div class="col-12 col-md-3">
                     <label for="ufExpedicao" class="form-label">UF de expedição</label>
@@ -1016,15 +1006,15 @@
                   </div>
                   <div class="col-12 col-md-3 col-lg-2">
                     <label for="dataNascimento" class="form-label required">Data de nascimento</label>
-                    <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" placeholder="dd/mm/aaaa" required />
+                    <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
                   </div>
                   <div class="col-12 col-md-3 col-lg-2">
                     <label for="idade" class="form-label">Idade</label>
-                    <input type="text" class="form-control" id="idade" name="idade" placeholder="Calculada automaticamente" readonly />
+                    <input type="text" class="form-control" id="idade" name="idade" readonly />
                   </div>
                   <div class="col-12 col-md-3 col-lg-3">
                     <label for="nacionalidade" class="form-label">Nacionalidade</label>
-                    <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" placeholder="Brasileira" />
+                    <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" />
                   </div>
                   <div class="col-12 col-md-3 col-lg-2">
                     <label for="ufNascimento" class="form-label">UF de nascimento</label>
@@ -1052,7 +1042,7 @@
                   </div>
                   <div class="col-12 col-md-6">
                     <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
-                    <input type="text" class="form-control" id="conjuge" name="conjuge" placeholder="Nome do(a) companheiro(a)" />
+                    <input type="text" class="form-control" id="conjuge" name="conjuge" />
                   </div>
                   <div class="col-12 col-lg-3">
                     <label for="identidadeGenero" class="form-label">Identidade de gênero</label>
@@ -1107,11 +1097,11 @@
                     <div class="row g-3 align-items-end">
                       <div class="col-12 col-md-6">
                         <label for="nomeMae" class="form-label">Nome da mãe</label>
-                        <input type="text" class="form-control" id="nomeMae" name="nomeMae" placeholder="Nome completo" />
+                        <input type="text" class="form-control" id="nomeMae" name="nomeMae" />
                       </div>
                       <div class="col-12 col-md-6">
                         <label for="nomePai" class="form-label">Nome do pai</label>
-                        <input type="text" class="form-control" id="nomePai" name="nomePai" placeholder="Nome completo" />
+                        <input type="text" class="form-control" id="nomePai" name="nomePai" />
                       </div>
                     </div>
                   </div>
@@ -1125,20 +1115,20 @@
                     <div class="row g-3 align-items-end">
                       <div class="col-12 col-md-3 col-xl-2">
                         <label for="cep" class="form-label required">CEP</label>
-                        <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" required aria-describedby="cepHelp" />
+                        <input type="text" class="form-control" id="cep" name="cep" required aria-describedby="cepHelp" />
                         <div id="cepHelp" class="form-text"></div>
                       </div>
                       <div class="col-12 col-md-5 col-xl-5">
                         <label for="logradouro" class="form-label required">Logradouro</label>
-                        <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Rua, avenida, travessa" required />
+                        <input type="text" class="form-control" id="logradouro" name="logradouro" required />
                       </div>
                       <div class="col-12 col-md-2 col-xl-2">
                         <label for="numeroEndereco" class="form-label">Número</label>
-                        <input type="text" class="form-control" id="numeroEndereco" name="numeroEndereco" placeholder="000" />
+                        <input type="text" class="form-control" id="numeroEndereco" name="numeroEndereco" />
                       </div>
                       <div class="col-12 col-md-2 col-xl-3">
                         <label for="complementoEndereco" class="form-label">Complemento</label>
-                        <input type="text" class="form-control" id="complementoEndereco" name="complementoEndereco" placeholder="Apto, bloco" />
+                        <input type="text" class="form-control" id="complementoEndereco" name="complementoEndereco" />
                       </div>
                     </div>
                   </div>
@@ -1150,7 +1140,7 @@
                       </div>
                       <div class="col-12 col-md-2">
                         <label for="rpa" class="form-label">RPA</label>
-                        <input type="text" class="form-control" id="rpa" name="rpa" placeholder="Ex.: RPA 1" />
+                        <input type="text" class="form-control" id="rpa" name="rpa" />
                       </div>
                       <div class="col-12 col-md-3">
                         <label for="cidade" class="form-label required">Cidade</label>
@@ -1164,7 +1154,7 @@
                       </div>
                       <div class="col-12 col-md-2">
                         <label for="pontoReferencia" class="form-label">Ponto de referência</label>
-                        <input type="text" class="form-control" id="pontoReferencia" name="pontoReferencia" placeholder="Próximo a..." />
+                        <input type="text" class="form-control" id="pontoReferencia" name="pontoReferencia" />
                       </div>
                     </div>
                   </div>
@@ -1172,19 +1162,19 @@
                     <div class="row g-3">
                       <div class="col-12 col-md-3 col-xl-3">
                         <label for="telefone" class="form-label">Telefone principal</label>
-                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000" />
+                        <input type="text" class="form-control" id="telefone" name="telefone" />
                       </div>
                       <div class="col-12 col-md-3 col-xl-3">
                         <label for="telefoneSecundario" class="form-label">Telefone alternativo</label>
-                        <input type="text" class="form-control" id="telefoneSecundario" name="telefoneSecundario" placeholder="(00) 00000-0000" />
+                        <input type="text" class="form-control" id="telefoneSecundario" name="telefoneSecundario" />
                       </div>
                       <div class="col-12 col-md-3 col-xl-3">
                         <label for="email" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="nome@email.com" />
+                        <input type="email" class="form-control" id="email" name="email" />
                       </div>
                       <div class="col-12 col-md-3 col-xl-3">
                         <label for="emailConfirmacao" class="form-label">Confirmação de e-mail</label>
-                        <input type="email" class="form-control" id="emailConfirmacao" name="emailConfirmacao" placeholder="Repita o e-mail" aria-describedby="emailConfirmacaoHelp" />
+                        <input type="email" class="form-control" id="emailConfirmacao" name="emailConfirmacao" aria-describedby="emailConfirmacaoHelp" />
                         <div id="emailConfirmacaoHelp" class="form-text">Informe o mesmo endereço para confirmação.</div>
                       </div>
                     </div>
@@ -1225,7 +1215,7 @@
                         </div>
                         <div class="col-12 col-md-6 d-none" id="cursoFormacaoGroup">
                           <label for="cursoFormacao" class="form-label">Curso</label>
-                          <input type="text" class="form-control" id="cursoFormacao" name="cursoFormacao" placeholder="Informe o curso" />
+                          <input type="text" class="form-control" id="cursoFormacao" name="cursoFormacao" />
                         </div>
                         <div class="col-12 col-md-6 d-none" id="tipoPosGraduacaoGroup">
                           <label for="tipoPosGraduacao" class="form-label">Tipo de pós-graduação</label>
@@ -1239,7 +1229,7 @@
                         </div>
                         <div class="col-12 col-md-6 d-none" id="anoPeriodoGroup">
                           <label for="anoPeriodo" class="form-label">Ano/período</label>
-                          <input type="text" class="form-control" id="anoPeriodo" name="anoPeriodo" placeholder="Ex.: 3º período" />
+                          <input type="text" class="form-control" id="anoPeriodo" name="anoPeriodo" />
                         </div>
                       </div>
                     </div>
@@ -1265,7 +1255,7 @@
                       <div class="row g-3 mt-1 d-none" id="detalhesTrabalho">
                         <div class="col-12 col-md-6">
                           <label for="profissao" class="form-label">Ocupação/profissão</label>
-                          <input type="text" class="form-control" id="profissao" name="profissao" placeholder="Profissão atual" />
+                          <input type="text" class="form-control" id="profissao" name="profissao" />
                         </div>
                         <div class="col-12 col-md-6">
                           <label for="situacaoTrabalho" class="form-label">Situação trabalhista</label>
@@ -1280,7 +1270,7 @@
                         </div>
                         <div class="col-12 col-md-6">
                           <label for="rendaIndividual" class="form-label">Renda individual</label>
-                          <input type="text" class="form-control" id="rendaIndividual" name="rendaIndividual" placeholder="R$ 0,00" />
+                          <input type="text" class="form-control" id="rendaIndividual" name="rendaIndividual" />
                         </div>
                       </div>
                       <div class="mt-3">
@@ -1299,7 +1289,7 @@
                       <div class="mt-3 d-none" id="cursosWrapper">
                         <label for="cursoCapacitacao" class="form-label required">Curso de interesse</label>
                         <div class="d-flex flex-column gap-2">
-                          <input type="text" class="form-control" id="cursoCapacitacao" name="cursos[]" placeholder="Ex.: Informática básica" />
+                          <input type="text" class="form-control" id="cursoCapacitacao" name="cursos[]" />
                           <div id="cursosExtras" class="d-flex flex-column gap-2"></div>
                           <button type="button" class="btn btn-sm btn-outline-primary align-self-start" id="adicionarCurso" aria-describedby="cursoHelp">
                             <i class="bi bi-plus-circle me-1"></i>Adicionar outro
@@ -1341,11 +1331,11 @@
                   </div>
                   <div class="col-12 col-md-4">
                     <label for="dataOcorrencia" class="form-label">Data da última ocorrência</label>
-                    <input type="text" class="form-control" id="dataOcorrencia" name="dataOcorrencia" placeholder="dd/mm/aaaa" />
+                    <input type="text" class="form-control" id="dataOcorrencia" name="dataOcorrencia" />
                   </div>
                   <div class="col-12">
                     <label for="relato" class="form-label">Relato resumido</label>
-                    <textarea id="relato" name="relato" class="form-control" rows="3" placeholder="Descreva a situação de violência..."></textarea>
+                    <textarea id="relato" name="relato" class="form-control" rows="3"></textarea>
                   </div>
                   <div class="col-12">
                     <div class="alert alert-info d-none" id="encaminhamentosAlert" role="status">
@@ -1369,7 +1359,7 @@
                             class="form-control"
                             id="numeroSus"
                             name="numeroSus"
-                            placeholder="Digite o número completo"
+                           
                             required
                           />
                         </div>
@@ -1439,7 +1429,7 @@
                             class="form-control"
                             id="problemaSaudeQual"
                             name="problemaSaudeQual"
-                            placeholder="Descreva a condição"
+                           
                           />
                         </div>
                         <div class="col-12">
@@ -1462,7 +1452,7 @@
                             class="form-control"
                             id="tempoPsicologo"
                             name="tempoPsicologo"
-                            placeholder="Ex.: 6 meses"
+                           
                           />
                         </div>
                         <div class="col-12">
@@ -1485,7 +1475,7 @@
                             class="form-control"
                             id="tempoPsiquiatra"
                             name="tempoPsiquiatra"
-                            placeholder="Ex.: 1 ano"
+                           
                           />
                         </div>
                       </div>
@@ -1515,7 +1505,7 @@
                             class="form-control"
                             id="medicamentosQuais"
                             name="medicamentosQuais"
-                            placeholder="Liste os medicamentos em uso"
+                           
                           />
                         </div>
                         <div class="col-12">
@@ -1577,7 +1567,7 @@
                         </div>
                         <div class="col-12 col-md-6 d-none" id="preventivoAnoGroup">
                           <label for="preventivoAno" class="form-label required">Quando (ano)?</label>
-                          <input type="text" class="form-control" id="preventivoAno" name="preventivoAno" placeholder="Ex.: 2023" />
+                          <input type="text" class="form-control" id="preventivoAno" name="preventivoAno" />
                         </div>
                         <div class="col-12 d-none" id="mamografiaGroup">
                           <span class="form-label d-block">Mamografia</span>
@@ -1594,7 +1584,7 @@
                         </div>
                         <div class="col-12 col-md-6 d-none" id="mamografiaAnoGroup">
                           <label for="mamografiaAno" class="form-label required">Quando (ano)?</label>
-                          <input type="text" class="form-control" id="mamografiaAno" name="mamografiaAno" placeholder="Ex.: 2022" />
+                          <input type="text" class="form-control" id="mamografiaAno" name="mamografiaAno" />
                         </div>
                         <div class="col-12 col-md-6">
                           <span class="form-label required d-block">Realizou exame de HIV?</span>
@@ -1712,7 +1702,7 @@
                                 class="form-control"
                                 id="drogasLicitasOutrasTexto"
                                 name="drogasLicitasOutrasTexto"
-                                placeholder="Informe outras drogas lícitas"
+                               
                               />
                             </div>
                           </div>
@@ -1764,7 +1754,7 @@
                                 class="form-control"
                                 id="drogasIlicitasOutrasTexto"
                                 name="drogasIlicitasOutrasTexto"
-                                placeholder="Informe outras drogas ilícitas"
+                               
                               />
                             </div>
                           </div>
@@ -1824,11 +1814,11 @@
                   </div>
                   <div class="col-12 col-md-4 d-none" id="situacaoHabitacionalOutroGroup">
                     <label for="situacaoHabitacionalOutro" class="form-label">Descreva a situação habitacional</label>
-                    <input type="text" class="form-control" id="situacaoHabitacionalOutro" name="situacaoHabitacionalOutro" placeholder="Informe a situação" />
+                    <input type="text" class="form-control" id="situacaoHabitacionalOutro" name="situacaoHabitacionalOutro" />
                   </div>
                   <div class="col-12 col-md-4">
                     <label for="redeApoio" class="form-label">Rede de apoio</label>
-                    <input type="text" class="form-control" id="redeApoio" name="redeApoio" placeholder="Familiares, vizinhança..." />
+                    <input type="text" class="form-control" id="redeApoio" name="redeApoio" />
                   </div>
                 </div>
                 <div class="mt-4">
@@ -1946,7 +1936,7 @@
                   </div>
                   <div class="col-12">
                     <label for="fatoresRelacionados" class="form-label">Fatores relacionados</label>
-                    <textarea id="fatoresRelacionados" name="fatoresRelacionados" class="form-control" rows="2" placeholder="Ex.: uso de álcool, ciúmes, disputa patrimonial..."></textarea>
+                    <textarea id="fatoresRelacionados" name="fatoresRelacionados" class="form-control" rows="2"></textarea>
                   </div>
                 </div>
               </section>
@@ -2004,15 +1994,15 @@
               <div class="row g-3">
                 <div class="col-12 col-md-4">
                   <label for="autorCpf" class="form-label required">CPF</label>
-                  <input type="text" class="form-control" id="autorCpf" name="autorCpf" required placeholder="000.000.000-00" />
+                  <input type="text" class="form-control" id="autorCpf" name="autorCpf" required />
                 </div>
                 <div class="col-12 col-md-8">
                   <label for="autorNome" class="form-label required">Nome completo</label>
-                  <input type="text" class="form-control" id="autorNome" name="autorNome" required placeholder="Digite o nome civil" />
+                  <input type="text" class="form-control" id="autorNome" name="autorNome" required />
                 </div>
                 <div class="col-12 col-md-6">
                   <label for="autorNomeSocial" class="form-label">Nome social</label>
-                  <input type="text" class="form-control" id="autorNomeSocial" name="autorNomeSocial" placeholder="Como prefere ser identificada(o)" />
+                  <input type="text" class="form-control" id="autorNomeSocial" name="autorNomeSocial" />
                 </div>
                 <div class="col-12 col-md-6">
                   <label for="autorParentesco" class="form-label required">Grau de parentesco</label>
@@ -2028,11 +2018,11 @@
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorRg" class="form-label">RG</label>
-                  <input type="text" class="form-control" id="autorRg" name="autorRg" placeholder="Documento de identidade" />
+                  <input type="text" class="form-control" id="autorRg" name="autorRg" />
                 </div>
                 <div class="col-12 col-md-4 d-none autor-rg-group">
                   <label for="autorOrgaoExpedicao" class="form-label">Órgão de expedição</label>
-                  <input type="text" class="form-control" id="autorOrgaoExpedicao" name="autorOrgaoExpedicao" placeholder="SSP, DETRAN..." />
+                  <input type="text" class="form-control" id="autorOrgaoExpedicao" name="autorOrgaoExpedicao" />
                 </div>
                 <div class="col-6 col-md-2 d-none autor-rg-group">
                   <label for="autorUfExpedicao" class="form-label">UF</label>
@@ -2059,7 +2049,7 @@
                 </div>
                 <div class="col-12 col-md-8 d-none" id="autorConjugeGroup">
                   <label for="autorConjuge" class="form-label required">Nome do(a) cônjuge/companheiro(a)</label>
-                  <input type="text" class="form-control" id="autorConjuge" name="autorConjuge" placeholder="Informe o nome do(a) cônjuge" />
+                  <input type="text" class="form-control" id="autorConjuge" name="autorConjuge" />
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorOrientacaoSexual" class="form-label">Orientação sexual</label>
@@ -2152,12 +2142,12 @@
                   </select>
                 </div>
                 <div class="col-12 col-md-6">
-                  <label for="autorNomePai" class="form-label">Nome do pai</label>
-                  <input type="text" class="form-control" id="autorNomePai" name="autorNomePai" placeholder="Nome completo do pai" />
+                  <label for="autorNomeMae" class="form-label">Nome da mãe</label>
+                  <input type="text" class="form-control" id="autorNomeMae" name="autorNomeMae" />
                 </div>
                 <div class="col-12 col-md-6">
-                  <label for="autorNomeMae" class="form-label">Nome da mãe</label>
-                  <input type="text" class="form-control" id="autorNomeMae" name="autorNomeMae" placeholder="Nome completo da mãe" />
+                  <label for="autorNomePai" class="form-label">Nome do pai</label>
+                  <input type="text" class="form-control" id="autorNomePai" name="autorNomePai" />
                 </div>
               </div>
 
@@ -2171,7 +2161,7 @@
                 <div class="col-12 col-md-4">
                   <label for="autorCep" class="form-label">CEP</label>
                   <div class="d-flex gap-2">
-                    <input type="text" class="form-control" id="autorCep" name="autorCep" placeholder="00000-000" />
+                    <input type="text" class="form-control" id="autorCep" name="autorCep" />
                     <div class="form-check mt-2">
                       <input class="form-check-input" type="checkbox" id="autorSemCep" name="autorSemCep" />
                       <label class="form-check-label" for="autorSemCep">Não sei</label>
@@ -2213,15 +2203,15 @@
               <div class="row g-3 mt-1">
                 <div class="col-12 col-md-4">
                   <label for="autorTelefoneFixo" class="form-label">Telefone fixo</label>
-                  <input type="text" class="form-control" id="autorTelefoneFixo" name="autorTelefoneFixo" placeholder="(00) 0000-0000" />
+                  <input type="text" class="form-control" id="autorTelefoneFixo" name="autorTelefoneFixo" />
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorTelefoneCelular" class="form-label">Telefone celular</label>
-                  <input type="text" class="form-control" id="autorTelefoneCelular" name="autorTelefoneCelular" placeholder="(00) 00000-0000" />
+                  <input type="text" class="form-control" id="autorTelefoneCelular" name="autorTelefoneCelular" />
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorEmail" class="form-label">E-mail</label>
-                  <input type="email" class="form-control" id="autorEmail" name="autorEmail" placeholder="email@exemplo.com" />
+                  <input type="email" class="form-control" id="autorEmail" name="autorEmail" />
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorDataNascimento" class="form-label required">Data de nascimento</label>
@@ -2229,7 +2219,7 @@
                 </div>
                 <div class="col-12 col-md-2">
                   <label for="autorIdade" class="form-label">Idade</label>
-                  <input type="text" class="form-control" id="autorIdade" name="autorIdade" readonly placeholder="Calculada" />
+                  <input type="text" class="form-control" id="autorIdade" name="autorIdade" readonly />
                 </div>
               </div>
 
@@ -2262,7 +2252,7 @@
                 </div>
                 <div class="col-12 col-md-6 d-none" id="autorCursoFormacaoGroup">
                   <label for="autorCursoFormacao" class="form-label">Curso</label>
-                  <input type="text" class="form-control" id="autorCursoFormacao" name="autorCursoFormacao" placeholder="Informe o curso" />
+                  <input type="text" class="form-control" id="autorCursoFormacao" name="autorCursoFormacao" />
                 </div>
                 <div class="col-12 col-md-6 d-none" id="autorTipoPosGraduacaoGroup">
                   <label for="autorTipoPosGraduacao" class="form-label">Tipo de pós-graduação</label>
@@ -2276,7 +2266,7 @@
                 </div>
                 <div class="col-12 col-md-6 d-none" id="autorAnoPeriodoGroup">
                   <label for="autorAnoPeriodo" class="form-label">Ano/período</label>
-                  <input type="text" class="form-control" id="autorAnoPeriodo" name="autorAnoPeriodo" placeholder="Ex.: 3º período" />
+                  <input type="text" class="form-control" id="autorAnoPeriodo" name="autorAnoPeriodo" />
                 </div>
               </div>
 
@@ -2293,7 +2283,7 @@
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorTelefoneTrabalho" class="form-label">Telefone</label>
-                  <input type="text" class="form-control" id="autorTelefoneTrabalho" name="autorTelefoneTrabalho" placeholder="(00) 0000-0000" />
+                  <input type="text" class="form-control" id="autorTelefoneTrabalho" name="autorTelefoneTrabalho" />
                 </div>
                 <div class="col-12 col-md-4">
                   <label for="autorReferenciaTrabalho" class="form-label">Ponto de referência</label>
@@ -2316,7 +2306,7 @@
                 </div>
                 <div class="col-12 col-md-6 d-none" id="autorOcupacaoGroup">
                   <label for="autorOcupacao" class="form-label required">Ocupação / Profissão</label>
-                  <input type="text" class="form-control" id="autorOcupacao" name="autorOcupacao" placeholder="Informe a função principal" />
+                  <input type="text" class="form-control" id="autorOcupacao" name="autorOcupacao" />
                 </div>
                 <div class="col-12 col-md-6">
                   <span class="form-label d-block">Profissional de segurança pública?</span>
@@ -2333,9 +2323,9 @@
                 </div>
                 <div class="col-12 col-md-6 d-none" id="autorSegurancaDetalhes">
                   <label for="autorSegurancaQual" class="form-label required">Qual?</label>
-                  <input type="text" class="form-control mb-2" id="autorSegurancaQual" name="autorSegurancaQual" placeholder="Ex.: Polícia Militar" />
+                  <input type="text" class="form-control mb-2" id="autorSegurancaQual" name="autorSegurancaQual" />
                   <label for="autorForcaInstitucional" class="form-label required">Força institucional</label>
-                  <input type="text" class="form-control" id="autorForcaInstitucional" name="autorForcaInstitucional" placeholder="Informe a corporação" />
+                  <input type="text" class="form-control" id="autorForcaInstitucional" name="autorForcaInstitucional" />
                 </div>
                 <div class="col-12 col-md-6">
                   <label for="autorRendaIndividual" class="form-label required">Renda individual</label>
