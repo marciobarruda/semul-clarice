@@ -874,34 +874,6 @@
                 </table>
               </div>
             </section>
-            <section class="card-section" aria-labelledby="historico-recentes">
-              <div class="section-header">
-                <h2 class="h5 mb-0" id="historico-recentes">Últimas atualizações</h2>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                  <div>
-                    <h3 class="h6 mb-1">Anexo adicionado</h3>
-                    <p class="mb-0 text-muted">Laudo psicossocial anexado ao prontuário #2024-119.</p>
-                  </div>
-                  <span class="badge bg-primary-subtle text-primary">há 2h</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                  <div>
-                    <h3 class="h6 mb-1">Encaminhamento confirmado</h3>
-                    <p class="mb-0 text-muted">CREAS Sede confirmou atendimento inicial para 16/05.</p>
-                  </div>
-                  <span class="badge bg-success-subtle text-success">há 5h</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                  <div>
-                    <h3 class="h6 mb-1">Registro atualizado</h3>
-                    <p class="mb-0 text-muted">Medida protetiva renovada para prontuário #2023-541.</p>
-                  </div>
-                  <span class="badge bg-warning-subtle text-warning">ontem</span>
-                </li>
-              </ul>
-            </section>
           </div>
 
           <div class="tab-pane fade" id="bi" role="tabpanel" aria-labelledby="bi-tab">
@@ -1019,7 +991,7 @@
                           <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" required readonly />
                         </div>
                         <div class="col-12">
-                          <span class="form-label required d-block">Avaliação inicial</span>
+                          <span class="form-label required d-block fw-semibold text-primary">Avaliação inicial</span>
                           <div class="d-flex flex-wrap gap-3" role="group" aria-label="Avaliação inicial">
                             <div class="form-check">
                               <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoRisco" value="Risco iminente" required />
@@ -1036,7 +1008,7 @@
                           </div>
                         </div>
                         <div class="col-12 col-xl-6">
-                          <span class="form-label">Atendimento</span>
+                          <span class="form-label d-block fw-semibold text-primary">Atendimento</span>
                           <div class="row g-2">
                             <div class="col-12 col-sm-6">
                               <div class="form-check">
@@ -1065,7 +1037,7 @@
                           </div>
                         </div>
                         <div class="col-12 col-xl-6">
-                          <span class="form-label">Como soube do serviço</span>
+                          <span class="form-label d-block fw-semibold text-primary">Como soube do serviço</span>
                           <div class="row g-2">
                             <div class="col-12 col-sm-6">
                               <div class="form-check">
@@ -1100,42 +1072,48 @@
                   <div class="col-12 col-xxl-6">
                     <div class="subsection-card h-100">
                       <h3 class="subsection-heading">Documentação e identificação civil</h3>
-                      <div class="row g-3 align-items-end">
-                        <div class="col-12 col-md-auto field-cpf">
+                      <div class="row g-3">
+                        <div class="col-12 field-cpf">
                           <label for="cpfUsuario" class="form-label required">CPF</label>
                           <input type="text" class="form-control cpf-input" id="cpfUsuario" name="cpfUsuario" required />
                         </div>
-                        <div class="col-12 col-md nome-completo-field">
+                        <div class="col-12 nome-completo-field">
                           <label for="nomeUsuario" class="form-label required">Nome completo</label>
                           <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                         </div>
-                        <div class="col-12 col-md nome-social-field">
+                        <div class="col-12 nome-social-field">
                           <label for="nomeSocial" class="form-label">Nome social</label>
                           <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                         </div>
-                      </div>
-                      <div class="row g-3 mt-1">
-                        <div class="col-12 col-md-3 col-lg-3">
-                          <label for="rgUsuario" class="form-label">RG</label>
-                          <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
+                        <div class="col-12">
+                          <div class="row g-3 align-items-end">
+                            <div class="col-12 col-md-6 col-lg-7">
+                              <label for="dataNascimento" class="form-label required">Data de nascimento</label>
+                              <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-5 ms-md-auto">
+                              <label for="idade" class="form-label">Idade</label>
+                              <input type="text" class="form-control" id="idade" name="idade" readonly />
+                            </div>
+                          </div>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4 col-orgao-expedidor">
-                          <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
-                          <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
-                        </div>
-                        <div class="col-12 col-md-2 col-lg-2 col-uf-expedicao">
-                          <label for="ufExpedicao" class="form-label">UF</label>
-                          <select id="ufExpedicao" name="ufExpedicao" class="form-select">
-                            <option value="">Selecione</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-3">
-                          <label for="dataNascimento" class="form-label required">Data de nascimento</label>
-                          <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
-                        </div>
-                        <div class="col-12 col-md-auto ms-md-auto">
-                          <label for="idade" class="form-label">Idade</label>
-                          <input type="text" class="form-control" id="idade" name="idade" readonly />
+                        <div class="col-12">
+                          <div class="row g-3">
+                            <div class="col-12 col-md-4 col-lg-4">
+                              <label for="rgUsuario" class="form-label">RG</label>
+                              <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
+                            </div>
+                            <div class="col-12 col-md-5 col-lg-5 col-orgao-expedidor">
+                              <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
+                              <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
+                            </div>
+                            <div class="col-12 col-md-3 col-lg-3 col-uf-expedicao">
+                              <label for="ufExpedicao" class="form-label">UF</label>
+                              <select id="ufExpedicao" name="ufExpedicao" class="form-select">
+                                <option value="">Selecione</option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1145,37 +1123,45 @@
                     <div class="subsection-card h-100">
                       <h3 class="subsection-heading">Naturalidade e estado civil</h3>
                       <div class="row g-3">
-                        <div class="col-12 col-md-4">
+                        <div class="col-12">
                           <label for="nacionalidade" class="form-label">Nacionalidade</label>
                           <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" />
                         </div>
-                        <div class="col-12 col-md-3">
-                          <label for="ufNascimento" class="form-label">UF de nascimento</label>
-                          <select id="ufNascimento" name="ufNascimento" class="form-select">
-                            <option value="">Selecione</option>
-                          </select>
+                        <div class="col-12">
+                          <div class="row g-3">
+                            <div class="col-12 col-md-5 col-lg-4">
+                              <label for="ufNascimento" class="form-label">UF de nascimento</label>
+                              <select id="ufNascimento" name="ufNascimento" class="form-select">
+                                <option value="">Selecione</option>
+                              </select>
+                            </div>
+                            <div class="col-12 col-md-7 col-lg-8">
+                              <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
+                              <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
+                                <option value="">Selecione a UF primeiro</option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
-                        <div class="col-12 col-md-5">
-                          <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
-                          <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
-                            <option value="">Selecione a UF primeiro</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                          <label for="estadoCivil" class="form-label">Estado civil</label>
-                          <select id="estadoCivil" name="estadoCivil" class="form-select">
-                            <option value="">Selecione</option>
-                            <option>Solteira</option>
-                            <option>Casada</option>
-                            <option>União estável</option>
-                            <option>Separada</option>
-                            <option>Divorciada</option>
-                            <option>Viúva</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-8">
-                          <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
-                          <input type="text" class="form-control" id="conjuge" name="conjuge" />
+                        <div class="col-12">
+                          <div class="row g-3">
+                            <div class="col-12 col-md-5 col-lg-4">
+                              <label for="estadoCivil" class="form-label">Estado civil</label>
+                              <select id="estadoCivil" name="estadoCivil" class="form-select">
+                                <option value="">Selecione</option>
+                                <option>Solteira</option>
+                                <option>Casada</option>
+                                <option>União estável</option>
+                                <option>Separada</option>
+                                <option>Divorciada</option>
+                                <option>Viúva</option>
+                              </select>
+                            </div>
+                            <div class="col-12 col-md-7 col-lg-8">
+                              <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
+                              <input type="text" class="form-control" id="conjuge" name="conjuge" />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -6770,37 +6756,23 @@
 
         if (!input || !btn || !tbody) return;
 
-        function formatCPF(value) {
-          const digits = String(value || '').replace(/\D/g, '').slice(0, 11);
-          if (digits.length !== 11) return String(value || '').trim();
-          return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        function formatCPF(v) {
+          const digits = String(v || '').replace(/\D/g, '').slice(0, 11);
+          if (!digits) return '';
+          const padded = digits.padStart(11, '0');
+          return padded.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         }
 
-        function toggleState(message = '', type = 'info') {
+        function showState(message = '', type = 'info') {
           if (!stateAlert) return;
-          stateAlert.classList.remove('alert-danger', 'alert-success', 'alert-warning', 'alert-info');
+          stateAlert.classList.remove('alert-danger', 'alert-success', 'alert-warning', 'alert-info', 'd-none');
           if (!message) {
             stateAlert.classList.add('d-none', 'alert-info');
             stateAlert.textContent = '';
             return;
           }
-          stateAlert.classList.remove('d-none');
           stateAlert.classList.add(`alert-${type}`);
           stateAlert.textContent = message;
-        }
-
-        function setLoading(isLoading) {
-          if (!btn) return;
-          if (isLoading) {
-            btn.disabled = true;
-            btn.dataset.originalLabel = btn.dataset.originalLabel || btn.innerHTML;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Buscando...';
-          } else {
-            btn.disabled = false;
-            if (btn.dataset.originalLabel) {
-              btn.innerHTML = btn.dataset.originalLabel;
-            }
-          }
         }
 
         function emptyRow(message) {
@@ -6813,153 +6785,81 @@
           return tr;
         }
 
-        function buildRow(item) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${item.prontuario || ''}</td>
-            <td>${item.nome || ''}</td>
-            <td>${formatCPF(item.cpf)}</td>
-            <td>${item.mae || ''}</td>
-            <td class="text-end">
-              <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${item.prontuario || ''}">
-                <i class="bi bi-eye"></i>
-              </button>
-              <button class="btn btn-link p-0" title="Editar" data-prontuario="${item.prontuario || ''}">
-                <i class="bi bi-pencil-square"></i>
-              </button>
-            </td>
-          `;
-          return tr;
-        }
+        function renderProntuarios(items) {
+          tbody.innerHTML = '';
+          const data = Array.isArray(items) ? items : [];
 
-        function normalizePayload(payload) {
-          const results = [];
-          const queue = [];
-          const visited = new Set();
-          const nestedKeys = ['data', 'resultado', 'result', 'records', 'items', 'lista', 'values'];
-
-          function enqueue(item) {
-            if (item == null) return;
-            if (typeof item === 'string') {
-              const trimmed = item.trim();
-              if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-                try {
-                  enqueue(JSON.parse(trimmed));
-                } catch (error) {
-                  console.warn('Não foi possível analisar o payload de prontuários.', error);
-                }
-              }
-              return;
-            }
-
-            if (visited.has(item)) return;
-            visited.add(item);
-            queue.push(item);
-          }
-
-          enqueue(payload);
-
-          while (queue.length) {
-            const current = queue.shift();
-            if (current == null) continue;
-
-            if (Array.isArray(current)) {
-              current.forEach(enqueue);
-              continue;
-            }
-
-            if (typeof current === 'object') {
-              const prontuario = current.prontuario ?? current.numero ?? '';
-              const nome = current.nome ?? current.nomeCompleto ?? '';
-              const cpf = current.cpf ?? current.documento ?? '';
-              const mae = current.mae ?? current.nomeMae ?? '';
-
-              if (prontuario || nome || cpf || mae) {
-                results.push({
-                  prontuario: String(prontuario || '').trim(),
-                  nome: String(nome || '').trim(),
-                  cpf: String(cpf || '').trim(),
-                  mae: String(mae || '').trim()
-                });
-              }
-
-              nestedKeys.forEach((key) => {
-                const value = current[key];
-                if (Array.isArray(value) || (value && typeof value === 'object')) {
-                  enqueue(value);
-                }
-              });
-            }
-          }
-
-          const unique = [];
-          const seen = new Set();
-          for (const item of results) {
-            const key = [item.prontuario, item.cpf, item.nome, item.mae].join('|');
-            if (!seen.has(key)) {
-              seen.add(key);
-              unique.push(item);
-            }
-          }
-          return unique;
-        }
-
-        async function handleBuscar(event) {
-          if (event) event.preventDefault();
-          const termo = input.value.trim();
-          if (!termo) {
-            toggleState('Informe pelo menos um dado para busca.', 'warning');
+          if (!data.length) {
+            tbody.appendChild(emptyRow('Nenhum registro encontrado'));
+            showState('Nenhum registro encontrado.', 'info');
             return;
           }
 
-          toggleState();
+          const frag = document.createDocumentFragment();
+          for (const item of data) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+        <td>${item.prontuario || ''}</td>
+        <td>${item.nome || ''}</td>
+        <td>${formatCPF(item.cpf)}</td>
+        <td>${item.mae || ''}</td>
+        <td class="text-end">
+          <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${item.prontuario}">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-link p-0" title="Editar" data-prontuario="${item.prontuario}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+        </td>
+      `;
+            frag.appendChild(tr);
+          }
+          tbody.appendChild(frag);
+          showState(`Exibindo ${data.length} registro(s).`, 'success');
+        }
+
+        async function handleBuscar() {
+          const termo = input.value.trim();
+          if (!termo) {
+            showState('Informe um termo para busca.', 'warning');
+            return;
+          }
+
+          showState();
           tbody.innerHTML = '';
-          setLoading(true);
+          tbody.appendChild(emptyRow('Buscando registros...'));
+
+          const original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
 
           try {
-            const response = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/listar-prontuarios', {
+            const resp = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/listar-prontuarios', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ termo })
             });
 
-            if (!response.ok) {
-              throw new Error(`Erro na requisição (${response.status})`);
-            }
-
-            let data;
-            try {
-              data = await response.json();
-            } catch (error) {
-              const text = await response.text();
-              data = text;
-            }
-
-            const registros = normalizePayload(data);
-
-            if (!registros.length) {
-              tbody.appendChild(emptyRow('Nenhum registro encontrado'));
-              toggleState('Nenhum registro encontrado para os filtros informados.', 'info');
-              return;
-            }
-
-            const fragment = document.createDocumentFragment();
-            registros.forEach((item) => fragment.appendChild(buildRow(item)));
-            tbody.appendChild(fragment);
-            toggleState(`Exibindo ${registros.length} registro(s).`, 'success');
-          } catch (error) {
-            console.error('Falha ao buscar prontuários:', error);
+            if (!resp.ok) throw new Error('Erro na requisição');
+            const data = await resp.json();
+            renderProntuarios(data);
+          } catch (err) {
+            console.error(err);
             tbody.innerHTML = '';
             tbody.appendChild(emptyRow('Falha ao buscar. Tente novamente.'));
-            toggleState('Falha ao buscar. Tente novamente.', 'danger');
+            showState('Falha ao buscar. Tente novamente.', 'danger');
           } finally {
-            setLoading(false);
+            btn.disabled = false;
+            btn.innerHTML = original;
           }
         }
 
         btn.addEventListener('click', handleBuscar);
         if (form) {
-          form.addEventListener('submit', handleBuscar);
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            handleBuscar();
+          });
         }
       })();
     </script>
