@@ -4173,6 +4173,60 @@
           return somenteDigitos.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         };
 
+        const normalizarRegistros = (entrada) => {
+          if (!entrada) return [];
+
+          if (Array.isArray(entrada)) {
+            return entrada.filter((item) => item && typeof item === 'object');
+          }
+
+          if (typeof entrada === 'string') {
+            const texto = entrada.trim();
+            if (!texto) return [];
+            try {
+              return normalizarRegistros(JSON.parse(texto));
+            } catch (error) {
+              console.warn('Resposta de prontuários não estruturada em JSON parseável.', texto);
+              return [];
+            }
+          }
+
+          if (typeof entrada === 'object') {
+            if (['prontuario', 'cpf', 'nome', 'mae'].some((chave) => Object.prototype.hasOwnProperty.call(entrada, chave))) {
+              return [entrada];
+            }
+
+            const chavesPrioridade = [
+              'data',
+              'resultado',
+              'records',
+              'body',
+              'items',
+              'result',
+              'response',
+              'payload',
+              'value',
+              'prontuarios',
+            ];
+
+            for (const chave of chavesPrioridade) {
+              if (Object.prototype.hasOwnProperty.call(entrada, chave)) {
+                const normalizado = normalizarRegistros(entrada[chave]);
+                if (normalizado.length) {
+                  return normalizado;
+                }
+              }
+            }
+
+            const agregados = Object.values(entrada).flatMap((valor) => normalizarRegistros(valor));
+            if (agregados.length) {
+              return agregados;
+            }
+          }
+
+          return [];
+        };
+
         const consultaProntuariosForm = document.getElementById('consultaProntuariosForm');
         const consultaProntuariosInput = document.getElementById('consultaProntuariosTermo');
         const consultaProntuariosEstado = document.getElementById('consultaProntuariosEstado');
@@ -4295,15 +4349,11 @@
                 return;
               }
 
-              const registros = Array.isArray(dados)
-                ? dados
-                : Array.isArray(dados?.data)
-                ? dados.data
-                : Array.isArray(dados?.resultado)
-                ? dados.resultado
-                : Array.isArray(dados?.records)
-                ? dados.records
-                : [];
+              const registros = normalizarRegistros(dados);
+
+              if (!registros.length) {
+                console.info('Consulta de prontuários sem registros utilizáveis.', dados);
+              }
 
               atualizarEstadoConsulta('success', 'Resultados atualizados com sucesso.');
               setTimeout(() => atualizarEstadoConsulta(null, ''), 2500);
