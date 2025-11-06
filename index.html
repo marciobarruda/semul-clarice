@@ -991,228 +991,257 @@
                   </div>
                 </div>
                 <input type="hidden" id="numeroProntuario" name="numeroProntuario" required readonly />
-                <div class="row g-3 align-items-end">
-                  <div class="col-12 col-lg-2 col-xxl-2">
-                    <label for="demandante" class="form-label">Demandante</label>
-                    <input type="text" class="form-control" id="demandante" name="demandante" />
-                  </div>
-                  <div class="col-12 col-lg-5 col-xxl-5">
-                    <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
-                    <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
-                      <option value="">Selecione</option>
-                      <option>Centro de Referência Clarice Lispector</option>
-                      <option>Casa de Passagem</option>
-                      <option>Casa Abrigo Sempre Viva</option>
-                      <option>Outro equipamento</option>
-                    </select>
-                  </div>
-                  <div class="col-6 col-lg-2 col-xxl-2">
-                    <label for="dataAtendimento" class="form-label required">Data</label>
-                    <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" required readonly />
-                  </div>
-                  <div class="col-6 col-lg-3 col-xxl-3">
-                    <label for="horaAtendimento" class="form-label required">Hora</label>
-                    <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" required readonly />
-                  </div>
+                <div class="row g-4">
                   <div class="col-12">
-                    <span class="form-label required d-block">Avaliação inicial</span>
-                    <div class="d-flex flex-wrap gap-3" role="group" aria-label="Avaliação inicial">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoRisco" value="Risco iminente" required />
-                        <label class="form-check-label" for="avaliacaoRisco">Risco iminente</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoAcompanhamento" value="Acompanhamento" required />
-                        <label class="form-check-label" for="avaliacaoAcompanhamento">Acompanhamento</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoOutra" value="Outra" required />
-                        <label class="form-check-label" for="avaliacaoOutra">Outra</label>
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-heading">Atendimento inicial</h3>
+                      <div class="row g-3 align-items-end">
+                        <div class="col-12 col-lg-3 col-xxl-3">
+                          <label for="demandante" class="form-label">Demandante</label>
+                          <input type="text" class="form-control" id="demandante" name="demandante" />
+                        </div>
+                        <div class="col-12 col-lg-5 col-xxl-5">
+                          <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
+                          <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option>Centro de Referência Clarice Lispector</option>
+                            <option>Casa de Passagem</option>
+                            <option>Casa Abrigo Sempre Viva</option>
+                            <option>Outro equipamento</option>
+                          </select>
+                        </div>
+                        <div class="col-6 col-lg-2 col-xxl-2">
+                          <label for="dataAtendimento" class="form-label required">Data</label>
+                          <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" required readonly />
+                        </div>
+                        <div class="col-6 col-lg-2 col-xxl-2">
+                          <label for="horaAtendimento" class="form-label required">Hora</label>
+                          <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" required readonly />
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Avaliação inicial</span>
+                          <div class="d-flex flex-wrap gap-3" role="group" aria-label="Avaliação inicial">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoRisco" value="Risco iminente" required />
+                              <label class="form-check-label" for="avaliacaoRisco">Risco iminente</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoAcompanhamento" value="Acompanhamento" required />
+                              <label class="form-check-label" for="avaliacaoAcompanhamento">Acompanhamento</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="avaliacaoInicial" id="avaliacaoOutra" value="Outra" required />
+                              <label class="form-check-label" for="avaliacaoOutra">Outra</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                          <span class="form-label">Atendimento</span>
+                          <div class="row g-2">
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input atendimento-check" type="checkbox" value="Doméstica/Familiar" id="atendimentoDomestica" name="atendimento[]" />
+                                <label class="form-check-label" for="atendimentoDomestica">Doméstica/Familiar</label>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input atendimento-check" type="checkbox" value="Sexista" id="atendimentoSexista" name="atendimento[]" />
+                                <label class="form-check-label" for="atendimentoSexista">Sexista</label>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input atendimento-check" type="checkbox" value="Acolhida/Orientação" id="atendimentoAcolhida" name="atendimento[]" />
+                                <label class="form-check-label" for="atendimentoAcolhida">Acolhida/Orientação</label>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input atendimento-check" type="checkbox" value="Outros Municípios" id="atendimentoOutros" name="atendimento[]" />
+                                <label class="form-check-label" for="atendimentoOutros">Outros Municípios</label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                          <span class="form-label">Como soube do serviço</span>
+                          <div class="row g-2">
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Parente" id="origemParente" name="origemServico[]" />
+                                <label class="form-check-label" for="origemParente">Parente</label>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Campanhas" id="origemCampanhas" name="origemServico[]" />
+                                <label class="form-check-label" for="origemCampanhas">Campanhas</label>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Amiga(o)" id="origemAmiga" name="origemServico[]" />
+                                <label class="form-check-label" for="origemAmiga">Amiga(o)</label>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Outras(os)" id="origemOutras" name="origemServico[]" />
+                                <label class="form-check-label" for="origemOutras">Outras(os)</label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label">Atendimento</span>
-                    <div class="row g-2">
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input atendimento-check" type="checkbox" value="Doméstica/Familiar" id="atendimentoDomestica" name="atendimento[]" />
-                          <label class="form-check-label" for="atendimentoDomestica">Doméstica/Familiar</label>
+
+                  <div class="col-12 col-xxl-6">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-heading">Documentação e identificação civil</h3>
+                      <div class="row g-3 align-items-end">
+                        <div class="col-12 col-md-auto field-cpf">
+                          <label for="cpfUsuario" class="form-label required">CPF</label>
+                          <input type="text" class="form-control cpf-input" id="cpfUsuario" name="cpfUsuario" required />
+                        </div>
+                        <div class="col-12 col-md nome-completo-field">
+                          <label for="nomeUsuario" class="form-label required">Nome completo</label>
+                          <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
+                        </div>
+                        <div class="col-12 col-md nome-social-field">
+                          <label for="nomeSocial" class="form-label">Nome social</label>
+                          <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                         </div>
                       </div>
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input atendimento-check" type="checkbox" value="Sexista" id="atendimentoSexista" name="atendimento[]" />
-                          <label class="form-check-label" for="atendimentoSexista">Sexista</label>
+                      <div class="row g-3 mt-1">
+                        <div class="col-12 col-md-3 col-lg-3">
+                          <label for="rgUsuario" class="form-label">RG</label>
+                          <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                         </div>
-                      </div>
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input atendimento-check" type="checkbox" value="Acolhida/Orientação" id="atendimentoAcolhida" name="atendimento[]" />
-                          <label class="form-check-label" for="atendimentoAcolhida">Acolhida/Orientação</label>
+                        <div class="col-12 col-md-4 col-lg-4 col-orgao-expedidor">
+                          <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
+                          <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
                         </div>
-                      </div>
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input atendimento-check" type="checkbox" value="Outros Municípios" id="atendimentoOutros" name="atendimento[]" />
-                          <label class="form-check-label" for="atendimentoOutros">Outros Municípios</label>
+                        <div class="col-12 col-md-2 col-lg-2 col-uf-expedicao">
+                          <label for="ufExpedicao" class="form-label">UF</label>
+                          <select id="ufExpedicao" name="ufExpedicao" class="form-select">
+                            <option value="">Selecione</option>
+                          </select>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label">Como soube do serviço</span>
-                    <div class="row g-2">
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="Parente" id="origemParente" name="origemServico[]" />
-                          <label class="form-check-label" for="origemParente">Parente</label>
+                        <div class="col-12 col-md-3 col-lg-3">
+                          <label for="dataNascimento" class="form-label required">Data de nascimento</label>
+                          <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
                         </div>
-                      </div>
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="Campanhas" id="origemCampanhas" name="origemServico[]" />
-                          <label class="form-check-label" for="origemCampanhas">Campanhas</label>
-                        </div>
-                      </div>
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="Amiga(o)" id="origemAmiga" name="origemServico[]" />
-                          <label class="form-check-label" for="origemAmiga">Amiga(o)</label>
-                        </div>
-                      </div>
-                      <div class="col-12 col-sm-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="Outras(os)" id="origemOutras" name="origemServico[]" />
-                          <label class="form-check-label" for="origemOutras">Outras(os)</label>
+                        <div class="col-12 col-md-auto ms-md-auto">
+                          <label for="idade" class="form-label">Idade</label>
+                          <input type="text" class="form-control" id="idade" name="idade" readonly />
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-md-auto field-cpf">
-                    <label for="cpfUsuario" class="form-label required">CPF</label>
-                    <input type="text" class="form-control cpf-input" id="cpfUsuario" name="cpfUsuario" required />
+
+                  <div class="col-12 col-xxl-6">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-heading">Naturalidade e estado civil</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <label for="nacionalidade" class="form-label">Nacionalidade</label>
+                          <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <label for="ufNascimento" class="form-label">UF de nascimento</label>
+                          <select id="ufNascimento" name="ufNascimento" class="form-select">
+                            <option value="">Selecione</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-5">
+                          <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
+                          <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
+                            <option value="">Selecione a UF primeiro</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="estadoCivil" class="form-label">Estado civil</label>
+                          <select id="estadoCivil" name="estadoCivil" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Solteira</option>
+                            <option>Casada</option>
+                            <option>União estável</option>
+                            <option>Separada</option>
+                            <option>Divorciada</option>
+                            <option>Viúva</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-8">
+                          <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
+                          <input type="text" class="form-control" id="conjuge" name="conjuge" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-12 col-md col-lg nome-completo-field">
-                    <label for="nomeUsuario" class="form-label required">Nome completo</label>
-                    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
-                  </div>
-                  <div class="col-12 col-md col-lg nome-social-field">
-                    <label for="nomeSocial" class="form-label">Nome social</label>
-                    <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
-                  </div>
-                  <div class="col-12 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
-                    <label for="rgUsuario" class="form-label">RG</label>
-                    <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
-                  </div>
-                  <div class="col-12 col-md-3 col-lg-4 col-xl-4 col-xxl-4 col-orgao-expedidor">
-                    <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
-                    <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
-                  </div>
-                  <div class="col-12 col-md-2 col-lg-2 col-xl-2 col-xxl-2 col-uf-expedicao">
-                    <label for="ufExpedicao" class="form-label">UF</label>
-                    <select id="ufExpedicao" name="ufExpedicao" class="form-select">
-                      <option value="">Selecione</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
-                    <label for="dataNascimento" class="form-label required">Data de nascimento</label>
-                    <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
-                  </div>
-                  <div class="col-12 col-md-2 col-lg-1 col-xl-1 col-xxl-1 ms-md-auto">
-                    <label for="idade" class="form-label">Idade</label>
-                    <input type="text" class="form-control" id="idade" name="idade" readonly />
-                  </div>
-                  <div class="col-12 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
-                    <label for="nacionalidade" class="form-label">Nacionalidade</label>
-                    <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" />
-                  </div>
-                  <div class="col-12 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
-                    <label for="ufNascimento" class="form-label">UF de nascimento</label>
-                    <select id="ufNascimento" name="ufNascimento" class="form-select">
-                      <option value="">Selecione</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
-                    <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
-                    <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
-                      <option value="">Selecione a UF primeiro</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-3 col-lg-4 col-xl-4 col-xxl-4">
-                    <label for="estadoCivil" class="form-label">Estado civil</label>
-                    <select id="estadoCivil" name="estadoCivil" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Solteira</option>
-                      <option>Casada</option>
-                      <option>União estável</option>
-                      <option>Separada</option>
-                      <option>Divorciada</option>
-                      <option>Viúva</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label for="conjuge" class="form-label">Nome do(a) cônjuge/companheiro(a)</label>
-                    <input type="text" class="form-control" id="conjuge" name="conjuge" />
-                  </div>
-                  <div class="col-12 col-lg-3">
-                    <label for="identidadeGenero" class="form-label">Identidade de gênero</label>
-                    <select id="identidadeGenero" name="identidadeGenero" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Mulher cisgênero</option>
-                      <option>Mulher trans</option>
-                      <option>Travesti</option>
-                      <option>Não-binária</option>
-                      <option>Outra</option>
-                      <option>Prefere não informar</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-lg-3">
-                    <label for="orientacaoSexual" class="form-label">Orientação sexual</label>
-                    <select id="orientacaoSexual" name="orientacaoSexual" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Heterossexual</option>
-                      <option>Lésbica</option>
-                      <option>Bissexual</option>
-                      <option>Assexual</option>
-                      <option>Outra</option>
-                      <option>Prefere não informar</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-lg-3">
-                    <label for="corRaca" class="form-label">Cor/raça</label>
-                    <select id="corRaca" name="corRaca" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Branca</option>
-                      <option>Preta</option>
-                      <option>Parda</option>
-                      <option>Amarela</option>
-                      <option>Indígena</option>
-                      <option>Prefere não informar</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-lg-3">
-                    <label for="religiao" class="form-label">Religião</label>
-                    <select id="religiao" name="religiao" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Católica</option>
-                      <option>Evangélica</option>
-                      <option>Espírita</option>
-                      <option>Religiões de matriz africana</option>
-                      <option>Outra</option>
-                      <option>Sem religião</option>
-                      <option>Prefere não informar</option>
-                    </select>
-                  </div>
+
                   <div class="col-12">
-                    <div class="row g-3 align-items-end">
-                      <div class="col-12 col-md-6">
-                        <label for="nomeMae" class="form-label">Nome da mãe</label>
-                        <input type="text" class="form-control" id="nomeMae" name="nomeMae" />
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label for="nomePai" class="form-label">Nome do pai</label>
-                        <input type="text" class="form-control" id="nomePai" name="nomePai" />
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-heading">Identidade social e vínculos familiares</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-xl-3">
+                          <label for="identidadeGenero" class="form-label">Identidade de gênero</label>
+                          <select id="identidadeGenero" name="identidadeGenero" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Mulher cisgênero</option>
+                            <option>Mulher trans</option>
+                            <option>Travesti</option>
+                            <option>Não-binária</option>
+                            <option>Outra</option>
+                            <option>Prefere não informar</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-xl-3">
+                          <label for="orientacaoSexual" class="form-label">Orientação sexual</label>
+                          <select id="orientacaoSexual" name="orientacaoSexual" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Heterossexual</option>
+                            <option>Lésbica</option>
+                            <option>Bissexual</option>
+                            <option>Assexual</option>
+                            <option>Outra</option>
+                            <option>Prefere não informar</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-xl-3">
+                          <label for="corRaca" class="form-label">Cor/raça</label>
+                          <select id="corRaca" name="corRaca" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Branca</option>
+                            <option>Preta</option>
+                            <option>Parda</option>
+                            <option>Amarela</option>
+                            <option>Indígena</option>
+                            <option>Prefere não informar</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-xl-3">
+                          <label for="religiao" class="form-label">Religião</label>
+                          <select id="religiao" name="religiao" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Católica</option>
+                            <option>Evangélica</option>
+                            <option>Espírita</option>
+                            <option>Religiões de matriz africana</option>
+                            <option>Outra</option>
+                            <option>Sem religião</option>
+                            <option>Prefere não informar</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="nomeMae" class="form-label">Nome da mãe</label>
+                          <input type="text" class="form-control" id="nomeMae" name="nomeMae" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="nomePai" class="form-label">Nome do pai</label>
+                          <input type="text" class="form-control" id="nomePai" name="nomePai" />
+                        </div>
                       </div>
                     </div>
                   </div>
