@@ -196,9 +196,15 @@
         align-items: flex-start;
       }
 
-      .form-section-nav {
+      .form-section-sidebar {
         position: sticky;
         top: var(--form-nav-sticky-top);
+        align-self: flex-start;
+      }
+
+      .form-section-nav {
+        position: relative;
+        top: 0;
         z-index: 1030;
         background: rgba(244, 247, 251, 0.96);
         border: 1px solid rgba(0, 83, 164, 0.15);
@@ -206,6 +212,8 @@
         padding: 1.25rem 1.5rem;
         box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
         backdrop-filter: blur(6px);
+        max-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
+        overflow-y: auto;
       }
 
       .form-section-nav .nav-label {
@@ -312,8 +320,12 @@
       }
 
       @media (max-width: 991.98px) {
+        .form-section-sidebar {
+          position: static;
+        }
+
         .form-section-nav {
-          top: var(--form-nav-offset);
+          max-height: none;
           margin-bottom: 1.5rem;
           padding: 0.75rem 1rem;
         }
@@ -329,10 +341,6 @@
       }
 
       @media (min-width: 992px) {
-        .form-section-nav {
-          top: var(--form-nav-sticky-top);
-        }
-
         .section-nav-list {
           flex-direction: column;
           gap: 0.5rem;
@@ -366,6 +374,34 @@
         margin-bottom: 1.25rem;
       }
 
+      .prontuario-highlight {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+        background: rgba(0, 83, 164, 0.08);
+        border: 1px solid rgba(0, 83, 164, 0.25);
+        border-radius: 0.9rem;
+        padding: 0.65rem 1.1rem;
+        min-width: 12rem;
+      }
+
+      .prontuario-highlight-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-secondary);
+        margin: 0;
+      }
+
+      .prontuario-highlight-value {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--brand-primary);
+        margin: 0;
+      }
+
       .required::after {
         content: "*";
         color: #d32f2f;
@@ -385,6 +421,10 @@
 
       .tooltip-inner {
         text-align: left;
+      }
+
+      textarea.form-control {
+        min-height: 10rem;
       }
 
       .btn-outline-primary:focus-visible,
@@ -861,7 +901,7 @@
           <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="form-tab">
             <form id="registroForm" class="needs-validation" novalidate>
               <div class="row g-4 form-sections-layout">
-                <aside class="col-12 col-xl-3">
+                <aside class="col-12 col-xl-3 form-section-sidebar">
                   <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
                     <span class="nav-label">Ir para</span>
                     <div class="section-nav-list">
@@ -892,6 +932,9 @@
                       <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
                         ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
                       >
+                      <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
+                        ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
+                      >
                       <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
                         ><i class="bi bi-balance-scale"></i><span>Dados jurídicos</span></a
                       >
@@ -899,18 +942,21 @@
                   </nav>
                 </aside>
                 <div class="col-12 col-xl-9 col-xxl-9">
-                  <section class="card-section mb-4" aria-labelledby="dados-preliminares">
-                <h2 class="form-section-title" id="dados-preliminares"><i class="bi bi-person-vcard"></i>Dados preliminares e de identificação</h2>
-                <div class="row g-3 align-items-end">
-                  <div class="col-12 col-lg-2 col-xxl-2">
-                    <label for="numeroProntuario" class="form-label required">Nº do prontuário</label>
-                    <input type="text" class="form-control" id="numeroProntuario" name="numeroProntuario" required readonly />
+              <section class="card-section mb-4" aria-labelledby="dados-preliminares">
+                <div class="section-header d-flex align-items-start justify-content-between flex-wrap gap-3">
+                  <h2 class="form-section-title mb-0" id="dados-preliminares"><i class="bi bi-person-vcard"></i>Dados preliminares e de identificação</h2>
+                  <div class="prontuario-highlight text-end" aria-live="polite">
+                    <p class="prontuario-highlight-label mb-0">Nº do prontuário</p>
+                    <p class="prontuario-highlight-value mb-0" id="numeroProntuarioDisplay">—</p>
                   </div>
-                  <div class="col-12 col-lg-4 col-xxl-4">
+                </div>
+                <input type="hidden" id="numeroProntuario" name="numeroProntuario" required readonly />
+                <div class="row g-3 align-items-end">
+                  <div class="col-12 col-lg-5">
                     <label for="demandante" class="form-label">Demandante</label>
                     <input type="text" class="form-control" id="demandante" name="demandante" />
                   </div>
-                  <div class="col-12 col-lg-3 col-xxl-3">
+                  <div class="col-12 col-lg-5">
                     <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
                     <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
                       <option value="">Selecione</option>
@@ -920,12 +966,12 @@
                       <option>Outro equipamento</option>
                     </select>
                   </div>
-                  <div class="col-12 col-lg-2 col-xxl-2">
-                    <label for="dataAtendimento" class="form-label required">Data do atendimento</label>
+                  <div class="col-6 col-lg-1">
+                    <label for="dataAtendimento" class="form-label required">Data</label>
                     <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" required readonly />
                   </div>
-                  <div class="col-12 col-lg-1 col-xxl-1">
-                    <label for="horaAtendimento" class="form-label required">Hora do atendimento</label>
+                  <div class="col-6 col-lg-1">
+                    <label for="horaAtendimento" class="form-label required">Hora</label>
                     <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" required readonly />
                   </div>
                   <div class="col-12">
@@ -1003,7 +1049,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-2 col-xxl-2">
+                  <div class="col-12 col-lg-3 col-xxl-3">
                     <label for="cpfUsuario" class="form-label required">CPF</label>
                     <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" required />
                   </div>
@@ -1011,29 +1057,29 @@
                     <label for="nomeUsuario" class="form-label required">Nome completo</label>
                     <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                   </div>
-                  <div class="col-12 col-lg-5 col-xxl-5">
+                  <div class="col-12 col-lg-4 col-xxl-4">
                     <label for="nomeSocial" class="form-label">Nome social</label>
                     <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                   </div>
-                  <div class="col-12 col-md-3">
+                  <div class="col-12 col-md-3 col-lg-3">
                     <label for="rgUsuario" class="form-label">RG</label>
                     <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                   </div>
-                  <div class="col-12 col-md-3">
+                  <div class="col-12 col-md-2 col-lg-2">
                     <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
                     <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
                   </div>
-                  <div class="col-12 col-md-3">
+                  <div class="col-12 col-md-2 col-lg-2">
                     <label for="ufExpedicao" class="form-label">UF de expedição</label>
                     <select id="ufExpedicao" name="ufExpedicao" class="form-select">
                       <option value="">Selecione</option>
                     </select>
                   </div>
-                  <div class="col-12 col-md-3 col-lg-2">
+                  <div class="col-12 col-md-2 col-lg-2">
                     <label for="dataNascimento" class="form-label required">Data de nascimento</label>
                     <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
                   </div>
-                  <div class="col-12 col-md-3 col-lg-2">
+                  <div class="col-12 col-md-2 col-lg-1">
                     <label for="idade" class="form-label">Idade</label>
                     <input type="text" class="form-control" id="idade" name="idade" readonly />
                   </div>
@@ -1138,12 +1184,12 @@
                 <div class="row g-3">
                   <div class="col-12">
                     <div class="row g-3 align-items-end">
-                      <div class="col-12 col-md-3 col-xl-2">
+                      <div class="col-12 col-md-2 col-xl-2">
                         <label for="cep" class="form-label required">CEP</label>
                         <input type="text" class="form-control" id="cep" name="cep" required aria-describedby="cepHelp" />
                         <div id="cepHelp" class="form-text"></div>
                       </div>
-                      <div class="col-12 col-md-5 col-xl-5">
+                      <div class="col-12 col-md-6 col-xl-6">
                         <label for="logradouro" class="form-label required">Logradouro</label>
                         <input type="text" class="form-control" id="logradouro" name="logradouro" required />
                       </div>
@@ -1151,7 +1197,7 @@
                         <label for="numeroEndereco" class="form-label">Número</label>
                         <input type="text" class="form-control" id="numeroEndereco" name="numeroEndereco" />
                       </div>
-                      <div class="col-12 col-md-2 col-xl-3">
+                      <div class="col-12 col-md-2 col-xl-2">
                         <label for="complementoEndereco" class="form-label">Complemento</label>
                         <input type="text" class="form-control" id="complementoEndereco" name="complementoEndereco" />
                       </div>
@@ -1159,29 +1205,29 @@
                   </div>
                   <div class="col-12">
                     <div class="row g-3">
-                      <div class="col-12 col-md-3">
+                      <div class="col-12 col-md-3 col-xl-3">
                         <label for="bairro" class="form-label required">Bairro</label>
                         <input type="text" class="form-control" id="bairro" name="bairro" required />
                       </div>
-                      <div class="col-12 col-md-2">
+                      <div class="col-12 col-md-2 col-xl-2">
                         <label for="rpa" class="form-label">RPA</label>
                         <input type="text" class="form-control" id="rpa" name="rpa" />
                       </div>
-                      <div class="col-12 col-md-3">
+                      <div class="col-12 col-md-5 col-xl-5">
                         <label for="cidade" class="form-label required">Cidade</label>
                         <input type="text" class="form-control" id="cidade" name="cidade" required />
                       </div>
-                      <div class="col-12 col-md-2">
+                      <div class="col-12 col-md-2 col-xl-2">
                         <label for="uf" class="form-label required">UF</label>
                         <select id="uf" name="uf" class="form-select" required>
                           <option value="">UF</option>
                         </select>
                       </div>
-                      <div class="col-12 col-md-2">
-                        <label for="pontoReferencia" class="form-label">Ponto de referência</label>
-                        <input type="text" class="form-control" id="pontoReferencia" name="pontoReferencia" />
-                      </div>
                     </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="pontoReferencia" class="form-label">Ponto de referência</label>
+                    <input type="text" class="form-control" id="pontoReferencia" name="pontoReferencia" />
                   </div>
                   <div class="col-12">
                     <div class="row g-3">
@@ -1238,7 +1284,7 @@
                             <option>Interrompido</option>
                           </select>
                         </div>
-                        <div class="col-12 col-md-6 d-none" id="cursoFormacaoGroup">
+                        <div class="col-12 d-none" id="cursoFormacaoGroup">
                           <label for="cursoFormacao" class="form-label">Curso</label>
                           <input type="text" class="form-control" id="cursoFormacao" name="cursoFormacao" />
                         </div>
@@ -1278,11 +1324,11 @@
                         </div>
                       </div>
                       <div class="row g-3 mt-1 d-none" id="detalhesTrabalho">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                           <label for="profissao" class="form-label">Ocupação/profissão</label>
                           <input type="text" class="form-control" id="profissao" name="profissao" />
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 d-none" id="situacaoTrabalhoGroup">
                           <label for="situacaoTrabalho" class="form-label">Situação trabalhista</label>
                           <select id="situacaoTrabalho" name="situacaoTrabalho" class="form-select">
                             <option value="">Selecione</option>
@@ -2565,28 +2611,670 @@
                   </section>
 
               <section class="card-section mb-4" aria-labelledby="evolucoes">
-                <h2 class="form-section-title" id="evolucoes"><i class="bi bi-journal-text"></i>Evoluções / Consolidado</h2>
-                <p class="text-muted mb-0">Registros de evoluções e consolidado serão preenchidos pela equipe técnica após o atendimento inicial. Utilize o módulo de prontuários para acompanhar as atualizações.</p>
+                <h2 class="form-section-title" id="evolucoes"><i class="bi bi-journal-text"></i>Evoluções</h2>
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                  <p class="text-muted mb-0">Registre as evoluções realizadas no acompanhamento técnico.</p>
+                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#evolucaoModal">
+                    <i class="bi bi-plus-lg me-2"></i>Adicionar evolução
+                  </button>
+                </div>
+                <div class="table-responsive border rounded shadow-sm">
+                  <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Evolução</th>
+                        <th scope="col">Profissional</th>
+                      </tr>
+                    </thead>
+                    <tbody id="evolucaoTabelaBody">
+                      <tr id="evolucaoVazia">
+                        <td colspan="3" class="text-center text-muted py-4">Nenhuma evolução registrada.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="evolucaoHiddenInputs"></div>
+              </section>
+
+              <section class="card-section mb-4" aria-labelledby="repositorio-arquivos">
+                <h2 class="form-section-title" id="repositorio-arquivos"><i class="bi bi-paperclip"></i>Repositório de arquivos</h2>
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                  <p class="text-muted mb-0">Anexe documentos relevantes ao prontuário para consulta posterior.</p>
+                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anexoModal">
+                    <i class="bi bi-upload me-2"></i>Adicionar anexo
+                  </button>
+                </div>
+                <div class="table-responsive border rounded shadow-sm">
+                  <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Arquivo</th>
+                      </tr>
+                    </thead>
+                    <tbody id="anexoTabelaBody">
+                      <tr id="anexoVazio">
+                        <td colspan="3" class="text-center text-muted py-4">Nenhum arquivo anexado.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="anexoHiddenInputs"></div>
               </section>
 
               <section class="card-section mb-4" aria-labelledby="dados-juridicos">
                 <h2 class="form-section-title" id="dados-juridicos"><i class="bi bi-balance-scale"></i>Dados jurídicos</h2>
-                <div class="row g-3">
-                  <div class="col-12 col-md-6">
-                    <label for="delegacia" class="form-label">Delegacia responsável</label>
-                    <input type="text" class="form-control" id="delegacia" name="delegacia" />
+                <div class="row g-4">
+                  <div class="col-12">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Processos e registros</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <label for="naturezaCivel" class="form-label">Cível</label>
+                          <select id="naturezaCivel" name="naturezaCivel" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Não se aplica</option>
+                            <option>Em andamento</option>
+                            <option>Sentença proferida</option>
+                            <option>Arquivado</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="naturezaCriminal" class="form-label">Criminal</label>
+                          <select id="naturezaCriminal" name="naturezaCriminal" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Não se aplica</option>
+                            <option>Em andamento</option>
+                            <option>Sentença proferida</option>
+                            <option>Arquivado</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="naturezaTrabalhista" class="form-label">Trabalhista</label>
+                          <select id="naturezaTrabalhista" name="naturezaTrabalhista" class="form-select">
+                            <option value="">Selecione</option>
+                            <option>Não se aplica</option>
+                            <option>Em andamento</option>
+                            <option>Sentença proferida</option>
+                            <option>Arquivado</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="registroOcorrencia" class="form-label">Registro da ocorrência</label>
+                          <select id="registroOcorrencia" name="registroOcorrencia" class="form-select">
+                            <option value="">Selecione</option>
+                            <option value="Nao">Não</option>
+                            <option value="Registrada">Registrada</option>
+                            <option value="Em andamento">Em andamento</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="numeroBoGroup">
+                          <label for="numeroBo" class="form-label">Nº B.O.</label>
+                          <input type="text" class="form-control" id="numeroBo" name="numeroBo" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="origemProcedimento" class="form-label">Origem</label>
+                          <select id="origemProcedimento" name="origemProcedimento" class="form-select">
+                            <option value="">Selecione</option>
+                            <option value="Delegacia">Delegacia</option>
+                            <option value="Ministerio Publico">Ministério Público</option>
+                            <option value="Judiciario">Poder Judiciário</option>
+                            <option value="Outros">Outros</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="numeroInqueritoGroup">
+                          <label for="numeroInquerito" class="form-label">Nº do inquérito</label>
+                          <input type="text" class="form-control" id="numeroInquerito" name="numeroInquerito" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="exameCorpoDelito" class="form-label">Exame de corpo de delito</label>
+                          <select id="exameCorpoDelito" name="exameCorpoDelito" class="form-select">
+                            <option value="">Selecione</option>
+                            <option value="Nao">Não</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Em andamento">Em andamento</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="orgaoEmitenteGroup">
+                          <label for="orgaoEmitente" class="form-label">Órgão emitente</label>
+                          <input type="text" class="form-control" id="orgaoEmitente" name="orgaoEmitente" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="fianca" class="form-label">Fiança</label>
+                          <select id="fianca" name="fianca" class="form-select">
+                            <option value="">Selecione</option>
+                            <option value="Nao">Não</option>
+                            <option value="Sim">Sim</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="valorFiancaGroup">
+                          <label for="valorFianca" class="form-label">Valor</label>
+                          <input type="text" class="form-control" id="valorFianca" name="valorFianca" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-6">
-                    <label for="numeroBoletim" class="form-label">Número do boletim</label>
-                    <input type="text" class="form-control" id="numeroBoletim" name="numeroBoletim" />
+
+                  <div class="col-12">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Medida protetiva de urgência</h3>
+                      <div class="row g-3 align-items-center">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Já solicitou medida protetiva?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="medidaSolicitada" id="medidaSolicitadaSim" value="Sim" />
+                              <label class="form-check-label" for="medidaSolicitadaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="medidaSolicitada" id="medidaSolicitadaNao" value="Nao" checked />
+                              <label class="form-check-label" for="medidaSolicitadaNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0 d-none" id="medidaUrgenciaDetalhes">
+                        <div class="col-12 col-md-3">
+                          <label for="dataSolicitacaoMpu" class="form-label">Data da solicitação</label>
+                          <input type="date" class="form-control" id="dataSolicitacaoMpu" name="dataSolicitacaoMpu" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <label for="numeroMpu" class="form-label">Numeração MPU</label>
+                          <input type="text" class="form-control" id="numeroMpu" name="numeroMpu" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <label for="varaMpu" class="form-label">Vara</label>
+                          <input type="text" class="form-control" id="varaMpu" name="varaMpu" />
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <span class="form-label d-block">Deferidas?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="medidaDeferida" id="medidaDeferidaSim" value="Sim" />
+                              <label class="form-check-label" for="medidaDeferidaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="medidaDeferida" id="medidaDeferidaNao" value="Nao" checked />
+                              <label class="form-check-label" for="medidaDeferidaNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12 mt-3">
+                        <label for="observacoesMpu" class="form-label">Observações sobre indeferimentos de MPU</label>
+                        <textarea class="form-control" id="observacoesMpu" name="observacoesMpu"></textarea>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-6">
-                    <label for="medidasProtetivas" class="form-label">Medidas protetivas solicitadas</label>
-                    <input type="text" class="form-control" id="medidasProtetivas" name="medidasProtetivas" />
+
+                  <div class="col-12 d-none" id="medidasDeferidasWrapper">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Medidas protetivas deferidas</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <label for="dataDeferimentoMpu" class="form-label">Data do deferimento</label>
+                          <input type="date" class="form-control" id="dataDeferimentoMpu" name="dataDeferimentoMpu" />
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0">
+                        <div class="col-12">
+                          <span class="form-label d-block">Medidas que obrigam o agressor</span>
+                          <div class="row row-cols-1 row-cols-md-2 g-2">
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoI" name="medidasObrigacao[]" value="I. Suspensão da posse de armas" /><label class="form-check-label" for="medidaObrigacaoI">I. Suspensão da posse de armas</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoII" name="medidasObrigacao[]" value="II. Afastamento do lar" /><label class="form-check-label" for="medidaObrigacaoII">II. Afastamento do lar</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoIIIa" name="medidasObrigacao[]" value="III.a Proibição de aproximação" /><label class="form-check-label" for="medidaObrigacaoIIIa">III.a Proibição de determinadas condutas (aproximação)</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoIIIb" name="medidasObrigacao[]" value="III.b Proibição de contato" /><label class="form-check-label" for="medidaObrigacaoIIIb">III.b Proibição de determinadas condutas (contato)</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoIIIc" name="medidasObrigacao[]" value="III.c Proibição de frequentar lugares" /><label class="form-check-label" for="medidaObrigacaoIIIc">III.c Proibição de determinadas condutas (frequentar lugares)</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoIV" name="medidasObrigacao[]" value="IV. Restrição de visitas" /><label class="form-check-label" for="medidaObrigacaoIV">IV. Restrição de visitas a dependentes</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoV" name="medidasObrigacao[]" value="V. Prestação de alimentos provisórios" /><label class="form-check-label" for="medidaObrigacaoV">V. Prestação de alimentos provisórios</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoVI" name="medidasObrigacao[]" value="VI. Comparecimento a programas de reeducação" /><label class="form-check-label" for="medidaObrigacaoVI">VI. Comparecimento a programas de reeducação</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaObrigacaoVII" name="medidasObrigacao[]" value="VII. Acompanhamento psicossocial" /><label class="form-check-label" for="medidaObrigacaoVII">VII. Acompanhamento psicossocial</label></div></div>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label d-block">Medidas de urgência à ofendida</span>
+                          <div class="row row-cols-1 row-cols-md-2 g-2">
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaOfendidaI" name="medidasOfendida[]" value="I. Encaminhamento a programa de proteção" /><label class="form-check-label" for="medidaOfendidaI">I. Encaminhamento a programa de proteção</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaOfendidaII" name="medidasOfendida[]" value="II. Recondução ao domicílio" /><label class="form-check-label" for="medidaOfendidaII">II. Recondução ao domicílio</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaOfendidaIII" name="medidasOfendida[]" value="III. Afastamento do lar" /><label class="form-check-label" for="medidaOfendidaIII">III. Afastamento do lar</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaOfendidaIV" name="medidasOfendida[]" value="IV. Separação de corpos" /><label class="form-check-label" for="medidaOfendidaIV">IV. Separação de corpos</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaOfendidaV" name="medidasOfendida[]" value="V. Matrícula de dependentes" /><label class="form-check-label" for="medidaOfendidaV">V. Matrícula de dependentes em escola próxima</label></div></div>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label d-block">Medidas de proteção patrimonial</span>
+                          <div class="row row-cols-1 row-cols-md-2 g-2">
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaPatrimonialI" name="medidasPatrimoniais[]" value="I. Restituição de bens subtraídos" /><label class="form-check-label" for="medidaPatrimonialI">I. Restituição de bens subtraídos</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaPatrimonialII" name="medidasPatrimoniais[]" value="II. Proibição de atos de compra/venda" /><label class="form-check-label" for="medidaPatrimonialII">II. Proibição de atos de compra/venda</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaPatrimonialIII" name="medidasPatrimoniais[]" value="III. Suspensão de procurações" /><label class="form-check-label" for="medidaPatrimonialIII">III. Suspensão de procurações conferidas ao agressor</label></div></div>
+                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" id="medidaPatrimonialIV" name="medidasPatrimoniais[]" value="IV. Prestação de caução provisória" /><label class="form-check-label" for="medidaPatrimonialIV">IV. Prestação de caução provisória</label></div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-6">
-                    <label for="encaminhamentos" class="form-label">Encaminhamentos realizados</label>
-                    <input type="text" class="form-control" id="encaminhamentos" name="encaminhamentos" />
+
+                  <div class="col-12">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Descumprimento de medidas protetivas</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Houve descumprimento?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="descumprimento" id="descumprimentoSim" value="Sim" />
+                              <label class="form-check-label" for="descumprimentoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="descumprimento" id="descumprimentoNao" value="Nao" checked />
+                              <label class="form-check-label" for="descumprimentoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0 d-none" id="descumprimentoCampos">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Registro de B.O. de descumprimento</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="descumprimentoBo" id="descumprimentoBoSim" value="Sim" />
+                              <label class="form-check-label" for="descumprimentoBoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="descumprimentoBo" id="descumprimentoBoNao" value="Nao" checked />
+                              <label class="form-check-label" for="descumprimentoBoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="descumprimentoBoNumeroGroup">
+                          <label for="descumprimentoNumeroBo" class="form-label">Número do B.O.</label>
+                          <input type="text" class="form-control" id="descumprimentoNumeroBo" name="descumprimentoNumeroBo" />
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="descumprimentoBoDataGroup">
+                          <label for="descumprimentoDataBo" class="form-label">Data do B.O.</label>
+                          <input type="date" class="form-control" id="descumprimentoDataBo" name="descumprimentoDataBo" />
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Há decisão mais gravosa?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="decisaoGravosa" id="decisaoGravosaSim" value="Sim" />
+                              <label class="form-check-label" for="decisaoGravosaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="decisaoGravosa" id="decisaoGravosaNao" value="Nao" checked />
+                              <label class="form-check-label" for="decisaoGravosaNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0 d-none" id="decisaoGravosaCampos">
+                        <div class="col-12 col-md-4">
+                          <label for="decisaoGravosaQual" class="form-label">Qual?</label>
+                          <input type="text" class="form-control" id="decisaoGravosaQual" name="decisaoGravosaQual" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="decisaoGravosaMonitoramento" name="decisaoGravosaExtras[]" value="Monitoramento eletrônico" />
+                            <label class="form-check-label" for="decisaoGravosaMonitoramento">Monitoramento eletrônico</label>
+                          </div>
+                          <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="decisaoGravosaPrisao" name="decisaoGravosaExtras[]" value="Prisão" />
+                            <label class="form-check-label" for="decisaoGravosaPrisao">Prisão</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Ação penal e queixa-crime</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Existe ação penal?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="acaoPenal" id="acaoPenalSim" value="Sim" />
+                              <label class="form-check-label" for="acaoPenalSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="acaoPenal" id="acaoPenalNao" value="Nao" checked />
+                              <label class="form-check-label" for="acaoPenalNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0 d-none" id="acaoPenalCampos">
+                        <div class="col-12 col-md-4">
+                          <label for="acaoPenalNumero" class="form-label">Nº Proc. Ação Penal</label>
+                          <input type="text" class="form-control" id="acaoPenalNumero" name="acaoPenalNumero" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="acaoPenalVara" class="form-label">Vara</label>
+                          <input type="text" class="form-control" id="acaoPenalVara" name="acaoPenalVara" />
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Existe queixa-crime?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="queixaCrime" id="queixaCrimeSim" value="Sim" />
+                              <label class="form-check-label" for="queixaCrimeSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="queixaCrime" id="queixaCrimeNao" value="Nao" checked />
+                              <label class="form-check-label" for="queixaCrimeNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-0 d-none" id="queixaCrimeCampos">
+                        <div class="col-12 col-md-4">
+                          <label for="queixaCrimeNumero" class="form-label">Nº Proc. Queixa-crime</label>
+                          <input type="text" class="form-control" id="queixaCrimeNumero" name="queixaCrimeNumero" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="queixaCrimeVara" class="form-label">Vara</label>
+                          <input type="text" class="form-control" id="queixaCrimeVara" name="queixaCrimeVara" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Informações complementares</h3>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Vítima aceitou abrigamento?</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="abrigamento" id="abrigamentoSim" value="Sim" />
+                              <label class="form-check-label" for="abrigamentoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="abrigamento" id="abrigamentoNao" value="Nao" checked />
+                              <label class="form-check-label" for="abrigamentoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="dataAbrigoGroup">
+                          <label for="dataAbrigo" class="form-label">Data do abrigamento</label>
+                          <input type="date" class="form-control" id="dataAbrigo" name="dataAbrigo" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="dataDesabrigamento" class="form-label">Data do desabrigamento</label>
+                          <input type="date" class="form-control" id="dataDesabrigamento" name="dataDesabrigamento" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <span class="form-label d-block">Brigada Maria da Penha</span>
+                          <div class="d-flex gap-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="brigadaMaria" id="brigadaMariaSim" value="Sim" />
+                              <label class="form-check-label" for="brigadaMariaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="brigadaMaria" id="brigadaMariaNao" value="Nao" checked />
+                              <label class="form-check-label" for="brigadaMariaNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <label for="observacoesJuridicas" class="form-label">Observações</label>
+                          <textarea class="form-control" id="observacoesJuridicas" name="observacoesJuridicas"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="subsection-card">
+                      <h3 class="subsection-heading">Encaminhamentos</h3>
+                      <p class="text-muted mb-3">Selecione os encaminhamentos externos realizados e informe complementos quando necessário.</p>
+                      <div class="row row-cols-1 row-cols-md-2 g-3" id="encaminhamentosExternos">
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoNucleoAbrigamento" name="encaminhamentosExternos[]" value="Núcleo Abrigamento" data-complement-target="#encaminhamentoNucleoAbrigamentoDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoNucleoAbrigamento">Núcleo Abrigamento</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoNucleoAbrigamentoDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoNucleoAbrigamentoComplemento">Complemento Núcleo Abrigamento</label>
+                            <input type="text" class="form-control" id="encaminhamentoNucleoAbrigamentoComplemento" name="encaminhamentosComplemento[Núcleo Abrigamento]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoCentroReferencia" name="encaminhamentosExternos[]" value="Centro de Referência" data-complement-target="#encaminhamentoCentroReferenciaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoCentroReferencia">Centro de Referência</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoCentroReferenciaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoCentroReferenciaComplemento">Complemento Centro de Referência</label>
+                            <input type="text" class="form-control" id="encaminhamentoCentroReferenciaComplemento" name="encaminhamentosComplemento[Centro de Referência]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoVaraViolencia" name="encaminhamentosExternos[]" value="Vara de Violência Doméstica e Familiar" data-complement-target="#encaminhamentoVaraViolenciaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoVaraViolencia">Vara de Violência Doméstica e Familiar</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoVaraViolenciaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoVaraViolenciaComplemento">Complemento Vara de Violência</label>
+                            <input type="text" class="form-control" id="encaminhamentoVaraViolenciaComplemento" name="encaminhamentosComplemento[Vara de Violência Doméstica e Familiar]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoDefensoria" name="encaminhamentosExternos[]" value="Defensoria Especializada" data-complement-target="#encaminhamentoDefensoriaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoDefensoria">Defensoria Especializada</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoDefensoriaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoDefensoriaComplemento">Complemento Defensoria</label>
+                            <input type="text" class="form-control" id="encaminhamentoDefensoriaComplemento" name="encaminhamentosComplemento[Defensoria Especializada]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoMppe" name="encaminhamentosExternos[]" value="Núcleo de Apoio à Mulher (MPPE)" data-complement-target="#encaminhamentoMppeDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoMppe">Núcleo de Apoio à Mulher (MPPE)</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoMppeDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoMppeComplemento">Complemento MPPE</label>
+                            <input type="text" class="form-control" id="encaminhamentoMppeComplemento" name="encaminhamentosComplemento[Núcleo de Apoio à Mulher (MPPE)]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoDelegaciaEspecializada" name="encaminhamentosExternos[]" value="Delegacia Especializada em VDF/CFM" data-complement-target="#encaminhamentoDelegaciaEspecializadaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoDelegaciaEspecializada">Delegacia Especializada em VDF/CFM</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoDelegaciaEspecializadaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoDelegaciaEspecializadaComplemento">Complemento Delegacia Especializada</label>
+                            <input type="text" class="form-control" id="encaminhamentoDelegaciaEspecializadaComplemento" name="encaminhamentosComplemento[Delegacia Especializada em VDF/CFM]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoDelegaciaInfancia" name="encaminhamentosExternos[]" value="Delegacia da Infância e Juventude" data-complement-target="#encaminhamentoDelegaciaInfanciaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoDelegaciaInfancia">Delegacia da Infância e Juventude</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoDelegaciaInfanciaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoDelegaciaInfanciaComplemento">Complemento Delegacia da Infância</label>
+                            <input type="text" class="form-control" id="encaminhamentoDelegaciaInfanciaComplemento" name="encaminhamentosComplemento[Delegacia da Infância e Juventude]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoDelegaciaIdoso" name="encaminhamentosExternos[]" value="Delegacia do Idoso" data-complement-target="#encaminhamentoDelegaciaIdosoDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoDelegaciaIdoso">Delegacia do Idoso</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoDelegaciaIdosoDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoDelegaciaIdosoComplemento">Complemento Delegacia do Idoso</label>
+                            <input type="text" class="form-control" id="encaminhamentoDelegaciaIdosoComplemento" name="encaminhamentosComplemento[Delegacia do Idoso]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoDelegaciaComum" name="encaminhamentosExternos[]" value="Delegacia de Polícia – Crimes Comuns" data-complement-target="#encaminhamentoDelegaciaComumDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoDelegaciaComum">Delegacia de Polícia – Crimes Comuns</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoDelegaciaComumDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoDelegaciaComumComplemento">Complemento Delegacia Comum</label>
+                            <input type="text" class="form-control" id="encaminhamentoDelegaciaComumComplemento" name="encaminhamentosComplemento[Delegacia de Polícia – Crimes Comuns]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoCasaJustica" name="encaminhamentosExternos[]" value="Casa da Justiça e Cidadania" data-complement-target="#encaminhamentoCasaJusticaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoCasaJustica">Casa da Justiça e Cidadania</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoCasaJusticaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoCasaJusticaComplemento">Complemento Casa da Justiça</label>
+                            <input type="text" class="form-control" id="encaminhamentoCasaJusticaComplemento" name="encaminhamentosComplemento[Casa da Justiça e Cidadania]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoSaudeEspecializada" name="encaminhamentosExternos[]" value="Saúde Especializada / Violência Sexual" data-complement-target="#encaminhamentoSaudeEspecializadaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoSaudeEspecializada">Saúde Especializada / Violência Sexual</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoSaudeEspecializadaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoSaudeEspecializadaComplemento">Complemento Saúde Especializada</label>
+                            <input type="text" class="form-control" id="encaminhamentoSaudeEspecializadaComplemento" name="encaminhamentosComplemento[Saúde Especializada / Violência Sexual]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoRedeAssistencia" name="encaminhamentosExternos[]" value="Rede de Assistência Social" data-complement-target="#encaminhamentoRedeAssistenciaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoRedeAssistencia">Rede de Assistência Social</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoRedeAssistenciaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoRedeAssistenciaComplemento">Complemento Rede de Assistência</label>
+                            <input type="text" class="form-control" id="encaminhamentoRedeAssistenciaComplemento" name="encaminhamentosComplemento[Rede de Assistência Social]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoCentroMunicipalMulher" name="encaminhamentosExternos[]" value="Centro Municipal da Mulher" data-complement-target="#encaminhamentoCentroMunicipalMulherDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoCentroMunicipalMulher">Centro Municipal da Mulher</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoCentroMunicipalMulherDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoCentroMunicipalMulherComplemento">Complemento Centro Municipal da Mulher</label>
+                            <input type="text" class="form-control" id="encaminhamentoCentroMunicipalMulherComplemento" name="encaminhamentosComplemento[Centro Municipal da Mulher]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoCursosProfissionalizantes" name="encaminhamentosExternos[]" value="Cursos Profissionalizantes" data-complement-target="#encaminhamentoCursosProfissionalizantesDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoCursosProfissionalizantes">Cursos Profissionalizantes</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoCursosProfissionalizantesDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoCursosProfissionalizantesComplemento">Complemento Cursos Profissionalizantes</label>
+                            <input type="text" class="form-control" id="encaminhamentoCursosProfissionalizantesComplemento" name="encaminhamentosComplemento[Cursos Profissionalizantes]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoEducacaoFormal" name="encaminhamentosExternos[]" value="Educação Formal" data-complement-target="#encaminhamentoEducacaoFormalDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoEducacaoFormal">Educação Formal</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoEducacaoFormalDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoEducacaoFormalComplemento">Complemento Educação Formal</label>
+                            <input type="text" class="form-control" id="encaminhamentoEducacaoFormalComplemento" name="encaminhamentosComplemento[Educação Formal]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoEmpregoRenda" name="encaminhamentosExternos[]" value="Emprego e Renda" data-complement-target="#encaminhamentoEmpregoRendaDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoEmpregoRenda">Emprego e Renda</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoEmpregoRendaDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoEmpregoRendaComplemento">Complemento Emprego e Renda</label>
+                            <input type="text" class="form-control" id="encaminhamentoEmpregoRendaComplemento" name="encaminhamentosComplemento[Emprego e Renda]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoSaudeFisicaMental" name="encaminhamentosExternos[]" value="Saúde Física / Mental" data-complement-target="#encaminhamentoSaudeFisicaMentalDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoSaudeFisicaMental">Saúde Física / Mental</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoSaudeFisicaMentalDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoSaudeFisicaMentalComplemento">Complemento Saúde Física/Mental</label>
+                            <input type="text" class="form-control" id="encaminhamentoSaudeFisicaMentalComplemento" name="encaminhamentosComplemento[Saúde Física / Mental]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoDocumentacao" name="encaminhamentosExternos[]" value="Emissão de Documentação Básica" data-complement-target="#encaminhamentoDocumentacaoDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoDocumentacao">Emissão de Documentação Básica</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoDocumentacaoDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoDocumentacaoComplemento">Complemento Documentação Básica</label>
+                            <input type="text" class="form-control" id="encaminhamentoDocumentacaoComplemento" name="encaminhamentosComplemento[Emissão de Documentação Básica]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoCartorio" name="encaminhamentosExternos[]" value="Cartório Registro Civil ou Imóveis" data-complement-target="#encaminhamentoCartorioDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoCartorio">Cartório Registro Civil ou Imóveis</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoCartorioDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoCartorioComplemento">Complemento Cartório</label>
+                            <input type="text" class="form-control" id="encaminhamentoCartorioComplemento" name="encaminhamentosComplemento[Cartório Registro Civil ou Imóveis]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoCnhPopular" name="encaminhamentosExternos[]" value="Emissão de CNH Popular" data-complement-target="#encaminhamentoCnhPopularDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoCnhPopular">Emissão de CNH Popular</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoCnhPopularDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoCnhPopularComplemento">Complemento CNH Popular</label>
+                            <input type="text" class="form-control" id="encaminhamentoCnhPopularComplemento" name="encaminhamentosComplemento[Emissão de CNH Popular]" />
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input encaminhamento-checkbox" type="checkbox" id="encaminhamentoOutros" name="encaminhamentosExternos[]" value="Outros" data-complement-target="#encaminhamentoOutrosDetalhe" />
+                            <label class="form-check-label" for="encaminhamentoOutros">Outros</label>
+                          </div>
+                          <div class="mt-2 d-none" id="encaminhamentoOutrosDetalhe">
+                            <label class="form-label visually-hidden" for="encaminhamentoOutrosComplemento">Complemento Outros encaminhamentos</label>
+                            <input type="text" class="form-control" id="encaminhamentoOutrosComplemento" name="encaminhamentosComplemento[Outros]" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 mt-3">
+                        <div class="col-12 col-md-4">
+                          <label for="violenciaInstitucional" class="form-label">Violência institucional?</label>
+                          <select id="violenciaInstitucional" name="violenciaInstitucional" class="form-select">
+                            <option value="">Selecione</option>
+                            <option value="Nao">Não</option>
+                            <option value="Sim">Sim</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="instituicaoViolenciaGroup">
+                          <label for="instituicaoViolencia" class="form-label">Qual instituição?</label>
+                          <select id="instituicaoViolencia" name="instituicaoViolencia" class="form-select">
+                            <option value="">Selecione</option>
+                            <option value="Delegacia">Delegacia</option>
+                            <option value="Saude">Serviço de saúde</option>
+                            <option value="Judiciario">Poder Judiciário</option>
+                            <option value="Assistencia">Rede de assistência social</option>
+                            <option value="Outros">Outros</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4 d-none" id="instituicaoViolenciaOutraGroup">
+                          <label for="instituicaoViolenciaOutra" class="form-label">Outra</label>
+                          <input type="text" class="form-control" id="instituicaoViolenciaOutra" name="instituicaoViolenciaOutra" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -3244,6 +3932,70 @@
       </div>
     </div>
 
+    <div class="modal fade" id="evolucaoModal" tabindex="-1" aria-labelledby="evolucaoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="evolucaoModalLabel">Adicionar evolução</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <form id="evolucaoModalForm">
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-12 col-md-4">
+                  <label for="evolucaoData" class="form-label required">Data</label>
+                  <input type="date" class="form-control" id="evolucaoData" name="evolucaoData" required readonly />
+                </div>
+                <div class="col-12">
+                  <label for="evolucaoDescricao" class="form-label required">Evolução</label>
+                  <textarea class="form-control" id="evolucaoDescricao" name="evolucaoDescricao" required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer sticky-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="anexoModal" tabindex="-1" aria-labelledby="anexoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="anexoModalLabel">Adicionar anexo</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <form id="anexoModalForm">
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-12 col-md-4">
+                  <label for="anexoData" class="form-label required">Data</label>
+                  <input type="date" class="form-control" id="anexoData" name="anexoData" required readonly />
+                </div>
+                <div class="col-12">
+                  <label for="anexoDescricao" class="form-label required">Descrição</label>
+                  <input type="text" class="form-control" id="anexoDescricao" name="anexoDescricao" required />
+                </div>
+                <div class="col-12">
+                  <label for="anexoArquivo" class="form-label required">Arquivo</label>
+                  <input type="file" class="form-control" id="anexoArquivo" name="anexoArquivo" required />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer sticky-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <footer class="border-top bg-white">
       <div class="container">
         <div class="row g-3 align-items-center">
@@ -3874,10 +4626,195 @@
         updateSolicitarCiods();
         updateEditarRelato();
 
+        const registroOcorrenciaSelect = document.getElementById('registroOcorrencia');
+        const numeroBoGroup = document.getElementById('numeroBoGroup');
+        const origemProcedimentoSelect = document.getElementById('origemProcedimento');
+        const numeroInqueritoGroup = document.getElementById('numeroInqueritoGroup');
+        const exameCorpoDelitoSelect = document.getElementById('exameCorpoDelito');
+        const orgaoEmitenteGroup = document.getElementById('orgaoEmitenteGroup');
+        const fiancaSelect = document.getElementById('fianca');
+        const valorFiancaGroup = document.getElementById('valorFiancaGroup');
+        const medidaSolicitadaRadios = document.querySelectorAll('input[name="medidaSolicitada"]');
+        const medidaUrgenciaDetalhes = document.getElementById('medidaUrgenciaDetalhes');
+        const medidaDeferidaRadios = document.querySelectorAll('input[name="medidaDeferida"]');
+        const medidasDeferidasWrapper = document.getElementById('medidasDeferidasWrapper');
+        const descumprimentoRadios = document.querySelectorAll('input[name="descumprimento"]');
+        const descumprimentoCampos = document.getElementById('descumprimentoCampos');
+        const descumprimentoBoRadios = document.querySelectorAll('input[name="descumprimentoBo"]');
+        const descumprimentoBoNumeroGroup = document.getElementById('descumprimentoBoNumeroGroup');
+        const descumprimentoBoDataGroup = document.getElementById('descumprimentoBoDataGroup');
+        const decisaoGravosaRadios = document.querySelectorAll('input[name="decisaoGravosa"]');
+        const decisaoGravosaCampos = document.getElementById('decisaoGravosaCampos');
+        const acaoPenalRadios = document.querySelectorAll('input[name="acaoPenal"]');
+        const acaoPenalCampos = document.getElementById('acaoPenalCampos');
+        const queixaCrimeRadios = document.querySelectorAll('input[name="queixaCrime"]');
+        const queixaCrimeCampos = document.getElementById('queixaCrimeCampos');
+        const abrigamentoRadios = document.querySelectorAll('input[name="abrigamento"]');
+        const dataAbrigoGroup = document.getElementById('dataAbrigoGroup');
+        const violenciaInstitucionalSelect = document.getElementById('violenciaInstitucional');
+        const instituicaoViolenciaGroup = document.getElementById('instituicaoViolenciaGroup');
+        const instituicaoViolenciaSelect = document.getElementById('instituicaoViolencia');
+        const instituicaoViolenciaOutraGroup = document.getElementById('instituicaoViolenciaOutraGroup');
+        const encaminhamentoCheckboxes = document.querySelectorAll('.encaminhamento-checkbox');
+
+        const updateNumeroBoGroup = () => {
+          const mostrar = registroOcorrenciaSelect && registroOcorrenciaSelect.value === 'Registrada';
+          toggleGroup(numeroBoGroup, mostrar);
+        };
+
+        const updateOrigemProcedimento = () => {
+          const mostrar = origemProcedimentoSelect && origemProcedimentoSelect.value !== '';
+          toggleGroup(numeroInqueritoGroup, mostrar);
+        };
+
+        const updateExameCorpoDelito = () => {
+          const mostrar = exameCorpoDelitoSelect && exameCorpoDelitoSelect.value === 'Sim';
+          toggleGroup(orgaoEmitenteGroup, mostrar);
+        };
+
+        const updateFianca = () => {
+          const mostrar = fiancaSelect && fiancaSelect.value === 'Sim';
+          toggleGroup(valorFiancaGroup, mostrar);
+        };
+
+        const ensureRadioDefault = (selector) => {
+          const radio = document.querySelector(selector);
+          if (radio) {
+            radio.checked = true;
+          }
+        };
+
+        const updateMedidaDeferida = () => {
+          const mostrar = getCheckedValue('medidaDeferida') === 'Sim';
+          toggleGroup(medidasDeferidasWrapper, mostrar);
+        };
+
+        const updateMedidaSolicitada = () => {
+          const mostrar = getCheckedValue('medidaSolicitada') === 'Sim';
+          toggleGroup(medidaUrgenciaDetalhes, mostrar);
+          if (!mostrar) {
+            ensureRadioDefault('#medidaDeferidaNao');
+            toggleGroup(medidasDeferidasWrapper, false);
+          } else {
+            if (!getCheckedValue('medidaDeferida')) {
+              ensureRadioDefault('#medidaDeferidaNao');
+            }
+          }
+          updateMedidaDeferida();
+        };
+
+        const updateDescumprimentoBo = () => {
+          const mostrar = getCheckedValue('descumprimentoBo') === 'Sim';
+          toggleGroup(descumprimentoBoNumeroGroup, mostrar);
+          toggleGroup(descumprimentoBoDataGroup, mostrar);
+        };
+
+        const updateDescumprimento = () => {
+          const mostrar = getCheckedValue('descumprimento') === 'Sim';
+          toggleGroup(descumprimentoCampos, mostrar);
+          if (!mostrar) {
+            ensureRadioDefault('#descumprimentoBoNao');
+            toggleGroup(descumprimentoBoNumeroGroup, false);
+            toggleGroup(descumprimentoBoDataGroup, false);
+          } else if (!getCheckedValue('descumprimentoBo')) {
+            ensureRadioDefault('#descumprimentoBoNao');
+          }
+          updateDescumprimentoBo();
+        };
+
+        const updateDecisaoGravosa = () => {
+          const mostrar = getCheckedValue('decisaoGravosa') === 'Sim';
+          toggleGroup(decisaoGravosaCampos, mostrar);
+        };
+
+        const updateAcaoPenal = () => {
+          const mostrar = getCheckedValue('acaoPenal') === 'Sim';
+          toggleGroup(acaoPenalCampos, mostrar);
+        };
+
+        const updateQueixaCrime = () => {
+          const mostrar = getCheckedValue('queixaCrime') === 'Sim';
+          toggleGroup(queixaCrimeCampos, mostrar);
+        };
+
+        const updateAbrigamento = () => {
+          const mostrar = getCheckedValue('abrigamento') === 'Sim';
+          toggleGroup(dataAbrigoGroup, mostrar);
+        };
+
+        const updateInstituicaoViolencia = () => {
+          const mostrarOutra = instituicaoViolenciaSelect && instituicaoViolenciaSelect.value === 'Outros';
+          toggleGroup(instituicaoViolenciaOutraGroup, mostrarOutra);
+        };
+
+        const updateViolenciaInstitucional = () => {
+          const mostrar = violenciaInstitucionalSelect && violenciaInstitucionalSelect.value === 'Sim';
+          toggleGroup(instituicaoViolenciaGroup, mostrar);
+          if (!mostrar) {
+            toggleGroup(instituicaoViolenciaOutraGroup, false);
+          }
+          updateInstituicaoViolencia();
+        };
+
+        if (registroOcorrenciaSelect) {
+          registroOcorrenciaSelect.addEventListener('change', updateNumeroBoGroup);
+          updateNumeroBoGroup();
+        }
+        if (origemProcedimentoSelect) {
+          origemProcedimentoSelect.addEventListener('change', updateOrigemProcedimento);
+          updateOrigemProcedimento();
+        }
+        if (exameCorpoDelitoSelect) {
+          exameCorpoDelitoSelect.addEventListener('change', updateExameCorpoDelito);
+          updateExameCorpoDelito();
+        }
+        if (fiancaSelect) {
+          fiancaSelect.addEventListener('change', updateFianca);
+          updateFianca();
+        }
+        medidaSolicitadaRadios.forEach((radio) => radio.addEventListener('change', updateMedidaSolicitada));
+        medidaDeferidaRadios.forEach((radio) => radio.addEventListener('change', updateMedidaDeferida));
+        updateMedidaSolicitada();
+        descumprimentoRadios.forEach((radio) => radio.addEventListener('change', updateDescumprimento));
+        descumprimentoBoRadios.forEach((radio) => radio.addEventListener('change', updateDescumprimentoBo));
+        updateDescumprimento();
+        decisaoGravosaRadios.forEach((radio) => radio.addEventListener('change', updateDecisaoGravosa));
+        updateDecisaoGravosa();
+        acaoPenalRadios.forEach((radio) => radio.addEventListener('change', updateAcaoPenal));
+        updateAcaoPenal();
+        queixaCrimeRadios.forEach((radio) => radio.addEventListener('change', updateQueixaCrime));
+        updateQueixaCrime();
+        abrigamentoRadios.forEach((radio) => radio.addEventListener('change', updateAbrigamento));
+        updateAbrigamento();
+        if (violenciaInstitucionalSelect) {
+          violenciaInstitucionalSelect.addEventListener('change', updateViolenciaInstitucional);
+          updateViolenciaInstitucional();
+        }
+        if (instituicaoViolenciaSelect) {
+          instituicaoViolenciaSelect.addEventListener('change', updateInstituicaoViolencia);
+        }
+        encaminhamentoCheckboxes.forEach((checkbox) => {
+          const targetSelector = checkbox.getAttribute('data-complement-target');
+          const target = targetSelector ? document.querySelector(targetSelector) : null;
+          const toggle = () => {
+            if (!target) return;
+            const mostrar = checkbox.checked;
+            target.classList.toggle('d-none', !mostrar);
+            if (!mostrar) {
+              clearGroupInputs(target);
+            }
+          };
+          checkbox.addEventListener('change', toggle);
+          toggle();
+        });
+
         const escolaridadeSelect = document.getElementById('escolaridade');
         const situacaoOcupacionalSelect = document.getElementById('situacaoOcupacional');
         const detalhesTrabalho = document.getElementById('detalhesTrabalho');
         const situacaoTrabalhoSelect = document.getElementById('situacaoTrabalho');
+        const situacaoTrabalhoGroup = document.getElementById('situacaoTrabalhoGroup');
+        const profissaoInput = document.getElementById('profissao');
+        const rendaIndividualInput = document.getElementById('rendaIndividual');
         const situacaoEscolarGroup = document.getElementById('situacaoEscolarGroup');
         const cursoFormacaoGroup = document.getElementById('cursoFormacaoGroup');
         const tipoPosGraduacaoGroup = document.getElementById('tipoPosGraduacaoGroup');
@@ -3934,6 +4871,20 @@
             (situacaoTrabalhoSelect && situacaoTrabalhoSelect.value !== '');
           if (detalhesTrabalho) {
             detalhesTrabalho.classList.toggle('d-none', !mostrarTrabalho);
+          }
+          if (situacaoTrabalhoGroup) {
+            situacaoTrabalhoGroup.classList.toggle('d-none', !mostrarTrabalho);
+          }
+          if (!mostrarTrabalho) {
+            if (profissaoInput) {
+              profissaoInput.value = '';
+            }
+            if (situacaoTrabalhoSelect) {
+              resetSelect(situacaoTrabalhoSelect);
+            }
+            if (rendaIndividualInput) {
+              rendaIndividualInput.value = '';
+            }
           }
         };
 
@@ -4725,11 +5676,211 @@
           });
         }
 
+        const evolucaoTabelaBody = document.getElementById('evolucaoTabelaBody');
+        const evolucaoHiddenInputs = document.getElementById('evolucaoHiddenInputs');
+        const evolucaoModalElement = document.getElementById('evolucaoModal');
+        const evolucaoModalForm = document.getElementById('evolucaoModalForm');
+        const evolucaoProfissionalPadrao = 'Equipe técnica do CRCL';
+
+        const restaurarTabelaEvolucoes = () => {
+          if (evolucaoTabelaBody) {
+            evolucaoTabelaBody.innerHTML = '';
+            const vazio = document.createElement('tr');
+            vazio.id = 'evolucaoVazia';
+            const celula = document.createElement('td');
+            celula.colSpan = 3;
+            celula.className = 'text-center text-muted';
+            celula.textContent = 'Nenhuma evolução registrada.';
+            vazio.appendChild(celula);
+            evolucaoTabelaBody.appendChild(vazio);
+          }
+          if (evolucaoHiddenInputs) {
+            evolucaoHiddenInputs.innerHTML = '';
+          }
+        };
+
+        if (evolucaoModalElement && evolucaoModalForm) {
+          const evolucaoDataInput = evolucaoModalForm.querySelector('#evolucaoData');
+          const evolucaoDescricaoInput = evolucaoModalForm.querySelector('#evolucaoDescricao');
+          const obterModal = () =>
+            typeof bootstrap !== 'undefined' ? bootstrap.Modal.getOrCreateInstance(evolucaoModalElement) : null;
+          const atualizarDataEvolucao = () => {
+            if (!evolucaoDataInput) return;
+            if (window.dayjs) {
+              evolucaoDataInput.value = dayjs().format('YYYY-MM-DD');
+            } else {
+              const hoje = new Date();
+              const pad = (num) => String(num).padStart(2, '0');
+              evolucaoDataInput.value = `${hoje.getFullYear()}-${pad(hoje.getMonth() + 1)}-${pad(hoje.getDate())}`;
+            }
+          };
+
+          evolucaoModalElement.addEventListener('show.bs.modal', () => {
+            atualizarDataEvolucao();
+            if (evolucaoDescricaoInput) {
+              setTimeout(() => evolucaoDescricaoInput.focus({ preventScroll: true }), 150);
+            }
+          });
+
+          evolucaoModalElement.addEventListener('hidden.bs.modal', () => {
+            evolucaoModalForm.reset();
+          });
+
+          evolucaoModalForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!evolucaoModalForm.checkValidity()) {
+              evolucaoModalForm.reportValidity();
+              return;
+            }
+            atualizarDataEvolucao();
+            const dataValor = evolucaoDataInput ? evolucaoDataInput.value : '';
+            const descricaoValor = evolucaoDescricaoInput ? evolucaoDescricaoInput.value.trim() : '';
+            if (!descricaoValor) {
+              evolucaoModalForm.reportValidity();
+              return;
+            }
+            const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
+            if (evolucaoTabelaBody) {
+              const vazio = document.getElementById('evolucaoVazia');
+              if (vazio) vazio.remove();
+              const linha = document.createElement('tr');
+              [dataFormatada, descricaoValor, evolucaoProfissionalPadrao].forEach((valor) => {
+                const td = document.createElement('td');
+                td.textContent = valor;
+                linha.appendChild(td);
+              });
+              evolucaoTabelaBody.appendChild(linha);
+            }
+            if (evolucaoHiddenInputs) {
+              const wrapper = document.createElement('div');
+              const adicionarHidden = (name, value) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                wrapper.appendChild(input);
+              };
+              adicionarHidden('evolucoes[data][]', dataValor);
+              adicionarHidden('evolucoes[descricao][]', descricaoValor);
+              adicionarHidden('evolucoes[profissional][]', evolucaoProfissionalPadrao);
+              evolucaoHiddenInputs.appendChild(wrapper);
+            }
+            const modal = obterModal();
+            if (modal) {
+              modal.hide();
+            }
+          });
+        }
+
+        const anexoTabelaBody = document.getElementById('anexoTabelaBody');
+        const anexoHiddenInputs = document.getElementById('anexoHiddenInputs');
+        const anexoModalElement = document.getElementById('anexoModal');
+        const anexoModalForm = document.getElementById('anexoModalForm');
+
+        const restaurarTabelaAnexos = () => {
+          if (anexoTabelaBody) {
+            anexoTabelaBody.innerHTML = '';
+            const vazio = document.createElement('tr');
+            vazio.id = 'anexoVazio';
+            const celula = document.createElement('td');
+            celula.colSpan = 3;
+            celula.className = 'text-center text-muted';
+            celula.textContent = 'Nenhum arquivo anexado.';
+            vazio.appendChild(celula);
+            anexoTabelaBody.appendChild(vazio);
+          }
+          if (anexoHiddenInputs) {
+            anexoHiddenInputs.innerHTML = '';
+          }
+        };
+
+        if (anexoModalElement && anexoModalForm) {
+          const anexoDataInput = anexoModalForm.querySelector('#anexoData');
+          const anexoDescricaoInput = anexoModalForm.querySelector('#anexoDescricao');
+          const anexoArquivoInput = anexoModalForm.querySelector('#anexoArquivo');
+          const obterAnexoModal = () =>
+            typeof bootstrap !== 'undefined' ? bootstrap.Modal.getOrCreateInstance(anexoModalElement) : null;
+          const atualizarDataAnexo = () => {
+            if (!anexoDataInput) return;
+            if (window.dayjs) {
+              anexoDataInput.value = dayjs().format('YYYY-MM-DD');
+            } else {
+              const hoje = new Date();
+              const pad = (num) => String(num).padStart(2, '0');
+              anexoDataInput.value = `${hoje.getFullYear()}-${pad(hoje.getMonth() + 1)}-${pad(hoje.getDate())}`;
+            }
+          };
+
+          anexoModalElement.addEventListener('show.bs.modal', () => {
+            atualizarDataAnexo();
+            if (anexoDescricaoInput) {
+              setTimeout(() => anexoDescricaoInput.focus({ preventScroll: true }), 150);
+            }
+          });
+
+          anexoModalElement.addEventListener('hidden.bs.modal', () => {
+            anexoModalForm.reset();
+          });
+
+          anexoModalForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!anexoModalForm.checkValidity()) {
+              anexoModalForm.reportValidity();
+              return;
+            }
+            atualizarDataAnexo();
+            const dataValor = anexoDataInput ? anexoDataInput.value : '';
+            const descricaoValor = anexoDescricaoInput ? anexoDescricaoInput.value.trim() : '';
+            const arquivo = anexoArquivoInput && anexoArquivoInput.files ? anexoArquivoInput.files[0] : null;
+            const nomeArquivo = arquivo ? arquivo.name : '';
+            if (!nomeArquivo) {
+              anexoModalForm.reportValidity();
+              return;
+            }
+            const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
+            if (anexoTabelaBody) {
+              const vazio = document.getElementById('anexoVazio');
+              if (vazio) vazio.remove();
+              const linha = document.createElement('tr');
+              [dataFormatada, descricaoValor, nomeArquivo].forEach((valor) => {
+                const td = document.createElement('td');
+                td.textContent = valor;
+                linha.appendChild(td);
+              });
+              anexoTabelaBody.appendChild(linha);
+            }
+            if (anexoHiddenInputs) {
+              const wrapper = document.createElement('div');
+              const adicionarHidden = (name, value) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                wrapper.appendChild(input);
+              };
+              adicionarHidden('anexos[data][]', dataValor);
+              adicionarHidden('anexos[descricao][]', descricaoValor);
+              adicionarHidden('anexos[arquivo][]', nomeArquivo);
+              anexoHiddenInputs.appendChild(wrapper);
+            }
+            if (anexoArquivoInput) {
+              anexoArquivoInput.value = '';
+            }
+            const modal = obterAnexoModal();
+            if (modal) {
+              modal.hide();
+            }
+          });
+        }
+
+        restaurarTabelaEvolucoes();
+        restaurarTabelaAnexos();
+
         const numeroProntuarioInput = document.getElementById('numeroProntuario');
+        const numeroProntuarioDisplay = document.getElementById('numeroProntuarioDisplay');
         const dataAtendimentoInput = document.getElementById('dataAtendimento');
         const horaAtendimentoInput = document.getElementById('horaAtendimento');
         const setCurrentDateTime = () => {
-          if (!dataAtendimentoInput && !horaAtendimentoInput) return;
           const agora = new Date();
           const pad = (num) => String(num).padStart(2, '0');
           const dataValor = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()}`;
@@ -4738,6 +5889,11 @@
             const dataStamp = `${agora.getFullYear()}${pad(agora.getMonth() + 1)}${pad(agora.getDate())}`;
             const horaStamp = `${pad(agora.getHours())}${pad(agora.getMinutes())}`;
             numeroProntuarioInput.value = `PR-${dataStamp}-${horaStamp}`;
+            if (numeroProntuarioDisplay) {
+              numeroProntuarioDisplay.textContent = numeroProntuarioInput.value;
+            }
+          } else if (numeroProntuarioDisplay) {
+            numeroProntuarioDisplay.textContent = '—';
           }
           if (dataAtendimentoInput) {
             dataAtendimentoInput.value = dataValor;
@@ -4839,6 +5995,19 @@
         const rendaField = document.getElementById('rendaIndividual');
         if (rendaField && window.IMask) {
           IMask(rendaField, {
+            mask: Number,
+            scale: 2,
+            thousandsSeparator: '.',
+            padFractionalZeros: true,
+            radix: ',',
+            mapToRadix: ['.'],
+            min: 0,
+          });
+        }
+
+        const valorFiancaField = document.getElementById('valorFianca');
+        if (valorFiancaField && window.IMask) {
+          IMask(valorFiancaField, {
             mask: Number,
             scale: 2,
             thousandsSeparator: '.',
@@ -5315,22 +6484,36 @@
             });
 
           const registroForm = document.getElementById('registroForm');
-          if (registroForm) {
-            registroForm.addEventListener('reset', () => {
-              setTimeout(() => {
-                restaurarTabelaFamilia();
-                restaurarTabelaAutores();
-                updateViolenciaFisicaOutras();
-                updateViolenciaPsicologicaOutras();
-                updateViolenciaSexualOutras();
-                updateLocalAgressaoOutros();
-                updateFatoresRelacionadosOutros();
-                updateConhecimentoAgressao();
-                updateSolicitarCiods();
-                updateEditarRelato();
-              }, 0);
-            });
-          }
+        if (registroForm) {
+          registroForm.addEventListener('reset', () => {
+            setTimeout(() => {
+              restaurarTabelaFamilia();
+              restaurarTabelaAutores();
+              restaurarTabelaEvolucoes();
+              restaurarTabelaAnexos();
+              updateViolenciaFisicaOutras();
+              updateViolenciaPsicologicaOutras();
+              updateViolenciaSexualOutras();
+              updateLocalAgressaoOutros();
+              updateFatoresRelacionadosOutros();
+              updateConhecimentoAgressao();
+              updateSolicitarCiods();
+              updateEditarRelato();
+              updateNumeroBoGroup();
+              updateOrigemProcedimento();
+              updateExameCorpoDelito();
+              updateFianca();
+              updateMedidaSolicitada();
+              updateDescumprimento();
+              updateDescumprimentoBo();
+              updateDecisaoGravosa();
+              updateAcaoPenal();
+              updateQueixaCrime();
+              updateAbrigamento();
+              updateViolenciaInstitucional();
+            }, 0);
+          });
+        }
         }
 
         const openFormBtn = document.getElementById('openFormBtn');
