@@ -24,6 +24,7 @@
         --border-color: #d0d7e2;
         --text-strong: #1b263b;
         --text-muted: #5b6c8c;
+        --form-nav-offset: clamp(1rem, 1.5vw + 0.5rem, 2.25rem);
       }
 
       *, *::before, *::after {
@@ -183,7 +184,7 @@
         box-shadow: 0 12px 30px rgba(24, 64, 120, 0.08);
         padding: 1.75rem;
         height: 100%;
-        scroll-margin-top: 9rem;
+        scroll-margin-top: calc(9rem + var(--form-nav-offset, 1.5rem));
       }
 
       .card-section + .card-section {
@@ -192,13 +193,13 @@
 
       .form-section-nav {
         position: sticky;
-        top: 0;
+        top: var(--form-nav-offset, 1.5rem);
         z-index: 1030;
         background: rgba(244, 247, 251, 0.96);
         border: 1px solid rgba(0, 83, 164, 0.15);
         border-radius: 1rem;
         padding: 1rem 1.5rem;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.75rem;
         box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
         backdrop-filter: blur(6px);
       }
@@ -249,6 +250,36 @@
         box-shadow: 0 8px 18px rgba(0, 45, 98, 0.2);
       }
 
+      .subsection-card {
+        border: 1px solid rgba(0, 83, 164, 0.12);
+        border-radius: 0.85rem;
+        background: #ffffff;
+        padding: 1.5rem;
+        height: 100%;
+      }
+
+      .subsection-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--brand-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .modal-footer.sticky-actions {
+        position: sticky;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(6px);
+        border-top: 1px solid rgba(0, 83, 164, 0.12);
+        box-shadow: 0 -8px 20px rgba(13, 35, 70, 0.08);
+        z-index: 5;
+      }
+
       .modal-dialog-scrollable .modal-body {
         max-height: calc(100vh - 8rem);
         overflow-y: auto;
@@ -256,7 +287,7 @@
 
       #autorModal .modal-dialog,
       #familiaModal .modal-dialog {
-        max-width: min(1200px, 95vw);
+        max-width: min(1280px, 96vw);
       }
 
       #autorEnderecoCampos.is-synchronized {
@@ -278,7 +309,7 @@
 
       @media (max-width: 576px) {
         .form-section-nav {
-          top: 0;
+          top: var(--form-nav-offset, 1rem);
           padding: 0.75rem 1rem;
         }
 
@@ -413,7 +444,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        scroll-margin-top: 6.5rem;
+        scroll-margin-top: calc(6.5rem + var(--form-nav-offset, 1.5rem));
       }
 
       .form-section-title .bi {
@@ -1326,385 +1357,420 @@
 
               <section class="card-section mb-4" aria-labelledby="dados-saude">
                 <h2 class="form-section-title" id="dados-saude"><i class="bi bi-heart-pulse"></i>Dados de saúde</h2>
-                <div class="row g-3">
-                  <div class="col-12 col-lg-4">
-                    <label for="numeroSus" class="form-label required">Número do Cartão SUS</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="numeroSus"
-                      name="numeroSus"
-                      placeholder="Digite o número completo"
-                      required
-                    />
-                  </div>
-                  <div class="col-12 col-lg-4">
-                    <span class="form-label required d-block">Apresenta alguma deficiência/síndrome?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-labelledby="dados-saude">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deficienciaSindrome" id="deficienciaSim" value="Sim" />
-                        <label class="form-check-label" for="deficienciaSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deficienciaSindrome" id="deficienciaNao" value="Não" />
-                        <label class="form-check-label" for="deficienciaNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-4">
-                    <span class="form-label d-block">Deficiência em decorrência da violência sofrida?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deficienciaViolencia" id="deficienciaViolenciaSim" value="Sim" />
-                        <label class="form-check-label" for="deficienciaViolenciaSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deficienciaViolencia" id="deficienciaViolenciaNao" value="Não" />
-                        <label class="form-check-label" for="deficienciaViolenciaNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="deficienciaQualGroup">
-                    <label for="deficienciaQual" class="form-label required">Qual?</label>
-                    <select id="deficienciaQual" name="deficienciaQual" class="form-select" data-choices="true">
-                      <option value="">Selecione</option>
-                      <option>Deficiência física</option>
-                      <option>Deficiência auditiva</option>
-                      <option>Deficiência visual</option>
-                      <option>Deficiência intelectual</option>
-                      <option>Deficiência psicossocial</option>
-                      <option>Transtorno do espectro autista</option>
-                      <option>Outra deficiência</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Apresenta problema de saúde?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="problemaSaude" id="problemaSaudeSim" value="Sim" />
-                        <label class="form-check-label" for="problemaSaudeSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="problemaSaude" id="problemaSaudeNao" value="Não" />
-                        <label class="form-check-label" for="problemaSaudeNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="problemaSaudeQualGroup">
-                    <label for="problemaSaudeQual" class="form-label required">Qual?</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="problemaSaudeQual"
-                      name="problemaSaudeQual"
-                      placeholder="Descreva a condição"
-                    />
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Já foi atendido por psicólogo?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="atendimentoPsicologo" id="atendimentoPsicologoSim" value="Sim" />
-                        <label class="form-check-label" for="atendimentoPsicologoSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="atendimentoPsicologo" id="atendimentoPsicologoNao" value="Não" />
-                        <label class="form-check-label" for="atendimentoPsicologoNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="tempoPsicologoGroup">
-                    <label for="tempoPsicologo" class="form-label required">Quanto tempo?</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="tempoPsicologo"
-                      name="tempoPsicologo"
-                      placeholder="Ex.: 6 meses"
-                    />
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Já foi atendido por psiquiatra?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="atendimentoPsiquiatra" id="atendimentoPsiquiatraSim" value="Sim" />
-                        <label class="form-check-label" for="atendimentoPsiquiatraSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="atendimentoPsiquiatra" id="atendimentoPsiquiatraNao" value="Não" />
-                        <label class="form-check-label" for="atendimentoPsiquiatraNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="tempoPsiquiatraGroup">
-                    <label for="tempoPsiquiatra" class="form-label required">Quanto tempo?</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="tempoPsiquiatra"
-                      name="tempoPsiquiatra"
-                      placeholder="Ex.: 1 ano"
-                    />
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Faz uso de medicamento?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="usoMedicamento" id="usoMedicamentoSim" value="Sim" />
-                        <label class="form-check-label" for="usoMedicamentoSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="usoMedicamento" id="usoMedicamentoNao" value="Não" />
-                        <label class="form-check-label" for="usoMedicamentoNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="medicamentosQuaisGroup">
-                    <label for="medicamentosQuais" class="form-label required">Quais?</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="medicamentosQuais"
-                      name="medicamentosQuais"
-                      placeholder="Liste os medicamentos em uso"
-                    />
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Faz uso de drogas lícitas?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="usoDrogasLicitas" id="usoDrogasLicitasSim" value="Sim" />
-                        <label class="form-check-label" for="usoDrogasLicitasSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="usoDrogasLicitas" id="usoDrogasLicitasNao" value="Não" />
-                        <label class="form-check-label" for="usoDrogasLicitasNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="drogasLicitasGroup">
-                    <span class="form-label required d-block">Quais?</span>
-                    <div class="row g-2">
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaLicitaTabaco" name="drogasLicitas[]" value="Tabaco" />
-                          <label class="form-check-label" for="drogaLicitaTabaco">Tabaco</label>
+                <div class="row g-4">
+                  <div class="col-12 col-xl-6 col-xxl-4">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-title"><i class="bi bi-person-vcard"></i>Identificação em saúde</h3>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <label for="numeroSus" class="form-label required">Número do Cartão SUS</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="numeroSus"
+                            name="numeroSus"
+                            placeholder="Digite o número completo"
+                            required
+                          />
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Apresenta alguma deficiência/síndrome?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-labelledby="dados-saude">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="deficienciaSindrome" id="deficienciaSim" value="Sim" />
+                              <label class="form-check-label" for="deficienciaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="deficienciaSindrome" id="deficienciaNao" value="Não" />
+                              <label class="form-check-label" for="deficienciaNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="deficienciaQualGroup">
+                          <label for="deficienciaQual" class="form-label required">Qual?</label>
+                          <select id="deficienciaQual" name="deficienciaQual" class="form-select" data-choices="true">
+                            <option value="">Selecione</option>
+                            <option>Deficiência física</option>
+                            <option>Deficiência auditiva</option>
+                            <option>Deficiência visual</option>
+                            <option>Deficiência intelectual</option>
+                            <option>Deficiência psicossocial</option>
+                            <option>Transtorno do espectro autista</option>
+                            <option>Outra deficiência</option>
+                          </select>
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label d-block">Deficiência em decorrência da violência sofrida?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="deficienciaViolencia" id="deficienciaViolenciaSim" value="Sim" />
+                              <label class="form-check-label" for="deficienciaViolenciaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="deficienciaViolencia" id="deficienciaViolenciaNao" value="Não" />
+                              <label class="form-check-label" for="deficienciaViolenciaNao">Não</label>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaLicitaMedicamento" name="drogasLicitas[]" value="Medicamento" />
-                          <label class="form-check-label" for="drogaLicitaMedicamento">Medicamento</label>
+                    </div>
+                  </div>
+                  <div class="col-12 col-xl-6 col-xxl-4">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-title"><i class="bi bi-emoji-smile"></i>Saúde geral e mental</h3>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <span class="form-label required d-block">Apresenta problema de saúde?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="problemaSaude" id="problemaSaudeSim" value="Sim" />
+                              <label class="form-check-label" for="problemaSaudeSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="problemaSaude" id="problemaSaudeNao" value="Não" />
+                              <label class="form-check-label" for="problemaSaudeNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="problemaSaudeQualGroup">
+                          <label for="problemaSaudeQual" class="form-label required">Qual?</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="problemaSaudeQual"
+                            name="problemaSaudeQual"
+                            placeholder="Descreva a condição"
+                          />
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Já foi atendido por psicólogo?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="atendimentoPsicologo" id="atendimentoPsicologoSim" value="Sim" />
+                              <label class="form-check-label" for="atendimentoPsicologoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="atendimentoPsicologo" id="atendimentoPsicologoNao" value="Não" />
+                              <label class="form-check-label" for="atendimentoPsicologoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="tempoPsicologoGroup">
+                          <label for="tempoPsicologo" class="form-label required">Quanto tempo?</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="tempoPsicologo"
+                            name="tempoPsicologo"
+                            placeholder="Ex.: 6 meses"
+                          />
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Já foi atendido por psiquiatra?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="atendimentoPsiquiatra" id="atendimentoPsiquiatraSim" value="Sim" />
+                              <label class="form-check-label" for="atendimentoPsiquiatraSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="atendimentoPsiquiatra" id="atendimentoPsiquiatraNao" value="Não" />
+                              <label class="form-check-label" for="atendimentoPsiquiatraNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="tempoPsiquiatraGroup">
+                          <label for="tempoPsiquiatra" class="form-label required">Quanto tempo?</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="tempoPsiquiatra"
+                            name="tempoPsiquiatra"
+                            placeholder="Ex.: 1 ano"
+                          />
                         </div>
                       </div>
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaLicitaAlcool" name="drogasLicitas[]" value="Álcool" />
-                          <label class="form-check-label" for="drogaLicitaAlcool">Álcool</label>
+                    </div>
+                  </div>
+                  <div class="col-12 col-xl-6 col-xxl-4">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-title"><i class="bi bi-capsule"></i>Medicações e gestação</h3>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <span class="form-label required d-block">Faz uso de medicamento?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="usoMedicamento" id="usoMedicamentoSim" value="Sim" />
+                              <label class="form-check-label" for="usoMedicamentoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="usoMedicamento" id="usoMedicamentoNao" value="Não" />
+                              <label class="form-check-label" for="usoMedicamentoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="medicamentosQuaisGroup">
+                          <label for="medicamentosQuais" class="form-label required">Quais?</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="medicamentosQuais"
+                            name="medicamentosQuais"
+                            placeholder="Liste os medicamentos em uso"
+                          />
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Gestante?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="gestante" id="gestanteSim" value="Sim" />
+                              <label class="form-check-label" for="gestanteSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="gestante" id="gestanteNao" value="Não" />
+                              <label class="form-check-label" for="gestanteNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="tempoGestacaoGroup">
+                          <label for="tempoGestacao" class="form-label required">Tempo de gestação</label>
+                          <select id="tempoGestacao" name="tempoGestacao" class="form-select" data-choices="true">
+                            <option value="">Selecione</option>
+                            <option>Até 12 semanas</option>
+                            <option>13 a 20 semanas</option>
+                            <option>21 a 28 semanas</option>
+                            <option>29 a 36 semanas</option>
+                            <option>37 semanas ou mais</option>
+                          </select>
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Decorrente de violência, já sofreu algum aborto?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="abortoViolencia" id="abortoViolenciaSim" value="Sim" />
+                              <label class="form-check-label" for="abortoViolenciaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="abortoViolencia" id="abortoViolenciaNao" value="Não" />
+                              <label class="form-check-label" for="abortoViolenciaNao">Não</label>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaLicitaOutras" name="drogasLicitas[]" value="Outras" />
-                          <label class="form-check-label" for="drogaLicitaOutras">Outras</label>
+                    </div>
+                  </div>
+                  <div class="col-12 col-xl-6">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-title"><i class="bi bi-gender-female"></i>Saúde sexual e exames</h3>
+                      <div class="row g-3">
+                        <div class="col-12 d-none" id="preventivoGroup">
+                          <span class="form-label d-block">Preventivo câncer do colo do útero</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="preventivoColo" id="preventivoColoSim" value="Sim" />
+                              <label class="form-check-label" for="preventivoColoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="preventivoColo" id="preventivoColoNao" value="Não" />
+                              <label class="form-check-label" for="preventivoColoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-none" id="preventivoAnoGroup">
+                          <label for="preventivoAno" class="form-label required">Quando (ano)?</label>
+                          <input type="text" class="form-control" id="preventivoAno" name="preventivoAno" placeholder="Ex.: 2023" />
+                        </div>
+                        <div class="col-12 d-none" id="mamografiaGroup">
+                          <span class="form-label d-block">Mamografia</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="mamografia" id="mamografiaSim" value="Sim" />
+                              <label class="form-check-label" for="mamografiaSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="mamografia" id="mamografiaNao" value="Não" />
+                              <label class="form-check-label" for="mamografiaNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-none" id="mamografiaAnoGroup">
+                          <label for="mamografiaAno" class="form-label required">Quando (ano)?</label>
+                          <input type="text" class="form-control" id="mamografiaAno" name="mamografiaAno" placeholder="Ex.: 2022" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <span class="form-label required d-block">Realizou exame de HIV?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="exameHiv" id="exameHivSim" value="Sim" />
+                              <label class="form-check-label" for="exameHivSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="exameHiv" id="exameHivNao" value="Não" />
+                              <label class="form-check-label" for="exameHivNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-none" id="resultadoHivGroup">
+                          <span class="form-label required d-block">Qual o resultado?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="resultadoHiv" id="resultadoHivNegativo" value="Negativo" />
+                              <label class="form-check-label" for="resultadoHivNegativo">Negativo</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="resultadoHiv" id="resultadoHivPositivo" value="Positivo" />
+                              <label class="form-check-label" for="resultadoHivPositivo">Positivo</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-none" id="contraiuAgressorGroup">
+                          <span class="form-label required d-block">Contraiu com o agressor?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="contraiuAgressor" id="contraiuAgressorSim" value="Sim" />
+                              <label class="form-check-label" for="contraiuAgressorSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="contraiuAgressor" id="contraiuAgressorNao" value="Não" />
+                              <label class="form-check-label" for="contraiuAgressorNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <span class="form-label required d-block">Faz acompanhamento?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="acompanhamentoSaudeContinuo" id="acompanhamentoSaudeContinuoSim" value="Sim" />
+                              <label class="form-check-label" for="acompanhamentoSaudeContinuoSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="acompanhamentoSaudeContinuo" id="acompanhamentoSaudeContinuoNao" value="Não" />
+                              <label class="form-check-label" for="acompanhamentoSaudeContinuoNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-none" id="tempoAcompanhamentoGroup">
+                          <label for="tempoAcompanhamento" class="form-label required">Há quanto tempo faz tratamento?</label>
+                          <select id="tempoAcompanhamento" name="tempoAcompanhamento" class="form-select" data-choices="true">
+                            <option value="">Selecione</option>
+                            <option>Menos de 6 meses</option>
+                            <option>Entre 6 meses e 1 ano</option>
+                            <option>Entre 1 e 2 anos</option>
+                            <option>Mais de 2 anos</option>
+                          </select>
                         </div>
                       </div>
-                      <div class="col-12 d-none" id="drogasLicitasOutrasGroup">
-                        <label for="drogasLicitasOutrasTexto" class="form-label required">Outras (especifique)</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="drogasLicitasOutrasTexto"
-                          name="drogasLicitasOutrasTexto"
-                          placeholder="Informe outras drogas lícitas"
-                        />
-                      </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Faz uso de drogas ilícitas?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="usoDrogasIlicitas" id="usoDrogasIlicitasSim" value="Sim" />
-                        <label class="form-check-label" for="usoDrogasIlicitasSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="usoDrogasIlicitas" id="usoDrogasIlicitasNao" value="Não" />
-                        <label class="form-check-label" for="usoDrogasIlicitasNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="drogasIlicitasGroup">
-                    <span class="form-label required d-block">Quais?</span>
-                    <div class="row g-2">
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaIlicitaCocaina" name="drogasIlicitas[]" value="Cocaína" />
-                          <label class="form-check-label" for="drogaIlicitaCocaina">Cocaína</label>
+                  <div class="col-12 col-xl-6">
+                    <div class="subsection-card h-100">
+                      <h3 class="subsection-title"><i class="bi bi-droplet-half"></i>Uso de substâncias</h3>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <span class="form-label required d-block">Faz uso de drogas lícitas?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="usoDrogasLicitas" id="usoDrogasLicitasSim" value="Sim" />
+                              <label class="form-check-label" for="usoDrogasLicitasSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="usoDrogasLicitas" id="usoDrogasLicitasNao" value="Não" />
+                              <label class="form-check-label" for="usoDrogasLicitasNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="drogasLicitasGroup">
+                          <span class="form-label required d-block">Quais?</span>
+                          <div class="row g-2">
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaLicitaTabaco" name="drogasLicitas[]" value="Tabaco" />
+                                <label class="form-check-label" for="drogaLicitaTabaco">Tabaco</label>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaLicitaMedicamento" name="drogasLicitas[]" value="Medicamento" />
+                                <label class="form-check-label" for="drogaLicitaMedicamento">Medicamento</label>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaLicitaAlcool" name="drogasLicitas[]" value="Álcool" />
+                                <label class="form-check-label" for="drogaLicitaAlcool">Álcool</label>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaLicitaOutras" name="drogasLicitas[]" value="Outras" />
+                                <label class="form-check-label" for="drogaLicitaOutras">Outras</label>
+                              </div>
+                            </div>
+                            <div class="col-12 d-none" id="drogasLicitasOutrasGroup">
+                              <label for="drogasLicitasOutrasTexto" class="form-label required">Outras (especifique)</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="drogasLicitasOutrasTexto"
+                                name="drogasLicitasOutrasTexto"
+                                placeholder="Informe outras drogas lícitas"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <span class="form-label required d-block">Faz uso de drogas ilícitas?</span>
+                          <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="usoDrogasIlicitas" id="usoDrogasIlicitasSim" value="Sim" />
+                              <label class="form-check-label" for="usoDrogasIlicitasSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="usoDrogasIlicitas" id="usoDrogasIlicitasNao" value="Não" />
+                              <label class="form-check-label" for="usoDrogasIlicitasNao">Não</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 d-none" id="drogasIlicitasGroup">
+                          <span class="form-label required d-block">Quais?</span>
+                          <div class="row g-2">
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaIlicitaCocaina" name="drogasIlicitas[]" value="Cocaína" />
+                                <label class="form-check-label" for="drogaIlicitaCocaina">Cocaína</label>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaIlicitaCrack" name="drogasIlicitas[]" value="Crack" />
+                                <label class="form-check-label" for="drogaIlicitaCrack">Crack</label>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaIlicitaMaconha" name="drogasIlicitas[]" value="Maconha" />
+                                <label class="form-check-label" for="drogaIlicitaMaconha">Maconha</label>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="drogaIlicitaOutras" name="drogasIlicitas[]" value="Outras" />
+                                <label class="form-check-label" for="drogaIlicitaOutras">Outras</label>
+                              </div>
+                            </div>
+                            <div class="col-12 d-none" id="drogasIlicitasOutrasGroup">
+                              <label for="drogasIlicitasOutrasTexto" class="form-label required">Outras (especifique)</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="drogasIlicitasOutrasTexto"
+                                name="drogasIlicitasOutrasTexto"
+                                placeholder="Informe outras drogas ilícitas"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaIlicitaCrack" name="drogasIlicitas[]" value="Crack" />
-                          <label class="form-check-label" for="drogaIlicitaCrack">Crack</label>
-                        </div>
-                      </div>
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaIlicitaMaconha" name="drogasIlicitas[]" value="Maconha" />
-                          <label class="form-check-label" for="drogaIlicitaMaconha">Maconha</label>
-                        </div>
-                      </div>
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="drogaIlicitaOutras" name="drogasIlicitas[]" value="Outras" />
-                          <label class="form-check-label" for="drogaIlicitaOutras">Outras</label>
-                        </div>
-                      </div>
-                      <div class="col-12 d-none" id="drogasIlicitasOutrasGroup">
-                        <label for="drogasIlicitasOutrasTexto" class="form-label required">Outras (especifique)</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="drogasIlicitasOutrasTexto"
-                          name="drogasIlicitasOutrasTexto"
-                          placeholder="Informe outras drogas ilícitas"
-                        />
-                      </div>
                     </div>
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Gestante?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gestante" id="gestanteSim" value="Sim" />
-                        <label class="form-check-label" for="gestanteSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gestante" id="gestanteNao" value="Não" />
-                        <label class="form-check-label" for="gestanteNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="tempoGestacaoGroup">
-                    <label for="tempoGestacao" class="form-label required">Tempo de gestação</label>
-                    <select id="tempoGestacao" name="tempoGestacao" class="form-select" data-choices="true">
-                      <option value="">Selecione</option>
-                      <option>Até 12 semanas</option>
-                      <option>13 a 20 semanas</option>
-                      <option>21 a 28 semanas</option>
-                      <option>29 a 36 semanas</option>
-                      <option>37 semanas ou mais</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Decorrente de violência, já sofreu algum aborto?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="abortoViolencia" id="abortoViolenciaSim" value="Sim" />
-                        <label class="form-check-label" for="abortoViolenciaSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="abortoViolencia" id="abortoViolenciaNao" value="Não" />
-                        <label class="form-check-label" for="abortoViolenciaNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="preventivoGroup">
-                    <span class="form-label d-block">Preventivo câncer do colo do útero</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="preventivoColo" id="preventivoColoSim" value="Sim" />
-                        <label class="form-check-label" for="preventivoColoSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="preventivoColo" id="preventivoColoNao" value="Não" />
-                        <label class="form-check-label" for="preventivoColoNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="preventivoAnoGroup">
-                    <label for="preventivoAno" class="form-label required">Quando (ano)?</label>
-                    <input type="text" class="form-control" id="preventivoAno" name="preventivoAno" placeholder="Ex.: 2023" />
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="mamografiaGroup">
-                    <span class="form-label d-block">Mamografia</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="mamografia" id="mamografiaSim" value="Sim" />
-                        <label class="form-check-label" for="mamografiaSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="mamografia" id="mamografiaNao" value="Não" />
-                        <label class="form-check-label" for="mamografiaNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="mamografiaAnoGroup">
-                    <label for="mamografiaAno" class="form-label required">Quando (ano)?</label>
-                    <input type="text" class="form-control" id="mamografiaAno" name="mamografiaAno" placeholder="Ex.: 2022" />
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Realizou exame de HIV?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exameHiv" id="exameHivSim" value="Sim" />
-                        <label class="form-check-label" for="exameHivSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exameHiv" id="exameHivNao" value="Não" />
-                        <label class="form-check-label" for="exameHivNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="resultadoHivGroup">
-                    <span class="form-label required d-block">Qual o resultado?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="resultadoHiv" id="resultadoHivNegativo" value="Negativo" />
-                        <label class="form-check-label" for="resultadoHivNegativo">Negativo</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="resultadoHiv" id="resultadoHivPositivo" value="Positivo" />
-                        <label class="form-check-label" for="resultadoHivPositivo">Positivo</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="contraiuAgressorGroup">
-                    <span class="form-label required d-block">Contraiu com o agressor?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="contraiuAgressor" id="contraiuAgressorSim" value="Sim" />
-                        <label class="form-check-label" for="contraiuAgressorSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="contraiuAgressor" id="contraiuAgressorNao" value="Não" />
-                        <label class="form-check-label" for="contraiuAgressorNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6">
-                    <span class="form-label required d-block">Faz acompanhamento?</span>
-                    <div class="d-flex flex-wrap gap-3" role="radiogroup">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="acompanhamentoSaudeContinuo" id="acompanhamentoSaudeContinuoSim" value="Sim" />
-                        <label class="form-check-label" for="acompanhamentoSaudeContinuoSim">Sim</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="acompanhamentoSaudeContinuo" id="acompanhamentoSaudeContinuoNao" value="Não" />
-                        <label class="form-check-label" for="acompanhamentoSaudeContinuoNao">Não</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-6 d-none" id="tempoAcompanhamentoGroup">
-                    <label for="tempoAcompanhamento" class="form-label required">Há quanto tempo faz tratamento?</label>
-                    <select id="tempoAcompanhamento" name="tempoAcompanhamento" class="form-select" data-choices="true">
-                      <option value="">Selecione</option>
-                      <option>Menos de 6 meses</option>
-                      <option>Entre 6 meses e 1 ano</option>
-                      <option>Entre 1 e 2 anos</option>
-                      <option>Mais de 2 anos</option>
-                    </select>
                   </div>
                 </div>
               </section>
@@ -1866,11 +1932,15 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-md-6">
+                  <div class="col-12 col-lg-6">
                     <label for="localFato" class="form-label">Local da ocorrência</label>
                     <input type="text" class="form-control" id="localFato" name="localFato" />
                   </div>
-                  <div class="col-12 col-md-6">
+                  <div class="col-12 col-sm-6 col-lg-3">
+                    <label for="dataFato" class="form-label">Data</label>
+                    <input type="date" class="form-control" id="dataFato" name="dataFato" />
+                  </div>
+                  <div class="col-12 col-sm-6 col-lg-3">
                     <label for="horarioFato" class="form-label">Horário</label>
                     <input type="time" class="form-control" id="horarioFato" name="horarioFato" />
                   </div>
@@ -2432,9 +2502,9 @@
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer sticky-actions">
               <button type="submit" class="btn btn-success">Salvar</button>
-              <button type="reset" class="btn btn-danger">Cancelar</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
           </form>
@@ -2549,9 +2619,9 @@
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer sticky-actions">
               <button type="submit" class="btn btn-success">Salvar</button>
-              <button type="reset" class="btn btn-danger">Cancelar</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
           </form>
