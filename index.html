@@ -4251,20 +4251,21 @@
           if (!consultaProntuariosTabelaBody) return;
           consultaProntuariosTabelaBody.innerHTML = '';
 
-          const lista = Array.isArray(registros) ? registros.filter((item) => item && typeof item === 'object') : [];
-          const vistos = new Set();
-          const normalizados = [];
-          lista.forEach((item) => {
-            const prontuario = item.prontuario || '';
-            const cpf = item.cpf || '';
-            const nome = item.nome || '';
-            const mae = item.mae || '';
-            const chave = [prontuario, cpf, nome, mae].join('||');
-            if (!vistos.has(chave)) {
-              vistos.add(chave);
-              normalizados.push({ prontuario, cpf, nome, mae });
-            }
-          });
+          const listaInicial = Array.isArray(registros)
+            ? registros
+            : registros && typeof registros === 'object'
+            ? Object.values(registros)
+            : [];
+
+          const lista = listaInicial
+            .flatMap((item) => (Array.isArray(item) ? item : [item]))
+            .filter((item) => item && typeof item === 'object' && !Array.isArray(item));
+          const normalizados = lista.map((item) => ({
+            prontuario: typeof item.prontuario === 'string' ? item.prontuario.trim() : item.prontuario || '',
+            cpf: typeof item.cpf === 'string' ? item.cpf.trim() : item.cpf || '',
+            nome: typeof item.nome === 'string' ? item.nome.trim() : item.nome || '',
+            mae: typeof item.mae === 'string' ? item.mae.trim() : item.mae || '',
+          }));
 
           if (!normalizados.length) {
             const linha = document.createElement('tr');
