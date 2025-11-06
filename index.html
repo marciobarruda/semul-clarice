@@ -1062,27 +1062,35 @@
                           <label for="nomeSocial" class="form-label">Nome social</label>
                           <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                          <label for="dataNascimento" class="form-label required">Data de nascimento</label>
-                          <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
+                        <div class="col-12">
+                          <div class="row g-3 align-items-end">
+                            <div class="col-12 col-md-6 col-xl-5">
+                              <label for="dataNascimento" class="form-label required">Data de nascimento</label>
+                              <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-3 ms-md-auto">
+                              <label for="idade" class="form-label">Idade</label>
+                              <input type="text" class="form-control" id="idade" name="idade" readonly />
+                            </div>
+                          </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4 col-xl-3 ms-md-auto">
-                          <label for="idade" class="form-label">Idade</label>
-                          <input type="text" class="form-control" id="idade" name="idade" readonly />
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4 col-xl-3">
-                          <label for="rgUsuario" class="form-label">RG</label>
-                          <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
-                        </div>
-                        <div class="col-12 col-md-5 col-lg-5 col-xl-5">
-                          <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
-                          <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-3 col-xl-2">
-                          <label for="ufExpedicao" class="form-label">UF</label>
-                          <select id="ufExpedicao" name="ufExpedicao" class="form-select">
-                            <option value="">Selecione</option>
-                          </select>
+                        <div class="col-12">
+                          <div class="row g-3 align-items-end">
+                            <div class="col-12 col-md-4 col-xl-4">
+                              <label for="rgUsuario" class="form-label">RG</label>
+                              <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
+                            </div>
+                            <div class="col-12 col-md-5 col-xl-5">
+                              <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
+                              <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
+                            </div>
+                            <div class="col-12 col-md-3 col-xl-3">
+                              <label for="ufExpedicao" class="form-label">UF</label>
+                              <select id="ufExpedicao" name="ufExpedicao" class="form-select">
+                                <option value="">Selecione</option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -6718,22 +6726,8 @@
         if (!input || !btn || !tbody) return;
 
         function formatCPF(v) {
-          const digits = String(v || '').replace(/\D/g, '').slice(0, 11);
-          if (!digits) return '';
-          const padded = digits.padStart(11, '0');
-          return padded.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        }
-
-        function showState(message = '', type = 'info') {
-          if (!stateAlert) return;
-          stateAlert.classList.remove('alert-danger', 'alert-success', 'alert-warning', 'alert-info', 'd-none');
-          if (!message) {
-            stateAlert.classList.add('d-none', 'alert-info');
-            stateAlert.textContent = '';
-            return;
-          }
-          stateAlert.classList.add(`alert-${type}`);
-          stateAlert.textContent = message;
+          const s = String(v || '').replace(/\D/g, '').slice(0, 11).padStart(11, '0');
+          return s.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         }
 
         function emptyRow(message) {
@@ -6746,68 +6740,17 @@
           return tr;
         }
 
-        function normalizeProntuarios(payload) {
-          const results = [];
-          const seen = new Set();
-          const visited = new WeakSet();
-
-          const pushRecord = (record) => {
-            const sanitized = {
-              prontuario: record.prontuario ?? '',
-              nome: record.nome ?? '',
-              cpf: record.cpf ?? '',
-              mae: record.mae ?? ''
-            };
-            const key = `${sanitized.prontuario}|${sanitized.cpf}|${sanitized.nome}|${sanitized.mae}`;
-            if (!seen.has(key)) {
-              seen.add(key);
-              results.push(sanitized);
-            }
-          };
-
-          const traverse = (value) => {
-            if (value == null) {
-              return;
-            }
-
-            if (typeof value === 'string') {
-              const trimmed = value.trim();
-              if (!trimmed) return;
-              if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-                try {
-                  traverse(JSON.parse(trimmed));
-                } catch (error) {
-                  console.warn('Não foi possível interpretar a resposta da busca:', error);
-                }
-              }
-              return;
-            }
-
-            if (Array.isArray(value)) {
-              for (const item of value) {
-                traverse(item);
-              }
-              return;
-            }
-
-            if (typeof value === 'object') {
-              if (visited.has(value)) {
-                return;
-              }
-              visited.add(value);
-
-              if ('prontuario' in value || 'cpf' in value || 'nome' in value || 'mae' in value) {
-                pushRecord(value);
-              }
-
-              for (const key of Object.keys(value)) {
-                traverse(value[key]);
-              }
-            }
-          };
-
-          traverse(payload);
-          return results;
+        function showState(message, type = 'info') {
+          if (!stateAlert) return;
+          stateAlert.classList.add('d-none');
+          stateAlert.classList.remove('alert-info', 'alert-success', 'alert-danger', 'alert-warning');
+          if (!message) {
+            stateAlert.textContent = '';
+            return;
+          }
+          stateAlert.textContent = message;
+          stateAlert.classList.remove('d-none');
+          stateAlert.classList.add(`alert-${type}`);
         }
 
         function renderProntuarios(items) {
@@ -6850,24 +6793,35 @@
             return;
           }
 
-          showState();
-          tbody.innerHTML = '';
-          tbody.appendChild(emptyRow('Buscando registros...'));
-
           const original = btn.innerHTML;
           btn.disabled = true;
           btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
+
+          showState();
+          tbody.innerHTML = '';
+          tbody.appendChild(emptyRow('Buscando registros...'));
 
           try {
             const resp = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/listar-prontuarios', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ termo })
+              body: JSON.stringify({ termo }),
             });
 
             if (!resp.ok) throw new Error('Erro na requisição');
             const data = await resp.json();
-            const registros = normalizeProntuarios(data);
+            let registros = [];
+            if (Array.isArray(data)) {
+              registros = data;
+            } else if (data && typeof data === 'object') {
+              if (Array.isArray(data.data)) {
+                registros = data.data;
+              } else if (Array.isArray(data.resultado)) {
+                registros = data.resultado;
+              } else if (Array.isArray(data.records)) {
+                registros = data.records;
+              }
+            }
             renderProntuarios(registros);
           } catch (err) {
             console.error(err);
