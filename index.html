@@ -6762,86 +6762,210 @@
     </script>
     <script>
       (function () {
+        const form = document.querySelector('#consultaProntuariosForm');
         const input = document.querySelector('#busca-prontuario');
         const btn = document.querySelector('#btn-buscar-prontuarios');
         const tbody = document.querySelector('#tbody-prontuarios');
+        const emptyRow = document.querySelector('#consultaProntuariosVazio');
+        const stateAlert = document.querySelector('#consultaProntuariosEstado');
 
-        if (!input || !btn || !tbody) return;
+        if (!form || !input || !btn || !tbody) return;
 
-        function formatCPF(v) {
-          const s = String(v || '').replace(/\D/g, '').slice(0, 11).padStart(11, '0');
-          return s.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        function formatCPF(value) {
+          const digits = String(value || '').replace(/\D/g, '').slice(0, 11);
+          if (digits.length !== 11) {
+            return String(value || '').trim();
+          }
+          return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         }
 
-        function emptyRow(message) {
+        function toggleState(message = '', type = 'info') {
+          if (!stateAlert) return;
+          stateAlert.classList.remove('alert-danger', 'alert-success', 'alert-warning', 'alert-info');
+          if (!message) {
+            stateAlert.classList.add('d-none', 'alert-info');
+            stateAlert.textContent = '';
+            return;
+          }
+          stateAlert.classList.remove('d-none');
+          stateAlert.classList.add(`alert-${type}`);
+          stateAlert.textContent = message;
+        }
+
+        function setLoading(isLoading) {
+          if (!btn) return;
+          if (isLoading) {
+            btn.disabled = true;
+            btn.dataset.originalLabel = btn.dataset.originalLabel || btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Buscando...';
+          } else {
+            btn.disabled = false;
+            if (btn.dataset.originalLabel) {
+              btn.innerHTML = btn.dataset.originalLabel;
+            }
+          }
+        }
+
+        function ensureEmptyRow() {
+          if (!emptyRow) return;
+          if (!tbody.contains(emptyRow)) {
+            tbody.innerHTML = '';
+            tbody.appendChild(emptyRow);
+          }
+        }
+
+        function clearTable() {
+          if (!tbody) return;
+          tbody.innerHTML = '';
+        }
+
+        function buildRow(registro) {
           const tr = document.createElement('tr');
-          const td = document.createElement('td');
-          td.colSpan = 5;
-          td.classList.add('text-center', 'text-muted');
-          td.textContent = message;
-          tr.appendChild(td);
+          tr.innerHTML = `
+            <td>${registro.prontuario || ''}</td>
+            <td>${registro.nome || ''}</td>
+            <td>${formatCPF(registro.cpf)}</td>
+            <td>${registro.mae || ''}</td>
+            <td class="text-end">
+              <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${registro.prontuario || ''}">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-link p-0" title="Editar" data-prontuario="${registro.prontuario || ''}">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
+          `;
           return tr;
         }
 
-        function renderProntuarios(items) {
-          tbody.innerHTML = '';
-          const data = Array.isArray(items) ? items : [];
+        function parseMaybeJson(value) {
+          if (value == null) return null;
+          if (typeof value === 'string') {
+            const trimmed = value.trim();
+            if (!trimmed) return null;
+            try {
+              return JSON.parse(trimmed);
+            } catch (error) {
+              return trimmed;
+            }
+          }
+          return value;
+        }
 
-          if (!data.length) {
-            tbody.appendChild(emptyRow('Nenhum registro encontrado'));
+        function collectCandidates(payload) {
+          const results = [];
+          const queue = [];
+          const visited = new Set();
+
+          function enqueue(item) {
+            if (item == null) return;
+            if (visited.has(item)) return;
+            visited.add(item);
+            queue.push(item);
+          }
+
+          enqueue(payload);
+
+          while (queue.length) {
+            const current = queue.shift();
+            if (current == null) continue;
+
+            if (typeof current === 'string') {
+              const parsed = parseMaybeJson(current);
+              if (parsed && parsed !== current) {
+                enqueue(parsed);
+              }
+              continue;
+            }
+
+            if (Array.isArray(current)) {
+              current.forEach(enqueue);
+              continue;
+            }
+
+            if (typeof current === 'object') {
+              const nestedKeys = ['data', 'resultado', 'result', 'records', 'items', 'lista', 'values'];
+              nestedKeys.forEach((key) => {
+                if (Array.isArray(current[key])) {
+                  current[key].forEach(enqueue);
+                }
+              });
+
+              const prontuario = current.prontuario ?? current.numero ?? current.id ?? '';
+              const nome = current.nome ?? current.nomeCompleto ?? current.titular ?? '';
+              const mae = current.mae ?? current.nomeMae ?? current.mae_nome ?? '';
+              const cpf = current.cpf ?? current.documento ?? current.cpf_cidada ?? '';
+
+              if (prontuario || nome || cpf || mae) {
+                results.push({
+                  prontuario: String(prontuario || '').trim(),
+                  nome: String(nome || '').trim(),
+                  cpf: String(cpf || '').trim(),
+                  mae: String(mae || '').trim()
+                });
+              }
+            }
+          }
+
+          const unique = [];
+          const seen = new Set();
+          for (const item of results) {
+            const key = [item.prontuario, item.cpf, item.nome, item.mae].join('|');
+            if (!seen.has(key)) {
+              seen.add(key);
+              unique.push(item);
+            }
+          }
+          return unique;
+        }
+
+        async function handleBuscar(event) {
+          if (event) event.preventDefault();
+          const termo = input.value.trim();
+          if (!termo) {
+            toggleState('Informe pelo menos um dado para busca.', 'warning');
             return;
           }
 
-          const frag = document.createDocumentFragment();
-          for (const item of data) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${item.prontuario || ''}</td>
-              <td>${item.nome || ''}</td>
-              <td>${formatCPF(item.cpf)}</td>
-              <td>${item.mae || ''}</td>
-              <td class="text-center">
-                <button class="btn btn-link p-0 me-2" title="Visualizar" data-prontuario="${item.prontuario}">
-                  <i class="bi bi-eye"></i>
-                </button>
-                <button class="btn btn-link p-0" title="Editar" data-prontuario="${item.prontuario}">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-              </td>
-            `;
-            frag.appendChild(tr);
-          }
-          tbody.appendChild(frag);
-        }
-
-        async function handleBuscar() {
-          const termo = input.value.trim();
-          if (!termo) return;
-
-          const original = btn.innerHTML;
-          btn.disabled = true;
-          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
+          toggleState();
+          clearTable();
+          setLoading(true);
 
           try {
-            const resp = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/listar-prontuarios', {
+            const response = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/listar-prontuarios', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ termo })
             });
 
-            if (!resp.ok) throw new Error('Erro na requisição');
-            const data = await resp.json();
-            renderProntuarios(data);
-          } catch (err) {
-            console.error(err);
-            tbody.innerHTML = '';
-            tbody.appendChild(emptyRow('Falha ao buscar. Tente novamente.'));
+            if (!response.ok) {
+              throw new Error(`Erro na requisição (${response.status})`);
+            }
+
+            const raw = await response.text();
+            const parsed = parseMaybeJson(raw) ?? raw;
+            const registros = collectCandidates(parsed);
+
+            if (!registros.length) {
+              ensureEmptyRow();
+              toggleState('Nenhum registro encontrado para os filtros informados.', 'info');
+              return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            registros.forEach((item) => fragment.appendChild(buildRow(item)));
+            tbody.appendChild(fragment);
+            toggleState(`Exibindo ${registros.length} registro(s).`, 'success');
+          } catch (error) {
+            console.error('Falha ao buscar prontuários:', error);
+            ensureEmptyRow();
+            toggleState('Falha ao buscar. Tente novamente.', 'danger');
           } finally {
-            btn.disabled = false;
-            btn.innerHTML = original;
+            setLoading(false);
           }
         }
 
+        form.addEventListener('submit', handleBuscar);
         btn.addEventListener('click', handleBuscar);
       })();
     </script>
