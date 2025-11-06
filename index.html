@@ -6877,10 +6877,11 @@
         window.prontuarioFormManager = prontuarioFormManager;
         document.dispatchEvent(new CustomEvent('prontuarioFormManagerReady', { detail: prontuarioFormManager }));
 
-        if (novoRegistroBtn) {
+        if (novoRegistroBtn && !novoRegistroBtn.dataset.boundNovoRegistro) {
           novoRegistroBtn.addEventListener('click', () => {
             startNovoRegistro();
           });
+          novoRegistroBtn.dataset.boundNovoRegistro = 'true';
         }
         setCurrentDateTime();
       });
@@ -7053,6 +7054,42 @@
           const acao = botao.dataset.acao === 'editar' ? 'edit' : 'view';
           carregarProntuario(prontuario, acao);
         });
+      })();
+    </script>
+    <script>
+      (function () {
+        const novoRegistroBtn = document.getElementById('novoRegistroBtn');
+        if (!novoRegistroBtn || novoRegistroBtn.dataset.boundNovoRegistro === 'true') {
+          return;
+        }
+
+        const fallbackOpenForm = () => {
+          if (window.prontuarioFormManager && typeof window.prontuarioFormManager.startNovoRegistro === 'function') {
+            window.prontuarioFormManager.startNovoRegistro();
+            return;
+          }
+
+          const wrapper = document.getElementById('formularioWrapper');
+          if (wrapper) {
+            wrapper.classList.remove('d-none');
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+
+          const fieldset = document.getElementById('registroFieldset');
+          if (fieldset) {
+            fieldset.disabled = false;
+          }
+
+          const status = document.getElementById('formularioStatus');
+          if (status) {
+            status.className = 'alert alert-primary align-items-center gap-2 mb-4';
+            status.innerHTML = '<i class="bi bi-plus-circle"></i><span>Novo registro em edição.</span>';
+            status.classList.remove('d-none');
+          }
+        };
+
+        novoRegistroBtn.addEventListener('click', fallbackOpenForm);
+        novoRegistroBtn.dataset.boundNovoRegistro = 'true';
       })();
     </script>
   </body>
