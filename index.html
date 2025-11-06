@@ -809,57 +809,42 @@
           <div class="tab-pane fade" id="prontuarios" role="tabpanel" aria-labelledby="prontuarios-tab">
             <section class="card-section mb-4" aria-labelledby="painel-prontuarios">
               <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <h2 class="h5 mb-0" id="painel-prontuarios">Prontuários — Consultar &amp; editar</h2>
+                <h2 class="h5 mb-0" id="painel-prontuarios">Prontuários — Consulta rápida</h2>
                 <div class="d-flex gap-2">
                   <button class="btn btn-outline-primary btn-sm" type="button"><i class="bi bi-printer me-1"></i>Imprimir</button>
                   <button class="btn btn-primary btn-sm" type="button"><i class="bi bi-upload me-1"></i>Importar dados</button>
                 </div>
               </div>
-              <div class="table-responsive">
-                <table class="table align-middle">
+              <form class="row g-3 align-items-end" id="consultaProntuariosForm" novalidate>
+                <div class="col-12 col-lg-9 col-xl-10">
+                  <label for="consultaProntuariosTermo" class="form-label">Buscar prontuário, CPF, nome completo ou nome da mãe</label>
+                  <div class="input-group">
+                    <span class="input-group-text" id="consultaProntuariosAddon"><i class="bi bi-search"></i></span>
+                    <input type="search" class="form-control" id="consultaProntuariosTermo" name="consultaProntuariosTermo" aria-describedby="consultaProntuariosAddon" required />
+                  </div>
+                </div>
+                <div class="col-12 col-lg-auto">
+                  <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search me-1"></i>
+                    Buscar
+                  </button>
+                </div>
+              </form>
+              <div id="consultaProntuariosEstado" class="alert alert-info d-none mt-3" role="status"></div>
+              <div id="consultaProntuariosResultados" class="table-responsive d-none mt-3" aria-live="polite">
+                <table class="table align-middle mb-0">
                   <thead>
                     <tr>
-                      <th scope="col">Nº</th>
-                      <th scope="col">Usuária</th>
-                      <th scope="col">Tipificação principal</th>
-                      <th scope="col">Encaminhamento</th>
-                      <th scope="col">Atualização</th>
+                      <th scope="col">Prontuário</th>
+                      <th scope="col">Nome completo</th>
+                      <th scope="col">CPF</th>
+                      <th scope="col">Nome da mãe</th>
                       <th scope="col" class="text-end">Ações</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">2024-118</th>
-                      <td>Maria Ferreira</td>
-                      <td>Violência psicológica</td>
-                      <td>CREAS</td>
-                      <td>10/05/2024</td>
-                      <td class="text-end">
-                        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary" type="button"><i class="bi bi-pencil"></i></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2024-119</th>
-                      <td>Juliana Moura</td>
-                      <td>Violência física</td>
-                      <td>Saúde</td>
-                      <td>08/05/2024</td>
-                      <td class="text-end">
-                        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary" type="button"><i class="bi bi-pencil"></i></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2024-120</th>
-                      <td>Carla Bezerra</td>
-                      <td>Violência sexual</td>
-                      <td>Delegacia da Mulher</td>
-                      <td>06/05/2024</td>
-                      <td class="text-end">
-                        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary" type="button"><i class="bi bi-pencil"></i></button>
-                      </td>
+                  <tbody id="consultaProntuariosTabelaBody">
+                    <tr id="consultaProntuariosVazio">
+                      <td colspan="5" class="text-center text-muted py-4">Nenhum resultado para exibir.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -4153,6 +4138,144 @@
           if (defaultLink) {
             setActiveLink(defaultLink);
           }
+        }
+
+        const formatarCpf = (valor) => {
+          if (!valor) return '—';
+          const somenteDigitos = valor.replace(/\D+/g, '');
+          if (somenteDigitos.length !== 11) {
+            return valor;
+          }
+          return somenteDigitos.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        };
+
+        const consultaProntuariosForm = document.getElementById('consultaProntuariosForm');
+        const consultaProntuariosInput = document.getElementById('consultaProntuariosTermo');
+        const consultaProntuariosEstado = document.getElementById('consultaProntuariosEstado');
+        const consultaProntuariosResultados = document.getElementById('consultaProntuariosResultados');
+        const consultaProntuariosTabelaBody = document.getElementById('consultaProntuariosTabelaBody');
+
+        const atualizarEstadoConsulta = (tipo, mensagem) => {
+          if (!consultaProntuariosEstado) return;
+          if (!mensagem) {
+            consultaProntuariosEstado.classList.add('d-none');
+            consultaProntuariosEstado.textContent = '';
+            return;
+          }
+          consultaProntuariosEstado.className = `alert alert-${tipo} mt-3`;
+          consultaProntuariosEstado.textContent = mensagem;
+          consultaProntuariosEstado.classList.remove('d-none');
+        };
+
+        const atualizarTabelaConsulta = (registros) => {
+          if (!consultaProntuariosTabelaBody) return;
+          consultaProntuariosTabelaBody.innerHTML = '';
+          if (!Array.isArray(registros) || registros.length === 0) {
+            const linha = document.createElement('tr');
+            const coluna = document.createElement('td');
+            coluna.colSpan = 5;
+            coluna.className = 'text-center text-muted py-4';
+            coluna.textContent = 'Nenhum resultado encontrado para o termo informado.';
+            linha.appendChild(coluna);
+            consultaProntuariosTabelaBody.appendChild(linha);
+            if (consultaProntuariosResultados) {
+              consultaProntuariosResultados.classList.remove('d-none');
+            }
+            return;
+          }
+
+          registros.forEach((registro) => {
+            const linha = document.createElement('tr');
+            const campos = [
+              registro.prontuario || '—',
+              registro.nome || '—',
+              formatarCpf(registro.cpf),
+              registro.mae || '—',
+            ];
+            campos.forEach((texto) => {
+              const td = document.createElement('td');
+              td.textContent = texto;
+              linha.appendChild(td);
+            });
+            const tdAcoes = document.createElement('td');
+            tdAcoes.className = 'text-end';
+            const botoesWrapper = document.createElement('div');
+            botoesWrapper.className = 'd-inline-flex gap-2';
+            const criarBotao = (classe, icone, textoAlternativo) => {
+              const botao = document.createElement('button');
+              botao.type = 'button';
+              botao.className = `btn btn-sm ${classe}`;
+              const iconeElemento = document.createElement('i');
+              iconeElemento.className = `bi ${icone}`;
+              botao.appendChild(iconeElemento);
+              const srText = document.createElement('span');
+              srText.className = 'visually-hidden';
+              srText.textContent = textoAlternativo;
+              botao.appendChild(srText);
+              return botao;
+            };
+            const visualizar = criarBotao('btn-outline-secondary', 'bi-eye', `Visualizar ${registro.prontuario || 'prontuário'}`);
+            const editar = criarBotao('btn-outline-primary', 'bi-pencil', `Editar ${registro.prontuario || 'prontuário'}`);
+            botoesWrapper.appendChild(visualizar);
+            botoesWrapper.appendChild(editar);
+            tdAcoes.appendChild(botoesWrapper);
+            linha.appendChild(tdAcoes);
+            consultaProntuariosTabelaBody.appendChild(linha);
+          });
+          if (consultaProntuariosResultados) {
+            consultaProntuariosResultados.classList.remove('d-none');
+          }
+        };
+
+        if (consultaProntuariosForm && consultaProntuariosInput) {
+          consultaProntuariosForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const termo = consultaProntuariosInput.value.trim();
+            if (!termo) {
+              atualizarEstadoConsulta('warning', 'Informe um termo para realizar a busca.');
+              if (consultaProntuariosResultados) {
+                consultaProntuariosResultados.classList.add('d-none');
+              }
+              consultaProntuariosInput.focus();
+              return;
+            }
+
+            atualizarEstadoConsulta('info', 'Buscando registros...');
+            if (consultaProntuariosResultados) {
+              consultaProntuariosResultados.classList.add('d-none');
+            }
+
+            const botaoSubmit = consultaProntuariosForm.querySelector('button[type="submit"]');
+            if (botaoSubmit) {
+              botaoSubmit.disabled = true;
+              botaoSubmit.setAttribute('aria-busy', 'true');
+            }
+
+            try {
+              const resposta = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/listar-prontuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ busca: termo }),
+              });
+
+              if (!resposta.ok) {
+                throw new Error(`Erro ${resposta.status}`);
+              }
+
+              const dados = await resposta.json();
+              atualizarEstadoConsulta('success', 'Resultados atualizados com sucesso.');
+              setTimeout(() => atualizarEstadoConsulta(null, ''), 2500);
+              atualizarTabelaConsulta(Array.isArray(dados) ? dados : []);
+            } catch (erro) {
+              console.error('Erro ao consultar prontuários', erro);
+              atualizarEstadoConsulta('danger', 'Não foi possível consultar os prontuários. Tente novamente mais tarde.');
+            } finally {
+              if (botaoSubmit) {
+                botaoSubmit.disabled = false;
+                botaoSubmit.removeAttribute('aria-busy');
+              }
+            }
+          });
         }
 
         const choicesInstances = new Map();
