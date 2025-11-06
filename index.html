@@ -199,12 +199,12 @@
       .form-section-sidebar {
         position: sticky;
         top: var(--form-nav-sticky-top);
-        align-self: flex-start;
+        align-self: stretch;
       }
 
       .form-section-nav {
-        position: relative;
-        top: 0;
+        position: sticky;
+        top: var(--form-nav-sticky-top);
         z-index: 1030;
         background: rgba(244, 247, 251, 0.96);
         border: 1px solid rgba(0, 83, 164, 0.15);
@@ -213,7 +213,16 @@
         box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
         backdrop-filter: blur(6px);
         max-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
+        min-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
         overflow-y: auto;
+      }
+
+      @media (max-width: 1199.98px) {
+        .form-section-nav {
+          position: static;
+          max-height: none;
+          min-height: 0;
+        }
       }
 
       .form-section-nav .nav-label {
@@ -229,6 +238,12 @@
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
+      }
+
+      @media (min-width: 992px) {
+        .card-section .form-label {
+          white-space: nowrap;
+        }
       }
 
       .section-nav-link {
@@ -932,11 +947,11 @@
                       <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
                         ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
                       >
-                      <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
-                        ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
-                      >
                       <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
                         ><i class="bi bi-balance-scale"></i><span>Dados jurídicos</span></a
+                      >
+                      <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
+                        ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
                       >
                     </div>
                   </nav>
@@ -952,11 +967,11 @@
                 </div>
                 <input type="hidden" id="numeroProntuario" name="numeroProntuario" required readonly />
                 <div class="row g-3 align-items-end">
-                  <div class="col-12 col-lg-5">
+                  <div class="col-12 col-lg-4 col-xxl-4">
                     <label for="demandante" class="form-label">Demandante</label>
                     <input type="text" class="form-control" id="demandante" name="demandante" />
                   </div>
-                  <div class="col-12 col-lg-5">
+                  <div class="col-12 col-lg-4 col-xxl-4">
                     <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
                     <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
                       <option value="">Selecione</option>
@@ -966,11 +981,11 @@
                       <option>Outro equipamento</option>
                     </select>
                   </div>
-                  <div class="col-6 col-lg-1">
+                  <div class="col-6 col-lg-2 col-xxl-2">
                     <label for="dataAtendimento" class="form-label required">Data</label>
                     <input type="text" class="form-control" id="dataAtendimento" name="dataAtendimento" required readonly />
                   </div>
-                  <div class="col-6 col-lg-1">
+                  <div class="col-6 col-lg-2 col-xxl-2">
                     <label for="horaAtendimento" class="form-label required">Hora</label>
                     <input type="text" class="form-control" id="horaAtendimento" name="horaAtendimento" required readonly />
                   </div>
@@ -1049,7 +1064,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-3 col-xxl-3">
+                  <div class="col-12 col-lg-4 col-xxl-4">
                     <label for="cpfUsuario" class="form-label required">CPF</label>
                     <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" required />
                   </div>
@@ -1057,7 +1072,7 @@
                     <label for="nomeUsuario" class="form-label required">Nome completo</label>
                     <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                   </div>
-                  <div class="col-12 col-lg-4 col-xxl-4">
+                  <div class="col-12 col-lg-3 col-xxl-3">
                     <label for="nomeSocial" class="form-label">Nome social</label>
                     <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                   </div>
@@ -1065,21 +1080,21 @@
                     <label for="rgUsuario" class="form-label">RG</label>
                     <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                   </div>
-                  <div class="col-12 col-md-2 col-lg-2">
+                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2">
                     <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
                     <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
                   </div>
-                  <div class="col-12 col-md-2 col-lg-2">
+                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2">
                     <label for="ufExpedicao" class="form-label">UF de expedição</label>
                     <select id="ufExpedicao" name="ufExpedicao" class="form-select">
                       <option value="">Selecione</option>
                     </select>
                   </div>
-                  <div class="col-12 col-md-2 col-lg-2">
+                  <div class="col-12 col-md-3 col-lg-3 col-xxl-3">
                     <label for="dataNascimento" class="form-label required">Data de nascimento</label>
                     <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
                   </div>
-                  <div class="col-12 col-md-2 col-lg-1">
+                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2">
                     <label for="idade" class="form-label">Idade</label>
                     <input type="text" class="form-control" id="idade" name="idade" readonly />
                   </div>
@@ -1189,7 +1204,7 @@
                         <input type="text" class="form-control" id="cep" name="cep" required aria-describedby="cepHelp" />
                         <div id="cepHelp" class="form-text"></div>
                       </div>
-                      <div class="col-12 col-md-6 col-xl-6">
+                      <div class="col-12 col-md-7 col-xl-7">
                         <label for="logradouro" class="form-label required">Logradouro</label>
                         <input type="text" class="form-control" id="logradouro" name="logradouro" required />
                       </div>
@@ -1197,7 +1212,7 @@
                         <label for="numeroEndereco" class="form-label">Número</label>
                         <input type="text" class="form-control" id="numeroEndereco" name="numeroEndereco" />
                       </div>
-                      <div class="col-12 col-md-2 col-xl-2">
+                      <div class="col-12 col-md-1 col-xl-1">
                         <label for="complementoEndereco" class="form-label">Complemento</label>
                         <input type="text" class="form-control" id="complementoEndereco" name="complementoEndereco" />
                       </div>
@@ -1213,11 +1228,11 @@
                         <label for="rpa" class="form-label">RPA</label>
                         <input type="text" class="form-control" id="rpa" name="rpa" />
                       </div>
-                      <div class="col-12 col-md-5 col-xl-5">
+                      <div class="col-12 col-md-6 col-xl-6">
                         <label for="cidade" class="form-label required">Cidade</label>
                         <input type="text" class="form-control" id="cidade" name="cidade" required />
                       </div>
-                      <div class="col-12 col-md-2 col-xl-2">
+                      <div class="col-12 col-md-1 col-xl-1">
                         <label for="uf" class="form-label required">UF</label>
                         <select id="uf" name="uf" class="form-select" required>
                           <option value="">UF</option>
@@ -2642,33 +2657,6 @@
                 <div id="evolucaoHiddenInputs"></div>
               </section>
 
-              <section class="card-section mb-4" aria-labelledby="repositorio-arquivos">
-                <h2 class="form-section-title" id="repositorio-arquivos"><i class="bi bi-paperclip"></i>Repositório de arquivos</h2>
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                  <p class="text-muted mb-0">Anexe documentos relevantes ao prontuário para consulta posterior.</p>
-                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anexoModal">
-                    <i class="bi bi-upload me-2"></i>Adicionar anexo
-                  </button>
-                </div>
-                <div class="table-responsive border rounded shadow-sm">
-                  <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th scope="col">Data</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Arquivo</th>
-                      </tr>
-                    </thead>
-                    <tbody id="anexoTabelaBody">
-                      <tr id="anexoVazio">
-                        <td colspan="3" class="text-center text-muted py-4">Nenhum arquivo anexado.</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div id="anexoHiddenInputs"></div>
-              </section>
-
               <section class="card-section mb-4" aria-labelledby="dados-juridicos">
                 <h2 class="form-section-title" id="dados-juridicos"><i class="bi bi-balance-scale"></i>Dados jurídicos</h2>
                 <div class="row g-4">
@@ -3284,8 +3272,36 @@
                 </div>
               </section>
 
-                  <div class="d-flex justify-content-end gap-2">
-                    <button type="reset" class="btn btn-outline-secondary">Limpar</button>
+              <section class="card-section mb-4" aria-labelledby="repositorio-arquivos">
+                <h2 class="form-section-title" id="repositorio-arquivos"><i class="bi bi-paperclip"></i>Repositório de arquivos</h2>
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                  <p class="text-muted mb-0">Anexe documentos relevantes ao prontuário para consulta posterior.</p>
+                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anexoModal">
+                    <i class="bi bi-upload me-2"></i>Adicionar anexo
+                  </button>
+                </div>
+                <div class="table-responsive border rounded shadow-sm">
+                  <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Arquivo</th>
+                        <th scope="col" class="text-center">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="anexoTabelaBody">
+                      <tr id="anexoVazio">
+                        <td colspan="4" class="text-center text-muted py-4">Nenhum arquivo anexado.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="anexoHiddenInputs"></div>
+              </section>
+
+              <div class="d-flex justify-content-end gap-2">
+                <button type="reset" class="btn btn-outline-secondary">Limpar</button>
                     <button type="submit" class="btn btn-primary">
                       <i class="bi bi-send me-2"></i>
                       Enviar registro
@@ -5781,14 +5797,25 @@
         const anexoHiddenInputs = document.getElementById('anexoHiddenInputs');
         const anexoModalElement = document.getElementById('anexoModal');
         const anexoModalForm = document.getElementById('anexoModalForm');
+        const anexosRegistros = [];
+
+        const limparAnexosRegistros = () => {
+          while (anexosRegistros.length) {
+            const registro = anexosRegistros.pop();
+            if (registro && registro.url && typeof URL !== 'undefined' && typeof URL.revokeObjectURL === 'function') {
+              URL.revokeObjectURL(registro.url);
+            }
+          }
+        };
 
         const restaurarTabelaAnexos = () => {
+          limparAnexosRegistros();
           if (anexoTabelaBody) {
             anexoTabelaBody.innerHTML = '';
             const vazio = document.createElement('tr');
             vazio.id = 'anexoVazio';
             const celula = document.createElement('td');
-            celula.colSpan = 3;
+            celula.colSpan = 4;
             celula.className = 'text-center text-muted';
             celula.textContent = 'Nenhum arquivo anexado.';
             vazio.appendChild(celula);
@@ -5843,6 +5870,16 @@
               return;
             }
             const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
+            const urlAnexo =
+              arquivo && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function'
+                ? URL.createObjectURL(arquivo)
+                : '';
+            const registroIndex = anexosRegistros.push({
+              data: dataValor,
+              descricao: descricaoValor,
+              nome: nomeArquivo,
+              url: urlAnexo,
+            }) - 1;
             if (anexoTabelaBody) {
               const vazio = document.getElementById('anexoVazio');
               if (vazio) vazio.remove();
@@ -5852,6 +5889,22 @@
                 td.textContent = valor;
                 linha.appendChild(td);
               });
+              const acaoTd = document.createElement('td');
+              acaoTd.className = 'text-center';
+              const botao = document.createElement('button');
+              botao.type = 'button';
+              botao.className = 'btn btn-sm btn-outline-primary';
+              botao.setAttribute('data-visualizar-anexo', String(registroIndex));
+              botao.title = 'Visualizar anexo';
+              const icone = document.createElement('i');
+              icone.className = 'bi bi-eye';
+              botao.appendChild(icone);
+              const srText = document.createElement('span');
+              srText.className = 'visually-hidden';
+              srText.textContent = `Visualizar ${nomeArquivo}`;
+              botao.appendChild(srText);
+              acaoTd.appendChild(botao);
+              linha.appendChild(acaoTd);
               anexoTabelaBody.appendChild(linha);
             }
             if (anexoHiddenInputs) {
@@ -5874,6 +5927,22 @@
             const modal = obterAnexoModal();
             if (modal) {
               modal.hide();
+            }
+          });
+        }
+
+        if (anexoTabelaBody) {
+          anexoTabelaBody.addEventListener('click', (event) => {
+            const target = event.target instanceof HTMLElement ? event.target.closest('[data-visualizar-anexo]') : null;
+            if (!target) return;
+            event.preventDefault();
+            const indice = Number.parseInt(target.getAttribute('data-visualizar-anexo') || '', 10);
+            const registro = Number.isNaN(indice) ? null : anexosRegistros[indice];
+            if (!registro) return;
+            if (registro.url) {
+              window.open(registro.url, '_blank', 'noopener');
+            } else if (registro.nome) {
+              window.alert(`Arquivo disponível: ${registro.nome}`);
             }
           });
         }
