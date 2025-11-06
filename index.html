@@ -1774,31 +1774,31 @@
 
               <section class="card-section mb-4" aria-labelledby="dados-autor">
                 <h2 class="form-section-title" id="dados-autor"><i class="bi bi-person-exclamation"></i>Dados do(a) autor(a)</h2>
-                <div class="row g-3">
-                  <div class="col-12 col-md-6">
-                    <label for="relacaoAutor" class="form-label required">Relação com a usuária</label>
-                    <select id="relacaoAutor" name="relacaoAutor" class="form-select" required>
-                      <option value="">Selecione</option>
-                      <option>Convivente/Cônjuge</option>
-                      <option>Ex-companheiro(a)</option>
-                      <option>Familiar</option>
-                      <option>Outro</option>
-                    </select>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label for="medidaRestritiva" class="form-label">Medida protetiva vigente?</label>
-                    <select id="medidaRestritiva" name="medidaRestritiva" class="form-select">
-                      <option value="">Selecione</option>
-                      <option>Sim</option>
-                      <option>Não</option>
-                      <option>Solicitada</option>
-                    </select>
-                  </div>
-                  <div class="col-12">
-                    <label for="historicoAutor" class="form-label">Histórico conhecido</label>
-                    <textarea id="historicoAutor" name="historicoAutor" class="form-control" rows="3"></textarea>
-                  </div>
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-3">
+                  <p class="mb-0 text-muted">
+                    Registre autoras(es) relacionadas(os) ao caso para acompanhamento jurídico e socioassistencial.
+                  </p>
+                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#autorModal">
+                    <i class="bi bi-person-plus me-2"></i>Adicionar autor(a)
+                  </button>
                 </div>
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col">CPF</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Grau de parentesco</th>
+                      </tr>
+                    </thead>
+                    <tbody id="autorTabelaBody">
+                      <tr id="autorVazio">
+                        <td colspan="3" class="text-center text-muted">Nenhum autor(a) informado.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="autorHiddenInputs"></div>
               </section>
 
               <section class="card-section mb-4" aria-labelledby="tipificacao-violencia">
@@ -1893,6 +1893,520 @@
         </div>
       </div>
     </main>
+
+    <div class="modal fade" id="autorModal" tabindex="-1" aria-labelledby="autorModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="autorModalLabel">Adicionar autor(a)</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <form id="autorModalForm">
+            <div class="modal-body">
+              <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Identificação</h3>
+              <div class="row g-3">
+                <div class="col-12 col-md-4">
+                  <label for="autorCpf" class="form-label required">CPF</label>
+                  <input type="text" class="form-control" id="autorCpf" name="autorCpf" required placeholder="000.000.000-00" />
+                </div>
+                <div class="col-12 col-md-8">
+                  <label for="autorNome" class="form-label required">Nome completo</label>
+                  <input type="text" class="form-control" id="autorNome" name="autorNome" required placeholder="Digite o nome civil" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="autorNomeSocial" class="form-label">Nome social</label>
+                  <input type="text" class="form-control" id="autorNomeSocial" name="autorNomeSocial" placeholder="Como prefere ser identificada(o)" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="autorParentesco" class="form-label required">Grau de parentesco</label>
+                  <select id="autorParentesco" name="autorParentesco" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Cônjuge/companheiro(a)</option>
+                    <option>Ex-companheiro(a)</option>
+                    <option>Pai/Mãe</option>
+                    <option>Outro familiar</option>
+                    <option>Conhecido(a)</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorRg" class="form-label">RG</label>
+                  <input type="text" class="form-control" id="autorRg" name="autorRg" placeholder="Documento de identidade" />
+                </div>
+                <div class="col-12 col-md-4 d-none autor-rg-group">
+                  <label for="autorOrgaoExpedicao" class="form-label">Órgão de expedição</label>
+                  <input type="text" class="form-control" id="autorOrgaoExpedicao" name="autorOrgaoExpedicao" placeholder="SSP, DETRAN..." />
+                </div>
+                <div class="col-6 col-md-2 d-none autor-rg-group">
+                  <label for="autorUfExpedicao" class="form-label">UF</label>
+                  <select id="autorUfExpedicao" name="autorUfExpedicao" class="form-select" data-choices="true">
+                    <option value="">Selecione</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-2 d-none autor-rg-group">
+                  <label for="autorDataExpedicao" class="form-label">Data de expedição</label>
+                  <input type="date" class="form-control" id="autorDataExpedicao" name="autorDataExpedicao" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorEstadoCivil" class="form-label required">Estado civil</label>
+                  <select id="autorEstadoCivil" name="autorEstadoCivil" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Solteiro(a)</option>
+                    <option>Casado(a)</option>
+                    <option>União estável</option>
+                    <option>Separado(a)</option>
+                    <option>Divorciado(a)</option>
+                    <option>Viúvo(a)</option>
+                    <option>Prefere não informar</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-8 d-none" id="autorConjugeGroup">
+                  <label for="autorConjuge" class="form-label required">Nome do(a) cônjuge/companheiro(a)</label>
+                  <input type="text" class="form-control" id="autorConjuge" name="autorConjuge" placeholder="Informe o nome do(a) cônjuge" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorOrientacaoSexual" class="form-label">Orientação sexual</label>
+                  <select id="autorOrientacaoSexual" name="autorOrientacaoSexual" class="form-select">
+                    <option value="">Selecione</option>
+                    <option>Heterossexual</option>
+                    <option>Lésbica</option>
+                    <option>Bissexual</option>
+                    <option>Assexual</option>
+                    <option>Outra</option>
+                    <option>Prefere não informar</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorCorRaca" class="form-label required">Cor/raça</label>
+                  <select id="autorCorRaca" name="autorCorRaca" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Branca</option>
+                    <option>Preta</option>
+                    <option>Parda</option>
+                    <option>Amarela</option>
+                    <option>Indígena</option>
+                    <option>Prefere não informar</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorReligiao" class="form-label required">Religião/credo</label>
+                  <select id="autorReligiao" name="autorReligiao" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Católica</option>
+                    <option>Evangélica</option>
+                    <option>Espírita</option>
+                    <option>Religiões de matriz africana</option>
+                    <option>Sem religião</option>
+                    <option>Outra</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorGenero" class="form-label required">Gênero</label>
+                  <select id="autorGenero" name="autorGenero" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Mulher</option>
+                    <option>Homem</option>
+                    <option>Outro</option>
+                    <option>Prefiro não informar</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4 d-none" id="autorIdentidadeGeneroGroup">
+                  <label for="autorIdentidadeGenero" class="form-label required">Identidade de gênero</label>
+                  <select id="autorIdentidadeGenero" name="autorIdentidadeGenero" class="form-select">
+                    <option value="">Selecione</option>
+                    <option>Mulher trans</option>
+                    <option>Homem trans</option>
+                    <option>Travesti</option>
+                    <option>Não-binária</option>
+                    <option>Outra</option>
+                    <option>Prefere não informar</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorConfiguracaoFamiliar" class="form-label required">Configuração familiar</label>
+                  <select id="autorConfiguracaoFamiliar" name="autorConfiguracaoFamiliar" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Nuclear</option>
+                    <option>Monoparental</option>
+                    <option>Extensa</option>
+                    <option>Reconstituída</option>
+                    <option>Outra</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorNacionalidade" class="form-label required">Nacionalidade</label>
+                  <select id="autorNacionalidade" name="autorNacionalidade" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Brasileiro(a)</option>
+                    <option>Naturalizado(a)</option>
+                    <option>Estrangeiro(a)</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4 d-none" id="autorUfNascimentoGroup">
+                  <label for="autorUfNascimento" class="form-label required">UF de nascimento</label>
+                  <select id="autorUfNascimento" name="autorUfNascimento" class="form-select" data-choices="true">
+                    <option value="">Selecione</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4 d-none" id="autorCidadeNascimentoGroup">
+                  <label for="autorCidadeNascimento" class="form-label required">Naturalidade (cidade)</label>
+                  <select id="autorCidadeNascimento" name="autorCidadeNascimento" class="form-select" data-choices="true">
+                    <option value="">Selecione</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="autorNomePai" class="form-label">Nome do pai</label>
+                  <input type="text" class="form-control" id="autorNomePai" name="autorNomePai" placeholder="Nome completo do pai" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="autorNomeMae" class="form-label">Nome da mãe</label>
+                  <input type="text" class="form-control" id="autorNomeMae" name="autorNomeMae" placeholder="Nome completo da mãe" />
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Endereço e contatos</h3>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="autorEnderecoIgual" name="autorEnderecoIgual" value="Sim" />
+                <label class="form-check-label" for="autorEnderecoIgual">Mesmo endereço da vítima</label>
+              </div>
+              <div class="row g-3" id="autorEnderecoCampos">
+                <div class="col-12 col-md-4">
+                  <label for="autorCep" class="form-label">CEP</label>
+                  <div class="d-flex gap-2">
+                    <input type="text" class="form-control" id="autorCep" name="autorCep" placeholder="00000-000" />
+                    <div class="form-check mt-2">
+                      <input class="form-check-input" type="checkbox" id="autorSemCep" name="autorSemCep" />
+                      <label class="form-check-label" for="autorSemCep">Não sei</label>
+                    </div>
+                  </div>
+                  <div class="form-text" id="autorCepHelp"></div>
+                </div>
+                <div class="col-12 col-md-5">
+                  <label for="autorLogradouro" class="form-label">Logradouro</label>
+                  <input type="text" class="form-control" id="autorLogradouro" name="autorLogradouro" />
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="autorNumero" class="form-label">Número</label>
+                  <input type="text" class="form-control" id="autorNumero" name="autorNumero" />
+                </div>
+                <div class="col-6 col-md-4">
+                  <label for="autorComplemento" class="form-label">Complemento</label>
+                  <input type="text" class="form-control" id="autorComplemento" name="autorComplemento" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorBairro" class="form-label">Bairro</label>
+                  <input type="text" class="form-control" id="autorBairro" name="autorBairro" />
+                </div>
+                <div class="col-12 col-md-3">
+                  <label for="autorCidade" class="form-label">Cidade</label>
+                  <input type="text" class="form-control" id="autorCidade" name="autorCidade" />
+                </div>
+                <div class="col-6 col-md-2">
+                  <label for="autorUf" class="form-label">UF</label>
+                  <select id="autorUf" name="autorUf" class="form-select" data-choices="true">
+                    <option value="">Selecione</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="autorPontoReferencia" class="form-label">Ponto de referência</label>
+                  <input type="text" class="form-control" id="autorPontoReferencia" name="autorPontoReferencia" />
+                </div>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-12 col-md-4">
+                  <label for="autorTelefoneFixo" class="form-label">Telefone fixo</label>
+                  <input type="text" class="form-control" id="autorTelefoneFixo" name="autorTelefoneFixo" placeholder="(00) 0000-0000" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorTelefoneCelular" class="form-label">Telefone celular</label>
+                  <input type="text" class="form-control" id="autorTelefoneCelular" name="autorTelefoneCelular" placeholder="(00) 00000-0000" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorEmail" class="form-label">E-mail</label>
+                  <input type="email" class="form-control" id="autorEmail" name="autorEmail" placeholder="email@exemplo.com" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorDataNascimento" class="form-label required">Data de nascimento</label>
+                  <input type="date" class="form-control" id="autorDataNascimento" name="autorDataNascimento" required />
+                </div>
+                <div class="col-12 col-md-2">
+                  <label for="autorIdade" class="form-label">Idade</label>
+                  <input type="text" class="form-control" id="autorIdade" name="autorIdade" readonly placeholder="Calculada" />
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Escolaridade</h3>
+              <div class="row g-3">
+                <div class="col-12 col-md-4">
+                  <label for="autorGrauEscolar" class="form-label required">Grau escolar alcançado</label>
+                  <select id="autorGrauEscolar" name="autorGrauEscolar" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Fundamental incompleto</option>
+                    <option>Fundamental completo</option>
+                    <option>Médio incompleto</option>
+                    <option>Médio completo</option>
+                    <option>Técnico</option>
+                    <option>Tecnólogo</option>
+                    <option>Ensino Superior incompleto</option>
+                    <option>Ensino Superior completo</option>
+                    <option>Pós-graduação</option>
+                    <option>Mestrado</option>
+                    <option>Doutorado</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4 d-none" id="autorSituacaoEscolarGroup">
+                  <label for="autorSituacaoEscolar" class="form-label required">Situação escolar</label>
+                  <select id="autorSituacaoEscolar" name="autorSituacaoEscolar" class="form-select">
+                    <option value="">Selecione</option>
+                    <option>Em andamento</option>
+                    <option>Concluído</option>
+                    <option>Interrompido</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4 d-none" id="autorNaturezaPosGroup">
+                  <label for="autorNaturezaPos" class="form-label required">Natureza da pós-graduação</label>
+                  <select id="autorNaturezaPos" name="autorNaturezaPos" class="form-select">
+                    <option value="">Selecione</option>
+                    <option>Lato sensu</option>
+                    <option>Stricto sensu</option>
+                    <option>Residência</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Dados profissionais</h3>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="autorLocalTrabalho" class="form-label">Local de trabalho</label>
+                  <input type="text" class="form-control" id="autorLocalTrabalho" name="autorLocalTrabalho" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="autorEnderecoTrabalho" class="form-label">Endereço do trabalho</label>
+                  <input type="text" class="form-control" id="autorEnderecoTrabalho" name="autorEnderecoTrabalho" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorTelefoneTrabalho" class="form-label">Telefone</label>
+                  <input type="text" class="form-control" id="autorTelefoneTrabalho" name="autorTelefoneTrabalho" placeholder="(00) 0000-0000" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorReferenciaTrabalho" class="form-label">Ponto de referência</label>
+                  <input type="text" class="form-control" id="autorReferenciaTrabalho" name="autorReferenciaTrabalho" />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="autorSituacaoOcupacao" class="form-label required">Situação de ocupação</label>
+                  <select id="autorSituacaoOcupacao" name="autorSituacaoOcupacao" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Empregado(a) com carteira</option>
+                    <option>Empregado(a) sem carteira</option>
+                    <option>Servidor(a) público(a)</option>
+                    <option>Autônomo(a)</option>
+                    <option>Desempregado(a)</option>
+                    <option>Estudante</option>
+                    <option>Aposentado(a)</option>
+                    <option>Do lar</option>
+                    <option>Outra</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-6 d-none" id="autorOcupacaoGroup">
+                  <label for="autorOcupacao" class="form-label required">Ocupação / Profissão</label>
+                  <input type="text" class="form-control" id="autorOcupacao" name="autorOcupacao" placeholder="Informe a função principal" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <span class="form-label d-block">Profissional de segurança pública?</span>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorSegurancaPublica" id="autorSegurancaPublicaSim" value="Sim" />
+                      <label class="form-check-label" for="autorSegurancaPublicaSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorSegurancaPublica" id="autorSegurancaPublicaNao" value="Não" checked />
+                      <label class="form-check-label" for="autorSegurancaPublicaNao">Não</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 d-none" id="autorSegurancaDetalhes">
+                  <label for="autorSegurancaQual" class="form-label required">Qual?</label>
+                  <input type="text" class="form-control mb-2" id="autorSegurancaQual" name="autorSegurancaQual" placeholder="Ex.: Polícia Militar" />
+                  <label for="autorForcaInstitucional" class="form-label required">Força institucional</label>
+                  <input type="text" class="form-control" id="autorForcaInstitucional" name="autorForcaInstitucional" placeholder="Informe a corporação" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="autorRendaIndividual" class="form-label required">Renda individual</label>
+                  <select id="autorRendaIndividual" name="autorRendaIndividual" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Até 1 salário mínimo</option>
+                    <option>1 a 2 salários mínimos</option>
+                    <option>2 a 3 salários mínimos</option>
+                    <option>3 a 5 salários mínimos</option>
+                    <option>Acima de 5 salários mínimos</option>
+                    <option>Sem renda</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Saúde física</h3>
+              <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                  <span class="form-label d-block">Faz uso de drogas lícitas?</span>
+                  <div class="d-flex flex-wrap gap-3" id="autorDrogasLicitasGroup">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaLicitaTabaco" name="autorDrogasLicitas[]" value="Tabaco" />
+                      <label class="form-check-label" for="autorDrogaLicitaTabaco">Tabaco</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaLicitaAlcool" name="autorDrogasLicitas[]" value="Álcool" />
+                      <label class="form-check-label" for="autorDrogaLicitaAlcool">Álcool</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaLicitaMedicamento" name="autorDrogasLicitas[]" value="Medicamento" />
+                      <label class="form-check-label" for="autorDrogaLicitaMedicamento">Medicamento</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaLicitaOutra" name="autorDrogasLicitas[]" value="Outra" />
+                      <label class="form-check-label" for="autorDrogaLicitaOutra">Outra</label>
+                    </div>
+                  </div>
+                  <div class="mt-2 d-none" id="autorDrogasLicitasOutraGroup">
+                    <label for="autorDrogasLicitasOutra" class="form-label required">Qual?</label>
+                    <input type="text" class="form-control" id="autorDrogasLicitasOutra" name="autorDrogasLicitasOutra" />
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <span class="form-label d-block">Faz uso de drogas ilícitas?</span>
+                  <div class="d-flex flex-wrap gap-3" id="autorDrogasIlicitasGroup">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaIlicitaMaconha" name="autorDrogasIlicitas[]" value="Maconha" />
+                      <label class="form-check-label" for="autorDrogaIlicitaMaconha">Maconha</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaIlicitaCocaina" name="autorDrogasIlicitas[]" value="Cocaína" />
+                      <label class="form-check-label" for="autorDrogaIlicitaCocaina">Cocaína</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaIlicitaCrack" name="autorDrogasIlicitas[]" value="Crack" />
+                      <label class="form-check-label" for="autorDrogaIlicitaCrack">Crack</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="autorDrogaIlicitaOutra" name="autorDrogasIlicitas[]" value="Outra" />
+                      <label class="form-check-label" for="autorDrogaIlicitaOutra">Outra</label>
+                    </div>
+                  </div>
+                  <div class="mt-2 d-none" id="autorDrogasIlicitasOutraGroup">
+                    <label for="autorDrogasIlicitasOutra" class="form-label required">Qual?</label>
+                    <input type="text" class="form-control" id="autorDrogasIlicitasOutra" name="autorDrogasIlicitasOutra" />
+                  </div>
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Aspecto criminal</h3>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <span class="form-label d-block">Possui arma?</span>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorPossuiArma" id="autorPossuiArmaSim" value="Sim" />
+                      <label class="form-check-label" for="autorPossuiArmaSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorPossuiArma" id="autorPossuiArmaNao" value="Não" checked />
+                      <label class="form-check-label" for="autorPossuiArmaNao">Não</label>
+                    </div>
+                  </div>
+                  <div class="mt-2 d-none" id="autorTipoArmaGroup">
+                    <label for="autorTipoArma" class="form-label required">Tipo de arma</label>
+                    <input type="text" class="form-control" id="autorTipoArma" name="autorTipoArma" />
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <span class="form-label d-block">Envolvimento com criminalidade?</span>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorCriminalidade" id="autorCriminalidadeSim" value="Sim" />
+                      <label class="form-check-label" for="autorCriminalidadeSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorCriminalidade" id="autorCriminalidadeNao" value="Não" checked />
+                      <label class="form-check-label" for="autorCriminalidadeNao">Não</label>
+                    </div>
+                  </div>
+                  <div class="mt-2 d-none" id="autorCriminalidadeQualGroup">
+                    <label for="autorCriminalidadeQual" class="form-label required">Qual?</label>
+                    <input type="text" class="form-control" id="autorCriminalidadeQual" name="autorCriminalidadeQual" />
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <span class="form-label d-block">Possui passagem pela polícia?</span>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorPassagemPolicia" id="autorPassagemPoliciaSim" value="Sim" />
+                      <label class="form-check-label" for="autorPassagemPoliciaSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorPassagemPolicia" id="autorPassagemPoliciaNao" value="Não" checked />
+                      <label class="form-check-label" for="autorPassagemPoliciaNao">Não</label>
+                    </div>
+                  </div>
+                  <div class="row g-2 mt-2 d-none" id="autorPassagemDetalhes">
+                    <div class="col-12 col-md-6">
+                      <label for="autorPassagemRegime" class="form-label required">Tipo de regime</label>
+                      <input type="text" class="form-control" id="autorPassagemRegime" name="autorPassagemRegime" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="autorPassagemDelito" class="form-label required">Qual delito?</label>
+                      <input type="text" class="form-control" id="autorPassagemDelito" name="autorPassagemDelito" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <span class="form-label d-block">Violência contra outrem/familiares/crianças</span>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorViolenciaOutrem" id="autorViolenciaOutremSim" value="Sim" />
+                      <label class="form-check-label" for="autorViolenciaOutremSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorViolenciaOutrem" id="autorViolenciaOutremNao" value="Não" checked />
+                      <label class="form-check-label" for="autorViolenciaOutremNao">Não</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <span class="form-label d-block">Medidas protetivas</span>
+                  <div class="d-flex flex-wrap gap-3" role="radiogroup">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorMedidasProtetivas" id="autorMedidaMulher" value="Mulher" />
+                      <label class="form-check-label" for="autorMedidaMulher">Mulher</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorMedidasProtetivas" id="autorMedidaFilhos" value="Filhos" />
+                      <label class="form-check-label" for="autorMedidaFilhos">Filhos</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorMedidasProtetivas" id="autorMedidaOutros" value="Outros membros" />
+                      <label class="form-check-label" for="autorMedidaOutros">Outros membros</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autorMedidasProtetivas" id="autorMedidaNenhuma" value="Nenhuma" checked />
+                      <label class="form-check-label" for="autorMedidaNenhuma">Nenhuma</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="reset" class="btn btn-danger">Cancelar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <div class="modal fade" id="familiaModal" tabindex="-1" aria-labelledby="familiaModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -2353,38 +2867,54 @@
           RJ: ['Rio de Janeiro', 'Niterói', 'Campos dos Goytacazes'],
         };
 
-        const ufSelects = ['uf', 'ufNascimento', 'ufExpedicao']
-          .map((id) => document.getElementById(id))
-          .filter(Boolean);
-        ufSelects.forEach((select) => {
-          estados.forEach((estado) => {
-            const option = document.createElement('option');
-            option.value = estado;
-            option.textContent = estado;
-            select.appendChild(option);
-          });
-        });
+        const preencherEstados = (ids = []) => {
+          ids
+            .map((id) => document.getElementById(id))
+            .filter(Boolean)
+            .forEach((select) => {
+              const valoresExistentes = new Set(Array.from(select.options).map((opt) => opt.value));
+              estados.forEach((estado) => {
+                if (!valoresExistentes.has(estado)) {
+                  const option = document.createElement('option');
+                  option.value = estado;
+                  option.textContent = estado;
+                  select.appendChild(option);
+                }
+              });
+            });
+        };
 
-        const cidadeNascimentoSelect = document.getElementById('cidadeNascimento');
-        const ufNascimentoSelect = document.getElementById('ufNascimento');
-        if (ufNascimentoSelect && cidadeNascimentoSelect) {
-          ufNascimentoSelect.addEventListener('change', (event) => {
-            const ufSelecionada = event.target.value;
-            cidadeNascimentoSelect.innerHTML = '';
+        preencherEstados(['uf', 'ufNascimento', 'ufExpedicao', 'autorUf', 'autorUfNascimento', 'autorUfExpedicao']);
+
+        const configurarCidadeDependente = (ufId, cidadeId) => {
+          const ufSelect = document.getElementById(ufId);
+          const cidadeSelect = document.getElementById(cidadeId);
+          if (!ufSelect || !cidadeSelect) return;
+
+          const atualizar = () => {
+            const ufSelecionada = ufSelect.value;
+            cidadeSelect.innerHTML = '';
             const placeholder = document.createElement('option');
             placeholder.value = '';
             placeholder.textContent = ufSelecionada ? 'Selecione' : 'Selecione a UF primeiro';
-            cidadeNascimentoSelect.appendChild(placeholder);
-            if (citiesByState[ufSelecionada]) {
+            cidadeSelect.appendChild(placeholder);
+            if (ufSelecionada && citiesByState[ufSelecionada]) {
               citiesByState[ufSelecionada].forEach((cidade) => {
                 const option = document.createElement('option');
                 option.value = cidade;
                 option.textContent = cidade;
-                cidadeNascimentoSelect.appendChild(option);
+                cidadeSelect.appendChild(option);
               });
             }
-          });
-        }
+          };
+
+          atualizar();
+          ufSelect.addEventListener('change', atualizar);
+        };
+
+        const cidadeNascimentoSelect = document.getElementById('cidadeNascimento');
+        configurarCidadeDependente('ufNascimento', 'cidadeNascimento');
+        configurarCidadeDependente('autorUfNascimento', 'autorCidadeNascimento');
 
         const dataNascimentoInput = document.getElementById('dataNascimento');
         const idadeInput = document.getElementById('idade');
@@ -2416,31 +2946,43 @@
           dataNascimentoInput.addEventListener('blur', calcularIdade);
         }
 
-        const cepInput = document.getElementById('cep');
-        const logradouroInput = document.getElementById('logradouro');
-        const bairroInput = document.getElementById('bairro');
-        const cidadeInput = document.getElementById('cidade');
-        const ufInput = document.getElementById('uf');
-        const cepHelp = document.getElementById('cepHelp');
-        const limparEndereco = () => {
-          if (logradouroInput) logradouroInput.value = '';
-          if (bairroInput) bairroInput.value = '';
-          if (cidadeInput) cidadeInput.value = '';
-          if (ufInput) ufInput.value = '';
-        };
-        if (cepInput) {
+        const configurarBuscaCep = ({
+          cepId,
+          logradouroId,
+          bairroId,
+          cidadeId,
+          ufId,
+          helpId,
+        }) => {
+          const cepInput = document.getElementById(cepId);
+          if (!cepInput) return null;
+          const logradouroInput = logradouroId ? document.getElementById(logradouroId) : null;
+          const bairroInput = bairroId ? document.getElementById(bairroId) : null;
+          const cidadeInput = cidadeId ? document.getElementById(cidadeId) : null;
+          const ufInput = ufId ? document.getElementById(ufId) : null;
+          const helpElement = helpId ? document.getElementById(helpId) : null;
+
+          const limparEndereco = () => {
+            if (logradouroInput) logradouroInput.value = '';
+            if (bairroInput) bairroInput.value = '';
+            if (cidadeInput) cidadeInput.value = '';
+            if (ufInput) ufInput.value = '';
+          };
+
+          const atualizarAjuda = (mensagem = '') => {
+            if (helpElement) {
+              helpElement.textContent = mensagem;
+            }
+          };
+
           cepInput.addEventListener('blur', async () => {
             const cepNumeros = cepInput.value.replace(/\D/g, '');
             if (cepNumeros.length !== 8) {
-              if (cepHelp) {
-                cepHelp.textContent = 'Digite um CEP válido com 8 dígitos.';
-              }
+              atualizarAjuda('Digite um CEP válido com 8 dígitos.');
               limparEndereco();
               return;
             }
-            if (cepHelp) {
-              cepHelp.textContent = 'Consultando CEP na Brasil API...';
-            }
+            atualizarAjuda('Consultando CEP na Brasil API...');
             try {
               const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cepNumeros}`);
               if (!response.ok) {
@@ -2451,17 +2993,33 @@
               if (bairroInput) bairroInput.value = data.neighborhood || '';
               if (cidadeInput) cidadeInput.value = data.city || '';
               if (ufInput) ufInput.value = data.state || '';
-              if (cepHelp) {
-                cepHelp.textContent = '';
-              }
+              atualizarAjuda('');
             } catch (error) {
               limparEndereco();
-              if (cepHelp) {
-                cepHelp.textContent = 'Não foi possível localizar o CEP. Preencha os dados manualmente.';
-              }
+              atualizarAjuda('Não foi possível localizar o CEP. Preencha os dados manualmente.');
             }
           });
-        }
+
+          return { limparEndereco, atualizarAjuda };
+        };
+
+        const enderecoPrincipal = configurarBuscaCep({
+          cepId: 'cep',
+          logradouroId: 'logradouro',
+          bairroId: 'bairro',
+          cidadeId: 'cidade',
+          ufId: 'uf',
+          helpId: 'cepHelp',
+        });
+
+        const enderecoAutor = configurarBuscaCep({
+          cepId: 'autorCep',
+          logradouroId: 'autorLogradouro',
+          bairroId: 'autorBairro',
+          cidadeId: 'autorCidade',
+          ufId: 'autorUf',
+          helpId: 'autorCepHelp',
+        });
 
         const atendimentoChecks = document.querySelectorAll('.atendimento-check');
         const encaminhamentosAlert = document.getElementById('encaminhamentosAlert');
@@ -2778,6 +3336,457 @@
           });
         }
 
+        const autorTabelaBody = document.getElementById('autorTabelaBody');
+        const autorHiddenInputs = document.getElementById('autorHiddenInputs');
+        const autorModalElement = document.getElementById('autorModal');
+        const autorModalForm = document.getElementById('autorModalForm');
+        let autorModalInstance = null;
+
+        const ensureAutorModal = () => {
+          if (!autorModalElement || typeof bootstrap === 'undefined' || !bootstrap.Modal) {
+            return null;
+          }
+          autorModalInstance = bootstrap.Modal.getOrCreateInstance(autorModalElement);
+          return autorModalInstance;
+        };
+
+        const restaurarTabelaAutores = () => {
+          if (autorTabelaBody) {
+            autorTabelaBody.innerHTML = '';
+            const vazio = document.createElement('tr');
+            vazio.id = 'autorVazio';
+            const celula = document.createElement('td');
+            celula.colSpan = 3;
+            celula.className = 'text-center text-muted';
+            celula.textContent = 'Nenhum autor(a) informado.';
+            vazio.appendChild(celula);
+            autorTabelaBody.appendChild(vazio);
+          }
+          if (autorHiddenInputs) {
+            autorHiddenInputs.innerHTML = '';
+          }
+        };
+
+        const atualizarCamposIdentidadeGeneroAutor = () => {
+          const generoSelect = autorModalForm ? autorModalForm.querySelector('#autorGenero') : null;
+          const identidadeGroup = autorModalForm ? autorModalForm.querySelector('#autorIdentidadeGeneroGroup') : null;
+          const identidadeSelect = autorModalForm ? autorModalForm.querySelector('#autorIdentidadeGenero') : null;
+          if (!generoSelect || !identidadeGroup) return;
+          const mostrar = generoSelect.value === 'Outro' || generoSelect.value === 'Prefiro não informar';
+          identidadeGroup.classList.toggle('d-none', !mostrar);
+          if (identidadeSelect) {
+            identidadeSelect.toggleAttribute('required', mostrar);
+            if (!mostrar) {
+              resetSelect(identidadeSelect);
+            }
+          }
+        };
+
+        const atualizarCamposConjugeAutor = () => {
+          const estadoCivilSelect = autorModalForm ? autorModalForm.querySelector('#autorEstadoCivil') : null;
+          const conjugeGroup = autorModalForm ? autorModalForm.querySelector('#autorConjugeGroup') : null;
+          const conjugeInput = autorModalForm ? autorModalForm.querySelector('#autorConjuge') : null;
+          if (!estadoCivilSelect || !conjugeGroup) return;
+          const valor = estadoCivilSelect.value;
+          const mostrar = valor === 'Casado(a)' || valor === 'União estável';
+          conjugeGroup.classList.toggle('d-none', !mostrar);
+          if (conjugeInput) {
+            conjugeInput.toggleAttribute('required', mostrar);
+            if (!mostrar) {
+              conjugeInput.value = '';
+            }
+          }
+        };
+
+        const atualizarCamposRgAutor = () => {
+          if (!autorModalForm) return;
+          const rgInput = autorModalForm.querySelector('#autorRg');
+          const rgGroups = autorModalForm.querySelectorAll('.autor-rg-group');
+          const mostrar = !!(rgInput && rgInput.value.trim());
+          rgGroups.forEach((group) => {
+            group.classList.toggle('d-none', !mostrar);
+            const inputs = group.querySelectorAll('input, select');
+            inputs.forEach((input) => {
+              if (input instanceof HTMLSelectElement) {
+                input.toggleAttribute('required', mostrar);
+                if (!mostrar) {
+                  resetSelect(input);
+                }
+              } else {
+                input.toggleAttribute('required', mostrar);
+                if (!mostrar) {
+                  input.value = '';
+                }
+              }
+            });
+          });
+        };
+
+        const atualizarCamposNascimentoAutor = () => {
+          if (!autorModalForm) return;
+          const nacionalidadeSelect = autorModalForm.querySelector('#autorNacionalidade');
+          const ufGroup = autorModalForm.querySelector('#autorUfNascimentoGroup');
+          const cidadeGroup = autorModalForm.querySelector('#autorCidadeNascimentoGroup');
+          const ufSelect = autorModalForm.querySelector('#autorUfNascimento');
+          const cidadeSelect = autorModalForm.querySelector('#autorCidadeNascimento');
+          const mostrar = nacionalidadeSelect && nacionalidadeSelect.value === 'Brasileiro(a)';
+          if (ufGroup) ufGroup.classList.toggle('d-none', !mostrar);
+          if (cidadeGroup) cidadeGroup.classList.toggle('d-none', !mostrar);
+          if (ufSelect) ufSelect.toggleAttribute('required', mostrar);
+          if (cidadeSelect) cidadeSelect.toggleAttribute('required', mostrar);
+          if (!mostrar) {
+            if (ufSelect) resetSelect(ufSelect);
+            if (cidadeSelect) resetSelect(cidadeSelect);
+          }
+        };
+
+        const atualizarCamposEscolaresAutor = () => {
+          if (!autorModalForm) return;
+          const grauSelect = autorModalForm.querySelector('#autorGrauEscolar');
+          const situacaoGroup = autorModalForm.querySelector('#autorSituacaoEscolarGroup');
+          const situacaoSelect = autorModalForm.querySelector('#autorSituacaoEscolar');
+          const naturezaGroup = autorModalForm.querySelector('#autorNaturezaPosGroup');
+          const naturezaSelect = autorModalForm.querySelector('#autorNaturezaPos');
+          const valor = grauSelect ? grauSelect.value : '';
+          const mostrarSituacao = !!valor;
+          if (situacaoGroup) situacaoGroup.classList.toggle('d-none', !mostrarSituacao);
+          if (situacaoSelect) situacaoSelect.toggleAttribute('required', mostrarSituacao);
+          if (!mostrarSituacao && situacaoSelect) resetSelect(situacaoSelect);
+          const niveisPos = ['Ensino Superior completo', 'Pós-graduação', 'Mestrado', 'Doutorado'];
+          const mostrarPos = niveisPos.includes(valor);
+          if (naturezaGroup) naturezaGroup.classList.toggle('d-none', !mostrarPos);
+          if (naturezaSelect) naturezaSelect.toggleAttribute('required', mostrarPos);
+          if (!mostrarPos && naturezaSelect) resetSelect(naturezaSelect);
+        };
+
+        const atualizarCamposOcupacaoAutor = () => {
+          if (!autorModalForm) return;
+          const situacaoSelect = autorModalForm.querySelector('#autorSituacaoOcupacao');
+          const ocupacaoGroup = autorModalForm.querySelector('#autorOcupacaoGroup');
+          const ocupacaoInput = autorModalForm.querySelector('#autorOcupacao');
+          const valor = situacaoSelect ? situacaoSelect.value : '';
+          const exibirOcupacao = ['Empregado(a) com carteira', 'Empregado(a) sem carteira', 'Servidor(a) público(a)', 'Autônomo(a)'].includes(valor);
+          if (ocupacaoGroup) ocupacaoGroup.classList.toggle('d-none', !exibirOcupacao);
+          if (ocupacaoInput) {
+            ocupacaoInput.toggleAttribute('required', exibirOcupacao);
+            if (!exibirOcupacao) {
+              ocupacaoInput.value = '';
+            }
+          }
+        };
+
+        const atualizarCamposSegurancaAutor = () => {
+          if (!autorModalForm) return;
+          const radios = autorModalForm.querySelectorAll('input[name="autorSegurancaPublica"]');
+          const detalhesGroup = autorModalForm.querySelector('#autorSegurancaDetalhes');
+          const campos = detalhesGroup ? detalhesGroup.querySelectorAll('input') : [];
+          const valor = Array.from(radios).find((radio) => radio.checked)?.value;
+          const mostrar = valor === 'Sim';
+          if (detalhesGroup) detalhesGroup.classList.toggle('d-none', !mostrar);
+          campos.forEach((campo) => {
+            campo.toggleAttribute('required', mostrar);
+            if (!mostrar) {
+              campo.value = '';
+            }
+          });
+        };
+
+        const atualizarCamposDrogasAutor = () => {
+          if (!autorModalForm) return;
+          const licitasOutraGroup = autorModalForm.querySelector('#autorDrogasLicitasOutraGroup');
+          if (licitasOutraGroup) {
+            const mostrarLicita = autorModalForm.querySelector('#autorDrogaLicitaOutra')?.checked;
+            licitasOutraGroup.classList.toggle('d-none', !mostrarLicita);
+            const input = autorModalForm.querySelector('#autorDrogasLicitasOutra');
+            if (input) {
+              input.toggleAttribute('required', mostrarLicita);
+              if (!mostrarLicita) input.value = '';
+            }
+          }
+          const ilicitasOutraGroup = autorModalForm.querySelector('#autorDrogasIlicitasOutraGroup');
+          if (ilicitasOutraGroup) {
+            const mostrarIlicita = autorModalForm.querySelector('#autorDrogaIlicitaOutra')?.checked;
+            ilicitasOutraGroup.classList.toggle('d-none', !mostrarIlicita);
+            const input = autorModalForm.querySelector('#autorDrogasIlicitasOutra');
+            if (input) {
+              input.toggleAttribute('required', mostrarIlicita);
+              if (!mostrarIlicita) input.value = '';
+            }
+          }
+        };
+
+        const atualizarCamposArmaAutor = () => {
+          if (!autorModalForm) return;
+          const radios = autorModalForm.querySelectorAll('input[name="autorPossuiArma"]');
+          const grupo = autorModalForm.querySelector('#autorTipoArmaGroup');
+          const input = autorModalForm.querySelector('#autorTipoArma');
+          const valor = Array.from(radios).find((radio) => radio.checked)?.value;
+          const mostrar = valor === 'Sim';
+          if (grupo) grupo.classList.toggle('d-none', !mostrar);
+          if (input) {
+            input.toggleAttribute('required', mostrar);
+            if (!mostrar) input.value = '';
+          }
+        };
+
+        const atualizarCamposCriminalidadeAutor = () => {
+          if (!autorModalForm) return;
+          const radios = autorModalForm.querySelectorAll('input[name="autorCriminalidade"]');
+          const grupo = autorModalForm.querySelector('#autorCriminalidadeQualGroup');
+          const input = autorModalForm.querySelector('#autorCriminalidadeQual');
+          const valor = Array.from(radios).find((radio) => radio.checked)?.value;
+          const mostrar = valor === 'Sim';
+          if (grupo) grupo.classList.toggle('d-none', !mostrar);
+          if (input) {
+            input.toggleAttribute('required', mostrar);
+            if (!mostrar) input.value = '';
+          }
+        };
+
+        const atualizarCamposPassagemAutor = () => {
+          if (!autorModalForm) return;
+          const radios = autorModalForm.querySelectorAll('input[name="autorPassagemPolicia"]');
+          const grupo = autorModalForm.querySelector('#autorPassagemDetalhes');
+          const inputs = grupo ? grupo.querySelectorAll('input') : [];
+          const valor = Array.from(radios).find((radio) => radio.checked)?.value;
+          const mostrar = valor === 'Sim';
+          if (grupo) grupo.classList.toggle('d-none', !mostrar);
+          inputs.forEach((input) => {
+            input.toggleAttribute('required', mostrar);
+            if (!mostrar) input.value = '';
+          });
+        };
+
+        const atualizarIdadeAutor = () => {
+          if (!autorModalForm || !window.dayjs) return;
+          const dataInput = autorModalForm.querySelector('#autorDataNascimento');
+          const idadeInputAutor = autorModalForm.querySelector('#autorIdade');
+          if (!dataInput || !idadeInputAutor) return;
+          const valor = dataInput.value;
+          if (!valor) {
+            idadeInputAutor.value = '';
+            return;
+          }
+          const data = dayjs(valor);
+          if (!data.isValid()) {
+            idadeInputAutor.value = '';
+            return;
+          }
+          const idade = dayjs().diff(data, 'year');
+          idadeInputAutor.value = Number.isFinite(idade) ? `${idade} anos` : '';
+        };
+
+        const atualizarEnderecoAutor = () => {
+          if (!autorModalForm) return;
+          const mesmoEndereco = autorModalForm.querySelector('#autorEnderecoIgual');
+          const camposEndereco = autorModalForm.querySelector('#autorEnderecoCampos');
+          const inputsEndereco = camposEndereco ? camposEndereco.querySelectorAll('input, select') : [];
+          const desabilitar = !!(mesmoEndereco && mesmoEndereco.checked);
+          if (camposEndereco) {
+            camposEndereco.classList.toggle('d-none', desabilitar);
+          }
+          inputsEndereco.forEach((campo) => {
+            campo.toggleAttribute('disabled', desabilitar);
+            if (campo instanceof HTMLInputElement && desabilitar) {
+              if (campo.type === 'checkbox') {
+                campo.checked = false;
+              } else {
+                campo.value = '';
+              }
+            }
+            if (campo instanceof HTMLSelectElement && desabilitar) {
+              resetSelect(campo);
+            }
+          });
+          if (desabilitar && enderecoAutor) {
+            enderecoAutor.limparEndereco?.();
+            enderecoAutor.atualizarAjuda?.('');
+          }
+        };
+
+        const atualizarCepAutor = () => {
+          if (!autorModalForm) return;
+          const naoSei = autorModalForm.querySelector('#autorSemCep');
+          const cepInput = autorModalForm.querySelector('#autorCep');
+          const logradouro = autorModalForm.querySelector('#autorLogradouro');
+          const bairro = autorModalForm.querySelector('#autorBairro');
+          const cidade = autorModalForm.querySelector('#autorCidade');
+          const uf = autorModalForm.querySelector('#autorUf');
+          const desabilitar = !!(naoSei && naoSei.checked);
+          if (cepInput) {
+            cepInput.toggleAttribute('disabled', desabilitar);
+            if (desabilitar) {
+              cepInput.value = '';
+            }
+          }
+          if (desabilitar) {
+            if (logradouro) logradouro.value = '';
+            if (bairro) bairro.value = '';
+            if (cidade) cidade.value = '';
+            if (uf) resetSelect(uf);
+            if (enderecoAutor) {
+              enderecoAutor.atualizarAjuda?.('');
+            }
+          }
+        };
+
+        if (autorModalElement && autorModalForm) {
+          autorModalElement.addEventListener('show.bs.modal', () => {
+            ensureAutorModal();
+            atualizarCamposRgAutor();
+            atualizarCamposConjugeAutor();
+            atualizarCamposIdentidadeGeneroAutor();
+            atualizarCamposNascimentoAutor();
+            atualizarCamposEscolaresAutor();
+            atualizarCamposOcupacaoAutor();
+            atualizarCamposSegurancaAutor();
+            atualizarCamposDrogasAutor();
+            atualizarCamposArmaAutor();
+            atualizarCamposCriminalidadeAutor();
+            atualizarCamposPassagemAutor();
+            atualizarEnderecoAutor();
+            atualizarCepAutor();
+            atualizarIdadeAutor();
+          });
+
+          autorModalElement.addEventListener('hidden.bs.modal', () => {
+            autorModalForm.reset();
+            const selects = autorModalForm.querySelectorAll('select');
+            selects.forEach((select) => resetSelect(select));
+            atualizarCamposRgAutor();
+            atualizarCamposConjugeAutor();
+            atualizarCamposIdentidadeGeneroAutor();
+            atualizarCamposNascimentoAutor();
+            atualizarCamposEscolaresAutor();
+            atualizarCamposOcupacaoAutor();
+            atualizarCamposSegurancaAutor();
+            atualizarCamposDrogasAutor();
+            atualizarCamposArmaAutor();
+            atualizarCamposCriminalidadeAutor();
+            atualizarCamposPassagemAutor();
+            atualizarEnderecoAutor();
+            atualizarCepAutor();
+            atualizarIdadeAutor();
+          });
+
+          autorModalForm.addEventListener('input', (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            if (target.id === 'autorRg') {
+              atualizarCamposRgAutor();
+            }
+            if (target.id === 'autorDataNascimento') {
+              atualizarIdadeAutor();
+            }
+          });
+
+          const nacionalidadeSelect = autorModalForm.querySelector('#autorNacionalidade');
+          if (nacionalidadeSelect) {
+            nacionalidadeSelect.addEventListener('change', atualizarCamposNascimentoAutor);
+          }
+          const generoSelect = autorModalForm.querySelector('#autorGenero');
+          if (generoSelect) {
+            generoSelect.addEventListener('change', atualizarCamposIdentidadeGeneroAutor);
+          }
+          const estadoCivilSelect = autorModalForm.querySelector('#autorEstadoCivil');
+          if (estadoCivilSelect) {
+            estadoCivilSelect.addEventListener('change', atualizarCamposConjugeAutor);
+          }
+          const grauSelect = autorModalForm.querySelector('#autorGrauEscolar');
+          if (grauSelect) {
+            grauSelect.addEventListener('change', atualizarCamposEscolaresAutor);
+          }
+          const situacaoSelect = autorModalForm.querySelector('#autorSituacaoOcupacao');
+          if (situacaoSelect) {
+            situacaoSelect.addEventListener('change', atualizarCamposOcupacaoAutor);
+          }
+          autorModalForm.querySelectorAll('input[name="autorSegurancaPublica"]').forEach((radio) => {
+            radio.addEventListener('change', atualizarCamposSegurancaAutor);
+          });
+          autorModalForm.querySelectorAll('#autorDrogasLicitasGroup input[type="checkbox"]').forEach((checkbox) => {
+            checkbox.addEventListener('change', atualizarCamposDrogasAutor);
+          });
+          autorModalForm.querySelectorAll('#autorDrogasIlicitasGroup input[type="checkbox"]').forEach((checkbox) => {
+            checkbox.addEventListener('change', atualizarCamposDrogasAutor);
+          });
+          autorModalForm.querySelectorAll('input[name="autorPossuiArma"]').forEach((radio) => {
+            radio.addEventListener('change', atualizarCamposArmaAutor);
+          });
+          autorModalForm.querySelectorAll('input[name="autorCriminalidade"]').forEach((radio) => {
+            radio.addEventListener('change', atualizarCamposCriminalidadeAutor);
+          });
+          autorModalForm.querySelectorAll('input[name="autorPassagemPolicia"]').forEach((radio) => {
+            radio.addEventListener('change', atualizarCamposPassagemAutor);
+          });
+          const enderecoIgualCheck = autorModalForm.querySelector('#autorEnderecoIgual');
+          if (enderecoIgualCheck) {
+            enderecoIgualCheck.addEventListener('change', atualizarEnderecoAutor);
+          }
+          const autorSemCepCheck = autorModalForm.querySelector('#autorSemCep');
+          if (autorSemCepCheck) {
+            autorSemCepCheck.addEventListener('change', atualizarCepAutor);
+          }
+          const autorDataNascimentoInput = autorModalForm.querySelector('#autorDataNascimento');
+          if (autorDataNascimentoInput) {
+            autorDataNascimentoInput.addEventListener('change', atualizarIdadeAutor);
+            autorDataNascimentoInput.addEventListener('blur', atualizarIdadeAutor);
+          }
+
+          autorModalForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!autorModalForm.checkValidity()) {
+              autorModalForm.reportValidity();
+              return;
+            }
+
+            atualizarIdadeAutor();
+            const formData = new FormData(autorModalForm);
+            const dados = Object.fromEntries(formData.entries());
+            dados.drogasLicitas = formData.getAll('autorDrogasLicitas[]');
+            dados.drogasIlicitas = formData.getAll('autorDrogasIlicitas[]');
+
+            if (autorTabelaBody) {
+              const vazio = document.getElementById('autorVazio');
+              if (vazio) {
+                vazio.remove();
+              }
+              const linha = document.createElement('tr');
+              const criarCelula = (valor) => {
+                const cel = document.createElement('td');
+                cel.textContent = valor || '';
+                return cel;
+              };
+              linha.appendChild(criarCelula(dados.autorCpf || ''));
+              linha.appendChild(criarCelula(dados.autorNome || ''));
+              linha.appendChild(criarCelula(dados.autorParentesco || ''));
+              autorTabelaBody.appendChild(linha);
+            }
+
+            if (autorHiddenInputs) {
+              const wrapper = document.createElement('div');
+              wrapper.className = 'autor-hidden-set';
+              const adicionarHidden = (chave, valor) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = `autores[${chave}][]`;
+                input.value = Array.isArray(valor) ? valor.join(', ') : valor || '';
+                wrapper.appendChild(input);
+              };
+              Object.keys(dados).forEach((chave) => {
+                adicionarHidden(chave, dados[chave]);
+              });
+              adicionarHidden('drogasLicitas', dados.drogasLicitas || []);
+              adicionarHidden('drogasIlicitas', dados.drogasIlicitas || []);
+              autorHiddenInputs.appendChild(wrapper);
+            }
+
+            const modalInstance = ensureAutorModal();
+            if (modalInstance) {
+              modalInstance.hide();
+            }
+          });
+        }
+
         const numeroProntuarioInput = document.getElementById('numeroProntuario');
         const dataAtendimentoInput = document.getElementById('dataAtendimento');
         const horaAtendimentoInput = document.getElementById('horaAtendimento');
@@ -2867,9 +3876,14 @@
 
         const maskConfig = [
           { selector: '#cpfUsuario', mask: '000.000.000-00' },
+          { selector: '#autorCpf', mask: '000.000.000-00' },
           { selector: '#cep', mask: '00000-000' },
+          { selector: '#autorCep', mask: '00000-000' },
           { selector: '#telefone', mask: '(00) 00000-0000' },
           { selector: '#telefoneSecundario', mask: '(00) 00000-0000' },
+          { selector: '#autorTelefoneFixo', mask: '(00) 0000-0000' },
+          { selector: '#autorTelefoneCelular', mask: '(00) 00000-0000' },
+          { selector: '#autorTelefoneTrabalho', mask: '(00) 0000-0000' },
           { selector: '#dataAtendimento', mask: '00/00/0000' },
           { selector: '#horaAtendimento', mask: '00:00' },
           { selector: '#dataNascimento', mask: '00/00/0000' },
@@ -3134,7 +4148,6 @@
             .addField('#escolaridade', [{ rule: 'required', errorMessage: 'Informe a escolaridade.' }])
             .addField('#tipoViolencia', [{ rule: 'required', errorMessage: 'Selecione o tipo de violência.' }])
             .addField('#localViolencia', [{ rule: 'required', errorMessage: 'Informe o local da violência.' }])
-            .addField('#relacaoAutor', [{ rule: 'required', errorMessage: 'Informe a relação com o autor.' }])
             .addRequiredGroup('input[name="avaliacaoInicial"]', 'Selecione a avaliação inicial.')
             .addField('#cursoFormacao', [
               {
@@ -3218,6 +4231,7 @@
               atualizarEncaminhamentos();
               atualizarSituacaoHabitacionalOutro();
               restaurarTabelaFamilia();
+              restaurarTabelaAutores();
               updateDeficiencia();
               updateProblemaSaude();
               updatePsicologo();
@@ -3243,6 +4257,16 @@
               }
               setCurrentDateTime();
             });
+
+          const registroForm = document.getElementById('registroForm');
+          if (registroForm) {
+            registroForm.addEventListener('reset', () => {
+              setTimeout(() => {
+                restaurarTabelaFamilia();
+                restaurarTabelaAutores();
+              }, 0);
+            });
+          }
         }
 
         const openFormBtn = document.getElementById('openFormBtn');
