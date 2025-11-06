@@ -4177,7 +4177,9 @@
           if (!entrada) return [];
 
           if (Array.isArray(entrada)) {
-            return entrada.filter((item) => item && typeof item === 'object');
+            return entrada
+              .flatMap((item) => normalizarRegistros(item))
+              .filter((item) => item && typeof item === 'object' && !Array.isArray(item));
           }
 
           if (typeof entrada === 'string') {
@@ -4248,7 +4250,23 @@
         const atualizarTabelaConsulta = (registros) => {
           if (!consultaProntuariosTabelaBody) return;
           consultaProntuariosTabelaBody.innerHTML = '';
-          if (!Array.isArray(registros) || registros.length === 0) {
+
+          const lista = Array.isArray(registros) ? registros.filter((item) => item && typeof item === 'object') : [];
+          const vistos = new Set();
+          const normalizados = [];
+          lista.forEach((item) => {
+            const prontuario = item.prontuario || '';
+            const cpf = item.cpf || '';
+            const nome = item.nome || '';
+            const mae = item.mae || '';
+            const chave = [prontuario, cpf, nome, mae].join('||');
+            if (!vistos.has(chave)) {
+              vistos.add(chave);
+              normalizados.push({ prontuario, cpf, nome, mae });
+            }
+          });
+
+          if (!normalizados.length) {
             const linha = document.createElement('tr');
             const coluna = document.createElement('td');
             coluna.colSpan = 5;
@@ -4262,7 +4280,7 @@
             return;
           }
 
-          registros.forEach((registro) => {
+          normalizados.forEach((registro) => {
             const linha = document.createElement('tr');
             const campos = [
               registro.prontuario || '—',
