@@ -183,7 +183,7 @@
         box-shadow: 0 12px 30px rgba(24, 64, 120, 0.08);
         padding: 1.75rem;
         height: 100%;
-        scroll-margin-top: 6.5rem;
+        scroll-margin-top: 9rem;
       }
 
       .card-section + .card-section {
@@ -192,14 +192,14 @@
 
       .form-section-nav {
         position: sticky;
-        top: 5.5rem;
+        top: 0;
         z-index: 1030;
-        background: rgba(244, 247, 251, 0.94);
+        background: rgba(244, 247, 251, 0.96);
         border: 1px solid rgba(0, 83, 164, 0.15);
         border-radius: 1rem;
         padding: 1rem 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 8px 24px rgba(0, 45, 98, 0.12);
+        margin-bottom: 1.25rem;
+        box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
         backdrop-filter: blur(6px);
       }
 
@@ -249,9 +249,36 @@
         box-shadow: 0 8px 18px rgba(0, 45, 98, 0.2);
       }
 
+      .modal-dialog-scrollable .modal-body {
+        max-height: calc(100vh - 8rem);
+        overflow-y: auto;
+      }
+
+      #autorModal .modal-dialog,
+      #familiaModal .modal-dialog {
+        max-width: min(1200px, 95vw);
+      }
+
+      #autorEnderecoCampos.is-synchronized {
+        position: relative;
+      }
+
+      #autorEnderecoCampos.is-synchronized::after {
+        content: "Endereço sincronizado com a vítima";
+        position: absolute;
+        top: -0.75rem;
+        right: 1rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--brand-primary);
+        background: rgba(0, 163, 255, 0.12);
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+      }
+
       @media (max-width: 576px) {
         .form-section-nav {
-          top: 4.25rem;
+          top: 0;
           padding: 0.75rem 1rem;
         }
 
@@ -2139,40 +2166,47 @@
               <hr class="my-4" />
               <h3 class="h6 text-uppercase text-primary fw-semibold mb-3">Escolaridade</h3>
               <div class="row g-3">
-                <div class="col-12 col-md-4">
-                  <label for="autorGrauEscolar" class="form-label required">Grau escolar alcançado</label>
+                <div class="col-12">
+                  <label for="autorGrauEscolar" class="form-label required">Escolaridade</label>
                   <select id="autorGrauEscolar" name="autorGrauEscolar" class="form-select" required>
                     <option value="">Selecione</option>
-                    <option>Fundamental incompleto</option>
-                    <option>Fundamental completo</option>
-                    <option>Médio incompleto</option>
-                    <option>Médio completo</option>
-                    <option>Técnico</option>
+                    <option>Sem instrução</option>
+                    <option>Ensino fundamental</option>
+                    <option>Ensino médio</option>
+                    <option>Curso técnico</option>
                     <option>Tecnólogo</option>
-                    <option>Ensino Superior incompleto</option>
-                    <option>Ensino Superior completo</option>
+                    <option>Ensino superior</option>
                     <option>Pós-graduação</option>
                     <option>Mestrado</option>
                     <option>Doutorado</option>
                   </select>
                 </div>
-                <div class="col-12 col-md-4 d-none" id="autorSituacaoEscolarGroup">
-                  <label for="autorSituacaoEscolar" class="form-label required">Situação escolar</label>
+                <div class="col-12 col-md-6 d-none" id="autorSituacaoEscolarGroup">
+                  <label for="autorSituacaoEscolar" class="form-label">Situação escolar</label>
                   <select id="autorSituacaoEscolar" name="autorSituacaoEscolar" class="form-select">
                     <option value="">Selecione</option>
-                    <option>Em andamento</option>
                     <option>Concluído</option>
+                    <option>Em andamento</option>
                     <option>Interrompido</option>
                   </select>
                 </div>
-                <div class="col-12 col-md-4 d-none" id="autorNaturezaPosGroup">
-                  <label for="autorNaturezaPos" class="form-label required">Natureza da pós-graduação</label>
-                  <select id="autorNaturezaPos" name="autorNaturezaPos" class="form-select">
+                <div class="col-12 col-md-6 d-none" id="autorCursoFormacaoGroup">
+                  <label for="autorCursoFormacao" class="form-label">Curso</label>
+                  <input type="text" class="form-control" id="autorCursoFormacao" name="autorCursoFormacao" placeholder="Informe o curso" />
+                </div>
+                <div class="col-12 col-md-6 d-none" id="autorTipoPosGraduacaoGroup">
+                  <label for="autorTipoPosGraduacao" class="form-label">Tipo de pós-graduação</label>
+                  <select id="autorTipoPosGraduacao" name="autorTipoPosGraduacao" class="form-select">
                     <option value="">Selecione</option>
-                    <option>Lato sensu</option>
-                    <option>Stricto sensu</option>
-                    <option>Residência</option>
+                    <option>Especialização</option>
+                    <option>Mestrado</option>
+                    <option>Doutorado</option>
+                    <option>Outra</option>
                   </select>
+                </div>
+                <div class="col-12 col-md-6 d-none" id="autorAnoPeriodoGroup">
+                  <label for="autorAnoPeriodo" class="form-label">Ano/período</label>
+                  <input type="text" class="form-control" id="autorAnoPeriodo" name="autorAnoPeriodo" placeholder="Ex.: 3º período" />
                 </div>
               </div>
 
@@ -2655,6 +2689,33 @@
           }
         };
 
+        const setSelectValue = (element, value) => {
+          if (!element) return;
+          const instance = choicesInstances.get(element.id);
+          if (instance) {
+            instance.removeActiveItems();
+            if (value) {
+              const possuiOpcao = Array.from(element.options).some((option) => option.value === value);
+              if (!possuiOpcao) {
+                const novaOpcao = new Option(value, value, true, true);
+                element.appendChild(novaOpcao);
+              }
+            }
+            try {
+              instance.setChoiceByValue(value || '');
+            } catch (error) {
+              const opcoes = Array.from(element.options).map((option) => ({
+                value: option.value,
+                label: option.textContent,
+                selected: option.value === value,
+              }));
+              instance.setChoices(opcoes, 'value', 'label', true);
+            }
+          } else {
+            element.value = value;
+          }
+        };
+
         const clearGroupInputs = (group) => {
           if (!group) return;
           const inputs = group.querySelectorAll('input, select, textarea');
@@ -2668,6 +2729,8 @@
             }
           });
         };
+
+        let sincronizarEnderecoAutorSeMarcado = () => {};
 
         const toggleGroup = (group, show) => {
           if (!group) return;
@@ -2966,7 +3029,8 @@
             if (logradouroInput) logradouroInput.value = '';
             if (bairroInput) bairroInput.value = '';
             if (cidadeInput) cidadeInput.value = '';
-            if (ufInput) ufInput.value = '';
+            if (ufInput) resetSelect(ufInput);
+            sincronizarEnderecoAutorSeMarcado();
           };
 
           const atualizarAjuda = (mensagem = '') => {
@@ -2992,8 +3056,9 @@
               if (logradouroInput) logradouroInput.value = data.street || '';
               if (bairroInput) bairroInput.value = data.neighborhood || '';
               if (cidadeInput) cidadeInput.value = data.city || '';
-              if (ufInput) ufInput.value = data.state || '';
+              if (ufInput) setSelectValue(ufInput, data.state || '');
               atualizarAjuda('');
+              sincronizarEnderecoAutorSeMarcado();
             } catch (error) {
               limparEndereco();
               atualizarAjuda('Não foi possível localizar o CEP. Preencha os dados manualmente.');
@@ -3445,18 +3510,51 @@
           const grauSelect = autorModalForm.querySelector('#autorGrauEscolar');
           const situacaoGroup = autorModalForm.querySelector('#autorSituacaoEscolarGroup');
           const situacaoSelect = autorModalForm.querySelector('#autorSituacaoEscolar');
-          const naturezaGroup = autorModalForm.querySelector('#autorNaturezaPosGroup');
-          const naturezaSelect = autorModalForm.querySelector('#autorNaturezaPos');
+          const cursoGroup = autorModalForm.querySelector('#autorCursoFormacaoGroup');
+          const cursoInput = autorModalForm.querySelector('#autorCursoFormacao');
+          const posGroup = autorModalForm.querySelector('#autorTipoPosGraduacaoGroup');
+          const posSelect = autorModalForm.querySelector('#autorTipoPosGraduacao');
+          const anoGroup = autorModalForm.querySelector('#autorAnoPeriodoGroup');
+          const anoInput = autorModalForm.querySelector('#autorAnoPeriodo');
           const valor = grauSelect ? grauSelect.value : '';
-          const mostrarSituacao = !!valor;
+          const mostrarSituacao = valor && valor !== 'Sem instrução';
           if (situacaoGroup) situacaoGroup.classList.toggle('d-none', !mostrarSituacao);
-          if (situacaoSelect) situacaoSelect.toggleAttribute('required', mostrarSituacao);
-          if (!mostrarSituacao && situacaoSelect) resetSelect(situacaoSelect);
-          const niveisPos = ['Ensino Superior completo', 'Pós-graduação', 'Mestrado', 'Doutorado'];
-          const mostrarPos = niveisPos.includes(valor);
-          if (naturezaGroup) naturezaGroup.classList.toggle('d-none', !mostrarPos);
-          if (naturezaSelect) naturezaSelect.toggleAttribute('required', mostrarPos);
-          if (!mostrarPos && naturezaSelect) resetSelect(naturezaSelect);
+          if (situacaoSelect) {
+            situacaoSelect.toggleAttribute('required', mostrarSituacao);
+            if (!mostrarSituacao) resetSelect(situacaoSelect);
+          }
+          const cursosDetalhados = [
+            'Curso técnico',
+            'Tecnólogo',
+            'Ensino superior',
+            'Pós-graduação',
+            'Mestrado',
+            'Doutorado',
+          ];
+          const mostrarCurso = cursosDetalhados.includes(valor);
+          if (cursoGroup) cursoGroup.classList.toggle('d-none', !mostrarCurso);
+          if (cursoInput) {
+            cursoInput.toggleAttribute('required', mostrarCurso);
+            if (!mostrarCurso) {
+              cursoInput.value = '';
+            }
+          }
+          const mostrarPos = valor === 'Pós-graduação';
+          if (posGroup) posGroup.classList.toggle('d-none', !mostrarPos);
+          if (posSelect) {
+            posSelect.toggleAttribute('required', mostrarPos);
+            if (!mostrarPos) {
+              resetSelect(posSelect);
+            }
+          }
+          const mostrarAno = mostrarSituacao;
+          if (anoGroup) anoGroup.classList.toggle('d-none', !mostrarAno);
+          if (anoInput) {
+            anoInput.toggleAttribute('required', mostrarAno);
+            if (!mostrarAno) {
+              anoInput.value = '';
+            }
+          }
         };
 
         const atualizarCamposOcupacaoAutor = () => {
@@ -3576,31 +3674,75 @@
           idadeInputAutor.value = Number.isFinite(idade) ? `${idade} anos` : '';
         };
 
+        const copiarEnderecoPrincipalParaAutor = () => {
+          if (!autorModalForm) return;
+          const pares = [
+            ['cep', 'autorCep'],
+            ['logradouro', 'autorLogradouro'],
+            ['numeroEndereco', 'autorNumero'],
+            ['complementoEndereco', 'autorComplemento'],
+            ['bairro', 'autorBairro'],
+            ['cidade', 'autorCidade'],
+            ['pontoReferencia', 'autorPontoReferencia'],
+          ];
+          pares.forEach(([origemId, destinoId]) => {
+            const origem = document.getElementById(origemId);
+            const destino = autorModalForm.querySelector(`#${destinoId}`);
+            if (!origem || !destino) return;
+            if (destino instanceof HTMLInputElement || destino instanceof HTMLTextAreaElement) {
+              destino.value = origem.value || '';
+            }
+          });
+          const telefonePrincipal = document.getElementById('telefone');
+          const telefoneAlternativo = document.getElementById('telefoneSecundario');
+          const autorCelular = autorModalForm.querySelector('#autorTelefoneCelular');
+          const autorFixo = autorModalForm.querySelector('#autorTelefoneFixo');
+          const emailPrincipal = document.getElementById('email');
+          const autorEmail = autorModalForm.querySelector('#autorEmail');
+          if (telefonePrincipal && autorCelular) {
+            autorCelular.value = telefonePrincipal.value || '';
+          }
+          if (telefoneAlternativo && autorFixo) {
+            autorFixo.value = telefoneAlternativo.value || '';
+          }
+          if (emailPrincipal && autorEmail) {
+            autorEmail.value = emailPrincipal.value || '';
+          }
+          const ufOrigem = document.getElementById('uf');
+          const ufDestino = autorModalForm.querySelector('#autorUf');
+          if (ufOrigem && ufDestino instanceof HTMLSelectElement) {
+            setSelectValue(ufDestino, ufOrigem.value || '');
+          }
+        };
+
         const atualizarEnderecoAutor = () => {
           if (!autorModalForm) return;
           const mesmoEndereco = autorModalForm.querySelector('#autorEnderecoIgual');
           const camposEndereco = autorModalForm.querySelector('#autorEnderecoCampos');
-          const inputsEndereco = camposEndereco ? camposEndereco.querySelectorAll('input, select') : [];
-          const desabilitar = !!(mesmoEndereco && mesmoEndereco.checked);
-          if (camposEndereco) {
-            camposEndereco.classList.toggle('d-none', desabilitar);
+          const sincronizado = !!(mesmoEndereco && mesmoEndereco.checked);
+          if (sincronizado) {
+            copiarEnderecoPrincipalParaAutor();
           }
-          inputsEndereco.forEach((campo) => {
-            campo.toggleAttribute('disabled', desabilitar);
-            if (campo instanceof HTMLInputElement && desabilitar) {
-              if (campo.type === 'checkbox') {
-                campo.checked = false;
-              } else {
-                campo.value = '';
-              }
+          if (camposEndereco) {
+            camposEndereco.classList.toggle('is-synchronized', sincronizado);
+          }
+          const autorSemCepCheck = autorModalForm.querySelector('#autorSemCep');
+          if (autorSemCepCheck) {
+            if (sincronizado) {
+              autorSemCepCheck.checked = false;
             }
-            if (campo instanceof HTMLSelectElement && desabilitar) {
-              resetSelect(campo);
-            }
-          });
-          if (desabilitar && enderecoAutor) {
-            enderecoAutor.limparEndereco?.();
+            autorSemCepCheck.toggleAttribute('disabled', sincronizado);
+          }
+          if (sincronizado && enderecoAutor) {
             enderecoAutor.atualizarAjuda?.('');
+          }
+        };
+
+        sincronizarEnderecoAutorSeMarcado = () => {
+          if (!autorModalForm) return;
+          const mesmoEndereco = autorModalForm.querySelector('#autorEnderecoIgual');
+          if (mesmoEndereco && mesmoEndereco.checked) {
+            copiarEnderecoPrincipalParaAutor();
           }
         };
 
@@ -3720,12 +3862,34 @@
           });
           const enderecoIgualCheck = autorModalForm.querySelector('#autorEnderecoIgual');
           if (enderecoIgualCheck) {
-            enderecoIgualCheck.addEventListener('change', atualizarEnderecoAutor);
+            enderecoIgualCheck.addEventListener('change', () => {
+              atualizarEnderecoAutor();
+              atualizarCepAutor();
+            });
           }
           const autorSemCepCheck = autorModalForm.querySelector('#autorSemCep');
           if (autorSemCepCheck) {
             autorSemCepCheck.addEventListener('change', atualizarCepAutor);
           }
+          const camposEnderecoPrincipal = [
+            'cep',
+            'logradouro',
+            'numeroEndereco',
+            'complementoEndereco',
+            'bairro',
+            'cidade',
+            'pontoReferencia',
+            'telefone',
+            'telefoneSecundario',
+            'email',
+            'uf',
+          ];
+          camposEnderecoPrincipal.forEach((id) => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('input', sincronizarEnderecoAutorSeMarcado);
+            campo.addEventListener('change', sincronizarEnderecoAutorSeMarcado);
+          });
           const autorDataNascimentoInput = autorModalForm.querySelector('#autorDataNascimento');
           if (autorDataNascimentoInput) {
             autorDataNascimentoInput.addEventListener('change', atualizarIdadeAutor);
