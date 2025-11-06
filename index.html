@@ -1895,7 +1895,7 @@
     </main>
 
     <div class="modal fade" id="familiaModal" tabindex="-1" aria-labelledby="familiaModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <h2 class="modal-title fs-5" id="familiaModalLabel">Adicionar membro da família</h2>
@@ -1904,11 +1904,20 @@
           <form id="familiaModalForm">
             <div class="modal-body">
               <div class="row g-3">
-                <div class="col-12 col-md-6">
+                <div class="col-12">
                   <label for="familiaNome" class="form-label required">Nome completo</label>
                   <input type="text" class="form-control" id="familiaNome" name="familiaNome" required />
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
+                  <label for="familiaDataNascimento" class="form-label required">Data de nascimento</label>
+                  <input type="date" class="form-control" id="familiaDataNascimento" name="familiaDataNascimento" required />
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="familiaIdadeAnos" class="form-label required">Idade (anos)</label>
+                  <input type="text" class="form-control" id="familiaIdadeAnos" name="familiaIdadeAnos" readonly required />
+                  <input type="hidden" id="familiaIdadeMeses" name="familiaIdadeMeses" />
+                </div>
+                <div class="col-12 col-md-4">
                   <label for="familiaParentesco" class="form-label required">Parentesco</label>
                   <select id="familiaParentesco" name="familiaParentesco" class="form-select" required>
                     <option value="">Selecione</option>
@@ -1917,20 +1926,13 @@
                     <option>Pai</option>
                     <option>Mãe</option>
                     <option>Irmão(ã)</option>
+                    <option>Avô/Avó</option>
                     <option>Outro</option>
                   </select>
                 </div>
-                <div class="col-12 col-md-3">
-                  <label for="familiaIdadeAnos" class="form-label required">Idade (anos)</label>
-                  <input type="number" min="0" class="form-control" id="familiaIdadeAnos" name="familiaIdadeAnos" required />
-                </div>
-                <div class="col-12 col-md-3">
-                  <label for="familiaIdadeMeses" class="form-label">Meses</label>
-                  <input type="number" min="0" max="11" class="form-control" id="familiaIdadeMeses" name="familiaIdadeMeses" />
-                </div>
-                <div class="col-12 col-md-6">
-                  <label for="familiaEscolaridade" class="form-label">Escolaridade</label>
-                  <select id="familiaEscolaridade" name="familiaEscolaridade" class="form-select">
+                <div class="col-12 col-md-4">
+                  <label for="familiaEscolaridade" class="form-label required">Escolaridade</label>
+                  <select id="familiaEscolaridade" name="familiaEscolaridade" class="form-select" required>
                     <option value="">Selecione</option>
                     <option>Educação infantil</option>
                     <option>Ensino fundamental</option>
@@ -1940,94 +1942,69 @@
                     <option>Pós-graduação</option>
                   </select>
                 </div>
-                <div class="col-12 col-md-6">
-                  <label for="familiaRedeEnsino" class="form-label">Rede de ensino</label>
-                  <select id="familiaRedeEnsino" name="familiaRedeEnsino" class="form-select">
+                <div class="col-12 col-md-4">
+                  <label for="familiaRedeEnsino" class="form-label required">Rede de ensino</label>
+                  <select id="familiaRedeEnsino" name="familiaRedeEnsino" class="form-select" required>
                     <option value="">Selecione</option>
                     <option>Pública</option>
                     <option>Privada</option>
                     <option>Não frequenta</option>
                   </select>
                 </div>
-                <div class="col-12">
-                  <label for="familiaProfissao" class="form-label">Profissão/Ocupação</label>
-                  <input type="text" class="form-control" id="familiaProfissao" name="familiaProfissao" />
-                </div>
-              </div>
-              <hr class="my-4" />
-              <div class="row g-3">
-                <div class="col-12">
-                  <span class="form-label d-block">Pessoa com deficiência</span>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaMotora" id="familiaDeficienciaMotoraNao" value="Não" checked />
-                    <label class="form-check-label" for="familiaDeficienciaMotoraNao">Sem deficiência motora</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaMotora" id="familiaDeficienciaMotoraSim" value="Sim" />
-                    <label class="form-check-label" for="familiaDeficienciaMotoraSim">Motora</label>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaAuditiva" id="familiaDeficienciaAuditivaNao" value="Não" checked />
-                    <label class="form-check-label" for="familiaDeficienciaAuditivaNao">Sem deficiência auditiva</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaAuditiva" id="familiaDeficienciaAuditivaSim" value="Sim" />
-                    <label class="form-check-label" for="familiaDeficienciaAuditivaSim">Auditiva</label>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaVisual" id="familiaDeficienciaVisualNao" value="Não" checked />
-                    <label class="form-check-label" for="familiaDeficienciaVisualNao">Sem deficiência visual</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaVisual" id="familiaDeficienciaVisualSim" value="Sim" />
-                    <label class="form-check-label" for="familiaDeficienciaVisualSim">Visual</label>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaMental" id="familiaDeficienciaMentalNao" value="Não" checked />
-                    <label class="form-check-label" for="familiaDeficienciaMentalNao">Sem deficiência mental</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="familiaDeficienciaMental" id="familiaDeficienciaMentalSim" value="Sim" />
-                    <label class="form-check-label" for="familiaDeficienciaMentalSim">Intelectual</label>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <label for="familiaBeneficio" class="form-label">Benefício de programa social</label>
-                  <select id="familiaBeneficio" name="familiaBeneficio" class="form-select">
+                <div class="col-12 col-md-4">
+                  <label for="familiaDeficienciaMotora" class="form-label required">Deficiência motora</label>
+                  <select id="familiaDeficienciaMotora" name="familiaDeficienciaMotora" class="form-select" required>
                     <option value="">Selecione</option>
-                    <option>Bolsa Família</option>
-                    <option>Auxílio municipal</option>
-                    <option>BPC</option>
-                    <option>Outro</option>
-                    <option>Não recebe</option>
+                    <option>Sim</option>
+                    <option>Não</option>
                   </select>
                 </div>
-                <div class="col-12 col-md-6">
-                  <span class="form-label d-block">Beneficiário(a) BPC?</span>
-                  <div class="d-flex gap-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="familiaBpc" id="familiaBpcNao" value="Não" checked />
-                      <label class="form-check-label" for="familiaBpcNao">Não</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="familiaBpc" id="familiaBpcSim" value="Sim" />
-                      <label class="form-check-label" for="familiaBpcSim">Sim</label>
-                    </div>
-                  </div>
+                <div class="col-12 col-md-4">
+                  <label for="familiaDeficienciaAuditiva" class="form-label required">Deficiência auditiva</label>
+                  <select id="familiaDeficienciaAuditiva" name="familiaDeficienciaAuditiva" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Sim</option>
+                    <option>Não</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="familiaDeficienciaVisual" class="form-label required">Deficiência visual</label>
+                  <select id="familiaDeficienciaVisual" name="familiaDeficienciaVisual" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Sim</option>
+                    <option>Não</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="familiaDeficienciaMental" class="form-label required">Deficiência mental</label>
+                  <select id="familiaDeficienciaMental" name="familiaDeficienciaMental" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Sim</option>
+                    <option>Não</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="familiaBeneficiarioPrograma" class="form-label required">Beneficiário de programa social</label>
+                  <select id="familiaBeneficiarioPrograma" name="familiaBeneficiarioPrograma" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Sim</option>
+                    <option>Não</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="familiaBeneficiarioBpc" class="form-label required">Beneficiário BPC</label>
+                  <select id="familiaBeneficiarioBpc" name="familiaBeneficiarioBpc" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option>Sim</option>
+                    <option>Não</option>
+                  </select>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Adicionar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="reset" class="btn btn-danger">Cancelar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
           </form>
         </div>
@@ -2672,8 +2649,52 @@
         };
 
         if (familiaModalElement && familiaModalForm) {
+          const familiaDataNascimentoInput = familiaModalForm.querySelector('#familiaDataNascimento');
+          const familiaIdadeAnosInput = familiaModalForm.querySelector('#familiaIdadeAnos');
+          const familiaIdadeMesesInput = familiaModalForm.querySelector('#familiaIdadeMeses');
+
+          const atualizarIdadeFamilia = () => {
+            if (!familiaDataNascimentoInput || !familiaIdadeAnosInput) return;
+            const valor = familiaDataNascimentoInput.value;
+            if (!valor) {
+              familiaIdadeAnosInput.value = '';
+              if (familiaIdadeMesesInput) familiaIdadeMesesInput.value = '';
+              return;
+            }
+            const nascimento = dayjs(valor);
+            if (!nascimento.isValid()) {
+              familiaIdadeAnosInput.value = '';
+              if (familiaIdadeMesesInput) familiaIdadeMesesInput.value = '';
+              return;
+            }
+            const agora = dayjs();
+            const anos = agora.diff(nascimento, 'year');
+            const mesesTotais = agora.diff(nascimento, 'month');
+            const mesesRestantes = mesesTotais - anos * 12;
+            familiaIdadeAnosInput.value = Number.isFinite(anos) ? String(anos) : '';
+            if (familiaIdadeMesesInput) {
+              familiaIdadeMesesInput.value = Number.isFinite(mesesRestantes)
+                ? String(Math.min(11, Math.max(0, mesesRestantes)))
+                : '';
+            }
+          };
+
+          if (familiaDataNascimentoInput) {
+            familiaDataNascimentoInput.addEventListener('input', atualizarIdadeFamilia);
+            familiaDataNascimentoInput.addEventListener('change', atualizarIdadeFamilia);
+            familiaDataNascimentoInput.addEventListener('blur', atualizarIdadeFamilia);
+          }
+
+          familiaModalForm.addEventListener('reset', () => {
+            setTimeout(() => {
+              if (familiaIdadeAnosInput) familiaIdadeAnosInput.value = '';
+              if (familiaIdadeMesesInput) familiaIdadeMesesInput.value = '';
+            }, 0);
+          });
+
           familiaModalElement.addEventListener('show.bs.modal', () => {
             ensureFamiliaModal();
+            atualizarIdadeFamilia();
           });
 
           familiaModalElement.addEventListener('hidden.bs.modal', () => {
@@ -2687,21 +2708,22 @@
               return;
             }
 
+            atualizarIdadeFamilia();
             const formData = new FormData(familiaModalForm);
             const dados = {
               nome: (formData.get('familiaNome') || '').toString().trim(),
+              dataNascimento: (formData.get('familiaDataNascimento') || '').toString(),
               parentesco: (formData.get('familiaParentesco') || '').toString(),
               idadeAnos: (formData.get('familiaIdadeAnos') || '').toString(),
               idadeMeses: (formData.get('familiaIdadeMeses') || '').toString(),
               escolaridade: (formData.get('familiaEscolaridade') || '').toString(),
               redeEnsino: (formData.get('familiaRedeEnsino') || '').toString(),
-              profissao: (formData.get('familiaProfissao') || '').toString(),
-              deficienciaMotora: (formData.get('familiaDeficienciaMotora') || 'Não').toString(),
-              deficienciaAuditiva: (formData.get('familiaDeficienciaAuditiva') || 'Não').toString(),
-              deficienciaVisual: (formData.get('familiaDeficienciaVisual') || 'Não').toString(),
-              deficienciaMental: (formData.get('familiaDeficienciaMental') || 'Não').toString(),
-              beneficio: (formData.get('familiaBeneficio') || '').toString(),
-              bpc: (formData.get('familiaBpc') || 'Não').toString(),
+              deficienciaMotora: (formData.get('familiaDeficienciaMotora') || '').toString(),
+              deficienciaAuditiva: (formData.get('familiaDeficienciaAuditiva') || '').toString(),
+              deficienciaVisual: (formData.get('familiaDeficienciaVisual') || '').toString(),
+              deficienciaMental: (formData.get('familiaDeficienciaMental') || '').toString(),
+              beneficiarioPrograma: (formData.get('familiaBeneficiarioPrograma') || '').toString(),
+              beneficiarioBpc: (formData.get('familiaBeneficiarioBpc') || '').toString(),
             };
 
             if (familiaTabelaBody) {
@@ -2733,18 +2755,18 @@
                 wrapper.appendChild(input);
               };
               adicionarHidden('nome', dados.nome);
+              adicionarHidden('dataNascimento', dados.dataNascimento);
               adicionarHidden('parentesco', dados.parentesco);
               adicionarHidden('idadeAnos', dados.idadeAnos);
               adicionarHidden('idadeMeses', dados.idadeMeses || '0');
               adicionarHidden('escolaridade', dados.escolaridade);
               adicionarHidden('redeEnsino', dados.redeEnsino);
-              adicionarHidden('profissao', dados.profissao);
               adicionarHidden('deficienciaMotora', dados.deficienciaMotora);
               adicionarHidden('deficienciaAuditiva', dados.deficienciaAuditiva);
               adicionarHidden('deficienciaVisual', dados.deficienciaVisual);
               adicionarHidden('deficienciaMental', dados.deficienciaMental);
-              adicionarHidden('beneficio', dados.beneficio);
-              adicionarHidden('bpc', dados.bpc);
+              adicionarHidden('beneficiarioPrograma', dados.beneficiarioPrograma);
+              adicionarHidden('beneficiarioBpc', dados.beneficiarioBpc);
               familiaHiddenInputs.appendChild(wrapper);
             }
 
