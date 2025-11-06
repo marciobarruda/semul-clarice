@@ -246,6 +246,22 @@
         }
       }
 
+      .dados-saude-section .form-label {
+        white-space: normal;
+      }
+
+      @media (min-width: 1400px) {
+        .col-orgao-expedidor {
+          flex: 0 0 10%;
+          max-width: 10%;
+        }
+
+        .col-uf-expedicao {
+          flex: 0 0 8%;
+          max-width: 8%;
+        }
+      }
+
       .section-nav-link {
         display: inline-flex;
         align-items: center;
@@ -967,11 +983,11 @@
                 </div>
                 <input type="hidden" id="numeroProntuario" name="numeroProntuario" required readonly />
                 <div class="row g-3 align-items-end">
-                  <div class="col-12 col-lg-4 col-xxl-4">
+                  <div class="col-12 col-lg-3 col-xxl-3">
                     <label for="demandante" class="form-label">Demandante</label>
                     <input type="text" class="form-control" id="demandante" name="demandante" />
                   </div>
-                  <div class="col-12 col-lg-4 col-xxl-4">
+                  <div class="col-12 col-lg-5 col-xxl-5">
                     <label for="unidadeAtendimento" class="form-label required">Unidade de atendimento</label>
                     <select id="unidadeAtendimento" name="unidadeAtendimento" class="form-select" required>
                       <option value="">Selecione</option>
@@ -1064,11 +1080,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-4 col-xxl-4">
+                  <div class="col-12 col-lg-3 col-xxl-3">
                     <label for="cpfUsuario" class="form-label required">CPF</label>
                     <input type="text" class="form-control" id="cpfUsuario" name="cpfUsuario" required />
                   </div>
-                  <div class="col-12 col-lg-5 col-xxl-5">
+                  <div class="col-12 col-lg-6 col-xxl-6">
                     <label for="nomeUsuario" class="form-label required">Nome completo</label>
                     <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                   </div>
@@ -1080,11 +1096,11 @@
                     <label for="rgUsuario" class="form-label">RG</label>
                     <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                   </div>
-                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2">
+                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2 col-orgao-expedidor">
                     <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
                     <input type="text" class="form-control" id="orgaoExpedidor" name="orgaoExpedidor" />
                   </div>
-                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2">
+                  <div class="col-12 col-md-2 col-lg-2 col-xxl-2 col-uf-expedicao">
                     <label for="ufExpedicao" class="form-label">UF de expedição</label>
                     <select id="ufExpedicao" name="ufExpedicao" class="form-select">
                       <option value="">Selecione</option>
@@ -1098,23 +1114,23 @@
                     <label for="idade" class="form-label">Idade</label>
                     <input type="text" class="form-control" id="idade" name="idade" readonly />
                   </div>
-                  <div class="col-12 col-md-3 col-lg-3">
+                  <div class="col-12 col-md-3 col-lg-3 col-xxl-3">
                     <label for="nacionalidade" class="form-label">Nacionalidade</label>
                     <input type="text" class="form-control" id="nacionalidade" name="nacionalidade" />
                   </div>
-                  <div class="col-12 col-md-3 col-lg-2">
+                  <div class="col-12 col-md-3 col-lg-2 col-xxl-2">
                     <label for="ufNascimento" class="form-label">UF de nascimento</label>
                     <select id="ufNascimento" name="ufNascimento" class="form-select">
                       <option value="">Selecione</option>
                     </select>
                   </div>
-                  <div class="col-12 col-md-3 col-lg-3">
+                  <div class="col-12 col-md-3 col-lg-3 col-xxl-3">
                     <label for="cidadeNascimento" class="form-label">Cidade de nascimento</label>
                     <select id="cidadeNascimento" name="cidadeNascimento" class="form-select">
                       <option value="">Selecione a UF primeiro</option>
                     </select>
                   </div>
-                  <div class="col-12 col-md-3">
+                  <div class="col-12 col-md-3 col-lg-4 col-xxl-4">
                     <label for="estadoCivil" class="form-label">Estado civil</label>
                     <select id="estadoCivil" name="estadoCivil" class="form-select">
                       <option value="">Selecione</option>
@@ -1204,16 +1220,16 @@
                         <input type="text" class="form-control" id="cep" name="cep" required aria-describedby="cepHelp" />
                         <div id="cepHelp" class="form-text"></div>
                       </div>
-                      <div class="col-12 col-md-7 col-xl-7">
+                      <div class="col-12 col-md-7 col-xl-7 col-xxl-7">
                         <label for="logradouro" class="form-label required">Logradouro</label>
                         <input type="text" class="form-control" id="logradouro" name="logradouro" required />
                       </div>
-                      <div class="col-12 col-md-2 col-xl-2">
+                      <div class="col-12 col-md-2 col-xl-2 col-xxl-2">
                         <label for="numeroEndereco" class="form-label">Número</label>
                         <input type="text" class="form-control" id="numeroEndereco" name="numeroEndereco" />
                       </div>
-                      <div class="col-12 col-md-1 col-xl-1">
-                        <label for="complementoEndereco" class="form-label">Complemento</label>
+                      <div class="col-12 col-md-1 col-xl-1 col-xxl-1">
+                        <label for="complementoEndereco" class="form-label">Comp</label>
                         <input type="text" class="form-control" id="complementoEndereco" name="complementoEndereco" />
                       </div>
                     </div>
@@ -1431,7 +1447,7 @@
                 </div>
               </section>
 
-              <section class="card-section mb-4" aria-labelledby="dados-saude">
+              <section class="card-section mb-4 dados-saude-section" aria-labelledby="dados-saude">
                 <h2 class="form-section-title" id="dados-saude"><i class="bi bi-heart-pulse"></i>Dados de saúde</h2>
                 <div class="row g-4">
                   <div class="col-12 col-xl-6 col-xxl-4">
@@ -2560,16 +2576,16 @@
 
                       <div class="col-12">
                         <div class="subsection-card h-100">
-                          <h3 class="subsection-heading">CIODS</h3>
+                          <h3 class="subsection-heading">Solicitar senha CIODS?</h3>
                           <div class="row g-3">
                             <div class="col-12 col-lg-4">
                               <div class="form-check">
                                 <input class="form-check-input" type="radio" name="solicitarCiods" id="solicitarCiodsSim" value="Sim" />
-                                <label class="form-check-label" for="solicitarCiodsSim">Solicitar senha CIODS? Sim</label>
+                                <label class="form-check-label" for="solicitarCiodsSim">Sim</label>
                               </div>
                               <div class="form-check">
                                 <input class="form-check-input" type="radio" name="solicitarCiods" id="solicitarCiodsNao" value="Não" />
-                                <label class="form-check-label" for="solicitarCiodsNao">Solicitar senha CIODS? Não</label>
+                                <label class="form-check-label" for="solicitarCiodsNao">Não</label>
                               </div>
                             </div>
                             <div class="col-12 col-lg-8 d-none" id="ciodsCampos">
@@ -2605,23 +2621,6 @@
                               <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="editarRelato" name="editarRelato" checked />
                                 <label class="form-check-label" for="editarRelato">Editar relato</label>
-                              </div>
-                            </div>
-                            <div class="col-12">
-                              <span class="form-label d-block">O que deseja fazer?</span>
-                              <div class="row row-cols-1 row-cols-md-2 g-2">
-                                <div class="col">
-                                  <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="acaoRelato" id="acaoDisponibilizar" value="Disponibilizar prontuário" />
-                                    <label class="form-check-label" for="acaoDisponibilizar">Disponibilizar prontuário</label>
-                                  </div>
-                                </div>
-                                <div class="col">
-                                  <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="acaoRelato" id="acaoArquivar" value="Arquivar" />
-                                    <label class="form-check-label" for="acaoArquivar">Arquivar (essa opção encerra o prontuário)</label>
-                                  </div>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -4013,6 +4012,45 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="visualizarAnexoModal" tabindex="-1" aria-labelledby="visualizarAnexoLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="visualizarAnexoLabel">Visualizar anexo</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="visualizarAnexoDescricao" class="fw-semibold mb-3"></p>
+            <div class="border rounded overflow-hidden bg-light-subtle">
+              <iframe
+                id="visualizarAnexoFrame"
+                title="Pré-visualização do anexo"
+                class="w-100 border-0 d-none"
+                style="min-height: 60vh"
+                loading="lazy"
+              ></iframe>
+              <div id="visualizarAnexoSemPreview" class="p-4 text-center text-muted">
+                Pré-visualização não disponível para este arquivo. Utilize o download para acessar o conteúdo.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer sticky-actions">
+            <a
+              id="downloadAnexoBtn"
+              class="btn btn-success disabled"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              aria-disabled="true"
+            >
+              Download
+            </a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -5797,6 +5835,11 @@
         const anexoHiddenInputs = document.getElementById('anexoHiddenInputs');
         const anexoModalElement = document.getElementById('anexoModal');
         const anexoModalForm = document.getElementById('anexoModalForm');
+        const visualizarAnexoModalElement = document.getElementById('visualizarAnexoModal');
+        const visualizarAnexoDescricao = document.getElementById('visualizarAnexoDescricao');
+        const visualizarAnexoFrame = document.getElementById('visualizarAnexoFrame');
+        const visualizarAnexoSemPreview = document.getElementById('visualizarAnexoSemPreview');
+        const downloadAnexoBtn = document.getElementById('downloadAnexoBtn');
         const anexosRegistros = [];
 
         const limparAnexosRegistros = () => {
@@ -5931,6 +5974,34 @@
           });
         }
 
+        const obterVisualizarAnexoModal = () =>
+          visualizarAnexoModalElement && typeof bootstrap !== 'undefined'
+            ? bootstrap.Modal.getOrCreateInstance(visualizarAnexoModalElement)
+            : null;
+
+        if (visualizarAnexoModalElement) {
+          visualizarAnexoModalElement.addEventListener('hidden.bs.modal', () => {
+            if (visualizarAnexoFrame) {
+              visualizarAnexoFrame.classList.add('d-none');
+              visualizarAnexoFrame.src = '';
+            }
+            if (visualizarAnexoSemPreview) {
+              visualizarAnexoSemPreview.classList.remove('d-none');
+              visualizarAnexoSemPreview.textContent =
+                'Pré-visualização não disponível para este arquivo. Utilize o download para acessar o conteúdo.';
+            }
+            if (visualizarAnexoDescricao) {
+              visualizarAnexoDescricao.textContent = '';
+            }
+            if (downloadAnexoBtn) {
+              downloadAnexoBtn.href = '#';
+              downloadAnexoBtn.removeAttribute('download');
+              downloadAnexoBtn.classList.add('disabled');
+              downloadAnexoBtn.setAttribute('aria-disabled', 'true');
+            }
+          });
+        }
+
         if (anexoTabelaBody) {
           anexoTabelaBody.addEventListener('click', (event) => {
             const target = event.target instanceof HTMLElement ? event.target.closest('[data-visualizar-anexo]') : null;
@@ -5939,10 +6010,47 @@
             const indice = Number.parseInt(target.getAttribute('data-visualizar-anexo') || '', 10);
             const registro = Number.isNaN(indice) ? null : anexosRegistros[indice];
             if (!registro) return;
-            if (registro.url) {
-              window.open(registro.url, '_blank', 'noopener');
-            } else if (registro.nome) {
-              window.alert(`Arquivo disponível: ${registro.nome}`);
+            const modal = obterVisualizarAnexoModal();
+            const descricaoTexto = registro.descricao || registro.nome || 'Anexo';
+            if (visualizarAnexoDescricao) {
+              visualizarAnexoDescricao.textContent = descricaoTexto;
+            }
+            let temPreview = false;
+            if (visualizarAnexoFrame) {
+              if (registro.url) {
+                visualizarAnexoFrame.src = registro.url;
+                visualizarAnexoFrame.classList.remove('d-none');
+                temPreview = true;
+              } else {
+                visualizarAnexoFrame.classList.add('d-none');
+                visualizarAnexoFrame.src = '';
+              }
+            }
+            if (visualizarAnexoSemPreview) {
+              visualizarAnexoSemPreview.classList.toggle('d-none', temPreview);
+              if (!temPreview) {
+                const nome = registro.nome ? ` ${registro.nome}` : '';
+                visualizarAnexoSemPreview.textContent = `Pré-visualização não disponível. Baixe o arquivo${nome}.`;
+              } else {
+                visualizarAnexoSemPreview.textContent =
+                  'Pré-visualização não disponível para este arquivo. Utilize o download para acessar o conteúdo.';
+              }
+            }
+            if (downloadAnexoBtn) {
+              if (registro.url) {
+                downloadAnexoBtn.href = registro.url;
+                downloadAnexoBtn.download = registro.nome || '';
+                downloadAnexoBtn.classList.remove('disabled');
+                downloadAnexoBtn.removeAttribute('aria-disabled');
+              } else {
+                downloadAnexoBtn.href = '#';
+                downloadAnexoBtn.removeAttribute('download');
+                downloadAnexoBtn.classList.add('disabled');
+                downloadAnexoBtn.setAttribute('aria-disabled', 'true');
+              }
+            }
+            if (modal) {
+              modal.show();
             }
           });
         }
@@ -6438,7 +6546,6 @@
               },
             ])
             .addField('#relatoCaso', [{ rule: 'required', errorMessage: 'Descreva o relato do caso.' }])
-            .addRequiredGroup('input[name="acaoRelato"]', 'Informe a ação desejada para o prontuário.')
             .addRequiredGroup('input[name="avaliacaoInicial"]', 'Selecione a avaliação inicial.')
             .addField('#cursoFormacao', [
               {
