@@ -4122,6 +4122,7 @@
           </div>
           <form id="anexoModalForm">
             <div class="modal-body">
+              <div class="alert d-none mb-3" id="anexoModalFeedback" role="alert"></div>
               <div class="row g-3">
                 <div class="col-12 col-md-4">
                   <label for="anexoData" class="form-label required">Data</label>
@@ -6537,6 +6538,7 @@
         const anexoHiddenInputs = document.getElementById('anexoHiddenInputs');
         const anexoModalElement = document.getElementById('anexoModal');
         const anexoModalForm = document.getElementById('anexoModalForm');
+        const anexoModalFeedback = document.getElementById('anexoModalFeedback');
         const visualizarAnexoModalElement = document.getElementById('visualizarAnexoModal');
         const visualizarAnexoDescricao = document.getElementById('visualizarAnexoDescricao');
         const visualizarAnexoFrame = document.getElementById('visualizarAnexoFrame');
@@ -6571,6 +6573,17 @@
           }
         };
 
+        const setAnexoModalFeedback = (message = '', type = 'info') => {
+          if (!anexoModalFeedback) return;
+          if (!message) {
+            anexoModalFeedback.textContent = '';
+            anexoModalFeedback.className = 'alert d-none mb-3';
+            return;
+          }
+          anexoModalFeedback.textContent = message;
+          anexoModalFeedback.className = `alert alert-${type} mb-3`;
+        };
+
         if (anexoModalElement && anexoModalForm) {
           const anexoDataInput = anexoModalForm.querySelector('#anexoData');
           const anexoDescricaoInput = anexoModalForm.querySelector('#anexoDescricao');
@@ -6590,6 +6603,7 @@
 
           anexoModalElement.addEventListener('show.bs.modal', () => {
             atualizarDataAnexo();
+            setAnexoModalFeedback();
             if (anexoDescricaoInput) {
               setTimeout(() => anexoDescricaoInput.focus({ preventScroll: true }), 150);
             }
@@ -6597,9 +6611,10 @@
 
           anexoModalElement.addEventListener('hidden.bs.modal', () => {
             anexoModalForm.reset();
+            setAnexoModalFeedback();
           });
 
-          anexoModalForm.addEventListener('submit', (event) => {
+          anexoModalForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             if (!anexoModalForm.checkValidity()) {
               anexoModalForm.reportValidity();
@@ -6614,6 +6629,57 @@
               anexoModalForm.reportValidity();
               return;
             }
+            const prontuarioInputEl =
+              numeroProntuarioInput || document.getElementById('numeroProntuario');
+            const prontuarioDisplayEl =
+              numeroProntuarioDisplay || document.getElementById('numeroProntuarioDisplay');
+            const displayValor =
+              prontuarioDisplayEl && prontuarioDisplayEl.textContent
+                ? prontuarioDisplayEl.textContent.trim()
+                : '';
+            const prontuarioAtual =
+              (prontuarioInputEl && prontuarioInputEl.value.trim()) ||
+              (displayValor && displayValor !== '—' ? displayValor : '');
+            if (!prontuarioAtual) {
+              setAnexoModalFeedback('Informe o número do prontuário antes de enviar um anexo.', 'warning');
+              return;
+            }
+            const submitBtn = anexoModalForm.querySelector('button[type="submit"]');
+            const originalSubmitHtml = submitBtn ? submitBtn.innerHTML : '';
+            const toggleSubmitting = (submitting) => {
+              if (!submitBtn) return;
+              submitBtn.disabled = submitting;
+              submitBtn.innerHTML = submitting
+                ? '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando...'
+                : originalSubmitHtml;
+            };
+            toggleSubmitting(true);
+            setAnexoModalFeedback('Enviando anexo...', 'info');
+            const uploadData = new FormData();
+            uploadData.append('prontuario', prontuarioAtual);
+            uploadData.append('descricao', descricaoValor);
+            if (arquivo) {
+              uploadData.append('file', arquivo);
+            }
+            try {
+              const resposta = await fetch(
+                'https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/recebe-arquivo',
+                {
+                  method: 'POST',
+                  body: uploadData,
+                },
+              );
+              if (!resposta.ok) {
+                throw new Error(`Falha ao enviar anexo: ${resposta.status}`);
+              }
+            } catch (error) {
+              console.error(error);
+              setAnexoModalFeedback('Não foi possível enviar o anexo. Tente novamente.', 'danger');
+              toggleSubmitting(false);
+              return;
+            }
+            toggleSubmitting(false);
+            setAnexoModalFeedback();
             const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
             const urlAnexo =
               arquivo && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function'
@@ -6624,6 +6690,7 @@
               descricao: descricaoValor,
               nome: nomeArquivo,
               url: urlAnexo,
+              prontuario: prontuarioAtual,
             }) - 1;
             if (anexoTabelaBody) {
               const vazio = document.getElementById('anexoVazio');
