@@ -7539,6 +7539,7 @@
         }
 
         function solicitarAberturaNoFormulario(payload, modo, prontuario) {
+          showRegistroModal(modo);
           if (!abrirProntuarioNoFormulario(payload, modo, prontuario)) {
             pendingProntuarioLoads.push({ payload, modo, prontuario });
             showState(`Prontuário ${prontuario} carregado. Preparando formulário...`, 'info');
