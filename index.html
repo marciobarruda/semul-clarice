@@ -356,6 +356,15 @@
         z-index: 5;
       }
 
+      .modal-stack-muted {
+        pointer-events: none;
+      }
+
+      .modal-stack-muted .modal-dialog,
+      .modal-stack-muted .modal-content {
+        pointer-events: none;
+      }
+
       .modal-dialog-scrollable .modal-body {
         max-height: calc(100vh - 5rem);
         overflow-y: auto;
@@ -4181,6 +4190,220 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.min.js"></script>
     <script>
       (function () {
+        const modalStackManager = (() => {
+          const stack = [];
+          const baseModalZ = 1050;
+          const baseBackdropZ = 1040;
+          const zStep = 30;
+          const focusableSelectors = [
+            'button:not([disabled]):not([tabindex="-1"])',
+            'a[href]:not([tabindex="-1"])',
+            'input:not([type="hidden"]):not([disabled]):not([tabindex="-1"])',
+            'select:not([disabled]):not([tabindex="-1"])',
+            'textarea:not([disabled]):not([tabindex="-1"])',
+            '[tabindex]:not([tabindex="-1"]):not([disabled])'
+          ].join(', ');
+
+          const isElement = (value) =>
+            value instanceof Element ||
+            (typeof HTMLDocument !== 'undefined' && value instanceof HTMLDocument);
+
+          const findEntryIndex = (modalEl) => stack.findIndex((entry) => entry.el === modalEl);
+
+          const focusEntry = (entry) => {
+            if (!entry || !entry.el) return;
+            const modalEl = entry.el;
+            const focusTarget =
+              modalEl.querySelector('[data-modal-initial-focus]') || modalEl.querySelector(focusableSelectors);
+            if (focusTarget && typeof focusTarget.focus === 'function') {
+              focusTarget.focus({ preventScroll: true });
+            } else if (typeof modalEl.focus === 'function') {
+              modalEl.focus({ preventScroll: true });
+            }
+          };
+
+          const setInteractivity = (modalEl, interactive) => {
+            if (!modalEl) return;
+            modalEl.classList.toggle('modal-stack-muted', !interactive);
+            if ('inert' in modalEl) {
+              modalEl.inert = !interactive;
+            }
+            if (!interactive) {
+              modalEl.setAttribute('aria-hidden', 'true');
+            } else {
+              modalEl.removeAttribute('aria-hidden');
+            }
+          };
+
+          const updateZOrder = () => {
+            stack.forEach((entry, index) => {
+              const depth = index;
+              const modalEl = entry.el;
+              const backdropEl = entry.backdrop;
+              const isTop = index === stack.length - 1;
+              modalEl.style.zIndex = baseModalZ + depth * zStep;
+              modalEl.setAttribute('data-modal-stack-depth', depth.toString());
+              if (backdropEl) {
+                backdropEl.style.zIndex = baseBackdropZ + depth * zStep;
+                backdropEl.setAttribute('data-modal-stack-depth', depth.toString());
+                backdropEl.style.pointerEvents = isTop ? 'auto' : 'none';
+              }
+              setInteractivity(modalEl, isTop);
+            });
+          };
+
+          const assignBackdrop = (entry) => {
+            if (!entry) return;
+            const backdrops = Array.from(document.querySelectorAll('.modal-backdrop'));
+            for (let i = backdrops.length - 1; i >= 0; i -= 1) {
+              const candidate = backdrops[i];
+              const alreadyAssigned = stack.some((item) => item.backdrop === candidate);
+              if (!alreadyAssigned) {
+                entry.backdrop = candidate;
+                break;
+              }
+            }
+            updateZOrder();
+          };
+
+          const handleShow = (event) => {
+            const modalEl = event.target;
+            if (!(modalEl instanceof HTMLElement)) return;
+            const existingIndex = findEntryIndex(modalEl);
+            if (existingIndex !== -1) {
+              stack.splice(existingIndex, 1);
+            }
+            const triggerEl = event.relatedTarget instanceof HTMLElement ? event.relatedTarget : document.activeElement;
+            const entry = {
+              el: modalEl,
+              trigger: triggerEl instanceof HTMLElement ? triggerEl : null,
+              backdrop: null,
+              allowEscape: modalEl.getAttribute('data-bs-keyboard') !== 'false'
+            };
+            stack.push(entry);
+            updateZOrder();
+          };
+
+          const handleShown = (event) => {
+            const modalEl = event.target;
+            if (!(modalEl instanceof HTMLElement)) return;
+            const index = findEntryIndex(modalEl);
+            if (index === -1) return;
+            const entry = stack[index];
+            assignBackdrop(entry);
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const instance = bootstrap.Modal.getInstance(modalEl);
+              if (instance && instance._config) {
+                entry.allowEscape = !!instance._config.keyboard;
+              }
+            }
+            requestAnimationFrame(() => focusEntry(entry));
+          };
+
+          const handleHide = (event) => {
+            const modalEl = event.target;
+            if (!(modalEl instanceof HTMLElement)) return;
+            const index = findEntryIndex(modalEl);
+            if (index === -1) return;
+            const isTop = index === stack.length - 1;
+            if (!isTop) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              const topEntry = stack[stack.length - 1];
+              if (topEntry) {
+                requestAnimationFrame(() => focusEntry(topEntry));
+              }
+            }
+          };
+
+          const handleHidden = (event) => {
+            const modalEl = event.target;
+            if (!(modalEl instanceof HTMLElement)) return;
+            const index = findEntryIndex(modalEl);
+            if (index === -1) return;
+            const [entry] = stack.splice(index, 1);
+            if (entry.backdrop) {
+              entry.backdrop.style.removeProperty('z-index');
+              entry.backdrop.style.pointerEvents = '';
+              entry.backdrop.removeAttribute('data-modal-stack-depth');
+              entry.backdrop = null;
+            }
+            modalEl.style.removeProperty('z-index');
+            modalEl.removeAttribute('data-modal-stack-depth');
+            modalEl.classList.remove('modal-stack-muted');
+            if ('inert' in modalEl) {
+              modalEl.inert = false;
+            }
+            modalEl.removeAttribute('aria-hidden');
+            updateZOrder();
+            const focusTarget = entry.trigger;
+            const nextTop = stack[stack.length - 1];
+            setTimeout(() => {
+              if (
+                focusTarget &&
+                isElement(focusTarget) &&
+                typeof focusTarget.focus === 'function' &&
+                document.contains(focusTarget)
+              ) {
+                focusTarget.focus({ preventScroll: true });
+              } else if (nextTop) {
+                focusEntry(nextTop);
+              }
+            }, 50);
+          };
+
+          const handleFocusIn = (event) => {
+            if (!stack.length) return;
+            const topEntry = stack[stack.length - 1];
+            if (!topEntry || !topEntry.el) return;
+            const modalEl = topEntry.el;
+            if (modalEl.contains(event.target)) {
+              return;
+            }
+            event.stopPropagation();
+            requestAnimationFrame(() => focusEntry(topEntry));
+          };
+
+          const handleKeyDown = (event) => {
+            if (event.key !== 'Escape' || !stack.length) return;
+            const topEntry = stack[stack.length - 1];
+            if (!topEntry || !topEntry.el) return;
+            event.stopPropagation();
+            if (!topEntry.allowEscape) {
+              event.preventDefault();
+              return;
+            }
+            event.preventDefault();
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const instance = bootstrap.Modal.getInstance(topEntry.el) || bootstrap.Modal.getOrCreateInstance(topEntry.el);
+              if (instance) {
+                instance.hide();
+              }
+            }
+          };
+
+          document.addEventListener('show.bs.modal', handleShow, true);
+          document.addEventListener('shown.bs.modal', handleShown, true);
+          document.addEventListener('hide.bs.modal', handleHide, true);
+          document.addEventListener('hidden.bs.modal', handleHidden, true);
+          document.addEventListener('focusin', handleFocusIn, true);
+          document.addEventListener('keydown', handleKeyDown, true);
+
+          return {
+            focusTopModal: () => {
+              const topEntry = stack[stack.length - 1] || null;
+              if (topEntry) {
+                focusEntry(topEntry);
+              }
+            },
+            stackSize: () => stack.length
+          };
+        })();
+
+        if (typeof window !== 'undefined') {
+          window.modalStackManager = modalStackManager;
+        }
+
         const initPortal = () => {
         const tabTriggerList = [].slice.call(document.querySelectorAll('#portalTabs button[data-bs-toggle="tab"]'));
         tabTriggerList.forEach((tabTriggerEl) => {
