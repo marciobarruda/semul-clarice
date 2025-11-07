@@ -838,10 +838,14 @@
                     <input type="search" class="form-control consulta-prontuario-input" id="busca-prontuario" name="consultaProntuariosTermo" aria-describedby="consultaProntuariosAddon" required />
                   </div>
                 </div>
-                <div class="col-12 col-lg-auto">
+                <div class="col-12 col-lg-auto d-flex flex-wrap gap-2">
                   <button class="btn btn-primary" type="button" id="btn-buscar-prontuarios">
                     <i class="bi bi-search me-1"></i>
                     Buscar
+                  </button>
+                  <button class="btn btn-outline-secondary" type="button" id="btn-limpar-prontuarios">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Limpar
                   </button>
                 </div>
               </form>
@@ -7062,6 +7066,7 @@
         const form = document.querySelector('#consultaProntuariosForm');
         const input = document.querySelector('#busca-prontuario');
         const btn = document.querySelector('#btn-buscar-prontuarios');
+        const clearBtn = document.querySelector('#btn-limpar-prontuarios');
         const exportBtn = document.querySelector('#btn-exportar-prontuarios');
         const tbody = document.querySelector('#tbody-prontuarios');
         const stateAlert = document.querySelector('#consultaProntuariosEstado');
@@ -7100,6 +7105,11 @@
           stateAlert.textContent = message;
           stateAlert.classList.remove('d-none');
           stateAlert.classList.add(`alert-${type}`);
+        }
+
+        function resetResultados() {
+          tbody.innerHTML = '';
+          tbody.appendChild(emptyRow('Nenhum resultado para exibir.'));
         }
 
         function renderProntuarios(items) {
@@ -7279,6 +7289,15 @@
           form.addEventListener('submit', (event) => {
             event.preventDefault();
             handleBuscar();
+          });
+        }
+
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            input.value = '';
+            resetResultados();
+            showState('Busca limpa.', 'info');
+            input.focus();
           });
         }
 
