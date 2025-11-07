@@ -4472,7 +4472,23 @@
         configurarCidadeDependente('autorUfNascimento', 'autorCidadeNascimento');
 
         const dataNascimentoInput = document.getElementById('dataNascimento');
+        const cpfUsuarioInput = document.getElementById('cpfUsuario');
+        const nomeUsuarioInput = document.getElementById('nomeUsuario');
         const idadeInput = document.getElementById('idade');
+        const toggleIdentificacaoReadOnly = (shouldLock) => {
+          const campos = [cpfUsuarioInput, nomeUsuarioInput, dataNascimentoInput];
+          campos.forEach((campo) => {
+            if (!campo) return;
+            const temValor = campo.value && campo.value.toString().trim().length > 0;
+            if (shouldLock && temValor) {
+              campo.setAttribute('readonly', 'readonly');
+              campo.setAttribute('aria-readonly', 'true');
+            } else {
+              campo.removeAttribute('readonly');
+              campo.removeAttribute('aria-readonly');
+            }
+          });
+        };
         const calcularIdade = () => {
           if (!dataNascimentoInput || !idadeInput) return;
           const valor = dataNascimentoInput.value.trim();
@@ -6627,6 +6643,7 @@
 
         if (registroForm) {
           registroForm.addEventListener('reset', () => {
+            toggleIdentificacaoReadOnly(false);
             setTimeout(() => {
               refreshFormInteractions();
               if (registroForm.dataset.mode === 'create') {
@@ -6995,6 +7012,7 @@
           if (!registroForm) return;
           registroForm.reset();
           setFormMode('create');
+          toggleIdentificacaoReadOnly(false);
           setCurrentDateTime();
           updateFormStatus('create', numeroProntuarioInput ? numeroProntuarioInput.value : '');
           ensureFormVisible();
@@ -7012,6 +7030,7 @@
           const normalizedPayload = normalizeRegistroPayload(payload);
           const mappedPayload = mapPayloadFields(normalizedPayload);
           populateFormWithData(mappedPayload);
+          toggleIdentificacaoReadOnly(true);
           const candidatos = ['numeroProntuario', 'prontuario', 'numero_prontuario', 'numero'];
           let prontuarioValor = '';
           for (const chave of candidatos) {
@@ -7072,10 +7091,7 @@
         const stateAlert = document.querySelector('#consultaProntuariosEstado');
         const tabelaResultados = document.querySelector('#consultaProntuariosResultados table');
         let prontuarioManager = window.prontuarioFormManager || null;
-
-        document.addEventListener('prontuarioFormManagerReady', (event) => {
-          prontuarioManager = event.detail;
-        });
+        const pendingProntuarioLoads = [];
 
         if (!input || !btn || !tbody) return;
 
@@ -7106,6 +7122,46 @@
           stateAlert.classList.remove('d-none');
           stateAlert.classList.add(`alert-${type}`);
         }
+
+        function hasFormManager() {
+          return prontuarioManager && typeof prontuarioManager.openExistingProntuario === 'function';
+        }
+
+        function abrirProntuarioNoFormulario(payload, modo, prontuario) {
+          if (!hasFormManager()) {
+            return false;
+          }
+          try {
+            prontuarioManager.openExistingProntuario(payload, modo, prontuario);
+            showState(`Prontuário ${prontuario} carregado.`, 'success');
+          } catch (error) {
+            console.error(error);
+            showState('Falha ao exibir o prontuário carregado.', 'danger');
+          }
+          return true;
+        }
+
+        function flushPendingProntuarios() {
+          if (!hasFormManager() || !pendingProntuarioLoads.length) return;
+          while (pendingProntuarioLoads.length) {
+            const { payload, modo, prontuario } = pendingProntuarioLoads.shift();
+            abrirProntuarioNoFormulario(payload, modo, prontuario);
+          }
+        }
+
+        function solicitarAberturaNoFormulario(payload, modo, prontuario) {
+          if (!abrirProntuarioNoFormulario(payload, modo, prontuario)) {
+            pendingProntuarioLoads.push({ payload, modo, prontuario });
+            showState(`Prontuário ${prontuario} carregado. Preparando formulário...`, 'info');
+          }
+        }
+
+        document.addEventListener('prontuarioFormManagerReady', (event) => {
+          prontuarioManager = event.detail;
+          flushPendingProntuarios();
+        });
+
+        flushPendingProntuarios();
 
         function resetResultados() {
           tbody.innerHTML = '';
@@ -7224,12 +7280,7 @@
             }
 
             const payload = await resposta.json();
-            if (prontuarioManager && typeof prontuarioManager.openExistingProntuario === 'function') {
-              prontuarioManager.openExistingProntuario(payload, modo, prontuario);
-              showState(`Prontuário ${prontuario} carregado.`, 'success');
-            } else {
-              showState('Formulário indisponível para exibir o prontuário.', 'warning');
-            }
+            solicitarAberturaNoFormulario(payload, modo, prontuario);
           } catch (error) {
             console.error(error);
             showState('Falha ao carregar o prontuário selecionado.', 'danger');
@@ -7344,6 +7395,13 @@
             status.innerHTML = '<i class="bi bi-plus-circle"></i><span>Novo registro em edição.</span>';
             status.classList.remove('d-none');
           }
+          ['cpfUsuario', 'nomeUsuario', 'dataNascimento'].forEach((campoId) => {
+            const campo = document.getElementById(campoId);
+            if (campo) {
+              campo.removeAttribute('readonly');
+              campo.removeAttribute('aria-readonly');
+            }
+          });
         };
 
         novoRegistroBtn.addEventListener('click', fallbackOpenForm);
