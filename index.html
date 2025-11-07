@@ -245,6 +245,20 @@
         }
       }
 
+      .form-section-sidebar-toggle {
+        display: none;
+      }
+
+      @media (max-width: 1199.98px) {
+        .form-section-sidebar-toggle {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          font-weight: 600;
+        }
+      }
+
       .form-section-nav .nav-label {
         font-size: 0.75rem;
         letter-spacing: 0.08em;
@@ -255,9 +269,16 @@
       }
 
       .section-nav-list {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
         gap: 0.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+
+      @media (min-width: 1200px) {
+        .section-nav-list {
+          display: flex;
+          flex-direction: column;
+        }
       }
 
       @media (min-width: 992px) {
@@ -282,6 +303,8 @@
         background: rgba(0, 83, 164, 0.08);
         color: var(--brand-primary);
         transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        width: 100%;
+        justify-content: flex-start;
       }
 
       .section-nav-link .bi {
@@ -942,43 +965,56 @@
                     <fieldset id="registroFieldset">
                       <div class="row g-4 form-sections-layout">
                         <aside class="col-12 col-xl-3 form-section-sidebar">
-                          <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
-                            <div class="section-nav-list">
-                              <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
-                                ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
-                              >
-                              <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
-                                ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
-                              >
-                              <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
-                                ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
-                              >
-                              <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
-                                ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
-                              >
-                              <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
-                                ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
-                              >
-                              <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
-                                ><i class="bi bi-people"></i><span>Dados sociais</span></a
-                              >
-                              <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
-                                ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
-                              >
-                              <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
-                                ><i class="bi bi-list-check"></i><span>Tipificação</span></a
-                              >
-                              <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
-                                ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
-                              >
-                              <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
-                                ><i class="bi bi-gavel"></i><span>Dados jurídicos</span></a
-                              >
-                              <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
-                                ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
-                              >
-                            </div>
-                          </nav>
+                          <button
+                            class="btn btn-outline-primary w-100 d-xl-none form-section-sidebar-toggle"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#formSectionNavCollapse"
+                            aria-expanded="false"
+                            aria-controls="formSectionNavCollapse"
+                          >
+                            <i class="bi bi-list"></i>
+                            Menu de navegação
+                          </button>
+                          <div class="collapse d-xl-block" id="formSectionNavCollapse">
+                            <nav class="form-section-nav mt-3 mt-xl-0" aria-label="Navegação entre seções do formulário">
+                              <div class="section-nav-list">
+                                <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
+                                  ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
+                                >
+                                <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
+                                  ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
+                                >
+                                <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
+                                  ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
+                                >
+                                <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
+                                  ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
+                                >
+                                <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
+                                  ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
+                                >
+                                <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
+                                  ><i class="bi bi-people"></i><span>Dados sociais</span></a
+                                >
+                                <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
+                                  ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
+                                >
+                                <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
+                                  ><i class="bi bi-list-check"></i><span>Tipificação</span></a
+                                >
+                                <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
+                                  ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
+                                >
+                                <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
+                                  ><i class="bi bi-gavel"></i><span>Dados jurídicos</span></a
+                                >
+                                <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
+                                  ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
+                                >
+                              </div>
+                            </nav>
+                          </div>
                         </aside>
                         <div class="col-12 col-xl-9 col-xxl-9">
               <section class="card-section mb-4" aria-labelledby="dados-preliminares">
