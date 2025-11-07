@@ -921,7 +921,7 @@
           aria-labelledby="registroModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-xl modal-dialog-scrollable">
+          <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
               <div class="modal-header">
                 <h2 class="modal-title fs-5" id="registroModalLabel" tabindex="-1">Prontuário</h2>
@@ -6651,6 +6651,7 @@
             .onSuccess((event) => {
               event.preventDefault();
               const form = event.target;
+              const mode = form.dataset.mode || 'create';
               const formData = new FormData(form);
               const payload = {};
               formData.forEach((value, key) => {
@@ -6672,55 +6673,71 @@
                 toast.show();
               }
 
-              form.reset();
-              const invalidEls = form.querySelectorAll('.is-invalid');
-              invalidEls.forEach((el) => el.classList.remove('is-invalid'));
-              atualizarWrapperCursos(false);
-              atualizarDetalhes();
-              atualizarEncaminhamentos();
-              atualizarSituacaoHabitacionalOutro();
-              restaurarTabelaFamilia();
-              restaurarTabelaAutores();
-              updateDeficiencia();
-              updateProblemaSaude();
-              updatePsicologo();
-              updatePsiquiatra();
-              updateMedicamentos();
-              updateDrogasLicitas();
-              updateDrogasIlicitas();
-              updateGestante();
-              if (identidadeGeneroSelect) {
-                atualizarExamesFemininos();
+              const limparEstados = () => {
+                const invalidEls = form.querySelectorAll('.is-invalid');
+                invalidEls.forEach((el) => el.classList.remove('is-invalid'));
+                atualizarWrapperCursos(false);
+                atualizarDetalhes();
+                atualizarEncaminhamentos();
+                atualizarSituacaoHabitacionalOutro();
+                restaurarTabelaFamilia();
+                restaurarTabelaAutores();
+                updateDeficiencia();
+                updateProblemaSaude();
+                updatePsicologo();
+                updatePsiquiatra();
+                updateMedicamentos();
+                updateDrogasLicitas();
+                updateDrogasIlicitas();
+                updateGestante();
+                if (identidadeGeneroSelect) {
+                  atualizarExamesFemininos();
+                }
+                updatePreventivoAno();
+                updateMamografiaAno();
+                updateResultadoHiv();
+                updateContraiuAgressor();
+                updateAcompanhamento();
+                updateViolenciaFisicaOutras();
+                updateViolenciaPsicologicaOutras();
+                updateViolenciaSexualOutras();
+                updateLocalAgressaoOutros();
+                updateFatoresRelacionadosOutros();
+                updateConhecimentoAgressao();
+                updateSolicitarCiods();
+                updateEditarRelato();
+                if (cidadeNascimentoSelect) {
+                  cidadeNascimentoSelect.innerHTML = '';
+                  const option = document.createElement('option');
+                  option.value = '';
+                  option.textContent = 'Selecione a UF primeiro';
+                  cidadeNascimentoSelect.appendChild(option);
+                }
+              };
+
+              if (mode === 'create') {
+                form.reset();
+                setFormMode('create');
+                toggleIdentificacaoReadOnly(false);
+                updateNumeroProntuarioDisplay('');
+                updateFormStatus('create', '');
+                setCurrentDateTime();
+                lastLoadedPayload = null;
+                lastLoadedMode = 'create';
+                lastLoadedProntuario = '';
+                limparEstados();
+              } else {
+                lastLoadedMode = mode;
+                limparEstados();
               }
-              updatePreventivoAno();
-              updateMamografiaAno();
-              updateResultadoHiv();
-              updateContraiuAgressor();
-              updateAcompanhamento();
-              updateViolenciaFisicaOutras();
-              updateViolenciaPsicologicaOutras();
-              updateViolenciaSexualOutras();
-              updateLocalAgressaoOutros();
-              updateFatoresRelacionadosOutros();
-              updateConhecimentoAgressao();
-              updateSolicitarCiods();
-              updateEditarRelato();
-              if (cidadeNascimentoSelect) {
-                cidadeNascimentoSelect.innerHTML = '';
-                const option = document.createElement('option');
-                option.value = '';
-                option.textContent = 'Selecione a UF primeiro';
-                cidadeNascimentoSelect.appendChild(option);
-              }
-              setCurrentDateTime();
-              setFormMode('create');
-              toggleIdentificacaoReadOnly(false);
-              updateNumeroProntuarioDisplay('');
-              lastLoadedPayload = null;
-              lastLoadedMode = 'create';
-              lastLoadedProntuario = '';
-              markFormClean();
+
+              setTimeout(() => {
+                refreshFormInteractions();
+                markFormClean();
+              }, 0);
+
               closeRegistroModal({ skipPrompt: true });
+
               if (window.prontuarioConsulta && typeof window.prontuarioConsulta.refresh === 'function') {
                 window.prontuarioConsulta.refresh();
               }
@@ -6770,6 +6787,7 @@
         let formSnapshot = '';
         let isFormDirty = false;
         let skipUnsavedPrompt = false;
+        const UNSAVED_CHANGES_MESSAGE = 'As alterações serão perdidas. Deseja continuar?';
         let lastLoadedPayload = null;
         let lastLoadedMode = 'create';
         let lastLoadedProntuario = '';
@@ -6876,7 +6894,7 @@
             }
             updateDirtyState();
             if (isFormDirty) {
-              const confirmar = window.confirm('Existem alterações não salvas. Deseja descartar as mudanças?');
+              const confirmar = window.confirm(UNSAVED_CHANGES_MESSAGE);
               if (!confirmar) {
                 event.preventDefault();
                 return;
@@ -6948,12 +6966,21 @@
               return;
             }
             const mode = registroForm.dataset.mode || 'create';
+            if (mode === 'view') {
+              closeRegistroModal({ skipPrompt: true });
+              return;
+            }
+            const confirmar = window.confirm(UNSAVED_CHANGES_MESSAGE);
+            if (!confirmar) {
+              return;
+            }
             if (mode === 'edit' && lastLoadedPayload) {
               registroForm.reset();
               setFormMode('edit');
               populateFormWithData(lastLoadedPayload);
-              toggleIdentificacaoReadOnly(true);
+              toggleIdentificacaoReadOnly(false);
               updateFormStatus('edit', lastLoadedProntuario);
+              lastLoadedMode = 'edit';
             } else {
               registroForm.reset();
               setFormMode('create');
@@ -6961,9 +6988,14 @@
               updateNumeroProntuarioDisplay('');
               updateFormStatus('create', '');
               setCurrentDateTime();
+              lastLoadedPayload = null;
+              lastLoadedMode = 'create';
+              lastLoadedProntuario = '';
             }
-            refreshFormInteractions();
-            markFormClean();
+            setTimeout(() => {
+              refreshFormInteractions();
+              markFormClean();
+            }, 0);
             closeRegistroModal({ skipPrompt: true });
           });
         }
@@ -7403,7 +7435,7 @@
           const normalizedPayload = normalizeRegistroPayload(payload);
           const mappedPayload = mapPayloadFields(normalizedPayload);
           populateFormWithData(mappedPayload);
-          toggleIdentificacaoReadOnly(true);
+          toggleIdentificacaoReadOnly(normalizedMode === 'view');
           const candidatos = ['numeroProntuario', 'prontuario', 'numero_prontuario', 'numero'];
           let prontuarioValor = '';
           for (const chave of candidatos) {
