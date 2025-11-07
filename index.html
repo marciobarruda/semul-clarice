@@ -6854,6 +6854,12 @@
           registroModalInstance.hide();
         };
 
+        window.portalRegistroModal = window.portalRegistroModal || {};
+        window.portalRegistroModal.show = showRegistroModal;
+        window.portalRegistroModal.close = closeRegistroModal;
+        window.showRegistroModal = showRegistroModal;
+        window.closeRegistroModal = closeRegistroModal;
+
         if (registroModalEl) {
           registroModalEl.addEventListener('hide.bs.modal', (event) => {
             if (event.target !== registroModalEl) {
@@ -7539,7 +7545,11 @@
         }
 
         function solicitarAberturaNoFormulario(payload, modo, prontuario) {
-          showRegistroModal(modo);
+          if (window.portalRegistroModal && typeof window.portalRegistroModal.show === 'function') {
+            window.portalRegistroModal.show(modo);
+          } else if (typeof window.showRegistroModal === 'function') {
+            window.showRegistroModal(modo);
+          }
           if (!abrirProntuarioNoFormulario(payload, modo, prontuario)) {
             pendingProntuarioLoads.push({ payload, modo, prontuario });
             showState(`Prontuário ${prontuario} carregado. Preparando formulário...`, 'info');
