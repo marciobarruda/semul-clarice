@@ -229,12 +229,12 @@
         background: rgba(244, 247, 251, 0.96);
         border: 1px solid rgba(0, 83, 164, 0.15);
         border-radius: 1rem;
-        padding: 1.25rem 1.5rem;
+        padding: 1.75rem 2rem;
         box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
         backdrop-filter: blur(6px);
-        max-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
-        min-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
-        overflow-y: auto;
+        max-height: none;
+        min-height: auto;
+        overflow: visible;
       }
 
       @media (max-width: 1199.98px) {
@@ -242,6 +242,8 @@
           position: static;
           max-height: none;
           min-height: 0;
+          padding: 1.25rem 1.5rem;
+          overflow: visible;
         }
       }
 
