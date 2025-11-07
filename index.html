@@ -890,45 +890,25 @@
                       <th scope="col">Nome completo</th>
                       <th scope="col">CPF</th>
                       <th scope="col">Nome da mãe</th>
+                      <th scope="col" class="text-end">Ações</th>
                     </tr>
                   </thead>
                   <tbody id="tbody-prontuarios">
                     <tr id="consultaProntuariosVazio">
-                      <td colspan="4" class="text-center text-muted py-4">Nenhum resultado para exibir.</td>
+                      <td colspan="5" class="text-center text-muted py-4">Nenhum resultado para exibir.</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="row g-3 align-items-end mt-4" id="acoesProntuarioWrapper">
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                  <label for="prontuarioAcaoInput" class="form-label">Prontuário</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="prontuarioAcaoInput"
-                    name="prontuarioAcaoInput"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    placeholder="202503-0045"
-                    maxlength="11"
-                    aria-describedby="prontuarioAcaoHint"
-                  />
-                  <div id="prontuarioAcaoHint" class="form-text">Formato esperado: 999999-9999.</div>
-                </div>
-                <div class="col-12 col-md d-flex flex-wrap gap-2">
-                  <button type="button" class="btn btn-outline-primary" id="visualizarProntuarioBtn">
-                    <i class="bi bi-eye me-1"></i>
-                    Visualizar
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary" id="editarProntuarioBtn">
-                    <i class="bi bi-pencil-square me-1"></i>
-                    Editar
-                  </button>
-                  <button type="button" class="btn btn-primary" id="novoRegistroBtn">
-                    <i class="bi bi-journal-medical me-1"></i>
-                    Novo registro
-                  </button>
-                </div>
+              <div class="d-flex justify-content-end mt-4">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-2"
+                  id="novoRegistroBtn"
+                >
+                  <i class="bi bi-journal-medical"></i>
+                  Novo registro
+                </button>
               </div>
             </section>
           </div>
@@ -7520,9 +7500,6 @@
         const clearBtn = document.querySelector('#btn-limpar-prontuarios');
         const exportBtn = document.querySelector('#btn-exportar-prontuarios');
         const tbody = document.querySelector('#tbody-prontuarios');
-        const prontuarioAcaoInput = document.querySelector('#prontuarioAcaoInput');
-        const visualizarProntuarioBtn = document.querySelector('#visualizarProntuarioBtn');
-        const editarProntuarioBtn = document.querySelector('#editarProntuarioBtn');
         const stateAlert = document.querySelector('#consultaProntuariosEstado');
         const tabelaResultados = document.querySelector('#consultaProntuariosResultados table');
         let prontuarioManager = window.prontuarioFormManager || null;
@@ -7536,26 +7513,10 @@
           return s.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         }
 
-        function formatProntuarioMask(value) {
-          const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
-          if (digits.length <= 6) {
-            return digits;
-          }
-          return `${digits.slice(0, 6)}-${digits.slice(6)}`;
-        }
-
-        function normalizeProntuarioValor(value) {
-          const digits = String(value || '').replace(/\D/g, '');
-          if (digits.length !== 10) {
-            return null;
-          }
-          return `${digits.slice(0, 6)}-${digits.slice(6)}`;
-        }
-
         function emptyRow(message) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
-          td.colSpan = 4;
+          td.colSpan = 5;
           td.classList.add('text-center', 'text-muted', 'py-4');
           td.textContent = message;
           tr.appendChild(td);
@@ -7616,6 +7577,16 @@
             window.portalRegistroModal.show(modo);
           } else if (typeof window.showRegistroModal === 'function') {
             window.showRegistroModal(modo);
+          } else {
+            const wrapper = document.getElementById('formularioWrapper');
+            if (wrapper) {
+              wrapper.classList.remove('d-none');
+            }
+            const modalEl = document.getElementById('registroModal');
+            if (modalEl && window.bootstrap) {
+              const instance = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
+              instance.show();
+            }
           }
           if (!abrirProntuarioNoFormulario(payload, modo, prontuario)) {
             pendingProntuarioLoads.push({ payload, modo, prontuario });
@@ -7655,26 +7626,19 @@
         <td>${item.nome || ''}</td>
         <td>${formatCPF(item.cpf)}</td>
         <td>${item.mae || ''}</td>
+        <td class="text-end">
+          <button class="btn btn-link p-0 me-2 prontuario-acao" type="button" title="Visualizar" data-acao="visualizar" data-prontuario="${item.prontuario || ''}">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-link p-0 prontuario-acao" type="button" title="Editar" data-acao="editar" data-prontuario="${item.prontuario || ''}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+        </td>
       `;
             frag.appendChild(tr);
           }
           tbody.appendChild(frag);
           showState(`Exibindo ${data.length} registro(s).`, 'success');
-        }
-
-        function handleAcaoProntuario(modo) {
-          const normalizedMode = modo === 'edit' ? 'edit' : 'view';
-          if (prontuarioManager && typeof prontuarioManager.openBlankForm === 'function') {
-            prontuarioManager.openBlankForm(normalizedMode);
-          } else if (window.prontuarioFormManager && typeof window.prontuarioFormManager.openBlankForm === 'function') {
-            window.prontuarioFormManager.openBlankForm(normalizedMode);
-          } else if (window.portalRegistroModal && typeof window.portalRegistroModal.show === 'function') {
-            window.portalRegistroModal.show(normalizedMode);
-          } else if (typeof window.showRegistroModal === 'function') {
-            window.showRegistroModal(normalizedMode);
-          }
-          const actionLabel = normalizedMode === 'edit' ? 'edição' : 'visualização';
-          showState(`Formulário aberto para ${actionLabel}.`, 'info');
         }
 
         function coletarDadosTabela() {
@@ -7836,40 +7800,13 @@
           exportBtn.addEventListener('click', exportarTabelaPDF);
         }
 
-        if (prontuarioAcaoInput) {
-          prontuarioAcaoInput.addEventListener('input', (event) => {
-            const formatted = formatProntuarioMask(event.target.value);
-            if (formatted !== event.target.value) {
-              const position = formatted.length;
-              event.target.value = formatted;
-              requestAnimationFrame(() => {
-                event.target.setSelectionRange(position, position);
-              });
-            }
-          });
-
-          prontuarioAcaoInput.addEventListener('blur', (event) => {
-            const normalized = normalizeProntuarioValor(event.target.value);
-            if (normalized) {
-              event.target.value = normalized;
-            }
-          });
-
-          prontuarioAcaoInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              handleAcaoProntuario('view');
-            }
-          });
-        }
-
-        if (visualizarProntuarioBtn) {
-          visualizarProntuarioBtn.addEventListener('click', () => handleAcaoProntuario('view'));
-        }
-
-        if (editarProntuarioBtn) {
-          editarProntuarioBtn.addEventListener('click', () => handleAcaoProntuario('edit'));
-        }
+        tbody.addEventListener('click', (event) => {
+          const botao = event.target instanceof HTMLElement ? event.target.closest('button.prontuario-acao') : null;
+          if (!botao) return;
+          const prontuario = botao.dataset.prontuario;
+          const acao = botao.dataset.acao === 'editar' ? 'edit' : 'view';
+          carregarProntuario(prontuario, acao);
+        });
 
         window.prontuarioConsulta = window.prontuarioConsulta || {};
         window.prontuarioConsulta.refresh = () => {
