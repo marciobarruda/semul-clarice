@@ -4112,7 +4112,8 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.min.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
+      (function () {
+        const initPortal = () => {
         const tabTriggerList = [].slice.call(document.querySelectorAll('#portalTabs button[data-bs-toggle="tab"]'));
         tabTriggerList.forEach((tabTriggerEl) => {
           tabTriggerEl.addEventListener('shown.bs.tab', (event) => {
@@ -6855,6 +6856,9 @@
 
         if (registroModalEl) {
           registroModalEl.addEventListener('hide.bs.modal', (event) => {
+            if (event.target !== registroModalEl) {
+              return;
+            }
             if (skipUnsavedPrompt) {
               skipUnsavedPrompt = false;
               return;
@@ -6874,7 +6878,10 @@
             }
           });
 
-          registroModalEl.addEventListener('hidden.bs.modal', () => {
+          registroModalEl.addEventListener('hidden.bs.modal', (event) => {
+            if (event.target !== registroModalEl) {
+              return;
+            }
             if (formWrapper) {
               formWrapper.classList.add('d-none');
             }
@@ -6883,7 +6890,10 @@
             }
           });
 
-          registroModalEl.addEventListener('shown.bs.modal', () => {
+          registroModalEl.addEventListener('shown.bs.modal', (event) => {
+            if (event.target !== registroModalEl) {
+              return;
+            }
             focusModalContext();
           });
         }
@@ -7439,7 +7449,14 @@
           novoRegistroBtn.dataset.boundNovoRegistro = 'true';
         }
         setCurrentDateTime();
-      });
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initPortal, { once: true });
+        } else {
+          initPortal();
+        }
+      })();
     </script>
     <script>
       (function () {
@@ -7533,6 +7550,7 @@
           flushPendingProntuarios();
         });
 
+        hasFormManager();
         flushPendingProntuarios();
 
         function resetResultados() {
