@@ -578,6 +578,26 @@
         z-index: 1020;
       }
 
+      .sticky-modal-footer {
+        position: sticky;
+        bottom: 0;
+        background-color: #ffffff;
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -6px 18px rgba(0, 45, 98, 0.08);
+      }
+
+      #registroModalBody {
+        max-height: 75vh;
+      }
+
+      #registroModalBody .form-section-sidebar {
+        position: static;
+      }
+
+      #registroModalBody .form-section-nav {
+        top: 0;
+      }
+
       .toast-header {
         background: var(--brand-primary);
         color: #fff;
@@ -882,52 +902,66 @@
           </div>
         </div>
 
-        <section id="formularioWrapper" class="mt-5 d-none">
-          <form id="registroForm" class="needs-validation" novalidate>
-            <div id="formularioStatus" class="alert d-none align-items-center gap-2 mb-4" role="status"></div>
-            <fieldset id="registroFieldset">
-              <div class="row g-4 form-sections-layout">
-                <aside class="col-12 col-xl-3 form-section-sidebar">
-                  <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
-                    <span class="nav-label">Ir para</span>
-                    <div class="section-nav-list">
-                      <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
-                        ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
-                      >
-                      <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
-                        ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
-                      >
-                      <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
-                        ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
-                      >
-                      <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
-                        ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
-                      >
-                      <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
-                        ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
-                      >
-                      <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
-                        ><i class="bi bi-people"></i><span>Dados sociais</span></a
-                      >
-                      <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
-                        ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
-                      >
-                      <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
-                        ><i class="bi bi-list-check"></i><span>Tipificação</span></a
-                      >
-                      <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
-                        ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
-                      >
-                      <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
-                        ><i class="bi bi-gavel"></i><span>Dados jurídicos</span></a
-                      >
-                      <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
-                        ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
-                      >
-                    </div>
-                  </nav>
-                </aside>
-                <div class="col-12 col-xl-9 col-xxl-9">
+        <div
+          class="modal fade"
+          id="registroModal"
+          tabindex="-1"
+          aria-labelledby="registroModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2 class="modal-title fs-5" id="registroModalLabel" tabindex="-1">Prontuário</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+              </div>
+              <div class="modal-body" id="registroModalBody">
+                <section id="formularioWrapper" class="d-none">
+                  <form id="registroForm" class="needs-validation" novalidate>
+                    <div id="formularioStatus" class="alert d-none align-items-center gap-2 mb-4" role="status"></div>
+                    <fieldset id="registroFieldset">
+                      <div class="row g-4 form-sections-layout">
+                        <aside class="col-12 col-xl-3 form-section-sidebar">
+                          <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
+                            <span class="nav-label">Ir para</span>
+                            <div class="section-nav-list">
+                              <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
+                                ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
+                                ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
+                                ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
+                              >
+                              <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
+                                ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
+                                ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
+                                ><i class="bi bi-people"></i><span>Dados sociais</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
+                                ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
+                              >
+                              <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
+                                ><i class="bi bi-list-check"></i><span>Tipificação</span></a
+                              >
+                              <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
+                                ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
+                                ><i class="bi bi-gavel"></i><span>Dados jurídicos</span></a
+                              >
+                              <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
+                                ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
+                              >
+                            </div>
+                          </nav>
+                        </aside>
+                        <div class="col-12 col-xl-9 col-xxl-9">
               <section class="card-section mb-4" aria-labelledby="dados-preliminares">
                 <div class="section-header d-flex align-items-start justify-content-between flex-wrap gap-3">
                   <h2 class="form-section-title mb-0" id="dados-preliminares"><i class="bi bi-person-vcard"></i>Dados preliminares e de identificação</h2>
@@ -3289,18 +3323,23 @@
                 <div id="anexoHiddenInputs"></div>
               </section>
 
-              <div class="d-flex justify-content-end gap-2">
-                <button type="reset" class="btn btn-outline-secondary">Limpar</button>
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-send me-2"></i>
-                  Enviar registro
+                  </form>
+                </section>
+              </div>
+              <div class="modal-footer sticky-modal-footer justify-content-end gap-2" id="registroModalFooter">
+                <button type="button" class="btn btn-primary" id="registroModalSalvarBtn">
+                  <i class="bi bi-save me-1"></i>Salvar
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="registroModalCancelarBtn">
+                  <i class="bi bi-arrow-counterclockwise me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-light" id="registroModalFecharBtn" data-bs-dismiss="modal">
+                  <i class="bi bi-x-lg me-1"></i>Fechar
                 </button>
               </div>
             </div>
           </div>
-        </fieldset>
-      </form>
-    </section>
+        </div>
       </div>
     </main>
 
@@ -6606,6 +6645,17 @@
                 cidadeNascimentoSelect.appendChild(option);
               }
               setCurrentDateTime();
+              setFormMode('create');
+              toggleIdentificacaoReadOnly(false);
+              updateNumeroProntuarioDisplay('');
+              lastLoadedPayload = null;
+              lastLoadedMode = 'create';
+              lastLoadedProntuario = '';
+              markFormClean();
+              closeRegistroModal({ skipPrompt: true });
+              if (window.prontuarioConsulta && typeof window.prontuarioConsulta.refresh === 'function') {
+                window.prontuarioConsulta.refresh();
+              }
             });
 
         const refreshFormInteractions = () => {
@@ -6640,6 +6690,153 @@
         const formStatus = document.getElementById('formularioStatus');
         const registroFieldset = document.getElementById('registroFieldset');
         const novoRegistroBtn = document.getElementById('novoRegistroBtn');
+        const registroModalEl = document.getElementById('registroModal');
+        const registroModalBody = document.getElementById('registroModalBody');
+        const registroModalTitle = document.getElementById('registroModalLabel');
+        const registroModalSalvarBtn = document.getElementById('registroModalSalvarBtn');
+        const registroModalCancelarBtn = document.getElementById('registroModalCancelarBtn');
+        const registroModalFecharBtn = document.getElementById('registroModalFecharBtn');
+        const registroModalFooter = document.getElementById('registroModalFooter');
+        const registroModalInstance =
+          registroModalEl && window.bootstrap ? bootstrap.Modal.getOrCreateInstance(registroModalEl, { backdrop: 'static' }) : null;
+        let formSnapshot = '';
+        let isFormDirty = false;
+        let skipUnsavedPrompt = false;
+        let lastLoadedPayload = null;
+        let lastLoadedMode = 'create';
+        let lastLoadedProntuario = '';
+
+        const serializeForm = () => {
+          if (!registroForm) return '';
+          const formData = new FormData(registroForm);
+          const entries = [];
+          for (const [key, value] of formData.entries()) {
+            entries.push(`${key}=${value}`);
+          }
+          entries.sort();
+          return entries.join('&');
+        };
+
+        const updateDirtyState = () => {
+          if (!registroForm || registroForm.dataset.mode === 'view') {
+            isFormDirty = false;
+            return;
+          }
+          isFormDirty = serializeForm() !== formSnapshot;
+        };
+
+        const markFormClean = () => {
+          formSnapshot = serializeForm();
+          isFormDirty = false;
+        };
+
+        const focusModalContext = () => {
+          if (!registroForm) return;
+          const mode = registroForm.dataset.mode || 'create';
+          if (mode === 'view') {
+            if (registroModalTitle) {
+              registroModalTitle.focus({ preventScroll: true });
+            }
+            return;
+          }
+          const focusable = registroForm.querySelector(
+            'input:not([type="hidden"]):not([disabled]):not([readonly]), select:not([disabled]), textarea:not([disabled])'
+          );
+          if (focusable) {
+            focusable.focus({ preventScroll: true });
+          }
+        };
+
+        const updateModalModeUI = (mode) => {
+          if (!registroModalFooter) return;
+          const normalized = mode === 'edit' ? 'edit' : mode === 'view' ? 'view' : 'create';
+          const isView = normalized === 'view';
+          if (registroModalSalvarBtn) {
+            registroModalSalvarBtn.classList.toggle('d-none', isView);
+            registroModalSalvarBtn.disabled = isView;
+          }
+          if (registroModalCancelarBtn) {
+            registroModalCancelarBtn.classList.toggle('d-none', isView);
+            registroModalCancelarBtn.disabled = isView;
+          }
+          if (registroModalTitle) {
+            registroModalTitle.textContent =
+              normalized === 'edit' ? 'Editar prontuário' : normalized === 'view' ? 'Visualizar prontuário' : 'Novo registro';
+          }
+        };
+
+        const showRegistroModal = (mode) => {
+          if (formWrapper) {
+            formWrapper.classList.remove('d-none');
+          }
+          updateModalModeUI(mode || (registroForm ? registroForm.dataset.mode : 'create'));
+          if (registroModalBody) {
+            registroModalBody.scrollTop = 0;
+          }
+          if (registroModalInstance) {
+            registroModalInstance.show();
+          }
+        };
+
+        const closeRegistroModal = (options = {}) => {
+          if (!registroModalInstance) return;
+          if (options.skipPrompt) {
+            skipUnsavedPrompt = true;
+          }
+          registroModalInstance.hide();
+        };
+
+        if (registroModalEl) {
+          registroModalEl.addEventListener('hide.bs.modal', (event) => {
+            if (skipUnsavedPrompt) {
+              skipUnsavedPrompt = false;
+              return;
+            }
+            if (!registroForm) return;
+            const mode = registroForm.dataset.mode || 'view';
+            if (mode === 'view') {
+              return;
+            }
+            updateDirtyState();
+            if (isFormDirty) {
+              const confirmar = window.confirm('Existem alterações não salvas. Deseja descartar as mudanças?');
+              if (!confirmar) {
+                event.preventDefault();
+                return;
+              }
+            }
+          });
+
+          registroModalEl.addEventListener('hidden.bs.modal', () => {
+            if (formWrapper) {
+              formWrapper.classList.add('d-none');
+            }
+            if (registroForm) {
+              registroForm.classList.remove('was-validated');
+            }
+          });
+
+          registroModalEl.addEventListener('shown.bs.modal', () => {
+            focusModalContext();
+          });
+        }
+
+        if (registroForm) {
+          registroForm.addEventListener(
+            'input',
+            () => {
+              updateDirtyState();
+            },
+            true
+          );
+          registroForm.addEventListener(
+            'change',
+            () => {
+              updateDirtyState();
+            },
+            true
+          );
+        }
 
         if (registroForm) {
           registroForm.addEventListener('reset', () => {
@@ -6649,7 +6846,41 @@
               if (registroForm.dataset.mode === 'create') {
                 setCurrentDateTime();
               }
+              markFormClean();
             }, 0);
+          });
+        }
+
+        if (registroModalSalvarBtn && registroForm) {
+          registroModalSalvarBtn.addEventListener('click', () => {
+            registroForm.requestSubmit();
+          });
+        }
+
+        if (registroModalCancelarBtn) {
+          registroModalCancelarBtn.addEventListener('click', () => {
+            if (!registroForm) {
+              closeRegistroModal({ skipPrompt: true });
+              return;
+            }
+            const mode = registroForm.dataset.mode || 'create';
+            if (mode === 'edit' && lastLoadedPayload) {
+              registroForm.reset();
+              setFormMode('edit');
+              populateFormWithData(lastLoadedPayload);
+              toggleIdentificacaoReadOnly(true);
+              updateFormStatus('edit', lastLoadedProntuario);
+            } else {
+              registroForm.reset();
+              setFormMode('create');
+              toggleIdentificacaoReadOnly(false);
+              updateNumeroProntuarioDisplay('');
+              updateFormStatus('create', '');
+              setCurrentDateTime();
+            }
+            refreshFormInteractions();
+            markFormClean();
+            closeRegistroModal({ skipPrompt: true });
           });
         }
 
@@ -6985,17 +7216,16 @@
           if (registroForm) {
             registroForm.classList.toggle('form-readonly', isViewMode);
           }
+          updateModalModeUI(mode);
         };
 
-        const ensureFormVisible = () => {
-          if (formWrapper) {
-            formWrapper.classList.remove('d-none');
-          }
+        const ensureFormVisible = (mode) => {
+          showRegistroModal(mode);
         };
 
         const scrollToForm = () => {
-          if (formWrapper) {
-            formWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (registroModalBody) {
+            registroModalBody.scrollTop = 0;
           }
         };
 
@@ -7013,12 +7243,20 @@
           registroForm.reset();
           setFormMode('create');
           toggleIdentificacaoReadOnly(false);
+          lastLoadedPayload = null;
+          lastLoadedMode = 'create';
+          lastLoadedProntuario = '';
+          if (numeroProntuarioInput) {
+            numeroProntuarioInput.value = '';
+          }
+          updateNumeroProntuarioDisplay('');
           setCurrentDateTime();
-          updateFormStatus('create', numeroProntuarioInput ? numeroProntuarioInput.value : '');
-          ensureFormVisible();
+          updateFormStatus('create', '');
+          ensureFormVisible('create');
           scrollToForm();
           setTimeout(() => {
             refreshFormInteractions();
+            markFormClean();
           }, 0);
         };
 
@@ -7056,10 +7294,14 @@
           }
           updateNumeroProntuarioDisplay(prontuarioValor);
           updateFormStatus(normalizedMode, prontuarioValor);
-          ensureFormVisible();
+          lastLoadedPayload = mappedPayload;
+          lastLoadedMode = normalizedMode;
+          lastLoadedProntuario = prontuarioValor || '';
+          ensureFormVisible(normalizedMode);
           scrollToForm();
           setTimeout(() => {
             refreshFormInteractions();
+            markFormClean();
           }, 0);
         };
 
@@ -7092,6 +7334,7 @@
         const tabelaResultados = document.querySelector('#consultaProntuariosResultados table');
         let prontuarioManager = window.prontuarioFormManager || null;
         const pendingProntuarioLoads = [];
+        let lastTerm = '';
 
         if (!input || !btn || !tbody) return;
 
@@ -7166,6 +7409,7 @@
         function resetResultados() {
           tbody.innerHTML = '';
           tbody.appendChild(emptyRow('Nenhum resultado para exibir.'));
+          lastTerm = '';
         }
 
         function renderProntuarios(items) {
@@ -7287,8 +7531,8 @@
           }
         }
 
-        async function handleBuscar() {
-          const termo = input.value.trim();
+        async function handleBuscar(forcedTerm) {
+          const termo = typeof forcedTerm === 'string' ? forcedTerm.trim() : input.value.trim();
           if (!termo) {
             showState('Informe um termo para busca.', 'warning');
             return;
@@ -7323,19 +7567,22 @@
                 registros = data.records;
               }
             }
+            lastTerm = termo;
+            input.value = termo;
             renderProntuarios(registros);
           } catch (err) {
             console.error(err);
             tbody.innerHTML = '';
             tbody.appendChild(emptyRow('Falha ao buscar. Tente novamente.'));
             showState('Falha ao buscar. Tente novamente.', 'danger');
+            lastTerm = '';
           } finally {
             btn.disabled = false;
             btn.innerHTML = original;
           }
         }
 
-        btn.addEventListener('click', handleBuscar);
+        btn.addEventListener('click', () => handleBuscar());
         if (form) {
           form.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -7349,6 +7596,7 @@
             resetResultados();
             showState('Busca limpa.', 'info');
             input.focus();
+            lastTerm = '';
           });
         }
 
@@ -7363,6 +7611,16 @@
           const acao = botao.dataset.acao === 'editar' ? 'edit' : 'view';
           carregarProntuario(prontuario, acao);
         });
+
+        window.prontuarioConsulta = window.prontuarioConsulta || {};
+        window.prontuarioConsulta.refresh = () => {
+          if (lastTerm) {
+            handleBuscar(lastTerm);
+          } else {
+            resetResultados();
+            showState('Tabela atualizada.', 'info');
+          }
+        };
       })();
     </script>
     <script>
@@ -7381,27 +7639,12 @@
           const wrapper = document.getElementById('formularioWrapper');
           if (wrapper) {
             wrapper.classList.remove('d-none');
-            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-
-          const fieldset = document.getElementById('registroFieldset');
-          if (fieldset) {
-            fieldset.disabled = false;
+          const modalEl = document.getElementById('registroModal');
+          if (modalEl && window.bootstrap) {
+            const instance = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
+            instance.show();
           }
-
-          const status = document.getElementById('formularioStatus');
-          if (status) {
-            status.className = 'alert alert-primary align-items-center gap-2 mb-4';
-            status.innerHTML = '<i class="bi bi-plus-circle"></i><span>Novo registro em edição.</span>';
-            status.classList.remove('d-none');
-          }
-          ['cpfUsuario', 'nomeUsuario', 'dataNascimento'].forEach((campoId) => {
-            const campo = document.getElementById(campoId);
-            if (campo) {
-              campo.removeAttribute('readonly');
-              campo.removeAttribute('aria-readonly');
-            }
-          });
         };
 
         novoRegistroBtn.addEventListener('click', fallbackOpenForm);
