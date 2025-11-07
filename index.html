@@ -7460,9 +7460,37 @@
           }, 0);
         };
 
+        const openBlankForm = (mode = 'view') => {
+          if (!registroForm) return;
+          const normalizedMode = mode === 'edit' ? 'edit' : mode === 'create' ? 'create' : 'view';
+          if (normalizedMode === 'create') {
+            startNovoRegistro();
+            return;
+          }
+
+          registroForm.reset();
+          setFormMode(normalizedMode);
+          toggleIdentificacaoReadOnly(normalizedMode === 'view');
+          lastLoadedPayload = null;
+          lastLoadedMode = normalizedMode;
+          lastLoadedProntuario = '';
+          if (numeroProntuarioInput) {
+            numeroProntuarioInput.value = '';
+          }
+          updateNumeroProntuarioDisplay('');
+          updateFormStatus(normalizedMode, '');
+          ensureFormVisible(normalizedMode);
+          scrollToForm();
+          setTimeout(() => {
+            refreshFormInteractions();
+            markFormClean();
+          }, 0);
+        };
+
         const prontuarioFormManager = {
           startNovoRegistro,
           openExistingProntuario,
+          openBlankForm,
         };
 
         window.prontuarioFormManager = prontuarioFormManager;
@@ -7635,15 +7663,18 @@
         }
 
         function handleAcaoProntuario(modo) {
-          if (!prontuarioAcaoInput) return;
-          const normalizado = normalizeProntuarioValor(prontuarioAcaoInput.value);
-          if (!normalizado) {
-            showState('Informe um número de prontuário válido no formato 999999-9999.', 'warning');
-            prontuarioAcaoInput.focus();
-            return;
+          const normalizedMode = modo === 'edit' ? 'edit' : 'view';
+          if (prontuarioManager && typeof prontuarioManager.openBlankForm === 'function') {
+            prontuarioManager.openBlankForm(normalizedMode);
+          } else if (window.prontuarioFormManager && typeof window.prontuarioFormManager.openBlankForm === 'function') {
+            window.prontuarioFormManager.openBlankForm(normalizedMode);
+          } else if (window.portalRegistroModal && typeof window.portalRegistroModal.show === 'function') {
+            window.portalRegistroModal.show(normalizedMode);
+          } else if (typeof window.showRegistroModal === 'function') {
+            window.showRegistroModal(normalizedMode);
           }
-          prontuarioAcaoInput.value = normalizado;
-          carregarProntuario(normalizado, modo);
+          const actionLabel = normalizedMode === 'edit' ? 'edição' : 'visualização';
+          showState(`Formulário aberto para ${actionLabel}.`, 'info');
         }
 
         function coletarDadosTabela() {
@@ -7859,9 +7890,15 @@
         }
 
         const fallbackOpenForm = () => {
-          if (window.prontuarioFormManager && typeof window.prontuarioFormManager.startNovoRegistro === 'function') {
-            window.prontuarioFormManager.startNovoRegistro();
-            return;
+          if (window.prontuarioFormManager) {
+            if (typeof window.prontuarioFormManager.openBlankForm === 'function') {
+              window.prontuarioFormManager.openBlankForm('create');
+              return;
+            }
+            if (typeof window.prontuarioFormManager.startNovoRegistro === 'function') {
+              window.prontuarioFormManager.startNovoRegistro();
+              return;
+            }
           }
 
           const wrapper = document.getElementById('formularioWrapper');
