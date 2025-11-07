@@ -2021,6 +2021,7 @@
                       id="adicionarMembroFamilia"
                       data-bs-toggle="modal"
                       data-bs-target="#familiaModal"
+                      data-modal-child-trigger="true"
                     >
                       <i class="bi bi-person-plus me-1"></i>Adicionar membro da família
                     </button>
@@ -2057,6 +2058,7 @@
                     class="btn btn-outline-primary btn-sm ms-auto"
                     data-bs-toggle="modal"
                     data-bs-target="#autorModal"
+                    data-modal-child-trigger="true"
                   >
                     <i class="bi bi-person-plus me-1"></i>Adicionar autor(a)
                   </button>
@@ -2722,7 +2724,13 @@
                 <h2 class="form-section-title" id="evolucoes"><i class="bi bi-journal-text"></i>Evoluções</h2>
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                   <p class="text-muted mb-0">Registre as evoluções realizadas no acompanhamento técnico.</p>
-                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#evolucaoModal">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#evolucaoModal"
+                    data-modal-child-trigger="true"
+                  >
                     <i class="bi bi-plus-lg me-2"></i>Adicionar evolução
                   </button>
                 </div>
@@ -3366,7 +3374,13 @@
                 <h2 class="form-section-title" id="repositorio-arquivos"><i class="bi bi-paperclip"></i>Repositório de arquivos</h2>
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                   <p class="text-muted mb-0">Anexe documentos relevantes ao prontuário para consulta posterior.</p>
-                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anexoModal">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#anexoModal"
+                    data-modal-child-trigger="true"
+                  >
                     <i class="bi bi-upload me-2"></i>Adicionar anexo
                   </button>
                 </div>
@@ -4278,7 +4292,10 @@
               el: modalEl,
               trigger: triggerEl instanceof HTMLElement ? triggerEl : null,
               backdrop: null,
-              allowEscape: modalEl.getAttribute('data-bs-keyboard') !== 'false'
+              allowEscape: modalEl.getAttribute('data-bs-keyboard') !== 'false',
+              suppressHideOnce: false,
+              pendingChild: null,
+              pendingTrigger: null
             };
             stack.push(entry);
             updateZOrder();
@@ -4291,6 +4308,13 @@
             if (index === -1) return;
             const entry = stack[index];
             assignBackdrop(entry);
+            if (index > 0) {
+              const parentEntry = stack[index - 1];
+              if (parentEntry) {
+                parentEntry.pendingChild = modalEl;
+                parentEntry.pendingTrigger = entry.trigger || parentEntry.pendingTrigger;
+              }
+            }
             if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
               const instance = bootstrap.Modal.getInstance(modalEl);
               if (instance && instance._config) {
@@ -4306,6 +4330,15 @@
             const index = findEntryIndex(modalEl);
             if (index === -1) return;
             const isTop = index === stack.length - 1;
+            const entry = stack[index];
+            if (entry && entry.suppressHideOnce) {
+              entry.suppressHideOnce = false;
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              const topEntry = stack[stack.length - 1];
+              requestAnimationFrame(() => focusEntry(topEntry || entry));
+              return;
+            }
             if (!isTop) {
               event.preventDefault();
               event.stopImmediatePropagation();
@@ -4337,6 +4370,8 @@
             modalEl.removeAttribute('aria-hidden');
             updateZOrder();
             const focusTarget = entry.trigger;
+            entry.pendingChild = null;
+            entry.pendingTrigger = null;
             const nextTop = stack[stack.length - 1];
             setTimeout(() => {
               if (
@@ -4396,13 +4431,61 @@
                 focusEntry(topEntry);
               }
             },
-            stackSize: () => stack.length
+            stackSize: () => stack.length,
+            prepareForNestedModal: (triggerEl, childModalEl) => {
+              if (!triggerEl || !childModalEl) return;
+              const parentEntry = stack[stack.length - 1];
+              if (!parentEntry || parentEntry.el === childModalEl) {
+                return;
+              }
+              parentEntry.suppressHideOnce = true;
+              parentEntry.pendingChild = childModalEl;
+              parentEntry.pendingTrigger = triggerEl instanceof HTMLElement ? triggerEl : null;
+            }
           };
         })();
 
         if (typeof window !== 'undefined') {
           window.modalStackManager = modalStackManager;
         }
+
+        const resolveModalElementFromTrigger = (trigger) => {
+          if (!trigger) return null;
+          const selector =
+            trigger.getAttribute('data-bs-target') ||
+            trigger.getAttribute('data-target') ||
+            trigger.getAttribute('href') ||
+            '';
+          if (!selector || selector === '#') {
+            return null;
+          }
+          try {
+            return document.querySelector(selector);
+          } catch (error) {
+            return null;
+          }
+        };
+
+        document.addEventListener(
+          'click',
+          (event) => {
+            if (
+              !window.modalStackManager ||
+              typeof window.modalStackManager.prepareForNestedModal !== 'function'
+            ) {
+              return;
+            }
+            const trigger =
+              event.target instanceof HTMLElement
+                ? event.target.closest('[data-modal-child-trigger="true"]')
+                : null;
+            if (!trigger) return;
+            const modalEl = resolveModalElementFromTrigger(trigger);
+            if (!modalEl) return;
+            window.modalStackManager.prepareForNestedModal(trigger, modalEl);
+          },
+          true
+        );
 
         const initPortal = () => {
         const tabTriggerList = [].slice.call(document.querySelectorAll('#portalTabs button[data-bs-toggle="tab"]'));
@@ -6669,7 +6752,13 @@
               }
             }
             if (modal) {
-              modal.show();
+              if (
+                window.modalStackManager &&
+                typeof window.modalStackManager.prepareForNestedModal === 'function'
+              ) {
+                window.modalStackManager.prepareForNestedModal(target, visualizarAnexoModalElement);
+              }
+              modal.show(target);
             }
           });
         }
@@ -7303,7 +7392,7 @@
         let lastLoadedMode = 'create';
         let lastLoadedProntuario = '';
 
-        const promptUnsavedChanges = () => {
+        const promptUnsavedChanges = (triggerEl = null) => {
           if (!unsavedModalInstance) {
             return Promise.resolve(window.confirm(UNSAVED_CHANGES_MESSAGE));
           }
@@ -7311,7 +7400,19 @@
             unsavedMessageEl.textContent = UNSAVED_CHANGES_MESSAGE;
           }
           pendingUnsavedResult = false;
-          unsavedModalInstance.show();
+          const opener =
+            triggerEl instanceof HTMLElement
+              ? triggerEl
+              : document.activeElement instanceof HTMLElement
+              ? document.activeElement
+              : registroModalEl;
+          if (
+            window.modalStackManager &&
+            typeof window.modalStackManager.prepareForNestedModal === 'function'
+          ) {
+            window.modalStackManager.prepareForNestedModal(opener, unsavedModalEl);
+          }
+          unsavedModalInstance.show(opener instanceof HTMLElement ? opener : undefined);
           return new Promise((resolve) => {
             pendingUnsavedResolve = resolve;
           });
@@ -7441,7 +7542,8 @@
             updateDirtyState();
             if (isFormDirty) {
               event.preventDefault();
-              const confirmar = await promptUnsavedChanges();
+              const triggerEl = event.relatedTarget instanceof HTMLElement ? event.relatedTarget : null;
+              const confirmar = await promptUnsavedChanges(triggerEl);
               if (confirmar) {
                 skipUnsavedPrompt = true;
                 closeRegistroModal({ skipPrompt: true });
@@ -7518,7 +7620,7 @@
               closeRegistroModal({ skipPrompt: true });
               return;
             }
-            const confirmar = await promptUnsavedChanges();
+            const confirmar = await promptUnsavedChanges(registroModalCancelarBtn);
             if (!confirmar) {
               return;
             }
