@@ -332,8 +332,20 @@
       }
 
       .modal-dialog-scrollable .modal-body {
-        max-height: calc(100vh - 8rem);
+        max-height: calc(100vh - 5rem);
         overflow-y: auto;
+      }
+
+      #registroModal .modal-dialog {
+        max-width: min(1380px, 98vw);
+      }
+
+      #registroModal .modal-dialog.modal-dialog-scrollable {
+        height: calc(100vh - 2rem);
+      }
+
+      #registroModal .modal-dialog.modal-dialog-scrollable .modal-content {
+        max-height: 100%;
       }
 
       #autorModal .modal-dialog,
@@ -923,7 +935,6 @@
                       <div class="row g-4 form-sections-layout">
                         <aside class="col-12 col-xl-3 form-section-sidebar">
                           <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
-                            <span class="nav-label">Ir para</span>
                             <div class="section-nav-list">
                               <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
                                 ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
@@ -3327,10 +3338,10 @@
                 </section>
               </div>
               <div class="modal-footer sticky-modal-footer justify-content-end gap-2" id="registroModalFooter">
-                <button type="button" class="btn btn-primary" id="registroModalSalvarBtn">
+                <button type="button" class="btn btn-success" id="registroModalSalvarBtn">
                   <i class="bi bi-save me-1"></i>Salvar
                 </button>
-                <button type="button" class="btn btn-outline-secondary" id="registroModalCancelarBtn">
+                <button type="button" class="btn btn-danger" id="registroModalCancelarBtn">
                   <i class="bi bi-arrow-counterclockwise me-1"></i>Cancelar
                 </button>
                 <button type="button" class="btn btn-light" id="registroModalFecharBtn" data-bs-dismiss="modal">
@@ -7367,6 +7378,16 @@
         }
 
         function hasFormManager() {
+          if (
+            !prontuarioManager &&
+            window.prontuarioFormManager &&
+            typeof window.prontuarioFormManager.openExistingProntuario === 'function'
+          ) {
+            prontuarioManager = window.prontuarioFormManager;
+            if (pendingProntuarioLoads.length) {
+              setTimeout(() => flushPendingProntuarios(), 0);
+            }
+          }
           return prontuarioManager && typeof prontuarioManager.openExistingProntuario === 'function';
         }
 
