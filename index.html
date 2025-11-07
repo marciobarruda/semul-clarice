@@ -6766,14 +6766,11 @@
           }
           const requestId = ++anexoRequestToken;
           try {
-            const resposta = await fetch(
+            const url = new URL(
               'https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/recupera-arquivos',
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prontuario: codigo }),
-              },
             );
+            url.searchParams.set('prontuario', codigo);
+            const resposta = await fetch(url.toString(), { method: 'GET' });
             if (!resposta.ok) {
               throw new Error('Falha ao recuperar anexos.');
             }
