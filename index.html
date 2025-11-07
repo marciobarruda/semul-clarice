@@ -495,6 +495,14 @@
         text-align: left;
       }
 
+      .readonly-field {
+        background-color: #f8f9fa !important;
+      }
+
+      .text-pre-wrap {
+        white-space: pre-line;
+      }
+
       textarea.form-control {
         min-height: 10rem;
       }
@@ -1490,14 +1498,12 @@
                       <h3 class="subsection-title"><i class="bi bi-person-vcard"></i>Identificação em saúde</h3>
                       <div class="row g-3">
                         <div class="col-12">
-                          <label for="numeroSus" class="form-label required">Número do Cartão SUS</label>
+                          <label for="numeroSus" class="form-label">Número do Cartão SUS</label>
                           <input
                             type="text"
                             class="form-control"
                             id="numeroSus"
                             name="numeroSus"
-                           
-                            required
                           />
                         </div>
                         <div class="col-12">
@@ -2677,13 +2683,15 @@
                     <thead class="table-light">
                       <tr>
                         <th scope="col">Data</th>
+                        <th scope="col">Unidade</th>
                         <th scope="col">Evolução</th>
                         <th scope="col">Profissional</th>
+                        <th scope="col" class="d-none">Identificador</th>
                       </tr>
                     </thead>
                     <tbody id="evolucaoTabelaBody">
                       <tr id="evolucaoVazia">
-                        <td colspan="3" class="text-center text-muted py-4">Nenhuma evolução registrada.</td>
+                        <td colspan="5" class="text-center text-muted py-4">Nenhuma evolução registrada.</td>
                       </tr>
                     </tbody>
                   </table>
@@ -3353,6 +3361,27 @@
         </div>
       </div>
     </main>
+
+    <div class="modal fade" id="unsavedChangesModal" tabindex="-1" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h2 class="modal-title fs-5 text-danger fw-bold d-flex align-items-center gap-2" id="unsavedChangesModalLabel">
+              <span aria-hidden="true">⚠️</span>
+              <span>Alerta</span>
+            </h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar" data-confirm-result="false"></button>
+          </div>
+          <div class="modal-body pt-2">
+            <p class="mb-0" data-unsaved-message>As alterações serão perdidas. Deseja continuar?</p>
+          </div>
+          <div class="modal-footer border-0 justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-confirm-result="false">Não</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" data-confirm-result="true">Sim</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="modal fade" id="autorModal" tabindex="-1" aria-labelledby="autorModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -4525,19 +4554,94 @@
         const dataNascimentoInput = document.getElementById('dataNascimento');
         const cpfUsuarioInput = document.getElementById('cpfUsuario');
         const nomeUsuarioInput = document.getElementById('nomeUsuario');
+        const rgUsuarioInput = document.getElementById('rgUsuario');
+        const orgaoExpedidorInput = document.getElementById('orgaoExpedidor');
+        const ufExpedicaoSelect = document.getElementById('ufExpedicao');
+        const nacionalidadeInput = document.getElementById('nacionalidade');
+        const ufNascimentoSelect = document.getElementById('ufNascimento');
+        const nomeMaeInput = document.getElementById('nomeMae');
+        const nomePaiInput = document.getElementById('nomePai');
         const idadeInput = document.getElementById('idade');
-        const toggleIdentificacaoReadOnly = (shouldLock) => {
-          const campos = [cpfUsuarioInput, nomeUsuarioInput, dataNascimentoInput];
+
+        const obterMirrorId = (element) => `${element.id || element.name || 'readonly'}-mirror`;
+
+        const setElementReadOnly = (element, locked) => {
+          if (!element) return;
+          const tag = element.tagName ? element.tagName.toLowerCase() : '';
+          if (tag === 'select') {
+            const mirrorId = obterMirrorId(element);
+            if (locked) {
+              let mirror = document.getElementById(mirrorId);
+              if (!mirror && element.name) {
+                mirror = document.createElement('input');
+                mirror.type = 'hidden';
+                mirror.id = mirrorId;
+                mirror.name = element.name;
+                element.insertAdjacentElement('afterend', mirror);
+              }
+              if (mirror) {
+                mirror.value = element.value;
+              }
+              element.disabled = true;
+              element.setAttribute('aria-readonly', 'true');
+              element.classList.add('readonly-field');
+              element.dataset.readonlyMirrorId = mirrorId;
+            } else {
+              element.disabled = false;
+              element.removeAttribute('aria-readonly');
+              element.classList.remove('readonly-field');
+              const mirrorId = element.dataset.readonlyMirrorId || obterMirrorId(element);
+              const mirror = document.getElementById(mirrorId);
+              if (mirror) {
+                mirror.remove();
+              }
+              delete element.dataset.readonlyMirrorId;
+            }
+            return;
+          }
+
+          if (locked) {
+            element.setAttribute('readonly', 'readonly');
+            element.setAttribute('aria-readonly', 'true');
+            element.classList.add('readonly-field');
+          } else {
+            element.removeAttribute('readonly');
+            element.removeAttribute('aria-readonly');
+            element.classList.remove('readonly-field');
+          }
+        };
+
+        const toggleIdentificacaoReadOnly = (mode = 'create') => {
+          const normalized = typeof mode === 'string' ? mode : mode ? 'view' : 'create';
+          const shouldUnlock = normalized === 'create';
+          const isViewMode = normalized === 'view';
+          const lockWhenFilled = normalized === 'edit';
+          const campos = [
+            cpfUsuarioInput,
+            nomeUsuarioInput,
+            dataNascimentoInput,
+            rgUsuarioInput,
+            orgaoExpedidorInput,
+            ufExpedicaoSelect,
+            nacionalidadeInput,
+            ufNascimentoSelect,
+            cidadeNascimentoSelect,
+            nomeMaeInput,
+            nomePaiInput,
+          ];
+
           campos.forEach((campo) => {
             if (!campo) return;
-            const temValor = campo.value && campo.value.toString().trim().length > 0;
-            if (shouldLock && temValor) {
-              campo.setAttribute('readonly', 'readonly');
-              campo.setAttribute('aria-readonly', 'true');
-            } else {
-              campo.removeAttribute('readonly');
-              campo.removeAttribute('aria-readonly');
+            if (shouldUnlock) {
+              setElementReadOnly(campo, false);
+              return;
             }
+            if (isViewMode) {
+              setElementReadOnly(campo, true);
+              return;
+            }
+            const temValor = campo.value && campo.value.toString().trim().length > 0;
+            setElementReadOnly(campo, lockWhenFilled && temValor);
           });
         };
         const calcularIdade = () => {
@@ -5856,21 +5960,171 @@
         const evolucaoModalElement = document.getElementById('evolucaoModal');
         const evolucaoModalForm = document.getElementById('evolucaoModalForm');
         const evolucaoProfissionalPadrao = 'Equipe técnica do CRCL';
+        const evolucaoSetorPadrao = 'Centro de Referência Clarice Lispector';
+        let evolucoesProntuarioAtual = '';
+        let evolucoesDadosAtuais = [];
+        let evolucoesDadosOriginais = [];
+        let evolucaoRequestToken = 0;
 
-        const restaurarTabelaEvolucoes = () => {
+        const cloneEvolucoesLista = (lista = []) => lista.map((item) => ({ ...item }));
+
+        const normalizarEvolucaoItem = (item = {}) => {
+          const fonte = typeof item === 'object' && item !== null ? item : {};
+          return {
+            prontuario: fonte.prontuario || '',
+            data: fonte.data || fonte.data_evolucao || fonte.dataEvolucao || '',
+            setor: fonte.setor || fonte.unidade || fonte.unidade_atendimento || '',
+            registro: fonte.registro || fonte.descricao || '',
+            profissional: fonte.profissional || fonte.responsavel || '',
+            identificador: fonte.identificador || fonte.id || '',
+          };
+        };
+
+        const formatarDataEvolucao = (valor) => {
+          if (!valor) return '';
+          if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+            return `${valor.slice(8, 10)}/${valor.slice(5, 7)}/${valor.slice(0, 4)}`;
+          }
+          if (/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
+            return valor;
+          }
+          if (window.dayjs) {
+            const parsed = dayjs(valor);
+            if (parsed.isValid()) {
+              return parsed.format('DD/MM/YYYY');
+            }
+          }
+          return valor;
+        };
+
+        const exibirMensagemEvolucoes = (mensagem, classe = 'text-muted') => {
+          if (!evolucaoTabelaBody) return;
+          evolucaoTabelaBody.innerHTML = '';
+          const linha = document.createElement('tr');
+          const celula = document.createElement('td');
+          celula.colSpan = 5;
+          celula.className = `text-center py-4 ${classe}`;
+          celula.textContent = mensagem;
+          linha.appendChild(celula);
+          evolucaoTabelaBody.appendChild(linha);
+        };
+
+        const atualizarHiddenEvolucoes = (lista) => {
+          if (!evolucaoHiddenInputs) return;
+          evolucaoHiddenInputs.innerHTML = '';
+          if (!lista.length) return;
+          const fragment = document.createDocumentFragment();
+          lista.forEach((item) => {
+            const wrapper = document.createElement('div');
+            const adicionarHidden = (name, value) => {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = name;
+              input.value = value;
+              wrapper.appendChild(input);
+            };
+            adicionarHidden('evolucoes[data][]', item.data || '');
+            adicionarHidden('evolucoes[setor][]', item.setor || '');
+            adicionarHidden('evolucoes[descricao][]', item.registro || '');
+            adicionarHidden('evolucoes[profissional][]', item.profissional || evolucaoProfissionalPadrao);
+            adicionarHidden('evolucoes[identificador][]', item.identificador || '');
+            fragment.appendChild(wrapper);
+          });
+          evolucaoHiddenInputs.appendChild(fragment);
+        };
+
+        const renderizarEvolucoesTabela = (lista) => {
           if (evolucaoTabelaBody) {
             evolucaoTabelaBody.innerHTML = '';
-            const vazio = document.createElement('tr');
-            vazio.id = 'evolucaoVazia';
-            const celula = document.createElement('td');
-            celula.colSpan = 3;
-            celula.className = 'text-center text-muted';
-            celula.textContent = 'Nenhuma evolução registrada.';
-            vazio.appendChild(celula);
-            evolucaoTabelaBody.appendChild(vazio);
+            if (!lista.length) {
+              const vazio = document.createElement('tr');
+              vazio.id = 'evolucaoVazia';
+              const celula = document.createElement('td');
+              celula.colSpan = 5;
+              celula.className = 'text-center text-muted py-4';
+              celula.textContent = 'Nenhuma evolução registrada.';
+              vazio.appendChild(celula);
+              evolucaoTabelaBody.appendChild(vazio);
+            } else {
+              const fragmento = document.createDocumentFragment();
+              lista.forEach((item) => {
+                const linha = document.createElement('tr');
+
+                const dataCell = document.createElement('td');
+                dataCell.textContent = formatarDataEvolucao(item.data);
+                linha.appendChild(dataCell);
+
+                const setorCell = document.createElement('td');
+                setorCell.textContent = item.setor || '—';
+                linha.appendChild(setorCell);
+
+                const registroCell = document.createElement('td');
+                registroCell.classList.add('text-pre-wrap');
+                registroCell.textContent = item.registro || '';
+                linha.appendChild(registroCell);
+
+                const profissionalCell = document.createElement('td');
+                profissionalCell.textContent = item.profissional || evolucaoProfissionalPadrao;
+                linha.appendChild(profissionalCell);
+
+                const identificadorCell = document.createElement('td');
+                identificadorCell.classList.add('d-none');
+                identificadorCell.textContent = item.identificador || '';
+                linha.appendChild(identificadorCell);
+
+                fragmento.appendChild(linha);
+              });
+              evolucaoTabelaBody.appendChild(fragmento);
+            }
           }
-          if (evolucaoHiddenInputs) {
-            evolucaoHiddenInputs.innerHTML = '';
+          atualizarHiddenEvolucoes(lista);
+        };
+
+        const setEvolucoesDados = (lista, prontuario, { setOriginal = false } = {}) => {
+          const normalizados = Array.isArray(lista) ? lista.map(normalizarEvolucaoItem) : [];
+          evolucoesProntuarioAtual = prontuario || '';
+          evolucoesDadosAtuais = cloneEvolucoesLista(normalizados);
+          if (setOriginal) {
+            evolucoesDadosOriginais = cloneEvolucoesLista(normalizados);
+          }
+          renderizarEvolucoesTabela(evolucoesDadosAtuais);
+        };
+
+        const restaurarTabelaEvolucoes = () => {
+          renderizarEvolucoesTabela(evolucoesDadosAtuais);
+        };
+
+        const carregarEvolucoesDoProntuario = async (prontuario) => {
+          if (!prontuario) {
+            setEvolucoesDados([], '', { setOriginal: true });
+            return [];
+          }
+          const requestId = ++evolucaoRequestToken;
+          exibirMensagemEvolucoes('Carregando evoluções...', 'text-muted');
+          try {
+            const resposta = await fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/evolucoes', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prontuario }),
+            });
+            if (!resposta.ok) {
+              throw new Error('Falha ao buscar evoluções.');
+            }
+            const dados = await resposta.json();
+            if (requestId !== evolucaoRequestToken) {
+              return [];
+            }
+            const lista = Array.isArray(dados) ? dados : [];
+            setEvolucoesDados(lista, prontuario, { setOriginal: true });
+            return lista;
+          } catch (error) {
+            console.error(error);
+            if (requestId !== evolucaoRequestToken) {
+              return [];
+            }
+            setEvolucoesDados([], prontuario, { setOriginal: true });
+            exibirMensagemEvolucoes('Não foi possível carregar as evoluções.', 'text-danger');
+            return [];
           }
         };
 
@@ -5914,32 +6168,19 @@
               evolucaoModalForm.reportValidity();
               return;
             }
-            const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
-            if (evolucaoTabelaBody) {
-              const vazio = document.getElementById('evolucaoVazia');
-              if (vazio) vazio.remove();
-              const linha = document.createElement('tr');
-              [dataFormatada, descricaoValor, evolucaoProfissionalPadrao].forEach((valor) => {
-                const td = document.createElement('td');
-                td.textContent = valor;
-                linha.appendChild(td);
-              });
-              evolucaoTabelaBody.appendChild(linha);
-            }
-            if (evolucaoHiddenInputs) {
-              const wrapper = document.createElement('div');
-              const adicionarHidden = (name, value) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                wrapper.appendChild(input);
-              };
-              adicionarHidden('evolucoes[data][]', dataValor);
-              adicionarHidden('evolucoes[descricao][]', descricaoValor);
-              adicionarHidden('evolucoes[profissional][]', evolucaoProfissionalPadrao);
-              evolucaoHiddenInputs.appendChild(wrapper);
-            }
+
+            const novaLista = cloneEvolucoesLista(evolucoesDadosAtuais);
+            novaLista.push({
+              prontuario: evolucoesProntuarioAtual,
+              data: dataValor,
+              setor: evolucaoSetorPadrao,
+              registro: descricaoValor,
+              profissional: evolucaoProfissionalPadrao,
+              identificador: '',
+            });
+            setEvolucoesDados(novaLista, evolucoesProntuarioAtual);
+            updateDirtyState();
+
             const modal = obterModal();
             if (modal) {
               modal.hide();
@@ -6268,7 +6509,6 @@
 
           validator
             .addField('#numeroProntuario', [{ rule: 'required', errorMessage: 'Informe o número do prontuário.' }])
-            .addField('#numeroSus', [{ rule: 'required', errorMessage: 'Informe o número do Cartão SUS.' }])
             .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
             .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
             .addField('#horaAtendimento', [{ rule: 'required', errorMessage: 'Informe a hora do atendimento.' }])
@@ -6718,7 +6958,8 @@
               if (mode === 'create') {
                 form.reset();
                 setFormMode('create');
-                toggleIdentificacaoReadOnly(false);
+                toggleIdentificacaoReadOnly('create');
+                setEvolucoesDados([], '', { setOriginal: true });
                 updateNumeroProntuarioDisplay('');
                 updateFormStatus('create', '');
                 setCurrentDateTime();
@@ -6790,9 +7031,44 @@
         let isFormDirty = false;
         let skipUnsavedPrompt = false;
         const UNSAVED_CHANGES_MESSAGE = 'As alterações serão perdidas. Deseja continuar?';
+        const unsavedModalEl = document.getElementById('unsavedChangesModal');
+        const unsavedModalInstance =
+          unsavedModalEl && window.bootstrap ? bootstrap.Modal.getOrCreateInstance(unsavedModalEl, { backdrop: 'static', keyboard: false }) : null;
+        const unsavedMessageEl = unsavedModalEl ? unsavedModalEl.querySelector('[data-unsaved-message]') : null;
+        let pendingUnsavedResolve = null;
+        let pendingUnsavedResult = false;
         let lastLoadedPayload = null;
         let lastLoadedMode = 'create';
         let lastLoadedProntuario = '';
+
+        const promptUnsavedChanges = () => {
+          if (!unsavedModalInstance) {
+            return Promise.resolve(window.confirm(UNSAVED_CHANGES_MESSAGE));
+          }
+          if (unsavedMessageEl) {
+            unsavedMessageEl.textContent = UNSAVED_CHANGES_MESSAGE;
+          }
+          pendingUnsavedResult = false;
+          unsavedModalInstance.show();
+          return new Promise((resolve) => {
+            pendingUnsavedResolve = resolve;
+          });
+        };
+
+        if (unsavedModalEl) {
+          unsavedModalEl.addEventListener('click', (event) => {
+            const button = event.target instanceof HTMLElement ? event.target.closest('[data-confirm-result]') : null;
+            if (!button) return;
+            pendingUnsavedResult = button.getAttribute('data-confirm-result') === 'true';
+          });
+          unsavedModalEl.addEventListener('hidden.bs.modal', () => {
+            if (pendingUnsavedResolve) {
+              const resolver = pendingUnsavedResolve;
+              pendingUnsavedResolve = null;
+              resolver(pendingUnsavedResult);
+            }
+          });
+        }
 
         const serializeForm = () => {
           if (!registroForm) return '';
@@ -6816,6 +7092,7 @@
         const markFormClean = () => {
           formSnapshot = serializeForm();
           isFormDirty = false;
+          evolucoesDadosOriginais = cloneEvolucoesLista(evolucoesDadosAtuais);
         };
 
         const focusModalContext = () => {
@@ -6846,6 +7123,11 @@
           if (registroModalCancelarBtn) {
             registroModalCancelarBtn.classList.toggle('d-none', isView);
             registroModalCancelarBtn.disabled = isView;
+          }
+          if (registroModalFecharBtn) {
+            const showFechar = normalized !== 'edit';
+            registroModalFecharBtn.classList.toggle('d-none', !showFechar);
+            registroModalFecharBtn.disabled = !showFechar;
           }
           if (registroModalTitle) {
             registroModalTitle.textContent =
@@ -6881,7 +7163,7 @@
         window.closeRegistroModal = closeRegistroModal;
 
         if (registroModalEl) {
-          registroModalEl.addEventListener('hide.bs.modal', (event) => {
+          registroModalEl.addEventListener('hide.bs.modal', async (event) => {
             if (event.target !== registroModalEl) {
               return;
             }
@@ -6896,10 +7178,11 @@
             }
             updateDirtyState();
             if (isFormDirty) {
-              const confirmar = window.confirm(UNSAVED_CHANGES_MESSAGE);
-              if (!confirmar) {
-                event.preventDefault();
-                return;
+              event.preventDefault();
+              const confirmar = await promptUnsavedChanges();
+              if (confirmar) {
+                skipUnsavedPrompt = true;
+                closeRegistroModal({ skipPrompt: true });
               }
             }
           });
@@ -6944,7 +7227,8 @@
         if (registroForm) {
           registroForm.addEventListener('reset', () => {
             preencherCursos([]);
-            toggleIdentificacaoReadOnly(false);
+            toggleIdentificacaoReadOnly('create');
+            setEvolucoesDados([], '', { setOriginal: true });
             setTimeout(() => {
               refreshFormInteractions();
               if (registroForm.dataset.mode === 'create') {
@@ -6962,7 +7246,7 @@
         }
 
         if (registroModalCancelarBtn) {
-          registroModalCancelarBtn.addEventListener('click', () => {
+          registroModalCancelarBtn.addEventListener('click', async () => {
             if (!registroForm) {
               closeRegistroModal({ skipPrompt: true });
               return;
@@ -6972,7 +7256,7 @@
               closeRegistroModal({ skipPrompt: true });
               return;
             }
-            const confirmar = window.confirm(UNSAVED_CHANGES_MESSAGE);
+            const confirmar = await promptUnsavedChanges();
             if (!confirmar) {
               return;
             }
@@ -6980,13 +7264,15 @@
               registroForm.reset();
               setFormMode('edit');
               populateFormWithData(lastLoadedPayload);
-              toggleIdentificacaoReadOnly(false);
+              toggleIdentificacaoReadOnly('edit');
+              setEvolucoesDados(evolucoesDadosOriginais, lastLoadedProntuario, { setOriginal: true });
               updateFormStatus('edit', lastLoadedProntuario);
               lastLoadedMode = 'edit';
             } else {
               registroForm.reset();
               setFormMode('create');
-              toggleIdentificacaoReadOnly(false);
+              toggleIdentificacaoReadOnly('create');
+              setEvolucoesDados([], '', { setOriginal: true });
               updateNumeroProntuarioDisplay('');
               updateFormStatus('create', '');
               setCurrentDateTime();
@@ -7422,7 +7708,8 @@
           if (!registroForm) return;
           registroForm.reset();
           setFormMode('create');
-          toggleIdentificacaoReadOnly(false);
+          toggleIdentificacaoReadOnly('create');
+          setEvolucoesDados([], '', { setOriginal: true });
           lastLoadedPayload = null;
           lastLoadedMode = 'create';
           lastLoadedProntuario = '';
@@ -7448,7 +7735,7 @@
           const normalizedPayload = normalizeRegistroPayload(payload);
           const mappedPayload = mapPayloadFields(normalizedPayload);
           populateFormWithData(mappedPayload);
-          toggleIdentificacaoReadOnly(normalizedMode === 'view');
+          toggleIdentificacaoReadOnly(normalizedMode);
           const candidatos = ['numeroProntuario', 'prontuario', 'numero_prontuario', 'numero'];
           let prontuarioValor = '';
           for (const chave of candidatos) {
@@ -7479,9 +7766,19 @@
           lastLoadedProntuario = prontuarioValor || '';
           ensureFormVisible(normalizedMode);
           scrollToForm();
+          if (normalizedMode !== 'create') {
+            setEvolucoesDados([], prontuarioValor, { setOriginal: true });
+          }
           setTimeout(() => {
             refreshFormInteractions();
             markFormClean();
+            if (normalizedMode !== 'create' && prontuarioValor) {
+              carregarEvolucoesDoProntuario(prontuarioValor).then(() => {
+                if (!isFormDirty) {
+                  markFormClean();
+                }
+              });
+            }
           }, 0);
         };
 
@@ -7495,7 +7792,8 @@
 
           registroForm.reset();
           setFormMode(normalizedMode);
-          toggleIdentificacaoReadOnly(normalizedMode === 'view');
+          toggleIdentificacaoReadOnly(normalizedMode);
+          setEvolucoesDados([], '', { setOriginal: true });
           lastLoadedPayload = null;
           lastLoadedMode = normalizedMode;
           lastLoadedProntuario = '';
@@ -7516,6 +7814,7 @@
           startNovoRegistro,
           openExistingProntuario,
           openBlankForm,
+          loadEvolucoes: carregarEvolucoesDoProntuario,
         };
 
         window.prontuarioFormManager = prontuarioFormManager;
