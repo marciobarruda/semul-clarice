@@ -6743,6 +6743,8 @@
               }
             });
 
+        }
+
         const refreshFormInteractions = () => {
           restaurarTabelaFamilia();
           restaurarTabelaAutores();
@@ -7227,8 +7229,8 @@
           ['ano_prev_cancer', 'preventivoAno'],
           ['ano_mamografia', 'mamografiaAno'],
           ['tmpacomphiv', 'tempoAcompanhamento'],
-          ['breve_relato', 'relatoCaso'],
-          ['relato', 'relatoCaso'],
+          ['relato', { targets: ['relato', 'relatoCaso'] }],
+          ['breve_relato', { targets: ['relato', 'relatoCaso'], preferIfEmpty: true }],
           ['discriminar_bens', 'discriminarBens'],
           ['outros_fatores_violencia', 'fatoresRelacionadosOutrosTexto'],
           ['contato_ref', 'conhecimentoContato'],
@@ -7285,6 +7287,17 @@
             const value = normalizedConfig.transform ? normalizedConfig.transform(raw, dataObj) : raw;
             targets.forEach((target) => {
               if (!target) return;
+              if (normalizedConfig.override === false && Object.prototype.hasOwnProperty.call(mapped, target)) {
+                return;
+              }
+              if (
+                normalizedConfig.preferIfEmpty === true &&
+                Object.prototype.hasOwnProperty.call(mapped, target) &&
+                mapped[target] != null &&
+                String(mapped[target]).trim() !== ''
+              ) {
+                return;
+              }
               mapped[target] = value;
             });
           };
