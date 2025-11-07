@@ -5083,6 +5083,62 @@
           });
         }
 
+        const preencherCursos = (valores = []) => {
+          if (!cursosWrapper) return;
+          const lista = Array.isArray(valores) ? valores : [valores];
+          const cursosLimpos = lista
+            .map((item) => (item == null ? '' : String(item).trim()))
+            .filter(Boolean)
+            .slice(0, 3);
+          const mostrar = cursosLimpos.length > 0;
+          const radioSim = document.querySelector('input[name="interesseCapacitacao"][value="Sim"]');
+          const radioNao = document.querySelector('input[name="interesseCapacitacao"][value="Não"]');
+          if (radioSim && radioNao) {
+            if (mostrar) {
+              radioSim.checked = true;
+              radioSim.dispatchEvent(new Event('change', { bubbles: true }));
+              radioNao.checked = false;
+            } else {
+              radioNao.checked = true;
+              radioNao.dispatchEvent(new Event('change', { bubbles: true }));
+              radioSim.checked = false;
+            }
+          } else {
+            atualizarWrapperCursos(mostrar);
+          }
+          atualizarWrapperCursos(mostrar);
+          if (!mostrar) {
+            return;
+          }
+
+          if (cursosExtras) {
+            cursosExtras.innerHTML = '';
+          }
+          cursosAdicionados = 1;
+          if (adicionarCursoBtn) {
+            adicionarCursoBtn.disabled = false;
+          }
+          if (cursoCapacitacao) {
+            cursoCapacitacao.value = cursosLimpos[0] || '';
+            cursoCapacitacao.dispatchEvent(new Event('input', { bubbles: true }));
+            cursoCapacitacao.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+          for (let i = 1; i < cursosLimpos.length; i += 1) {
+            const novoInput = document.createElement('input');
+            novoInput.type = 'text';
+            novoInput.className = 'form-control';
+            novoInput.name = 'cursos[]';
+            novoInput.value = cursosLimpos[i];
+            cursosExtras.appendChild(novoInput);
+            novoInput.dispatchEvent(new Event('input', { bubbles: true }));
+            novoInput.dispatchEvent(new Event('change', { bubbles: true }));
+            cursosAdicionados += 1;
+          }
+          if (adicionarCursoBtn && cursosAdicionados >= 3) {
+            adicionarCursoBtn.disabled = true;
+          }
+        };
+
         const familiaTabelaBody = document.getElementById('familiaTabelaBody');
         const familiaHiddenInputs = document.getElementById('familiaHiddenInputs');
         const familiaModalElement = document.getElementById('familiaModal');
@@ -6851,6 +6907,7 @@
 
         if (registroForm) {
           registroForm.addEventListener('reset', () => {
+            preencherCursos([]);
             toggleIdentificacaoReadOnly(false);
             setTimeout(() => {
               refreshFormInteractions();
@@ -6987,6 +7044,17 @@
 
         const normalizeDigits = (value) => String(value || '').replace(/\D/g, '');
 
+        const pickTelefonePrincipal = (value, dataObj) => {
+          const preferencial = normalizeDigits(value);
+          if (preferencial) {
+            return preferencial;
+          }
+          if (dataObj && Object.prototype.hasOwnProperty.call(dataObj, 'celular')) {
+            return normalizeDigits(dataObj.celular);
+          }
+          return '';
+        };
+
         const formatDateToBR = (value) => {
           if (!value && value !== 0) return '';
           const raw = String(value).trim();
@@ -7053,8 +7121,7 @@
           ['unidade_atendimento', 'unidadeAtendimento'],
           ['data_pri_atendimento', { targets: ['dataAtendimento'], transform: formatDateToBR }],
           ['data_update', { targets: ['horaAtendimento'], transform: formatTimeFromDateTime }],
-          ['telefone', { targets: ['telefone'], transform: normalizeDigits }],
-          ['celular', { targets: ['telefoneSecundario'], transform: normalizeDigits }],
+          ['telefone', { targets: ['telefone'], transform: pickTelefonePrincipal }],
           ['email', { targets: ['email', 'emailConfirmacao'] }],
           ['cep', { targets: ['cep'], transform: normalizeDigits }],
           ['logradouro', 'logradouro'],
@@ -7066,6 +7133,7 @@
           ['uf', 'uf'],
           ['ponto_ref', 'pontoReferencia'],
           ['nascimento', { targets: ['dataNascimento'], transform: formatDateToBR }],
+          ['idade', 'idade'],
           ['mae_vitima', 'nomeMae'],
           ['pai_vitima', 'nomePai'],
           ['nacionalidade', 'nacionalidade'],
@@ -7083,6 +7151,7 @@
           ['situacao_ocupacional', 'situacaoOcupacional'],
           ['ocupacao', 'profissao'],
           ['situacao_trabalhista', 'situacaoTrabalho'],
+          ['interesse_capacitacao', 'interesseCapacitacao'],
           ['rendavitima', 'rendaIndividual'],
           ['rendafamiliar', 'rendaFamiliar'],
           ['total_filhos', 'totalFilhos'],
@@ -7115,6 +7184,7 @@
           ['discriminar_bens', 'discriminarBens'],
           ['outros_fatores_violencia', 'fatoresRelacionadosOutrosTexto'],
           ['contato_ref', 'conhecimentoContato'],
+          ['telefone_ref', { targets: ['telefoneSecundario'], transform: normalizeDigits }],
           ['telefone_ref', { targets: ['conhecimentoTelefone'], transform: normalizeDigits }],
           ['parentescotest', 'conhecimentoGrau'],
           ['temdeficencia', 'deficienciaSindrome'],
@@ -7171,12 +7241,50 @@
             });
           };
           payloadKeyMapping.forEach(([sourceKey, config]) => applyMapping(sourceKey, config));
+
+          if ((!mapped.telefone || !String(mapped.telefone).trim()) && dataObj && dataObj.celular) {
+            const telefoneFallback = normalizeDigits(dataObj.celular);
+            if (telefoneFallback) {
+              mapped.telefone = telefoneFallback;
+            }
+          }
+
+          if (mapped.email && (!mapped.emailConfirmacao || !String(mapped.emailConfirmacao).trim())) {
+            mapped.emailConfirmacao = mapped.email;
+          }
+
+          const cursosColetados = [];
+          ['capacitacao1', 'capacitacao2', 'capacitacao3'].forEach((campo) => {
+            if (!Object.prototype.hasOwnProperty.call(dataObj, campo)) return;
+            const bruto = dataObj[campo];
+            if (bruto == null || (typeof bruto === 'string' && bruto.trim() === '')) return;
+            const valores = Array.isArray(bruto) ? bruto : splitMultiValue(bruto);
+            valores.forEach((item) => {
+              const texto = item == null ? '' : String(item).trim();
+              if (texto) {
+                cursosColetados.push(texto);
+              }
+            });
+          });
+          const cursosUnicos = [...new Set(cursosColetados)];
+          if (cursosUnicos.length) {
+            mapped['cursos[]'] = cursosUnicos.slice(0, 3);
+            mapped.interesseCapacitacao = 'Sim';
+          } else if (!mapped.interesseCapacitacao) {
+            mapped.interesseCapacitacao = 'Não';
+          }
+
           return mapped;
         };
 
         const populateFormWithData = (dataObj = {}) => {
           if (!registroForm || !dataObj || typeof dataObj !== 'object') return;
           const processEntry = (key, value) => {
+            if (key === 'cursos[]') {
+              const lista = Array.isArray(value) ? value : [value];
+              preencherCursos(lista);
+              return;
+            }
             if (value == null) return;
             if (Array.isArray(value)) {
               const elements = findElementsForKey(key);
