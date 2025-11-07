@@ -6534,6 +6534,10 @@
         const visualizarAnexoSemPreview = document.getElementById('visualizarAnexoSemPreview');
         const downloadAnexoBtn = document.getElementById('downloadAnexoBtn');
         const anexosRegistros = [];
+        let anexosDadosAtuais = [];
+        let anexosDadosOriginais = [];
+        let anexosProntuarioAtual = '';
+        let anexoRequestToken = 0;
 
         const limparAnexosRegistros = () => {
           while (anexosRegistros.length) {
@@ -6544,21 +6548,259 @@
           }
         };
 
-        const restaurarTabelaAnexos = () => {
+        const cloneAnexosLista = (lista) =>
+          Array.isArray(lista)
+            ? lista.map((item) =>
+                item && typeof item === 'object'
+                  ? {
+                      ...item,
+                    }
+                  : null,
+              ).filter(Boolean)
+            : [];
+
+        const normalizarAnexoItem = (item, index = 0) => {
+          if (!item || typeof item !== 'object') {
+            return null;
+          }
+          const dataValor =
+            item.data || item.dataArquivo || item.data_arquivo || item.data_envio || item.created_at || item.criadoEm || '';
+          const descricaoValor =
+            item.descricao || item.description || item.nome || item.nomeArquivo || item.nome_arquivo || `Anexo ${index + 1}`;
+          const extensao = item.extensao || item.extension || '';
+          let nomeValor =
+            item.nome || item.nomeArquivo || item.nome_arquivo || item.filename || item.file_name || item.originalname || '';
+          let contentType = item.contentType || item.content_type || item.mimetype || item.mimeType || '';
+          const arquivoBruto = item.arquivo || item.file || item.binario || item.binary || item.payload || item.conteudo;
+          let blob = item.blob instanceof Blob ? item.blob : null;
+          let url = typeof item.url === 'string' ? item.url : '';
+
+          if (!nomeValor) {
+            const baseDescricao = (descricaoValor || '').toString().replace(/[\r\n]+/g, ' ').trim();
+            const base = baseDescricao ? baseDescricao.replace(/[^\p{L}\p{N}\-_. ]/gu, '').replace(/\s+/g, '-') : '';
+            const fallbackBase = base || `anexo-${index + 1}`;
+            const fallbackExtensao = extensao ? extensao.replace(/^\./, '') : '';
+            nomeValor = fallbackExtensao ? `${fallbackBase}.${fallbackExtensao}` : `${fallbackBase}.bin`;
+          }
+
+          if (!url) {
+            if (arquivoBruto instanceof Blob) {
+              blob = arquivoBruto;
+              if (!contentType && arquivoBruto.type) {
+                contentType = arquivoBruto.type;
+              }
+            } else if (typeof arquivoBruto === 'string' && arquivoBruto.trim()) {
+              let base64 = arquivoBruto.trim();
+              let mimeFromDataUrl = '';
+              const dataUrlMatch = base64.match(/^data:(.+?);base64,(.+)$/);
+              if (dataUrlMatch) {
+                mimeFromDataUrl = dataUrlMatch[1];
+                base64 = dataUrlMatch[2];
+              }
+              base64 = base64.replace(/\s/g, '');
+              try {
+                const byteString = atob(base64);
+                const byteArray = new Uint8Array(byteString.length);
+                for (let i = 0; i < byteString.length; i += 1) {
+                  byteArray[i] = byteString.charCodeAt(i);
+                }
+                const tipo = mimeFromDataUrl || contentType || 'application/octet-stream';
+                blob = new Blob([byteArray], { type: tipo });
+                contentType = tipo;
+              } catch (error) {
+                console.error('Falha ao decodificar o anexo recebido.', error);
+              }
+            }
+          }
+
+          return {
+            data: dataValor || '',
+            descricao: descricaoValor || '',
+            nome: nomeValor || `anexo-${index + 1}.bin`,
+            blob,
+            url,
+            contentType: contentType || (blob && blob.type) || '',
+            prontuario: item.prontuario || '',
+          };
+        };
+
+        const formatarDataAnexo = (valor) => {
+          if (!valor) return '—';
+          if (window.dayjs) {
+            const data = dayjs(valor);
+            if (data.isValid()) {
+              return data.format('DD/MM/YYYY');
+            }
+          }
+          const isoMatch = valor.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+          if (isoMatch) {
+            return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`;
+          }
+          return valor;
+        };
+
+        const ensureAnexoUrl = (registro) => {
+          if (!registro) return '';
+          if (registro.url && typeof registro.url === 'string') {
+            return registro.url;
+          }
+          if (registro.blob && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+            registro.url = URL.createObjectURL(registro.blob);
+            return registro.url;
+          }
+          return '';
+        };
+
+        const renderizarTabelaAnexos = (lista) => {
           limparAnexosRegistros();
           if (anexoTabelaBody) {
             anexoTabelaBody.innerHTML = '';
-            const vazio = document.createElement('tr');
-            vazio.id = 'anexoVazio';
-            const celula = document.createElement('td');
-            celula.colSpan = 4;
-            celula.className = 'text-center text-muted';
-            celula.textContent = 'Nenhum arquivo anexado.';
-            vazio.appendChild(celula);
-            anexoTabelaBody.appendChild(vazio);
           }
           if (anexoHiddenInputs) {
             anexoHiddenInputs.innerHTML = '';
+          }
+          const dados = Array.isArray(lista) ? lista : [];
+          if (!dados.length) {
+            if (anexoTabelaBody) {
+              const vazio = document.createElement('tr');
+              vazio.id = 'anexoVazio';
+              const celula = document.createElement('td');
+              celula.colSpan = 4;
+              celula.className = 'text-center text-muted';
+              celula.textContent = 'Nenhum arquivo anexado.';
+              vazio.appendChild(celula);
+              anexoTabelaBody.appendChild(vazio);
+            }
+            return;
+          }
+
+          const fragLinhas = document.createDocumentFragment();
+          const fragHidden = document.createDocumentFragment();
+          dados.forEach((item, index) => {
+            const registro = item && typeof item === 'object' ? { ...item } : null;
+            if (!registro) return;
+            ensureAnexoUrl(registro);
+            const registroIndex = anexosRegistros.push(registro) - 1;
+
+            const linha = document.createElement('tr');
+
+            const dataTd = document.createElement('td');
+            dataTd.textContent = formatarDataAnexo(registro.data);
+            linha.appendChild(dataTd);
+
+            const descricaoTd = document.createElement('td');
+            descricaoTd.textContent = registro.descricao || '';
+            linha.appendChild(descricaoTd);
+
+            const arquivoTd = document.createElement('td');
+            arquivoTd.textContent = registro.nome || '';
+            linha.appendChild(arquivoTd);
+
+            const acoesTd = document.createElement('td');
+            acoesTd.className = 'text-center';
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.className = 'btn btn-sm btn-outline-primary';
+            botao.setAttribute('data-visualizar-anexo', String(registroIndex));
+            botao.title = 'Visualizar anexo';
+            const icone = document.createElement('i');
+            icone.className = 'bi bi-eye';
+            botao.appendChild(icone);
+            const srText = document.createElement('span');
+            srText.className = 'visually-hidden';
+            srText.textContent = `Visualizar ${registro.nome || 'anexo'}`;
+            botao.appendChild(srText);
+            acoesTd.appendChild(botao);
+            linha.appendChild(acoesTd);
+
+            fragLinhas.appendChild(linha);
+
+            if (anexoHiddenInputs) {
+              const wrapper = document.createElement('div');
+              const adicionarHidden = (name, value) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                wrapper.appendChild(input);
+              };
+              adicionarHidden('anexos[data][]', registro.data || '');
+              adicionarHidden('anexos[descricao][]', registro.descricao || '');
+              adicionarHidden('anexos[arquivo][]', registro.nome || '');
+              fragHidden.appendChild(wrapper);
+            }
+          });
+
+          if (anexoTabelaBody) {
+            anexoTabelaBody.appendChild(fragLinhas);
+          }
+          if (anexoHiddenInputs) {
+            anexoHiddenInputs.appendChild(fragHidden);
+          }
+        };
+
+        const setAnexosDados = (lista, prontuario, { setOriginal = false } = {}) => {
+          const normalizados = Array.isArray(lista)
+            ? lista
+                .map((item, index) => normalizarAnexoItem(item, index))
+                .filter((item) => item)
+            : [];
+          anexosProntuarioAtual = prontuario || '';
+          anexosDadosAtuais = cloneAnexosLista(normalizados);
+          if (setOriginal) {
+            anexosDadosOriginais = cloneAnexosLista(normalizados);
+          }
+          renderizarTabelaAnexos(anexosDadosAtuais);
+        };
+
+        const restaurarTabelaAnexos = () => {
+          renderizarTabelaAnexos(anexosDadosAtuais);
+        };
+
+        const carregarAnexosDoProntuario = async (prontuario) => {
+          const codigo = typeof prontuario === 'string' ? prontuario.trim() : prontuario;
+          if (!codigo) {
+            setAnexosDados([], '', { setOriginal: true });
+            return [];
+          }
+          const requestId = ++anexoRequestToken;
+          try {
+            const resposta = await fetch(
+              'https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/recupera-arquivos',
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prontuario: codigo }),
+              },
+            );
+            if (!resposta.ok) {
+              throw new Error('Falha ao recuperar anexos.');
+            }
+            const dados = await resposta.json();
+            if (requestId !== anexoRequestToken) {
+              return [];
+            }
+            let lista = [];
+            if (Array.isArray(dados)) {
+              lista = dados;
+            } else if (dados && typeof dados === 'object') {
+              if (Array.isArray(dados.data)) {
+                lista = dados.data;
+              } else if (Array.isArray(dados.arquivos)) {
+                lista = dados.arquivos;
+              } else if (Array.isArray(dados.registros)) {
+                lista = dados.registros;
+              }
+            }
+            setAnexosDados(lista, codigo, { setOriginal: true });
+            return lista;
+          } catch (error) {
+            console.error(error);
+            if (requestId !== anexoRequestToken) {
+              return [];
+            }
+            setAnexosDados([], codigo, { setOriginal: true });
+            return [];
           }
         };
 
@@ -6628,7 +6870,8 @@
                 : '';
             const prontuarioAtual =
               (prontuarioInputEl && prontuarioInputEl.value.trim()) ||
-              (displayValor && displayValor !== '—' ? displayValor : '');
+              (displayValor && displayValor !== '—' ? displayValor : '') ||
+              anexosProntuarioAtual;
             if (!prontuarioAtual) {
               setAnexoModalFeedback('Informe o número do prontuário antes de enviar um anexo.', 'warning');
               return;
@@ -6669,58 +6912,21 @@
             }
             toggleSubmitting(false);
             setAnexoModalFeedback();
-            const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
-            const urlAnexo =
-              arquivo && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function'
-                ? URL.createObjectURL(arquivo)
-                : '';
-            const registroIndex = anexosRegistros.push({
-              data: dataValor,
-              descricao: descricaoValor,
-              nome: nomeArquivo,
-              url: urlAnexo,
-              prontuario: prontuarioAtual,
-            }) - 1;
-            if (anexoTabelaBody) {
-              const vazio = document.getElementById('anexoVazio');
-              if (vazio) vazio.remove();
-              const linha = document.createElement('tr');
-              [dataFormatada, descricaoValor, nomeArquivo].forEach((valor) => {
-                const td = document.createElement('td');
-                td.textContent = valor;
-                linha.appendChild(td);
-              });
-              const acaoTd = document.createElement('td');
-              acaoTd.className = 'text-center';
-              const botao = document.createElement('button');
-              botao.type = 'button';
-              botao.className = 'btn btn-sm btn-outline-primary';
-              botao.setAttribute('data-visualizar-anexo', String(registroIndex));
-              botao.title = 'Visualizar anexo';
-              const icone = document.createElement('i');
-              icone.className = 'bi bi-eye';
-              botao.appendChild(icone);
-              const srText = document.createElement('span');
-              srText.className = 'visually-hidden';
-              srText.textContent = `Visualizar ${nomeArquivo}`;
-              botao.appendChild(srText);
-              acaoTd.appendChild(botao);
-              linha.appendChild(acaoTd);
-              anexoTabelaBody.appendChild(linha);
-            }
-            if (anexoHiddenInputs) {
-              const wrapper = document.createElement('div');
-              const adicionarHidden = (name, value) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                wrapper.appendChild(input);
-              };
-              adicionarHidden('anexos[data][]', dataValor);
-              adicionarHidden('anexos[descricao][]', descricaoValor);
-              adicionarHidden('anexos[arquivo][]', nomeArquivo);
-              anexoHiddenInputs.appendChild(wrapper);
+            const novoRegistro = normalizarAnexoItem(
+              {
+                data: dataValor,
+                descricao: descricaoValor,
+                arquivo,
+                nome: nomeArquivo,
+                contentType: arquivo ? arquivo.type : '',
+                prontuario: prontuarioAtual,
+              },
+              anexosDadosAtuais.length,
+            );
+            if (novoRegistro) {
+              const novaLista = cloneAnexosLista(anexosDadosAtuais);
+              novaLista.push(novoRegistro);
+              setAnexosDados(novaLista, prontuarioAtual);
             }
             if (anexoArquivoInput) {
               anexoArquivoInput.value = '';
@@ -7509,6 +7715,7 @@
           formSnapshot = serializeForm();
           isFormDirty = false;
           evolucoesDadosOriginais = cloneEvolucoesLista(evolucoesDadosAtuais);
+          anexosDadosOriginais = cloneAnexosLista(anexosDadosAtuais);
         };
 
         const focusModalContext = () => {
@@ -7615,6 +7822,7 @@
             preencherCursos([]);
             toggleIdentificacaoReadOnly('create');
             setEvolucoesDados([], '', { setOriginal: true });
+            setAnexosDados([], '', { setOriginal: true });
             setTimeout(() => {
               refreshFormInteractions();
               if (registroForm.dataset.mode === 'create') {
@@ -7652,6 +7860,7 @@
               populateFormWithData(lastLoadedPayload);
               toggleIdentificacaoReadOnly('edit');
               setEvolucoesDados(evolucoesDadosOriginais, lastLoadedProntuario, { setOriginal: true });
+              setAnexosDados(anexosDadosOriginais, lastLoadedProntuario, { setOriginal: true });
               updateFormStatus('edit', lastLoadedProntuario);
               lastLoadedMode = 'edit';
             } else {
@@ -7659,6 +7868,7 @@
               setFormMode('create');
               toggleIdentificacaoReadOnly('create');
               setEvolucoesDados([], '', { setOriginal: true });
+              setAnexosDados([], '', { setOriginal: true });
               updateNumeroProntuarioDisplay('');
               updateFormStatus('create', '');
               setCurrentDateTime();
@@ -8105,6 +8315,7 @@
           setFormMode('create');
           toggleIdentificacaoReadOnly('create');
           setEvolucoesDados([], '', { setOriginal: true });
+          setAnexosDados([], '', { setOriginal: true });
           lastLoadedPayload = null;
           lastLoadedMode = 'create';
           lastLoadedProntuario = '';
@@ -8163,12 +8374,16 @@
           scrollToForm();
           if (normalizedMode !== 'create') {
             setEvolucoesDados([], prontuarioValor, { setOriginal: true });
+            setAnexosDados([], prontuarioValor, { setOriginal: true });
           }
           setTimeout(() => {
             refreshFormInteractions();
             markFormClean();
             if (normalizedMode !== 'create' && prontuarioValor) {
-              carregarEvolucoesDoProntuario(prontuarioValor).then(() => {
+              Promise.all([
+                carregarEvolucoesDoProntuario(prontuarioValor),
+                carregarAnexosDoProntuario(prontuarioValor),
+              ]).then(() => {
                 if (!isFormDirty) {
                   markFormClean();
                 }
@@ -8189,6 +8404,7 @@
           setFormMode(normalizedMode);
           toggleIdentificacaoReadOnly(normalizedMode);
           setEvolucoesDados([], '', { setOriginal: true });
+          setAnexosDados([], '', { setOriginal: true });
           lastLoadedPayload = null;
           lastLoadedMode = normalizedMode;
           lastLoadedProntuario = '';
@@ -8210,6 +8426,7 @@
           openExistingProntuario,
           openBlankForm,
           loadEvolucoes: carregarEvolucoesDoProntuario,
+          loadAnexos: carregarAnexosDoProntuario,
         };
 
         window.prontuarioFormManager = prontuarioFormManager;
