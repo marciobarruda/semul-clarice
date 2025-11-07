@@ -937,7 +937,7 @@
                   <div class="col-12">
                     <div class="subsection-card h-100">
                       <h3 class="subsection-heading">Atendimento inicial</h3>
-                      <div class="row g-3 align-items-end">
+                      <div class="row g-3">
                         <div class="col-12 col-lg-3 col-xxl-3">
                           <label for="demandante" class="form-label">Demandante</label>
                           <input type="text" class="form-control" id="demandante" name="demandante" />
@@ -1056,7 +1056,7 @@
                           <input type="text" class="form-control" id="nomeSocial" name="nomeSocial" />
                         </div>
                         <div class="col-12">
-                          <div class="row g-3 align-items-end">
+                          <div class="row g-3">
                             <div class="col-12 col-md-6 col-xl-8">
                               <label for="dataNascimento" class="form-label required">Data de nascimento</label>
                               <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" required />
@@ -1068,7 +1068,7 @@
                           </div>
                         </div>
                         <div class="col-12">
-                          <div class="row g-3 align-items-end">
+                          <div class="row g-3">
                             <div class="col-12 col-md-4 col-xl-4">
                               <label for="rgUsuario" class="form-label">RG</label>
                               <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
@@ -6714,6 +6714,156 @@
           });
         };
 
+        const formatCpfForInput = (value) => {
+          const digits = String(value || '')
+            .replace(/\D/g, '')
+            .slice(0, 11);
+          if (digits.length !== 11) return digits;
+          return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        };
+
+        const normalizeDigits = (value) => String(value || '').replace(/\D/g, '');
+
+        const formatDateToBR = (value) => {
+          if (!value && value !== 0) return '';
+          const raw = String(value).trim();
+          if (!raw) return '';
+          if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw)) return raw;
+          if (window.dayjs) {
+            const parsed = dayjs(raw);
+            if (parsed.isValid()) {
+              return parsed.format('DD/MM/YYYY');
+            }
+          }
+          const isoMatch = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+          if (isoMatch) {
+            return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`;
+          }
+          return raw;
+        };
+
+        const formatTimeFromDateTime = (value) => {
+          if (!value && value !== 0) return '';
+          const raw = String(value).trim();
+          if (!raw) return '';
+          if (/^\d{2}:\d{2}$/.test(raw)) return raw;
+          const match = raw.match(/(\d{2}):(\d{2})(?::\d{2})?/);
+          if (match) return `${match[1]}:${match[2]}`;
+          if (window.dayjs) {
+            const parsed = dayjs(raw);
+            if (parsed.isValid()) {
+              return parsed.format('HH:mm');
+            }
+          }
+          return raw;
+        };
+
+        const splitMultiValue = (value) => {
+          if (Array.isArray(value)) {
+            return value.filter((item) => item != null && String(item).trim() !== '').map((item) => String(item).trim());
+          }
+          if (!value && value !== 0) return [];
+          const raw = String(value).trim();
+          if (!raw) return [];
+          if (/^\[.*\]$/.test(raw)) {
+            try {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) {
+                return splitMultiValue(parsed);
+              }
+            } catch (error) {
+              /* ignore json parse errors */
+            }
+          }
+          return raw
+            .split(/[;,|]/)
+            .map((item) => item.trim())
+            .filter(Boolean);
+        };
+
+        const payloadKeyMapping = [
+          ['prontuario', { targets: ['numeroProntuario'] }],
+          ['nome', { targets: ['nomeUsuario'] }],
+          ['nome_social', { targets: ['nomeSocial'] }],
+          ['cpf', { targets: ['cpfUsuario'], transform: formatCpfForInput }],
+          ['demandante', 'demandante'],
+          ['unidade_atendimento', 'unidadeAtendimento'],
+          ['data_pri_atendimento', { targets: ['dataAtendimento'], transform: formatDateToBR }],
+          ['data_update', { targets: ['horaAtendimento'], transform: formatTimeFromDateTime }],
+          ['telefone', { targets: ['telefone'], transform: normalizeDigits }],
+          ['celular', { targets: ['telefoneSecundario'], transform: normalizeDigits }],
+          ['email', { targets: ['email', 'emailConfirmacao'] }],
+          ['cep', { targets: ['cep'], transform: normalizeDigits }],
+          ['logradouro', 'logradouro'],
+          ['numero', 'numeroEndereco'],
+          ['complemento', 'complementoEndereco'],
+          ['bairro', 'bairro'],
+          ['rpa', 'rpa'],
+          ['cidade', 'cidade'],
+          ['uf', 'uf'],
+          ['ponto_ref', 'pontoReferencia'],
+          ['nascimento', { targets: ['dataNascimento'], transform: formatDateToBR }],
+          ['mae_vitima', 'nomeMae'],
+          ['pai_vitima', 'nomePai'],
+          ['nacionalidade', 'nacionalidade'],
+          ['uf_nascimento', 'ufNascimento'],
+          ['cidade_nascimento', 'cidadeNascimento'],
+          ['estadocivil_vitima', 'estadoCivil'],
+          ['conjuge', 'conjuge'],
+          ['rg', 'rgUsuario'],
+          ['expedicao', 'orgaoExpedidor'],
+          ['uf_rg', 'ufExpedicao'],
+          ['orientacao_vitima', 'orientacaoSexual'],
+          ['genero_vitima', 'identidadeGenero'],
+          ['racacor_vitima', 'corRaca'],
+          ['religiao_vitima', 'religiao'],
+          ['situacao_ocupacional', 'situacaoOcupacional'],
+          ['ocupacao', 'profissao'],
+          ['situacao_trabalhista', 'situacaoTrabalho'],
+          ['rendavitima', 'rendaIndividual'],
+          ['rendafamiliar', 'rendaFamiliar'],
+          ['total_filhos', 'totalFilhos'],
+          ['situacao_habitacional', 'situacaoHabitacional'],
+          ['outras_drogas_licitas', 'drogasLicitasOutrasTexto'],
+          ['outras_drogas_ilicitas', 'drogasIlicitasOutrasTexto'],
+          ['soube_servico', { targets: ['origemServico[]'], transform: splitMultiValue }],
+          ['atendimento', { targets: ['atendimento[]'], transform: splitMultiValue }],
+          ['tipo_violencia', 'tipoViolencia'],
+          ['outras_viol_fisicas', 'violenciaFisicaOutrasTexto'],
+          ['outras_viol_psicologicas', 'violenciaPsicologicaOutrasTexto'],
+          ['outras_viol_sexuais', 'violenciaSexualOutrasTexto'],
+          ['outro_local_agressao', 'localAgressaoOutrosTexto'],
+          ['tempo_convivencia', 'tempoConvivencia'],
+          ['curso', 'cursoFormacao'],
+          ['escolaridavitim', 'escolaridade'],
+          ['sitescolvitima', 'situacaoEscolar'],
+          ['posgradvitima', 'tipoPosGraduacao'],
+          ['ano_periodo', 'anoPeriodo'],
+          ['quais_medicamentos', 'medicamentosQuais'],
+          ['qual_prob_saude', 'problemaSaudeQual'],
+          ['tempo_psico', 'tempoPsicologo'],
+          ['tempo_psiquiatra', 'tempoPsiquiatra'],
+          ['tempo_gestacao', 'tempoGestacao'],
+          ['ano_prev_cancer', 'preventivoAno'],
+          ['ano_mamografia', 'mamografiaAno'],
+          ['tmpacomphiv', 'tempoAcompanhamento'],
+          ['breve_relato', 'relatoCaso'],
+          ['relato', 'relatoCaso'],
+          ['discriminar_bens', 'discriminarBens'],
+          ['outros_fatores_violencia', 'fatoresRelacionadosOutrosTexto'],
+          ['contato_ref', 'conhecimentoContato'],
+          ['telefone_ref', { targets: ['conhecimentoTelefone'], transform: normalizeDigits }],
+          ['parentescotest', 'conhecimentoGrau'],
+          ['temdeficencia', 'deficienciaSindrome'],
+          ['tipo_deficiencia', 'deficienciaQual'],
+          ['catao_sus', 'numeroSus'],
+          ['encaminhamentos', { targets: ['encaminhamentosExternos[]'], transform: splitMultiValue }],
+          ['encaminhamento', { targets: ['encaminhamentosExternos[]'], transform: splitMultiValue }],
+          ['observacoes', 'observacoesJuridicas'],
+          ['obs_oferta_abrigo', 'observacoesMpu'],
+          ['outros_beneficios', 'beneficios']
+        ];
+
         const normalizeRegistroPayload = (payload) => {
           if (!payload && payload !== 0) return {};
           if (typeof payload === 'string') {
@@ -6740,6 +6890,25 @@
             return payload;
           }
           return {};
+        };
+
+        const mapPayloadFields = (dataObj = {}) => {
+          if (!dataObj || typeof dataObj !== 'object') return dataObj;
+          const mapped = { ...dataObj };
+          const applyMapping = (sourceKey, config) => {
+            if (!Object.prototype.hasOwnProperty.call(dataObj, sourceKey)) return;
+            const raw = dataObj[sourceKey];
+            if (raw == null || (typeof raw === 'string' && raw.trim() === '')) return;
+            const normalizedConfig = typeof config === 'string' ? { targets: [config] } : config;
+            const targets = normalizedConfig.targets || [];
+            const value = normalizedConfig.transform ? normalizedConfig.transform(raw, dataObj) : raw;
+            targets.forEach((target) => {
+              if (!target) return;
+              mapped[target] = value;
+            });
+          };
+          payloadKeyMapping.forEach(([sourceKey, config]) => applyMapping(sourceKey, config));
+          return mapped;
         };
 
         const populateFormWithData = (dataObj = {}) => {
@@ -6837,12 +7006,13 @@
           registroForm.reset();
           setFormMode(normalizedMode);
           const normalizedPayload = normalizeRegistroPayload(payload);
-          populateFormWithData(normalizedPayload);
+          const mappedPayload = mapPayloadFields(normalizedPayload);
+          populateFormWithData(mappedPayload);
           const candidatos = ['numeroProntuario', 'prontuario', 'numero_prontuario', 'numero'];
           let prontuarioValor = '';
           for (const chave of candidatos) {
-            if (normalizedPayload && normalizedPayload[chave]) {
-              prontuarioValor = normalizedPayload[chave];
+            if (mappedPayload && mappedPayload[chave]) {
+              prontuarioValor = mappedPayload[chave];
               break;
             }
             const elementos = findElementsForKey(chave);
