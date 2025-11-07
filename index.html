@@ -641,7 +641,7 @@
       }
 
       #registroModalBody {
-        max-height: 75vh;
+        max-height: none;
       }
 
       #registroModalBody .form-section-sidebar {
@@ -956,21 +956,12 @@
           </div>
         </div>
 
-        <div
-          class="modal fade"
-          id="registroModal"
-          tabindex="-1"
-          aria-labelledby="registroModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 class="modal-title fs-5" id="registroModalLabel" tabindex="-1">Prontuário</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-              </div>
-              <div class="modal-body" id="registroModalBody">
-                <section id="formularioWrapper" class="d-none">
+        <section class="card-section mt-4 d-none" id="registroModal" aria-labelledby="registroModalLabel" aria-hidden="true">
+          <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-4">
+            <h2 class="h4 mb-0" id="registroModalLabel" tabindex="-1">Prontuário</h2>
+          </div>
+          <div id="registroModalBody">
+                <section id="formularioWrapper">
                   <form id="registroForm" class="needs-validation" novalidate>
                     <div id="formularioStatus" class="alert d-none align-items-center gap-2 mb-4" role="status"></div>
                     <fieldset id="registroFieldset">
@@ -3406,23 +3397,21 @@
 
                   </form>
                 </section>
-              </div>
-              <div class="modal-footer sticky-modal-footer justify-content-end gap-2" id="registroModalFooter">
-                <button type="button" class="btn btn-success" id="registroModalSalvarBtn">
-                  <i class="bi bi-save me-1"></i>Salvar
-                </button>
-                <button type="button" class="btn btn-danger" id="registroModalCancelarBtn">
-                  <i class="bi bi-arrow-counterclockwise me-1"></i>Cancelar
-                </button>
-                <button type="button" class="btn btn-light" id="registroModalFecharBtn" data-bs-dismiss="modal">
-                  <i class="bi bi-x-lg me-1"></i>Fechar
-                </button>
-              </div>
-            </div>
           </div>
-        </div>
-      </div>
-    </main>
+          <div class="sticky-modal-footer justify-content-end gap-2 d-flex flex-wrap" id="registroModalFooter">
+            <button type="button" class="btn btn-success" id="registroModalSalvarBtn">
+              <i class="bi bi-save me-1"></i>Salvar
+            </button>
+            <button type="button" class="btn btn-danger" id="registroModalCancelarBtn">
+              <i class="bi bi-arrow-counterclockwise me-1"></i>Cancelar
+            </button>
+            <button type="button" class="btn btn-light" id="registroModalFecharBtn">
+              <i class="bi bi-x-lg me-1"></i>Fechar
+            </button>
+          </div>
+        </section>
+
+      </main>
 
     <div class="modal fade" id="unsavedChangesModal" tabindex="-1" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -7443,11 +7432,8 @@
         const registroModalCancelarBtn = document.getElementById('registroModalCancelarBtn');
         const registroModalFecharBtn = document.getElementById('registroModalFecharBtn');
         const registroModalFooter = document.getElementById('registroModalFooter');
-        const registroModalInstance =
-          registroModalEl && window.bootstrap ? bootstrap.Modal.getOrCreateInstance(registroModalEl, { backdrop: 'static' }) : null;
         let formSnapshot = '';
         let isFormDirty = false;
-        let skipUnsavedPrompt = false;
         const UNSAVED_CHANGES_MESSAGE = 'As alterações serão perdidas. Deseja continuar?';
         const unsavedModalEl = document.getElementById('unsavedChangesModal');
         const unsavedModalInstance =
@@ -7573,17 +7559,28 @@
           if (registroModalBody) {
             registroModalBody.scrollTop = 0;
           }
-          if (registroModalInstance) {
-            registroModalInstance.show();
+          if (registroModalEl) {
+            registroModalEl.classList.remove('d-none');
+            registroModalEl.setAttribute('aria-hidden', 'false');
+            requestAnimationFrame(() => {
+              focusModalContext();
+            });
           }
         };
 
         const closeRegistroModal = (options = {}) => {
-          if (!registroModalInstance) return;
-          if (options.skipPrompt) {
-            skipUnsavedPrompt = true;
+          if (!registroModalEl) return;
+          if (options && options.skipPrompt !== true && registroForm && registroForm.dataset.mode !== 'view') {
+            updateDirtyState();
+            if (isFormDirty) {
+              return;
+            }
           }
-          registroModalInstance.hide();
+          registroModalEl.classList.add('d-none');
+          registroModalEl.setAttribute('aria-hidden', 'true');
+          if (registroForm) {
+            registroForm.classList.remove('was-validated');
+          }
         };
 
         window.portalRegistroModal = window.portalRegistroModal || {};
@@ -7593,49 +7590,7 @@
         window.closeRegistroModal = closeRegistroModal;
 
         if (registroModalEl) {
-          registroModalEl.addEventListener('hide.bs.modal', async (event) => {
-            if (event.target !== registroModalEl) {
-              return;
-            }
-            if (skipUnsavedPrompt) {
-              skipUnsavedPrompt = false;
-              return;
-            }
-            if (!registroForm) return;
-            const mode = registroForm.dataset.mode || 'view';
-            if (mode === 'view') {
-              return;
-            }
-            updateDirtyState();
-            if (isFormDirty) {
-              event.preventDefault();
-              const triggerEl = event.relatedTarget instanceof HTMLElement ? event.relatedTarget : null;
-              const confirmar = await promptUnsavedChanges(triggerEl);
-              if (confirmar) {
-                skipUnsavedPrompt = true;
-                closeRegistroModal({ skipPrompt: true });
-              }
-            }
-          });
-
-          registroModalEl.addEventListener('hidden.bs.modal', (event) => {
-            if (event.target !== registroModalEl) {
-              return;
-            }
-            if (formWrapper) {
-              formWrapper.classList.add('d-none');
-            }
-            if (registroForm) {
-              registroForm.classList.remove('was-validated');
-            }
-          });
-
-          registroModalEl.addEventListener('shown.bs.modal', (event) => {
-            if (event.target !== registroModalEl) {
-              return;
-            }
-            focusModalContext();
-          });
+          registroModalEl.setAttribute('aria-hidden', 'true');
         }
 
         if (registroForm) {
@@ -7715,6 +7670,12 @@
               refreshFormInteractions();
               markFormClean();
             }, 0);
+            closeRegistroModal({ skipPrompt: true });
+          });
+        }
+
+        if (registroModalFecharBtn) {
+          registroModalFecharBtn.addEventListener('click', () => {
             closeRegistroModal({ skipPrompt: true });
           });
         }
@@ -8124,6 +8085,9 @@
           if (registroModalBody) {
             registroModalBody.scrollTop = 0;
           }
+          if (registroModalEl && typeof registroModalEl.scrollIntoView === 'function') {
+            registroModalEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         };
 
         const updateFormStatus = (mode, prontuario) => {
@@ -8357,10 +8321,13 @@
             if (wrapper) {
               wrapper.classList.remove('d-none');
             }
-            const modalEl = document.getElementById('registroModal');
-            if (modalEl && window.bootstrap) {
-              const instance = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
-              instance.show();
+            const container = document.getElementById('registroModal');
+            if (container) {
+              container.classList.remove('d-none');
+              container.setAttribute('aria-hidden', 'false');
+              if (typeof container.scrollIntoView === 'function') {
+                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
             }
           }
           if (!abrirProntuarioNoFormulario(payload, modo, prontuario)) {
@@ -8618,9 +8585,12 @@
             wrapper.classList.remove('d-none');
           }
           const modalEl = document.getElementById('registroModal');
-          if (modalEl && window.bootstrap) {
-            const instance = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
-            instance.show();
+          if (modalEl) {
+            modalEl.classList.remove('d-none');
+            modalEl.setAttribute('aria-hidden', 'false');
+            if (typeof modalEl.scrollIntoView === 'function') {
+              modalEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
           }
         };
 
