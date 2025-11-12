@@ -746,6 +746,7 @@
         const KEYCLOAK_SCRIPT_SOURCES = [
           'https://login.recife.pe.gov.br/auth/js/keycloak.js',
           'https://login.recife.pe.gov.br/js/keycloak.js',
+          'https://cdn.jsdelivr.net/npm/keycloak-js@9.0.3/dist/keycloak.min.js',
         ];
 
         function loadKeycloakAdapter() {
@@ -825,10 +826,6 @@
         }
 
         function toNativePromise(adapterPromise) {
-          if (adapterPromise && typeof adapterPromise.then === 'function') {
-            return adapterPromise;
-          }
-
           if (!adapterPromise) {
             return Promise.reject(new Error('Operação Keycloak inválida.'));
           }
@@ -838,7 +835,23 @@
             typeof adapterPromise.error === 'function'
           ) {
             return new Promise((resolve, reject) => {
-              adapterPromise.success(resolve).error(reject);
+              adapterPromise
+                .success(function () {
+                  if (arguments.length > 1) {
+                    resolve(Array.from(arguments));
+                  } else {
+                    resolve(arguments[0]);
+                  }
+                })
+                .error((error) => {
+                  reject(error);
+                });
+            });
+          }
+
+          if (typeof adapterPromise.then === 'function') {
+            return new Promise((resolve, reject) => {
+              adapterPromise.then(resolve, reject);
             });
           }
 
