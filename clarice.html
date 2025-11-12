@@ -810,6 +810,8 @@
           document.body.classList.add(state);
           if (state !== 'auth-pending') {
             document.body.removeAttribute('inert');
+          } else {
+            document.body.setAttribute('inert', '');
           }
         }
 
@@ -858,10 +860,59 @@
           return Promise.resolve(adapterPromise);
         }
 
+        function ensureLogin(keycloak, options) {
+          if (!keycloak) {
+            return Promise.reject(new Error('Instância do Keycloak indisponível.'));
+          }
+
+          const loginOptions = Object.assign(
+            {
+              redirectUri: window.location.href,
+            },
+            options
+          );
+
+          const prepareOverlayForRedirect = () => {
+            setAuthState('auth-pending');
+            const overlayCard = document.querySelector('.auth-overlay-card');
+            if (!overlayCard) return;
+
+            const heading = overlayCard.querySelector('h2');
+            if (heading) {
+              heading.textContent = 'Redirecionando para login...';
+            }
+
+            const description = overlayCard.querySelector('p');
+            if (description) {
+              description.textContent = 'Abrindo a tela segura da Prefeitura do Recife.';
+            }
+          };
+
+          try {
+            if (window.top && window.top !== window.self) {
+              const loginUrl = keycloak.createLoginUrl(loginOptions);
+              if (typeof loginUrl === 'string') {
+                prepareOverlayForRedirect();
+                window.top.location.href = loginUrl;
+                return Promise.resolve(loginUrl);
+              }
+            }
+          } catch (frameError) {
+            console.warn('Não foi possível acessar o contexto superior para redirecionar.', frameError);
+          }
+
+          try {
+            prepareOverlayForRedirect();
+            return toNativePromise(keycloak.login(loginOptions));
+          } catch (loginError) {
+            return Promise.reject(loginError);
+          }
+        }
+
         function scheduleTokenRefresh(keycloak) {
           const refresh = () =>
             toNativePromise(keycloak.updateToken(60)).catch(() => {
-              toNativePromise(keycloak.login());
+              return ensureLogin(keycloak);
             });
 
           const intervalId = window.setInterval(refresh, 20000);
@@ -907,7 +958,7 @@
               )
                 .then((authenticated) => {
                   if (!authenticated) {
-                    return toNativePromise(keycloak.login());
+                    return ensureLogin(keycloak);
                   }
 
                   scheduleTokenRefresh(keycloak);
