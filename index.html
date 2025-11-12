@@ -39,6 +39,69 @@
         min-height: 100vh;
       }
 
+      body.auth-pending {
+        overflow: hidden;
+      }
+
+      .auth-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(0, 83, 164, 0.12), rgba(0, 163, 255, 0.18));
+        color: var(--text-strong);
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+      }
+
+      .auth-overlay .auth-overlay-card {
+        max-width: 420px;
+        width: 100%;
+        border-radius: 1.25rem;
+        padding: 2rem 2.25rem;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 24px 60px rgba(0, 45, 98, 0.18);
+        text-align: center;
+      }
+
+      .auth-overlay .spinner-border {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: var(--brand-primary);
+      }
+
+      .auth-overlay h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .auth-overlay p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+      }
+
+      body.auth-ready .auth-overlay {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      body.auth-error .auth-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        background: rgba(220, 53, 69, 0.08);
+      }
+
+      body.auth-error .auth-overlay .auth-overlay-card {
+        border: 1px solid rgba(220, 53, 69, 0.4);
+      }
+
       header.site-header {
         background: url("https://statics.recife.pe.gov.br/images/dynamics/automacao/header.png?w=3000")
           center/cover no-repeat;
@@ -678,12 +741,119 @@
         }
       }
     </style>
+    <script src="https://login.recife.pe.gov.br/js/keycloak.js" defer></script>
+    <script defer>
+      (function () {
+        function setAuthState(state) {
+          if (!document.body) return;
+          document.body.classList.remove('auth-pending', 'auth-ready', 'auth-error');
+          document.body.classList.add(state);
+          if (state !== 'auth-pending') {
+            document.body.removeAttribute('inert');
+          }
+        }
+
+        function showAuthError(message) {
+          const overlayCard = document.querySelector('.auth-overlay-card');
+          setAuthState('auth-error');
+          if (overlayCard) {
+            overlayCard.innerHTML = `
+              <div class="mb-3 text-danger" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
+              <h2 class="text-danger fw-bold">Falha na autenticação</h2>
+              <p class="text-danger">${message || 'Não foi possível autenticar. Atualize a página para tentar novamente.'}</p>
+            `;
+          }
+        }
+
+        function scheduleTokenRefresh(keycloak) {
+          const refresh = () =>
+            keycloak
+              .updateToken(60)
+              .catch(() => {
+                keycloak.login();
+              });
+
+          const intervalId = window.setInterval(refresh, 20000);
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+              refresh();
+            }
+          });
+
+          window.addEventListener(
+            'beforeunload',
+            () => {
+              window.clearInterval(intervalId);
+            },
+            { once: true }
+          );
+        }
+
+        function bootstrapKeycloak() {
+          if (typeof window.Keycloak !== 'function') {
+            showAuthError('Biblioteca de autenticação indisponível.');
+            return Promise.reject(new Error('Keycloak adapter missing'));
+          }
+
+          const keycloak = new window.Keycloak({
+            url: 'https://login.recife.pe.gov.br',
+            realm: 'prefeitura',
+            clientId: 'n8n',
+          });
+
+          window.keycloakAuth = keycloak;
+
+          const initPromise = keycloak
+            .init({
+              onLoad: 'login-required',
+              checkLoginIframe: false,
+              pkceMethod: 'S256',
+              promiseType: 'native',
+            })
+            .then((authenticated) => {
+              if (!authenticated) {
+                return keycloak.login();
+              }
+
+              scheduleTokenRefresh(keycloak);
+              setAuthState('auth-ready');
+              const overlay = document.getElementById('authOverlay');
+              if (overlay) {
+                overlay.setAttribute('aria-hidden', 'true');
+              }
+              document.documentElement.setAttribute('data-authenticated', 'true');
+              return authenticated;
+            })
+            .catch((error) => {
+              console.error('Erro ao autenticar com Keycloak:', error);
+              showAuthError('Não foi possível autenticar. Refaça o login.');
+              throw error;
+            });
+
+          window.keycloakReady = initPromise;
+          return initPromise;
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', bootstrapKeycloak, { once: true });
+        } else {
+          bootstrapKeycloak();
+        }
+      })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/imask@7.1.3/dist/imask.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/dayjs.min.js" defer></script>
   </head>
-  <body>
+  <body class="auth-pending" inert>
+    <div id="authOverlay" class="auth-overlay" role="alert" aria-live="polite">
+      <div class="auth-overlay-card">
+        <div class="spinner-border" role="status" aria-hidden="true"></div>
+        <h2>Autenticando...</h2>
+        <p>Conectando com a plataforma da Prefeitura do Recife.</p>
+      </div>
+    </div>
     <div class="toast-container position-fixed top-0 end-0 p-3" aria-live="polite" aria-atomic="true">
       <div class="toast align-items-center" id="successToast" role="status" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
