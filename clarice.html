@@ -832,10 +832,20 @@
             return Promise.resolve();
           }
 
+          if (typeof adapterPromise.then === 'function') {
+            return new Promise((resolve, reject) => {
+              adapterPromise.then(resolve, reject);
+            });
+          }
+
           if (
             typeof adapterPromise.success === 'function' &&
             typeof adapterPromise.error === 'function'
           ) {
+            console.warn(
+              '[KEYCLOAK] Adaptador retornou promessa legada. Atualize para APIs baseadas em Promise.'
+            );
+
             return new Promise((resolve, reject) => {
               adapterPromise
                 .success(function () {
@@ -851,12 +861,6 @@
             });
           }
 
-          if (typeof adapterPromise.then === 'function') {
-            return new Promise((resolve, reject) => {
-              adapterPromise.then(resolve, reject);
-            });
-          }
-
           return Promise.resolve(adapterPromise);
         }
 
@@ -865,10 +869,14 @@
             return Promise.reject(new Error('Instância do Keycloak indisponível.'));
           }
 
+          const isHttpProtocol = /^https?:/i.test(window.location.protocol);
           const loginOptions = Object.assign(
-            {
-              redirectUri: window.location.href,
-            },
+            {},
+            isHttpProtocol
+              ? {
+                  redirectUri: window.location.href,
+                }
+              : null,
             options
           );
 
@@ -889,7 +897,7 @@
           };
 
           try {
-            if (window.top && window.top !== window.self) {
+            if (isHttpProtocol && window.top && window.top !== window.self) {
               const loginUrl = keycloak.createLoginUrl(loginOptions);
               if (typeof loginUrl === 'string') {
                 prepareOverlayForRedirect();
@@ -903,7 +911,26 @@
 
           try {
             prepareOverlayForRedirect();
-            return toNativePromise(keycloak.login(loginOptions));
+            return toNativePromise(keycloak.login(loginOptions)).catch((loginError) => {
+              if (!isHttpProtocol && typeof window.top?.location?.href === 'string') {
+                console.warn(
+                  'Requisição de login falhou no protocolo atual. Redirecionando utilizando a URL padrão do Keycloak.',
+                  loginError
+                );
+
+                try {
+                  const fallbackUrl = keycloak.createLoginUrl(options || {});
+                  if (typeof fallbackUrl === 'string') {
+                    window.location.href = fallbackUrl;
+                    return fallbackUrl;
+                  }
+                } catch (fallbackError) {
+                  console.error('Não foi possível construir a URL de login de contingência.', fallbackError);
+                }
+              }
+
+              throw loginError;
+            });
           } catch (loginError) {
             return Promise.reject(loginError);
           }
