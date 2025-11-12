@@ -741,9 +741,68 @@
         }
       }
     </style>
-    <script src="https://login.recife.pe.gov.br/js/keycloak.js" defer></script>
     <script defer>
       (function () {
+        const KEYCLOAK_SCRIPT_SOURCES = [
+          'https://login.recife.pe.gov.br/auth/js/keycloak.js',
+          'https://login.recife.pe.gov.br/js/keycloak.js',
+        ];
+
+        function loadKeycloakAdapter() {
+          if (typeof window.Keycloak === 'function') {
+            return Promise.resolve();
+          }
+
+          let attemptIndex = 0;
+
+          return new Promise((resolve, reject) => {
+            const tryLoad = () => {
+              if (attemptIndex >= KEYCLOAK_SCRIPT_SOURCES.length) {
+                reject(new Error('Keycloak adapter unavailable'));
+                return;
+              }
+
+              const existing = document.querySelector(
+                `script[data-keycloak-loader="${attemptIndex}"]`
+              );
+
+              if (existing && existing.hasAttribute('data-loaded')) {
+                attemptIndex += 1;
+                tryLoad();
+                return;
+              }
+
+              const script = existing || document.createElement('script');
+              script.defer = true;
+              script.async = true;
+              script.src = KEYCLOAK_SCRIPT_SOURCES[attemptIndex];
+              script.setAttribute('data-keycloak-loader', String(attemptIndex));
+
+              script.onload = () => {
+                script.setAttribute('data-loaded', 'true');
+                if (typeof window.Keycloak === 'function') {
+                  resolve();
+                } else {
+                  attemptIndex += 1;
+                  tryLoad();
+                }
+              };
+
+              script.onerror = () => {
+                script.setAttribute('data-loaded', 'false');
+                attemptIndex += 1;
+                tryLoad();
+              };
+
+              if (!existing) {
+                document.head.appendChild(script);
+              }
+            };
+
+            tryLoad();
+          });
+        }
+
         function setAuthState(state) {
           if (!document.body) return;
           document.body.classList.remove('auth-pending', 'auth-ready', 'auth-error');
@@ -790,48 +849,52 @@
         }
 
         function bootstrapKeycloak() {
-          if (typeof window.Keycloak !== 'function') {
-            showAuthError('Biblioteca de autenticação indisponível.');
-            return Promise.reject(new Error('Keycloak adapter missing'));
-          }
-
-          const keycloak = new window.Keycloak({
-            url: 'https://login.recife.pe.gov.br',
-            realm: 'prefeitura',
-            clientId: 'n8n',
-          });
-
-          window.keycloakAuth = keycloak;
-
-          const initPromise = keycloak
-            .init({
-              onLoad: 'login-required',
-              checkLoginIframe: false,
-              pkceMethod: 'S256',
-              promiseType: 'native',
-            })
-            .then((authenticated) => {
-              if (!authenticated) {
-                return keycloak.login();
-              }
-
-              scheduleTokenRefresh(keycloak);
-              setAuthState('auth-ready');
-              const overlay = document.getElementById('authOverlay');
-              if (overlay) {
-                overlay.setAttribute('aria-hidden', 'true');
-              }
-              document.documentElement.setAttribute('data-authenticated', 'true');
-              return authenticated;
-            })
+          return loadKeycloakAdapter()
             .catch((error) => {
-              console.error('Erro ao autenticar com Keycloak:', error);
-              showAuthError('Não foi possível autenticar. Refaça o login.');
+              showAuthError('Biblioteca de autenticação indisponível.');
               throw error;
-            });
+            })
+            .then(() => {
+              if (typeof window.Keycloak !== 'function') {
+                throw new Error('Keycloak adapter missing');
+              }
 
-          window.keycloakReady = initPromise;
-          return initPromise;
+              const keycloak = new window.Keycloak({
+                url: 'https://login.recife.pe.gov.br/auth',
+                realm: 'prefeitura',
+                clientId: 'n8n',
+              });
+
+              window.keycloakAuth = keycloak;
+
+              const initPromise = keycloak
+                .init({
+                  onLoad: 'login-required',
+                  checkLoginIframe: false,
+                })
+                .then((authenticated) => {
+                  if (!authenticated) {
+                    return keycloak.login();
+                  }
+
+                  scheduleTokenRefresh(keycloak);
+                  setAuthState('auth-ready');
+                  const overlay = document.getElementById('authOverlay');
+                  if (overlay) {
+                    overlay.setAttribute('aria-hidden', 'true');
+                  }
+                  document.documentElement.setAttribute('data-authenticated', 'true');
+                  return authenticated;
+                })
+                .catch((error) => {
+                  console.error('Erro ao autenticar com Keycloak:', error);
+                  showAuthError('Não foi possível autenticar. Refaça o login.');
+                  throw error;
+                });
+
+              window.keycloakReady = initPromise;
+              return initPromise;
+            });
         }
 
         if (document.readyState === 'loading') {
