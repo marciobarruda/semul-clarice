@@ -869,6 +869,15 @@
             return Promise.reject(new Error('Instância do Keycloak indisponível.'));
           }
 
+          const isSandboxed = () => {
+            try {
+              return Boolean(window.frameElement?.hasAttribute('sandbox'));
+            } catch (error) {
+              console.warn('Não foi possível verificar o estado de sandbox do frame.', error);
+              return true;
+            }
+          };
+
           const isHttpProtocol = /^https?:/i.test(window.location.protocol);
           const loginOptions = Object.assign(
             {},
@@ -896,17 +905,65 @@
             }
           };
 
+          const showSandboxFallback = (loginUrl) => {
+            const overlayCard = document.querySelector('.auth-overlay-card');
+            if (!overlayCard) return;
+
+            const linkLabel =
+              'Abrir login em nova aba (necessário por causa das restrições de sandbox do n8n)';
+
+            overlayCard.innerHTML = `
+              <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
+              <h2 class="fw-bold">Permissão necessária</h2>
+              <p>O ambiente do n8n está bloqueando o redirecionamento automático para o Keycloak.</p>
+              <p class="mb-3">Clique abaixo para abrir a tela segura em uma nova aba.</p>
+              <a class="btn btn-primary w-100" href="${loginUrl}" target="_blank" rel="noopener">${linkLabel}</a>
+            `;
+          };
+
+          const attemptRedirect = (loginUrl) => {
+            const sandboxed = isSandboxed();
+
+            if (!sandboxed && window.top && window.top !== window.self) {
+              try {
+                window.top.location.assign(loginUrl);
+                return true;
+              } catch (frameError) {
+                console.warn('Navegação no contexto superior bloqueada. Tentando fallback.', frameError);
+              }
+            }
+
+            try {
+              window.location.assign(loginUrl);
+              return true;
+            } catch (selfNavError) {
+              console.warn('Redirecionamento direto bloqueado. Avaliando fallback.', selfNavError);
+            }
+
+            if (sandboxed) {
+              const popup = window.open(loginUrl, '_blank', 'noopener');
+              if (popup) {
+                popup.focus?.();
+                return true;
+              }
+
+              showSandboxFallback(loginUrl);
+            }
+
+            return false;
+          };
+
           try {
-            if (isHttpProtocol && window.top && window.top !== window.self) {
-              const loginUrl = keycloak.createLoginUrl(loginOptions);
-              if (typeof loginUrl === 'string') {
-                prepareOverlayForRedirect();
-                window.top.location.href = loginUrl;
+            const loginUrl = keycloak.createLoginUrl(loginOptions);
+            if (typeof loginUrl === 'string') {
+              prepareOverlayForRedirect();
+              const redirected = attemptRedirect(loginUrl);
+              if (redirected) {
                 return Promise.resolve(loginUrl);
               }
             }
           } catch (frameError) {
-            console.warn('Não foi possível acessar o contexto superior para redirecionar.', frameError);
+            console.warn('Não foi possível construir ou usar a URL de login.', frameError);
           }
 
           try {
