@@ -827,6 +827,15 @@
           }
         }
 
+        function isSandboxedFrame() {
+          try {
+            return Boolean(window.frameElement?.hasAttribute('sandbox'));
+          } catch (error) {
+            console.warn('Não foi possível verificar o estado de sandbox do frame.', error);
+            return true;
+          }
+        }
+
         function toNativePromise(adapterPromise) {
           if (adapterPromise == null) {
             return Promise.resolve();
@@ -868,15 +877,6 @@
           if (!keycloak) {
             return Promise.reject(new Error('Instância do Keycloak indisponível.'));
           }
-
-          const isSandboxed = () => {
-            try {
-              return Boolean(window.frameElement?.hasAttribute('sandbox'));
-            } catch (error) {
-              console.warn('Não foi possível verificar o estado de sandbox do frame.', error);
-              return true;
-            }
-          };
 
           const isHttpProtocol = /^https?:/i.test(window.location.protocol);
           const loginOptions = Object.assign(
@@ -922,7 +922,7 @@
           };
 
           const attemptRedirect = (loginUrl) => {
-            const sandboxed = isSandboxed();
+            const sandboxed = isSandboxedFrame();
 
             if (!sandboxed && window.top && window.top !== window.self) {
               try {
@@ -1065,7 +1065,48 @@
             });
         }
 
+        function showSandboxEscape(targetUrl) {
+          setAuthState('auth-pending');
+
+          const overlayCard = document.querySelector('.auth-overlay-card');
+          if (!overlayCard) return;
+
+          overlayCard.innerHTML = `
+            <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <h2 class="fw-bold">Abra em uma nova aba para continuar</h2>
+            <p>O ambiente do n8n está isolando esta página em um sandbox. Para autenticar com segurança, abra o portal em uma nova aba.</p>
+            <a class="btn btn-primary w-100" href="${targetUrl}" target="_blank" rel="noopener">Abrir portal em nova aba</a>
+          `;
+        }
+
+        function requestSandboxEscape() {
+          const current = new URL(window.location.href);
+          const escapeFlag = 'kc_escape';
+
+          if (!current.searchParams.has(escapeFlag)) {
+            current.searchParams.set(escapeFlag, '1');
+          }
+
+          const targetUrl = current.toString();
+          const opened = window.open(targetUrl, '_blank', 'noopener');
+
+          if (!opened) {
+            showSandboxEscape(targetUrl);
+          } else {
+            opened.focus?.();
+            showSandboxEscape(targetUrl);
+          }
+        }
+
         function startAuth() {
+          const sandboxed = isSandboxedFrame();
+          const isEscapeRequest = new URLSearchParams(window.location.search).has('kc_escape');
+
+          if (sandboxed && !isEscapeRequest) {
+            requestSandboxEscape();
+            return;
+          }
+
           bootstrapKeycloak().catch((error) => {
             if (!document.body) return;
 
