@@ -810,6 +810,8 @@
           document.body.classList.add(state);
           if (state !== 'auth-pending') {
             document.body.removeAttribute('inert');
+          } else {
+            document.body.setAttribute('inert', '');
           }
         }
 
@@ -825,15 +827,60 @@
           }
         }
 
+        function isSandboxedFrame() {
+          try {
+            return Boolean(window.frameElement?.hasAttribute('sandbox'));
+          } catch (error) {
+            console.warn('Não foi possível verificar o estado de sandbox do frame.', error);
+            return true;
+          }
+        }
+
+        function hasCookieAccess() {
+          try {
+            document.cookie = 'kc_probe=1; path=/';
+            const hasProbe = document.cookie.includes('kc_probe=1');
+            if (hasProbe) {
+              document.cookie = 'kc_probe=; Max-Age=0; path=/';
+            }
+            return hasProbe;
+          } catch (error) {
+            console.warn('Cookies bloqueados no contexto atual.', error);
+            return false;
+          }
+        }
+
+        function canRedirectTop() {
+          try {
+            if (window.top === window.self) return true;
+            // Acesso ao href lança em contextos sandbox ou cross-origin sem permissão
+            void window.top.location.href;
+            return true;
+          } catch (error) {
+            console.warn('Redirecionamento direto para o topo está bloqueado.', error);
+            return false;
+          }
+        }
+
         function toNativePromise(adapterPromise) {
           if (adapterPromise == null) {
             return Promise.resolve();
+          }
+
+          if (typeof adapterPromise.then === 'function') {
+            return new Promise((resolve, reject) => {
+              adapterPromise.then(resolve, reject);
+            });
           }
 
           if (
             typeof adapterPromise.success === 'function' &&
             typeof adapterPromise.error === 'function'
           ) {
+            console.warn(
+              '[KEYCLOAK] Adaptador retornou promessa legada. Atualize para APIs baseadas em Promise.'
+            );
+
             return new Promise((resolve, reject) => {
               adapterPromise
                 .success(function () {
@@ -849,19 +896,133 @@
             });
           }
 
-          if (typeof adapterPromise.then === 'function') {
-            return new Promise((resolve, reject) => {
-              adapterPromise.then(resolve, reject);
-            });
+          return Promise.resolve(adapterPromise);
+        }
+
+        function ensureLogin(keycloak, options) {
+          if (!keycloak) {
+            return Promise.reject(new Error('Instância do Keycloak indisponível.'));
           }
 
-          return Promise.resolve(adapterPromise);
+          const isHttpProtocol = /^https?:/i.test(window.location.protocol);
+          const loginOptions = Object.assign(
+            {},
+            isHttpProtocol
+              ? {
+                  redirectUri: window.location.href,
+                }
+              : null,
+            options
+          );
+
+          const prepareOverlayForRedirect = () => {
+            setAuthState('auth-pending');
+            const overlayCard = document.querySelector('.auth-overlay-card');
+            if (!overlayCard) return;
+
+            const heading = overlayCard.querySelector('h2');
+            if (heading) {
+              heading.textContent = 'Redirecionando para login...';
+            }
+
+            const description = overlayCard.querySelector('p');
+            if (description) {
+              description.textContent = 'Abrindo a tela segura da Prefeitura do Recife.';
+            }
+          };
+
+          const showSandboxFallback = (loginUrl) => {
+            const overlayCard = document.querySelector('.auth-overlay-card');
+            if (!overlayCard) return;
+
+            const linkLabel =
+              'Abrir login em nova aba (necessário por causa das restrições de sandbox do n8n)';
+
+            overlayCard.innerHTML = `
+              <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
+              <h2 class="fw-bold">Permissão necessária</h2>
+              <p>O ambiente do n8n está bloqueando o redirecionamento automático para o Keycloak.</p>
+              <p class="mb-3">Clique abaixo para abrir a tela segura em uma nova aba.</p>
+              <a class="btn btn-primary w-100" href="${loginUrl}" target="_blank" rel="noopener">${linkLabel}</a>
+            `;
+          };
+
+          const attemptRedirect = (loginUrl) => {
+            const sandboxed = isSandboxedFrame();
+
+            if (!sandboxed && window.top && window.top !== window.self) {
+              try {
+                window.top.location.assign(loginUrl);
+                return true;
+              } catch (frameError) {
+                console.warn('Navegação no contexto superior bloqueada. Tentando fallback.', frameError);
+              }
+            }
+
+            try {
+              window.location.assign(loginUrl);
+              return true;
+            } catch (selfNavError) {
+              console.warn('Redirecionamento direto bloqueado. Avaliando fallback.', selfNavError);
+            }
+
+            if (sandboxed) {
+              const popup = window.open(loginUrl, '_blank', 'noopener');
+              if (popup) {
+                popup.focus?.();
+                return true;
+              }
+
+              showSandboxFallback(loginUrl);
+            }
+
+            return false;
+          };
+
+          try {
+            const loginUrl = keycloak.createLoginUrl(loginOptions);
+            if (typeof loginUrl === 'string') {
+              prepareOverlayForRedirect();
+              const redirected = attemptRedirect(loginUrl);
+              if (redirected) {
+                return Promise.resolve(loginUrl);
+              }
+            }
+          } catch (frameError) {
+            console.warn('Não foi possível construir ou usar a URL de login.', frameError);
+          }
+
+          try {
+            prepareOverlayForRedirect();
+            return toNativePromise(keycloak.login(loginOptions)).catch((loginError) => {
+              if (!isHttpProtocol && typeof window.top?.location?.href === 'string') {
+                console.warn(
+                  'Requisição de login falhou no protocolo atual. Redirecionando utilizando a URL padrão do Keycloak.',
+                  loginError
+                );
+
+                try {
+                  const fallbackUrl = keycloak.createLoginUrl(options || {});
+                  if (typeof fallbackUrl === 'string') {
+                    window.location.href = fallbackUrl;
+                    return fallbackUrl;
+                  }
+                } catch (fallbackError) {
+                  console.error('Não foi possível construir a URL de login de contingência.', fallbackError);
+                }
+              }
+
+              throw loginError;
+            });
+          } catch (loginError) {
+            return Promise.reject(loginError);
+          }
         }
 
         function scheduleTokenRefresh(keycloak) {
           const refresh = () =>
             toNativePromise(keycloak.updateToken(60)).catch(() => {
-              toNativePromise(keycloak.login());
+              return ensureLogin(keycloak);
             });
 
           const intervalId = window.setInterval(refresh, 20000);
@@ -907,7 +1068,7 @@
               )
                 .then((authenticated) => {
                   if (!authenticated) {
-                    return toNativePromise(keycloak.login());
+                    return ensureLogin(keycloak);
                   }
 
                   scheduleTokenRefresh(keycloak);
@@ -930,7 +1091,76 @@
             });
         }
 
+        function showSandboxEscape(targetUrl) {
+          setAuthState('auth-pending');
+
+          const overlayCard = document.querySelector('.auth-overlay-card');
+          if (!overlayCard) return;
+
+          overlayCard.innerHTML = `
+            <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <h2 class="fw-bold">Abra em uma nova aba para continuar</h2>
+            <p>O ambiente do n8n está isolando esta página em um sandbox. Para autenticar com segurança, abra o portal em uma nova aba.</p>
+            <a class="btn btn-primary w-100 mb-2" href="${targetUrl}" target="_blank" rel="noopener">Abrir portal em nova aba</a>
+            <button type="button" class="btn btn-outline-secondary w-100" id="copyEscapeUrl">Copiar link de acesso</button>
+          `;
+
+          const copyBtn = overlayCard.querySelector('#copyEscapeUrl');
+          if (copyBtn && navigator?.clipboard) {
+            copyBtn.addEventListener('click', () => {
+              navigator.clipboard
+                .writeText(targetUrl)
+                .then(() => {
+                  copyBtn.textContent = 'Link copiado. Cole em uma nova aba.';
+                  copyBtn.classList.replace('btn-outline-secondary', 'btn-success');
+                  setTimeout(() => {
+                    copyBtn.textContent = 'Copiar link de acesso';
+                    copyBtn.classList.replace('btn-success', 'btn-outline-secondary');
+                  }, 3200);
+                })
+                .catch(() => {
+                  copyBtn.textContent = 'Não foi possível copiar. Copie manualmente o endereço acima.';
+                  copyBtn.classList.replace('btn-outline-secondary', 'btn-warning');
+                });
+            });
+          }
+        }
+
+        function requestSandboxEscape() {
+          const current = new URL(window.location.href);
+          const escapeFlag = 'kc_escape';
+
+          if (!current.searchParams.has(escapeFlag)) {
+            current.searchParams.set(escapeFlag, '1');
+          }
+
+          const targetUrl = current.toString();
+
+          if (canRedirectTop()) {
+            window.top.location.href = targetUrl;
+            return;
+          }
+
+          const opened = window.open(targetUrl, '_blank', 'noopener');
+
+          if (!opened) {
+            showSandboxEscape(targetUrl);
+          } else {
+            opened.focus?.();
+            showSandboxEscape(targetUrl);
+          }
+        }
+
         function startAuth() {
+          const sandboxed = isSandboxedFrame();
+          const cookieBlocked = !hasCookieAccess();
+          const isEscapeRequest = new URLSearchParams(window.location.search).has('kc_escape');
+
+          if ((sandboxed || cookieBlocked) && !isEscapeRequest) {
+            requestSandboxEscape();
+            return;
+          }
+
           bootstrapKeycloak().catch((error) => {
             if (!document.body) return;
 
