@@ -836,6 +836,32 @@
           }
         }
 
+        function hasCookieAccess() {
+          try {
+            document.cookie = 'kc_probe=1; path=/';
+            const hasProbe = document.cookie.includes('kc_probe=1');
+            if (hasProbe) {
+              document.cookie = 'kc_probe=; Max-Age=0; path=/';
+            }
+            return hasProbe;
+          } catch (error) {
+            console.warn('Cookies bloqueados no contexto atual.', error);
+            return false;
+          }
+        }
+
+        function canRedirectTop() {
+          try {
+            if (window.top === window.self) return true;
+            // Acesso ao href lança em contextos sandbox ou cross-origin sem permissão
+            void window.top.location.href;
+            return true;
+          } catch (error) {
+            console.warn('Redirecionamento direto para o topo está bloqueado.', error);
+            return false;
+          }
+        }
+
         function toNativePromise(adapterPromise) {
           if (adapterPromise == null) {
             return Promise.resolve();
@@ -1075,8 +1101,29 @@
             <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
             <h2 class="fw-bold">Abra em uma nova aba para continuar</h2>
             <p>O ambiente do n8n está isolando esta página em um sandbox. Para autenticar com segurança, abra o portal em uma nova aba.</p>
-            <a class="btn btn-primary w-100" href="${targetUrl}" target="_blank" rel="noopener">Abrir portal em nova aba</a>
+            <a class="btn btn-primary w-100 mb-2" href="${targetUrl}" target="_blank" rel="noopener">Abrir portal em nova aba</a>
+            <button type="button" class="btn btn-outline-secondary w-100" id="copyEscapeUrl">Copiar link de acesso</button>
           `;
+
+          const copyBtn = overlayCard.querySelector('#copyEscapeUrl');
+          if (copyBtn && navigator?.clipboard) {
+            copyBtn.addEventListener('click', () => {
+              navigator.clipboard
+                .writeText(targetUrl)
+                .then(() => {
+                  copyBtn.textContent = 'Link copiado. Cole em uma nova aba.';
+                  copyBtn.classList.replace('btn-outline-secondary', 'btn-success');
+                  setTimeout(() => {
+                    copyBtn.textContent = 'Copiar link de acesso';
+                    copyBtn.classList.replace('btn-success', 'btn-outline-secondary');
+                  }, 3200);
+                })
+                .catch(() => {
+                  copyBtn.textContent = 'Não foi possível copiar. Copie manualmente o endereço acima.';
+                  copyBtn.classList.replace('btn-outline-secondary', 'btn-warning');
+                });
+            });
+          }
         }
 
         function requestSandboxEscape() {
@@ -1088,6 +1135,12 @@
           }
 
           const targetUrl = current.toString();
+
+          if (canRedirectTop()) {
+            window.top.location.href = targetUrl;
+            return;
+          }
+
           const opened = window.open(targetUrl, '_blank', 'noopener');
 
           if (!opened) {
@@ -1100,9 +1153,10 @@
 
         function startAuth() {
           const sandboxed = isSandboxedFrame();
+          const cookieBlocked = !hasCookieAccess();
           const isEscapeRequest = new URLSearchParams(window.location.search).has('kc_escape');
 
-          if (sandboxed && !isEscapeRequest) {
+          if ((sandboxed || cookieBlocked) && !isEscapeRequest) {
             requestSandboxEscape();
             return;
           }
