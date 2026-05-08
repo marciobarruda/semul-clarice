@@ -1,65 +1,52 @@
 'use strict';
 
-/**
- * routes/evolucoes.js
- * POST /api/evolucoes  → equivale ao webhook "evolucoes" do n8n
- * Suporta operações de leitura e inserção de evoluções
- */
-
 const express = require('express');
-const router  = express.Router();
-const { pool, SCHEMA } = require('../db');
+const router = express.Router();
+const { query, dml, tbl } = require('../db');
 
-// ── POST /api/evolucoes ───────────────────────────────────────────────────────
 router.post('/', async (req, res) => {
   const { prontuario, numeroprontuario, operacao } = req.body;
   const num = prontuario || numeroprontuario;
 
-  if (!num) {
-    return res.status(400).json({ error: 'Parâmetro "prontuario" é obrigatório.' });
-  }
+  if (!num) return res.status(400).json({ error: 'Prontuário obrigatório' });
 
-  // Operação de inserção
-  if (operacao === 'inserir' || req.body.evolucaodata) {
+  // Inserção
+  if (operacao === 'inserir' || req.body.evolucaodescricao) {
     const { evolucaodata, evolucaodescricao, tecnica, funcao } = req.body;
-
-    if (!evolucaodescricao) {
-      return res.status(400).json({ error: 'Parâmetro "evolucaodescricao" é obrigatório.' });
-    }
-
+    
     try {
-      const result = await pool.query(
-        `INSERT INTO ${SCHEMA}.evolucao
-           (numeroprontuario, evolucaodata, evolucaodescricao, tecnica, funcao)
-         VALUES ($1, $2, $3, $4, $5)
-         RETURNING *`,
-        [
-          String(num).trim(),
-          evolucaodata || new Date().toISOString().substring(0, 10),
-          evolucaodescricao,
-          tecnica || null,
-          funcao  || null,
-        ]
-      );
-      return res.json({ success: true, evolucao: result.rows[0] });
+      const sql = `
+        INSERT INTO ${tbl('evolucao')} 
+        (numeroprontuario, evolucaodata, evolucaodescricao, tecnica, funcao, createdat, updatedat)
+        VALUES (@num, @data, @desc, @tecnica, @funcao, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())
+      `;
+      const params = {
+        num: String(num),
+        data: evolucaodata || new Date().toISOString().split('T')[0],
+        desc: evolucaodescricao,
+        tecnica: tecnica || null,
+        funcao: funcao || null
+      };
+      await dml(sql, params);
+      return res.json({ success: true });
     } catch (err) {
-      console.error('[evolucoes] Erro ao inserir:', err.message);
-      return res.status(500).json({ error: 'Erro ao inserir evolução', detail: err.message });
+      console.error('[BQ Evolucao Insert] Erro:', err);
+      return res.status(500).json({ error: 'Erro ao inserir' });
     }
   }
 
-  // Operação padrão: listar evoluções do prontuário
+  // Listagem
   try {
-    const result = await pool.query(
-      `SELECT * FROM ${SCHEMA}.evolucao
-       WHERE numeroprontuario = $1
-       ORDER BY evolucaodata DESC, createdat DESC`,
-      [String(num).trim()]
-    );
-    res.json(result.rows);
+    const sql = `
+      SELECT * FROM ${tbl('evolucao')}
+      WHERE numeroprontuario = @num
+      ORDER BY evolucaodata DESC, createdat DESC
+    `;
+    const rows = await query(sql, { num: String(num) });
+    res.json(rows);
   } catch (err) {
-    console.error('[evolucoes] Erro ao listar:', err.message);
-    res.status(500).json({ error: 'Erro ao buscar evoluções', detail: err.message });
+    console.error('[BQ Evolucao List] Erro:', err);
+    res.status(500).json({ error: 'Erro ao listar' });
   }
 });
 

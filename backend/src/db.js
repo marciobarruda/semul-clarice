@@ -1,34 +1,35 @@
 'use strict';
 
 require('dotenv').config();
-const { Pool } = require('pg');
 
-const SCHEMA = process.env.DB_SCHEMA || 'clarice';
+const { BigQuery } = require('@google-cloud/bigquery');
 
-const pool = new Pool({
-  host:     process.env.DB_HOST     || '172.21.0.158',
-  port:     parseInt(process.env.DB_PORT || '5432', 10),
-  database: process.env.DB_NAME     || 'automacao',
-  user:     process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl:      process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-  max:               10,
-  idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 5_000,
-});
+const PROJECT  = process.env.GCP_PROJECT  || 'automacao-de-processos-418519';
+const DATASET  = process.env.BQ_DATASET   || 'clarice';
+const LOCATION = process.env.BQ_LOCATION  || 'southamerica-east1';
 
-pool.on('error', (err) => {
-  console.error('[DB] Erro inesperado no pool:', err.message);
-});
+// Autenticação automática via Application Default Credentials
+// No Cloud Run: usa a Service Account do serviço automaticamente
+// Em dev local: usa GOOGLE_APPLICATION_CREDENTIALS ou `gcloud auth application-default login`
+const bigquery = new BigQuery({ projectId: PROJECT, location: LOCATION });
 
-// Testa a conexão na inicialização
-pool.connect()
-  .then(client => {
-    console.log('[DB] Conexão com PostgreSQL estabelecida com sucesso.');
-    client.release();
-  })
-  .catch(err => {
-    console.error('[DB] FALHA ao conectar ao PostgreSQL:', err.message);
-  });
+/** Referência completa da tabela: `project.dataset.table` */
+const tbl = (table) => `\`${PROJECT}.${DATASET}.${table}\``;
 
-module.exports = { pool, SCHEMA };
+/** Executa uma query e retorna as linhas */
+async function query(sql, params = {}, types = {}) {
+  const opts = { query: sql, location: LOCATION };
+  if (Object.keys(params).length > 0) {
+    opts.params = params;
+    if (Object.keys(types).length > 0) opts.types = types;
+  }
+  const [rows] = await bigquery.query(opts);
+  return rows;
+}
+
+/** Executa uma DML (INSERT/UPDATE/DELETE/MERGE) sem retornar linhas */
+async function dml(sql, params = {}, types = {}) {
+  return query(sql, params, types);
+}
+
+module.exports = { bigquery, PROJECT, DATASET, LOCATION, tbl, query, dml };
