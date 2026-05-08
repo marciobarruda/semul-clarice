@@ -39,69 +39,6 @@
         min-height: 100vh;
       }
 
-      body.auth-pending {
-        overflow: hidden;
-      }
-
-      .auth-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 2000;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        padding: 2rem;
-        background: linear-gradient(135deg, rgba(0, 83, 164, 0.12), rgba(0, 163, 255, 0.18));
-        color: var(--text-strong);
-        transition: opacity 0.25s ease, visibility 0.25s ease;
-      }
-
-      .auth-overlay .auth-overlay-card {
-        max-width: 420px;
-        width: 100%;
-        border-radius: 1.25rem;
-        padding: 2rem 2.25rem;
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: 0 24px 60px rgba(0, 45, 98, 0.18);
-        text-align: center;
-      }
-
-      .auth-overlay .spinner-border {
-        width: 2.5rem;
-        height: 2.5rem;
-        color: var(--brand-primary);
-      }
-
-      .auth-overlay h2 {
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-
-      .auth-overlay p {
-        margin-bottom: 0;
-        color: var(--text-muted);
-      }
-
-      body.auth-ready .auth-overlay {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      body.auth-error .auth-overlay {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        background: rgba(220, 53, 69, 0.08);
-      }
-
-      body.auth-error .auth-overlay .auth-overlay-card {
-        border: 1px solid rgba(220, 53, 69, 0.4);
-      }
-
       header.site-header {
         background: url("https://statics.recife.pe.gov.br/images/dynamics/automacao/header.png?w=3000")
           center/cover no-repeat;
@@ -292,35 +229,19 @@
         background: rgba(244, 247, 251, 0.96);
         border: 1px solid rgba(0, 83, 164, 0.15);
         border-radius: 1rem;
-        padding: 1.75rem 2rem;
+        padding: 1.25rem 1.5rem;
         box-shadow: 0 12px 30px rgba(0, 45, 98, 0.12);
         backdrop-filter: blur(6px);
-        max-height: none;
-        min-height: auto;
-        overflow: visible;
+        max-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
+        min-height: calc(100vh - var(--form-nav-sticky-top) - 1.5rem);
+        overflow-y: auto;
       }
 
-      @media (max-width: 991.98px) {
+      @media (max-width: 1199.98px) {
         .form-section-nav {
           position: static;
           max-height: none;
           min-height: 0;
-          padding: 1.25rem 1.5rem;
-          overflow: visible;
-        }
-      }
-
-      .form-section-sidebar-toggle {
-        display: none;
-      }
-
-      @media (max-width: 1199.98px) {
-        .form-section-sidebar-toggle {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          font-weight: 600;
         }
       }
 
@@ -334,16 +255,9 @@
       }
 
       .section-nav-list {
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         gap: 0.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      }
-
-      @media (min-width: 1200px) {
-        .section-nav-list {
-          display: flex;
-          flex-direction: column;
-        }
       }
 
       @media (min-width: 992px) {
@@ -368,8 +282,6 @@
         background: rgba(0, 83, 164, 0.08);
         color: var(--brand-primary);
         transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-        width: 100%;
-        justify-content: flex-start;
       }
 
       .section-nav-link .bi {
@@ -417,15 +329,6 @@
         border-top: 1px solid rgba(0, 83, 164, 0.12);
         box-shadow: 0 -8px 20px rgba(13, 35, 70, 0.08);
         z-index: 5;
-      }
-
-      .modal-stack-muted {
-        pointer-events: none;
-      }
-
-      .modal-stack-muted .modal-dialog,
-      .modal-stack-muted .modal-content {
-        pointer-events: none;
       }
 
       .modal-dialog-scrollable .modal-body {
@@ -704,16 +607,15 @@
       }
 
       #registroModalBody {
-        max-height: none;
+        max-height: 75vh;
       }
 
       #registroModalBody .form-section-sidebar {
-        position: sticky;
-        top: var(--form-nav-sticky-top);
+        position: static;
       }
 
       #registroModalBody .form-section-nav {
-        top: var(--form-nav-sticky-top);
+        top: 0;
       }
 
       .toast-header {
@@ -741,458 +643,12 @@
         }
       }
     </style>
-    <script defer>
-      (function () {
-        const KEYCLOAK_SCRIPT_SOURCES = [
-          'https://login.recife.pe.gov.br/auth/js/keycloak.js',
-          'https://login.recife.pe.gov.br/js/keycloak.js',
-          'https://cdn.jsdelivr.net/npm/keycloak-js@9.0.3/dist/keycloak.min.js',
-        ];
-
-        function loadKeycloakAdapter() {
-          if (typeof window.Keycloak === 'function') {
-            return Promise.resolve();
-          }
-
-          let attemptIndex = 0;
-
-          return new Promise((resolve, reject) => {
-            const tryLoad = () => {
-              if (attemptIndex >= KEYCLOAK_SCRIPT_SOURCES.length) {
-                reject(new Error('Keycloak adapter unavailable'));
-                return;
-              }
-
-              const existing = document.querySelector(
-                `script[data-keycloak-loader="${attemptIndex}"]`
-              );
-
-              if (existing && existing.hasAttribute('data-loaded')) {
-                attemptIndex += 1;
-                tryLoad();
-                return;
-              }
-
-              const script = existing || document.createElement('script');
-              script.defer = true;
-              script.async = true;
-              script.src = KEYCLOAK_SCRIPT_SOURCES[attemptIndex];
-              script.setAttribute('data-keycloak-loader', String(attemptIndex));
-
-              script.onload = () => {
-                script.setAttribute('data-loaded', 'true');
-                if (typeof window.Keycloak === 'function') {
-                  resolve();
-                } else {
-                  attemptIndex += 1;
-                  tryLoad();
-                }
-              };
-
-              script.onerror = () => {
-                script.setAttribute('data-loaded', 'false');
-                attemptIndex += 1;
-                tryLoad();
-              };
-
-              if (!existing) {
-                document.head.appendChild(script);
-              }
-            };
-
-            tryLoad();
-          });
-        }
-
-        function setAuthState(state) {
-          if (!document.body) return;
-          document.body.classList.remove('auth-pending', 'auth-ready', 'auth-error');
-          document.body.classList.add(state);
-          if (state !== 'auth-pending') {
-            document.body.removeAttribute('inert');
-          } else {
-            document.body.setAttribute('inert', '');
-          }
-        }
-
-        function showAuthError(message) {
-          const overlayCard = document.querySelector('.auth-overlay-card');
-          setAuthState('auth-error');
-          if (overlayCard) {
-            overlayCard.innerHTML = `
-              <div class="mb-3 text-danger" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
-              <h2 class="text-danger fw-bold">Falha na autenticação</h2>
-              <p class="text-danger">${message || 'Não foi possível autenticar. Atualize a página para tentar novamente.'}</p>
-            `;
-          }
-        }
-
-        function isSandboxedFrame() {
-          try {
-            return Boolean(window.frameElement?.hasAttribute('sandbox'));
-          } catch (error) {
-            console.warn('Não foi possível verificar o estado de sandbox do frame.', error);
-            return true;
-          }
-        }
-
-        function hasCookieAccess() {
-          try {
-            document.cookie = 'kc_probe=1; path=/';
-            const hasProbe = document.cookie.includes('kc_probe=1');
-            if (hasProbe) {
-              document.cookie = 'kc_probe=; Max-Age=0; path=/';
-            }
-            return hasProbe;
-          } catch (error) {
-            console.warn('Cookies bloqueados no contexto atual.', error);
-            return false;
-          }
-        }
-
-        function canRedirectTop() {
-          try {
-            if (window.top === window.self) return true;
-            // Acesso ao href lança em contextos sandbox ou cross-origin sem permissão
-            void window.top.location.href;
-            return true;
-          } catch (error) {
-            console.warn('Redirecionamento direto para o topo está bloqueado.', error);
-            return false;
-          }
-        }
-
-        function toNativePromise(adapterPromise) {
-          if (adapterPromise == null) {
-            return Promise.resolve();
-          }
-
-          if (typeof adapterPromise.then === 'function') {
-            return new Promise((resolve, reject) => {
-              adapterPromise.then(resolve, reject);
-            });
-          }
-
-          if (
-            typeof adapterPromise.success === 'function' &&
-            typeof adapterPromise.error === 'function'
-          ) {
-            console.warn(
-              '[KEYCLOAK] Adaptador retornou promessa legada. Atualize para APIs baseadas em Promise.'
-            );
-
-            return new Promise((resolve, reject) => {
-              adapterPromise
-                .success(function () {
-                  if (arguments.length > 1) {
-                    resolve(Array.from(arguments));
-                  } else {
-                    resolve(arguments[0]);
-                  }
-                })
-                .error((error) => {
-                  reject(error);
-                });
-            });
-          }
-
-          return Promise.resolve(adapterPromise);
-        }
-
-        function ensureLogin(keycloak, options) {
-          if (!keycloak) {
-            return Promise.reject(new Error('Instância do Keycloak indisponível.'));
-          }
-
-          const isHttpProtocol = /^https?:/i.test(window.location.protocol);
-          const loginOptions = Object.assign(
-            {},
-            isHttpProtocol
-              ? {
-                  redirectUri: window.location.href,
-                }
-              : null,
-            options
-          );
-
-          const prepareOverlayForRedirect = () => {
-            setAuthState('auth-pending');
-            const overlayCard = document.querySelector('.auth-overlay-card');
-            if (!overlayCard) return;
-
-            const heading = overlayCard.querySelector('h2');
-            if (heading) {
-              heading.textContent = 'Redirecionando para login...';
-            }
-
-            const description = overlayCard.querySelector('p');
-            if (description) {
-              description.textContent = 'Abrindo a tela segura da Prefeitura do Recife.';
-            }
-          };
-
-          const showSandboxFallback = (loginUrl) => {
-            const overlayCard = document.querySelector('.auth-overlay-card');
-            if (!overlayCard) return;
-
-            const linkLabel =
-              'Abrir login em nova aba (necessário por causa das restrições de sandbox do n8n)';
-
-            overlayCard.innerHTML = `
-              <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
-              <h2 class="fw-bold">Permissão necessária</h2>
-              <p>O ambiente do n8n está bloqueando o redirecionamento automático para o Keycloak.</p>
-              <p class="mb-3">Clique abaixo para abrir a tela segura em uma nova aba.</p>
-              <a class="btn btn-primary w-100" href="${loginUrl}" target="_blank" rel="noopener">${linkLabel}</a>
-            `;
-          };
-
-          const attemptRedirect = (loginUrl) => {
-            const sandboxed = isSandboxedFrame();
-
-            if (!sandboxed && window.top && window.top !== window.self) {
-              try {
-                window.top.location.assign(loginUrl);
-                return true;
-              } catch (frameError) {
-                console.warn('Navegação no contexto superior bloqueada. Tentando fallback.', frameError);
-              }
-            }
-
-            try {
-              window.location.assign(loginUrl);
-              return true;
-            } catch (selfNavError) {
-              console.warn('Redirecionamento direto bloqueado. Avaliando fallback.', selfNavError);
-            }
-
-            if (sandboxed) {
-              const popup = window.open(loginUrl, '_blank', 'noopener');
-              if (popup) {
-                popup.focus?.();
-                return true;
-              }
-
-              showSandboxFallback(loginUrl);
-            }
-
-            return false;
-          };
-
-          try {
-            const loginUrl = keycloak.createLoginUrl(loginOptions);
-            if (typeof loginUrl === 'string') {
-              prepareOverlayForRedirect();
-              const redirected = attemptRedirect(loginUrl);
-              if (redirected) {
-                return Promise.resolve(loginUrl);
-              }
-            }
-          } catch (frameError) {
-            console.warn('Não foi possível construir ou usar a URL de login.', frameError);
-          }
-
-          try {
-            prepareOverlayForRedirect();
-            return toNativePromise(keycloak.login(loginOptions)).catch((loginError) => {
-              if (!isHttpProtocol && typeof window.top?.location?.href === 'string') {
-                console.warn(
-                  'Requisição de login falhou no protocolo atual. Redirecionando utilizando a URL padrão do Keycloak.',
-                  loginError
-                );
-
-                try {
-                  const fallbackUrl = keycloak.createLoginUrl(options || {});
-                  if (typeof fallbackUrl === 'string') {
-                    window.location.href = fallbackUrl;
-                    return fallbackUrl;
-                  }
-                } catch (fallbackError) {
-                  console.error('Não foi possível construir a URL de login de contingência.', fallbackError);
-                }
-              }
-
-              throw loginError;
-            });
-          } catch (loginError) {
-            return Promise.reject(loginError);
-          }
-        }
-
-        function scheduleTokenRefresh(keycloak) {
-          const refresh = () =>
-            toNativePromise(keycloak.updateToken(60)).catch(() => {
-              return ensureLogin(keycloak);
-            });
-
-          const intervalId = window.setInterval(refresh, 20000);
-          document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-              refresh();
-            }
-          });
-
-          window.addEventListener(
-            'beforeunload',
-            () => {
-              window.clearInterval(intervalId);
-            },
-            { once: true }
-          );
-        }
-
-        function bootstrapKeycloak() {
-          return loadKeycloakAdapter()
-            .catch((error) => {
-              showAuthError('Biblioteca de autenticação indisponível.');
-              throw error;
-            })
-            .then(() => {
-              if (typeof window.Keycloak !== 'function') {
-                throw new Error('Keycloak adapter missing');
-              }
-
-              const keycloak = new window.Keycloak({
-                url: 'https://login.recife.pe.gov.br/auth',
-                realm: 'prefeitura',
-                clientId: 'portal-crcl',
-              });
-
-              window.keycloakAuth = keycloak;
-
-              const initPromise = toNativePromise(
-                keycloak.init({
-                  onLoad: 'login-required',
-                  checkLoginIframe: false,
-                })
-              )
-                .then((authenticated) => {
-                  if (!authenticated) {
-                    return ensureLogin(keycloak);
-                  }
-
-                  scheduleTokenRefresh(keycloak);
-                  setAuthState('auth-ready');
-                  const overlay = document.getElementById('authOverlay');
-                  if (overlay) {
-                    overlay.setAttribute('aria-hidden', 'true');
-                  }
-                  document.documentElement.setAttribute('data-authenticated', 'true');
-                  return authenticated;
-                })
-                .catch((error) => {
-                  console.error('Erro ao autenticar com Keycloak:', error);
-                  showAuthError('Não foi possível autenticar. Refaça o login.');
-                  throw error;
-                });
-
-              window.keycloakReady = initPromise;
-              return initPromise;
-            });
-        }
-
-        function showSandboxEscape(targetUrl) {
-          setAuthState('auth-pending');
-
-          const overlayCard = document.querySelector('.auth-overlay-card');
-          if (!overlayCard) return;
-
-          overlayCard.innerHTML = `
-            <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
-            <h2 class="fw-bold">Abra em uma nova aba para continuar</h2>
-            <p>O ambiente do n8n está isolando esta página em um sandbox. Para autenticar com segurança, abra o portal em uma nova aba.</p>
-            <a class="btn btn-primary w-100 mb-2" href="${targetUrl}" target="_blank" rel="noopener">Abrir portal em nova aba</a>
-            <button type="button" class="btn btn-outline-secondary w-100" id="copyEscapeUrl">Copiar link de acesso</button>
-          `;
-
-          const copyBtn = overlayCard.querySelector('#copyEscapeUrl');
-          if (copyBtn && navigator?.clipboard) {
-            copyBtn.addEventListener('click', () => {
-              navigator.clipboard
-                .writeText(targetUrl)
-                .then(() => {
-                  copyBtn.textContent = 'Link copiado. Cole em uma nova aba.';
-                  copyBtn.classList.replace('btn-outline-secondary', 'btn-success');
-                  setTimeout(() => {
-                    copyBtn.textContent = 'Copiar link de acesso';
-                    copyBtn.classList.replace('btn-success', 'btn-outline-secondary');
-                  }, 3200);
-                })
-                .catch(() => {
-                  copyBtn.textContent = 'Não foi possível copiar. Copie manualmente o endereço acima.';
-                  copyBtn.classList.replace('btn-outline-secondary', 'btn-warning');
-                });
-            });
-          }
-        }
-
-        function requestSandboxEscape() {
-          const current = new URL(window.location.href);
-          const escapeFlag = 'kc_escape';
-
-          if (!current.searchParams.has(escapeFlag)) {
-            current.searchParams.set(escapeFlag, '1');
-          }
-
-          const targetUrl = current.toString();
-
-          if (canRedirectTop()) {
-            window.top.location.href = targetUrl;
-            return;
-          }
-
-          const opened = window.open(targetUrl, '_blank', 'noopener');
-
-          if (!opened) {
-            showSandboxEscape(targetUrl);
-          } else {
-            opened.focus?.();
-            showSandboxEscape(targetUrl);
-          }
-        }
-
-        function startAuth() {
-          const sandboxed = isSandboxedFrame();
-          const cookieBlocked = !hasCookieAccess();
-          const isEscapeRequest = new URLSearchParams(window.location.search).has('kc_escape');
-
-          if ((sandboxed || cookieBlocked) && !isEscapeRequest) {
-            requestSandboxEscape();
-            return;
-          }
-
-          bootstrapKeycloak().catch((error) => {
-            if (!document.body) return;
-
-            const { classList } = document.body;
-            if (!classList.contains('auth-ready') && !classList.contains('auth-error')) {
-              showAuthError('Não foi possível iniciar a autenticação.');
-            }
-
-            console.error('Falha inesperada ao iniciar o Keycloak:', error);
-          });
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', startAuth, { once: true });
-        } else {
-          startAuth();
-        }
-      })();
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/imask@7.1.3/dist/imask.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/dayjs.min.js" defer></script>
   </head>
-  <body class="auth-pending" inert>
-    <div id="authOverlay" class="auth-overlay" role="alert" aria-live="polite">
-      <div class="auth-overlay-card">
-        <div class="spinner-border" role="status" aria-hidden="true"></div>
-        <h2>Autenticando...</h2>
-        <p>Conectando com a plataforma da Prefeitura do Recife.</p>
-      </div>
-    </div>
+  <body>
     <div class="toast-container position-fixed top-0 end-0 p-3" aria-live="polite" aria-atomic="true">
       <div class="toast align-items-center" id="successToast" role="status" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -1466,68 +922,63 @@
           </div>
         </div>
 
-        <section class="card-section mt-4 d-none" id="registroModal" aria-labelledby="registroModalLabel" aria-hidden="true">
-          <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-4">
-            <h2 class="h4 mb-0" id="registroModalLabel" tabindex="-1">Prontuário</h2>
-          </div>
-          <div id="registroModalBody">
-                <section id="formularioWrapper">
+        <div
+          class="modal fade"
+          id="registroModal"
+          tabindex="-1"
+          aria-labelledby="registroModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2 class="modal-title fs-5" id="registroModalLabel" tabindex="-1">Prontuário</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+              </div>
+              <div class="modal-body" id="registroModalBody">
+                <section id="formularioWrapper" class="d-none">
                   <form id="registroForm" class="needs-validation" novalidate>
                     <div id="formularioStatus" class="alert d-none align-items-center gap-2 mb-4" role="status"></div>
                     <fieldset id="registroFieldset">
                       <div class="row g-4 form-sections-layout">
                         <aside class="col-12 col-xl-3 form-section-sidebar">
-                          <button
-                            class="btn btn-outline-primary w-100 d-xl-none form-section-sidebar-toggle"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#formSectionNavCollapse"
-                            aria-expanded="false"
-                            aria-controls="formSectionNavCollapse"
-                          >
-                            <i class="bi bi-list"></i>
-                            Navegador de seções
-                          </button>
-                          <div class="collapse d-xl-block" id="formSectionNavCollapse">
-                            <nav class="form-section-nav mt-3 mt-xl-0" aria-label="Navegação entre seções do formulário">
-                              <span class="nav-label">Navegador de seções</span>
-                              <div class="section-nav-list">
-                                <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
-                                  ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
-                                >
-                                <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
-                                  ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
-                                >
-                                <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
-                                  ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
-                                >
-                                <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
-                                  ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
-                                >
-                                <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
-                                  ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
-                                >
-                                <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
-                                  ><i class="bi bi-people"></i><span>Dados sociais</span></a
-                                >
-                                <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
-                                  ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
-                                >
-                                <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
-                                  ><i class="bi bi-list-check"></i><span>Tipificação</span></a
-                                >
-                                <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
-                                  ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
-                                >
-                                <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
-                                  ><i class="bi bi-gavel"></i><span>Dados jurídicos</span></a
-                                >
-                                <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
-                                  ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
-                                >
-                              </div>
-                            </nav>
-                          </div>
+                          <nav class="form-section-nav" aria-label="Navegação entre seções do formulário">
+                            <div class="section-nav-list">
+                              <a class="section-nav-link" href="#dados-preliminares" data-section="dados-preliminares"
+                                ><i class="bi bi-person-vcard"></i><span>Dados preliminares</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-endereco" data-section="dados-endereco"
+                                ><i class="bi bi-geo-alt"></i><span>Endereço e contatos</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-escolaridade" data-section="dados-escolaridade"
+                                ><i class="bi bi-mortarboard"></i><span>Escolaridade</span></a
+                              >
+                              <a class="section-nav-link" href="#caracterizacao-violencia" data-section="caracterizacao-violencia"
+                                ><i class="bi bi-exclamation-triangle"></i><span>Caracterização</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-saude" data-section="dados-saude"
+                                ><i class="bi bi-heart-pulse"></i><span>Saúde</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-sociais" data-section="dados-sociais"
+                                ><i class="bi bi-people"></i><span>Dados sociais</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-autor" data-section="dados-autor"
+                                ><i class="bi bi-person-exclamation"></i><span>Autor(a)</span></a
+                              >
+                              <a class="section-nav-link" href="#tipificacao-violencia" data-section="tipificacao-violencia"
+                                ><i class="bi bi-list-check"></i><span>Tipificação</span></a
+                              >
+                              <a class="section-nav-link" href="#evolucoes" data-section="evolucoes"
+                                ><i class="bi bi-journal-text"></i><span>Evoluções</span></a
+                              >
+                              <a class="section-nav-link" href="#dados-juridicos" data-section="dados-juridicos"
+                                ><i class="bi bi-gavel"></i><span>Dados jurídicos</span></a
+                              >
+                              <a class="section-nav-link" href="#repositorio-arquivos" data-section="repositorio-arquivos"
+                                ><i class="bi bi-folder2-open"></i><span>Arquivos</span></a
+                              >
+                            </div>
+                          </nav>
                         </aside>
                         <div class="col-12 col-xl-9 col-xxl-9">
               <section class="card-section mb-4" aria-labelledby="dados-preliminares">
@@ -1650,12 +1101,12 @@
                       <h3 class="subsection-heading">Documentação e identificação civil</h3>
                       <div class="row g-3">
                         <div class="col-12 field-cpf">
-                          <label for="cpf_usuaria" class="form-label required">CPF</label>
-                          <input type="text" class="form-control cpf-input" id="cpf_usuaria" name="cpf_usuaria" required />
+                          <label for="cpfUsuario" class="form-label required">CPF</label>
+                          <input type="text" class="form-control cpf-input" id="cpfUsuario" name="cpfUsuario" required />
                         </div>
                         <div class="col-12 nome-completo-field">
-                          <label for="nome_usuaria" class="form-label required">Nome completo</label>
-                          <input type="text" class="form-control" id="nome_usuaria" name="nome_usuaria" autocomplete="name" required />
+                          <label for="nomeUsuario" class="form-label required">Nome completo</label>
+                          <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                         </div>
                         <div class="col-12 nome-social-field">
                           <label for="nomeSocial" class="form-label">Nome social</label>
@@ -1676,8 +1127,8 @@
                         <div class="col-12">
                           <div class="row g-3">
                             <div class="col-12 col-md-4 col-xl-4">
-                              <label for="rg_usuaria" class="form-label">RG</label>
-                              <input type="text" class="form-control" id="rg_usuaria" name="rg_usuaria" />
+                              <label for="rgUsuario" class="form-label">RG</label>
+                              <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                             </div>
                             <div class="col-12 col-md-5 col-xl-5">
                               <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
@@ -1836,11 +1287,11 @@
                         <label for="rpa" class="form-label">RPA</label>
                         <input type="text" class="form-control" id="rpa" name="rpa" />
                       </div>
-                      <div class="col-12 col-md-5 col-xl-5">
+                      <div class="col-12 col-md-6 col-xl-6">
                         <label for="cidade" class="form-label required">Cidade</label>
                         <input type="text" class="form-control" id="cidade" name="cidade" required />
                       </div>
-                      <div class="col-12 col-md-2 col-xl-2">
+                      <div class="col-12 col-md-1 col-xl-1">
                         <label for="uf" class="form-label required">UF</label>
                         <select id="uf" name="uf" class="form-select" required>
                           <option value="">UF</option>
@@ -2522,7 +1973,6 @@
                       id="adicionarMembroFamilia"
                       data-bs-toggle="modal"
                       data-bs-target="#familiaModal"
-                      data-modal-child-trigger="true"
                     >
                       <i class="bi bi-person-plus me-1"></i>Adicionar membro da família
                     </button>
@@ -2559,7 +2009,6 @@
                     class="btn btn-outline-primary btn-sm ms-auto"
                     data-bs-toggle="modal"
                     data-bs-target="#autorModal"
-                    data-modal-child-trigger="true"
                   >
                     <i class="bi bi-person-plus me-1"></i>Adicionar autor(a)
                   </button>
@@ -3225,13 +2674,7 @@
                 <h2 class="form-section-title" id="evolucoes"><i class="bi bi-journal-text"></i>Evoluções</h2>
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                   <p class="text-muted mb-0">Registre as evoluções realizadas no acompanhamento técnico.</p>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#evolucaoModal"
-                    data-modal-child-trigger="true"
-                  >
+                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#evolucaoModal">
                     <i class="bi bi-plus-lg me-2"></i>Adicionar evolução
                   </button>
                 </div>
@@ -3875,13 +3318,7 @@
                 <h2 class="form-section-title" id="repositorio-arquivos"><i class="bi bi-paperclip"></i>Repositório de arquivos</h2>
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                   <p class="text-muted mb-0">Anexe documentos relevantes ao prontuário para consulta posterior.</p>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#anexoModal"
-                    data-modal-child-trigger="true"
-                  >
+                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#anexoModal">
                     <i class="bi bi-upload me-2"></i>Adicionar anexo
                   </button>
                 </div>
@@ -3907,21 +3344,23 @@
 
                   </form>
                 </section>
+              </div>
+              <div class="modal-footer sticky-modal-footer justify-content-end gap-2" id="registroModalFooter">
+                <button type="button" class="btn btn-success" id="registroModalSalvarBtn">
+                  <i class="bi bi-save me-1"></i>Salvar
+                </button>
+                <button type="button" class="btn btn-danger" id="registroModalCancelarBtn">
+                  <i class="bi bi-arrow-counterclockwise me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-light" id="registroModalFecharBtn" data-bs-dismiss="modal">
+                  <i class="bi bi-x-lg me-1"></i>Fechar
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="sticky-modal-footer justify-content-end gap-2 d-flex flex-wrap" id="registroModalFooter">
-            <button type="button" class="btn btn-success" id="registroModalSalvarBtn">
-              <i class="bi bi-save me-1"></i>Salvar
-            </button>
-            <button type="button" class="btn btn-danger" id="registroModalCancelarBtn">
-              <i class="bi bi-arrow-counterclockwise me-1"></i>Cancelar
-            </button>
-            <button type="button" class="btn btn-light" id="registroModalFecharBtn">
-              <i class="bi bi-x-lg me-1"></i>Fechar
-            </button>
-          </div>
-        </section>
-
-      </main>
+        </div>
+      </div>
+    </main>
 
     <div class="modal fade" id="unsavedChangesModal" tabindex="-1" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -4621,7 +4060,6 @@
           </div>
           <form id="anexoModalForm">
             <div class="modal-body">
-              <div class="alert d-none mb-3" id="anexoModalFeedback" role="alert"></div>
               <div class="row g-3">
                 <div class="col-12 col-md-4">
                   <label for="anexoData" class="form-label required">Data</label>
@@ -4704,289 +4142,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.min.js"></script>
     <script>
       (function () {
-        const modalStackManager = (() => {
-          const stack = [];
-          const baseModalZ = 1050;
-          const baseBackdropZ = 1040;
-          const zStep = 30;
-          const focusableSelectors = [
-            'button:not([disabled]):not([tabindex="-1"])',
-            'a[href]:not([tabindex="-1"])',
-            'input:not([type="hidden"]):not([disabled]):not([tabindex="-1"])',
-            'select:not([disabled]):not([tabindex="-1"])',
-            'textarea:not([disabled]):not([tabindex="-1"])',
-            '[tabindex]:not([tabindex="-1"]):not([disabled])'
-          ].join(', ');
-
-          const isElement = (value) =>
-            value instanceof Element ||
-            (typeof HTMLDocument !== 'undefined' && value instanceof HTMLDocument);
-
-          const findEntryIndex = (modalEl) => stack.findIndex((entry) => entry.el === modalEl);
-
-          const focusEntry = (entry) => {
-            if (!entry || !entry.el) return;
-            const modalEl = entry.el;
-            const focusTarget =
-              modalEl.querySelector('[data-modal-initial-focus]') || modalEl.querySelector(focusableSelectors);
-            if (focusTarget && typeof focusTarget.focus === 'function') {
-              focusTarget.focus({ preventScroll: true });
-            } else if (typeof modalEl.focus === 'function') {
-              modalEl.focus({ preventScroll: true });
-            }
-          };
-
-          const setInteractivity = (modalEl, interactive) => {
-            if (!modalEl) return;
-            modalEl.classList.toggle('modal-stack-muted', !interactive);
-            if ('inert' in modalEl) {
-              modalEl.inert = !interactive;
-            }
-            if (!interactive) {
-              modalEl.setAttribute('aria-hidden', 'true');
-            } else {
-              modalEl.removeAttribute('aria-hidden');
-            }
-          };
-
-          const updateZOrder = () => {
-            stack.forEach((entry, index) => {
-              const depth = index;
-              const modalEl = entry.el;
-              const backdropEl = entry.backdrop;
-              const isTop = index === stack.length - 1;
-              modalEl.style.zIndex = baseModalZ + depth * zStep;
-              modalEl.setAttribute('data-modal-stack-depth', depth.toString());
-              if (backdropEl) {
-                backdropEl.style.zIndex = baseBackdropZ + depth * zStep;
-                backdropEl.setAttribute('data-modal-stack-depth', depth.toString());
-                backdropEl.style.pointerEvents = isTop ? 'auto' : 'none';
-              }
-              setInteractivity(modalEl, isTop);
-            });
-          };
-
-          const assignBackdrop = (entry) => {
-            if (!entry) return;
-            const backdrops = Array.from(document.querySelectorAll('.modal-backdrop'));
-            for (let i = backdrops.length - 1; i >= 0; i -= 1) {
-              const candidate = backdrops[i];
-              const alreadyAssigned = stack.some((item) => item.backdrop === candidate);
-              if (!alreadyAssigned) {
-                entry.backdrop = candidate;
-                break;
-              }
-            }
-            updateZOrder();
-          };
-
-          const handleShow = (event) => {
-            const modalEl = event.target;
-            if (!(modalEl instanceof HTMLElement)) return;
-            const existingIndex = findEntryIndex(modalEl);
-            if (existingIndex !== -1) {
-              stack.splice(existingIndex, 1);
-            }
-            const triggerEl = event.relatedTarget instanceof HTMLElement ? event.relatedTarget : document.activeElement;
-            const entry = {
-              el: modalEl,
-              trigger: triggerEl instanceof HTMLElement ? triggerEl : null,
-              backdrop: null,
-              allowEscape: modalEl.getAttribute('data-bs-keyboard') !== 'false',
-              suppressHideOnce: false,
-              pendingChild: null,
-              pendingTrigger: null
-            };
-            stack.push(entry);
-            updateZOrder();
-          };
-
-          const handleShown = (event) => {
-            const modalEl = event.target;
-            if (!(modalEl instanceof HTMLElement)) return;
-            const index = findEntryIndex(modalEl);
-            if (index === -1) return;
-            const entry = stack[index];
-            assignBackdrop(entry);
-            if (index > 0) {
-              const parentEntry = stack[index - 1];
-              if (parentEntry) {
-                parentEntry.pendingChild = modalEl;
-                parentEntry.pendingTrigger = entry.trigger || parentEntry.pendingTrigger;
-              }
-            }
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-              const instance = bootstrap.Modal.getInstance(modalEl);
-              if (instance && instance._config) {
-                entry.allowEscape = !!instance._config.keyboard;
-              }
-            }
-            requestAnimationFrame(() => focusEntry(entry));
-          };
-
-          const handleHide = (event) => {
-            const modalEl = event.target;
-            if (!(modalEl instanceof HTMLElement)) return;
-            const index = findEntryIndex(modalEl);
-            if (index === -1) return;
-            const isTop = index === stack.length - 1;
-            const entry = stack[index];
-            if (entry && entry.suppressHideOnce) {
-              entry.suppressHideOnce = false;
-              event.preventDefault();
-              event.stopImmediatePropagation();
-              const topEntry = stack[stack.length - 1];
-              requestAnimationFrame(() => focusEntry(topEntry || entry));
-              return;
-            }
-            if (!isTop) {
-              event.preventDefault();
-              event.stopImmediatePropagation();
-              const topEntry = stack[stack.length - 1];
-              if (topEntry) {
-                requestAnimationFrame(() => focusEntry(topEntry));
-              }
-            }
-          };
-
-          const handleHidden = (event) => {
-            const modalEl = event.target;
-            if (!(modalEl instanceof HTMLElement)) return;
-            const index = findEntryIndex(modalEl);
-            if (index === -1) return;
-            const [entry] = stack.splice(index, 1);
-            if (entry.backdrop) {
-              entry.backdrop.style.removeProperty('z-index');
-              entry.backdrop.style.pointerEvents = '';
-              entry.backdrop.removeAttribute('data-modal-stack-depth');
-              entry.backdrop = null;
-            }
-            modalEl.style.removeProperty('z-index');
-            modalEl.removeAttribute('data-modal-stack-depth');
-            modalEl.classList.remove('modal-stack-muted');
-            if ('inert' in modalEl) {
-              modalEl.inert = false;
-            }
-            modalEl.removeAttribute('aria-hidden');
-            updateZOrder();
-            const focusTarget = entry.trigger;
-            entry.pendingChild = null;
-            entry.pendingTrigger = null;
-            const nextTop = stack[stack.length - 1];
-            setTimeout(() => {
-              if (
-                focusTarget &&
-                isElement(focusTarget) &&
-                typeof focusTarget.focus === 'function' &&
-                document.contains(focusTarget)
-              ) {
-                focusTarget.focus({ preventScroll: true });
-              } else if (nextTop) {
-                focusEntry(nextTop);
-              }
-            }, 50);
-          };
-
-          const handleFocusIn = (event) => {
-            if (!stack.length) return;
-            const topEntry = stack[stack.length - 1];
-            if (!topEntry || !topEntry.el) return;
-            const modalEl = topEntry.el;
-            if (modalEl.contains(event.target)) {
-              return;
-            }
-            event.stopPropagation();
-            requestAnimationFrame(() => focusEntry(topEntry));
-          };
-
-          const handleKeyDown = (event) => {
-            if (event.key !== 'Escape' || !stack.length) return;
-            const topEntry = stack[stack.length - 1];
-            if (!topEntry || !topEntry.el) return;
-            event.stopPropagation();
-            if (!topEntry.allowEscape) {
-              event.preventDefault();
-              return;
-            }
-            event.preventDefault();
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-              const instance = bootstrap.Modal.getInstance(topEntry.el) || bootstrap.Modal.getOrCreateInstance(topEntry.el);
-              if (instance) {
-                instance.hide();
-              }
-            }
-          };
-
-          document.addEventListener('show.bs.modal', handleShow, true);
-          document.addEventListener('shown.bs.modal', handleShown, true);
-          document.addEventListener('hide.bs.modal', handleHide, true);
-          document.addEventListener('hidden.bs.modal', handleHidden, true);
-          document.addEventListener('focusin', handleFocusIn, true);
-          document.addEventListener('keydown', handleKeyDown, true);
-
-          return {
-            focusTopModal: () => {
-              const topEntry = stack[stack.length - 1] || null;
-              if (topEntry) {
-                focusEntry(topEntry);
-              }
-            },
-            stackSize: () => stack.length,
-            prepareForNestedModal: (triggerEl, childModalEl) => {
-              if (!triggerEl || !childModalEl) return;
-              const parentEntry = stack[stack.length - 1];
-              if (!parentEntry || parentEntry.el === childModalEl) {
-                return;
-              }
-              parentEntry.suppressHideOnce = true;
-              parentEntry.pendingChild = childModalEl;
-              parentEntry.pendingTrigger = triggerEl instanceof HTMLElement ? triggerEl : null;
-            }
-          };
-        })();
-
-        if (typeof window !== 'undefined') {
-          window.modalStackManager = modalStackManager;
-        }
-
-        const resolveModalElementFromTrigger = (trigger) => {
-          if (!trigger) return null;
-          const selector =
-            trigger.getAttribute('data-bs-target') ||
-            trigger.getAttribute('data-target') ||
-            trigger.getAttribute('href') ||
-            '';
-          if (!selector || selector === '#') {
-            return null;
-          }
-          try {
-            return document.querySelector(selector);
-          } catch (error) {
-            return null;
-          }
-        };
-
-        document.addEventListener(
-          'click',
-          (event) => {
-            if (
-              !window.modalStackManager ||
-              typeof window.modalStackManager.prepareForNestedModal !== 'function'
-            ) {
-              return;
-            }
-            const trigger =
-              event.target instanceof HTMLElement
-                ? event.target.closest('[data-modal-child-trigger="true"]')
-                : null;
-            if (!trigger) return;
-            const modalEl = resolveModalElementFromTrigger(trigger);
-            if (!modalEl) return;
-            window.modalStackManager.prepareForNestedModal(trigger, modalEl);
-          },
-          true
-        );
-
         const initPortal = () => {
         const tabTriggerList = [].slice.call(document.querySelectorAll('#portalTabs button[data-bs-toggle="tab"]'));
         tabTriggerList.forEach((tabTriggerEl) => {
@@ -5397,9 +4552,9 @@
         configurarCidadeDependente('autorUfNascimento', 'autorCidadeNascimento');
 
         const dataNascimentoInput = document.getElementById('dataNascimento');
-        const cpf_usuariaInput = document.getElementById('cpf_usuaria');
-        const nome_usuariaInput = document.getElementById('nome_usuaria');
-        const rg_usuariaInput = document.getElementById('rg_usuaria');
+        const cpfUsuarioInput = document.getElementById('cpfUsuario');
+        const nomeUsuarioInput = document.getElementById('nomeUsuario');
+        const rgUsuarioInput = document.getElementById('rgUsuario');
         const orgaoExpedidorInput = document.getElementById('orgaoExpedidor');
         const ufExpedicaoSelect = document.getElementById('ufExpedicao');
         const nacionalidadeInput = document.getElementById('nacionalidade');
@@ -5462,10 +4617,10 @@
           const isViewMode = normalized === 'view';
           const lockWhenFilled = normalized === 'edit';
           const campos = [
-            cpf_usuariaInput,
-            nome_usuariaInput,
+            cpfUsuarioInput,
+            nomeUsuarioInput,
             dataNascimentoInput,
-            rg_usuariaInput,
+            rgUsuarioInput,
             orgaoExpedidorInput,
             ufExpedicaoSelect,
             nacionalidadeInput,
@@ -7037,17 +6192,12 @@
         const anexoHiddenInputs = document.getElementById('anexoHiddenInputs');
         const anexoModalElement = document.getElementById('anexoModal');
         const anexoModalForm = document.getElementById('anexoModalForm');
-        const anexoModalFeedback = document.getElementById('anexoModalFeedback');
         const visualizarAnexoModalElement = document.getElementById('visualizarAnexoModal');
         const visualizarAnexoDescricao = document.getElementById('visualizarAnexoDescricao');
         const visualizarAnexoFrame = document.getElementById('visualizarAnexoFrame');
         const visualizarAnexoSemPreview = document.getElementById('visualizarAnexoSemPreview');
         const downloadAnexoBtn = document.getElementById('downloadAnexoBtn');
         const anexosRegistros = [];
-        let anexosDadosAtuais = [];
-        let anexosDadosOriginais = [];
-        let anexosProntuarioAtual = '';
-        let anexoRequestToken = 0;
 
         const limparAnexosRegistros = () => {
           while (anexosRegistros.length) {
@@ -7058,268 +6208,22 @@
           }
         };
 
-        const cloneAnexosLista = (lista) =>
-          Array.isArray(lista)
-            ? lista.map((item) =>
-                item && typeof item === 'object'
-                  ? {
-                      ...item,
-                    }
-                  : null,
-              ).filter(Boolean)
-            : [];
-
-        const normalizarAnexoItem = (item, index = 0) => {
-          if (!item || typeof item !== 'object') {
-            return null;
-          }
-          const dataValor =
-            item.data || item.dataArquivo || item.data_arquivo || item.data_envio || item.created_at || item.criadoEm || '';
-          const descricaoValor =
-            item.descricao || item.description || item.nome || item.nomeArquivo || item.nome_arquivo || `Anexo ${index + 1}`;
-          const extensao = item.extensao || item.extension || '';
-          let nomeValor =
-            item.nome || item.nomeArquivo || item.nome_arquivo || item.filename || item.file_name || item.originalname || '';
-          let contentType = item.contentType || item.content_type || item.mimetype || item.mimeType || '';
-          const arquivoBruto = item.arquivo || item.file || item.binario || item.binary || item.payload || item.conteudo;
-          let blob = item.blob instanceof Blob ? item.blob : null;
-          let url = typeof item.url === 'string' ? item.url : '';
-
-          if (!nomeValor) {
-            const baseDescricao = (descricaoValor || '').toString().replace(/[\r\n]+/g, ' ').trim();
-            const base = baseDescricao ? baseDescricao.replace(/[^\p{L}\p{N}\-_. ]/gu, '').replace(/\s+/g, '-') : '';
-            const fallbackBase = base || `anexo-${index + 1}`;
-            const fallbackExtensao = extensao ? extensao.replace(/^\./, '') : '';
-            nomeValor = fallbackExtensao ? `${fallbackBase}.${fallbackExtensao}` : `${fallbackBase}.bin`;
-          }
-
-          if (!url) {
-            if (arquivoBruto instanceof Blob) {
-              blob = arquivoBruto;
-              if (!contentType && arquivoBruto.type) {
-                contentType = arquivoBruto.type;
-              }
-            } else if (typeof arquivoBruto === 'string' && arquivoBruto.trim()) {
-              let base64 = arquivoBruto.trim();
-              let mimeFromDataUrl = '';
-              const dataUrlMatch = base64.match(/^data:(.+?);base64,(.+)$/);
-              if (dataUrlMatch) {
-                mimeFromDataUrl = dataUrlMatch[1];
-                base64 = dataUrlMatch[2];
-              }
-              base64 = base64.replace(/\s/g, '');
-              try {
-                const byteString = atob(base64);
-                const byteArray = new Uint8Array(byteString.length);
-                for (let i = 0; i < byteString.length; i += 1) {
-                  byteArray[i] = byteString.charCodeAt(i);
-                }
-                const tipo = mimeFromDataUrl || contentType || 'application/octet-stream';
-                blob = new Blob([byteArray], { type: tipo });
-                contentType = tipo;
-              } catch (error) {
-                console.error('Falha ao decodificar o anexo recebido.', error);
-              }
-            }
-          }
-
-          return {
-            data: dataValor || '',
-            descricao: descricaoValor || '',
-            nome: nomeValor || `anexo-${index + 1}.bin`,
-            blob,
-            url,
-            contentType: contentType || (blob && blob.type) || '',
-            prontuario: item.prontuario || '',
-          };
-        };
-
-        const formatarDataAnexo = (valor) => {
-          if (!valor) return '—';
-          if (window.dayjs) {
-            const data = dayjs(valor);
-            if (data.isValid()) {
-              return data.format('DD/MM/YYYY');
-            }
-          }
-          const isoMatch = valor.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-          if (isoMatch) {
-            return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`;
-          }
-          return valor;
-        };
-
-        const ensureAnexoUrl = (registro) => {
-          if (!registro) return '';
-          if (registro.url && typeof registro.url === 'string') {
-            return registro.url;
-          }
-          if (registro.blob && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
-            registro.url = URL.createObjectURL(registro.blob);
-            return registro.url;
-          }
-          return '';
-        };
-
-        const renderizarTabelaAnexos = (lista) => {
+        const restaurarTabelaAnexos = () => {
           limparAnexosRegistros();
           if (anexoTabelaBody) {
             anexoTabelaBody.innerHTML = '';
+            const vazio = document.createElement('tr');
+            vazio.id = 'anexoVazio';
+            const celula = document.createElement('td');
+            celula.colSpan = 4;
+            celula.className = 'text-center text-muted';
+            celula.textContent = 'Nenhum arquivo anexado.';
+            vazio.appendChild(celula);
+            anexoTabelaBody.appendChild(vazio);
           }
           if (anexoHiddenInputs) {
             anexoHiddenInputs.innerHTML = '';
           }
-          const dados = Array.isArray(lista) ? lista : [];
-          if (!dados.length) {
-            if (anexoTabelaBody) {
-              const vazio = document.createElement('tr');
-              vazio.id = 'anexoVazio';
-              const celula = document.createElement('td');
-              celula.colSpan = 4;
-              celula.className = 'text-center text-muted';
-              celula.textContent = 'Nenhum arquivo anexado.';
-              vazio.appendChild(celula);
-              anexoTabelaBody.appendChild(vazio);
-            }
-            return;
-          }
-
-          const fragLinhas = document.createDocumentFragment();
-          const fragHidden = document.createDocumentFragment();
-          dados.forEach((item, index) => {
-            const registro = item && typeof item === 'object' ? { ...item } : null;
-            if (!registro) return;
-            ensureAnexoUrl(registro);
-            const registroIndex = anexosRegistros.push(registro) - 1;
-
-            const linha = document.createElement('tr');
-
-            const dataTd = document.createElement('td');
-            dataTd.textContent = formatarDataAnexo(registro.data);
-            linha.appendChild(dataTd);
-
-            const descricaoTd = document.createElement('td');
-            descricaoTd.textContent = registro.descricao || '';
-            linha.appendChild(descricaoTd);
-
-            const arquivoTd = document.createElement('td');
-            arquivoTd.textContent = registro.nome || '';
-            linha.appendChild(arquivoTd);
-
-            const acoesTd = document.createElement('td');
-            acoesTd.className = 'text-center';
-            const botao = document.createElement('button');
-            botao.type = 'button';
-            botao.className = 'btn btn-sm btn-outline-primary';
-            botao.setAttribute('data-visualizar-anexo', String(registroIndex));
-            botao.title = 'Visualizar anexo';
-            const icone = document.createElement('i');
-            icone.className = 'bi bi-eye';
-            botao.appendChild(icone);
-            const srText = document.createElement('span');
-            srText.className = 'visually-hidden';
-            srText.textContent = `Visualizar ${registro.nome || 'anexo'}`;
-            botao.appendChild(srText);
-            acoesTd.appendChild(botao);
-            linha.appendChild(acoesTd);
-
-            fragLinhas.appendChild(linha);
-
-            if (anexoHiddenInputs) {
-              const wrapper = document.createElement('div');
-              const adicionarHidden = (name, value) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                wrapper.appendChild(input);
-              };
-              adicionarHidden('anexos[data][]', registro.data || '');
-              adicionarHidden('anexos[descricao][]', registro.descricao || '');
-              adicionarHidden('anexos[arquivo][]', registro.nome || '');
-              fragHidden.appendChild(wrapper);
-            }
-          });
-
-          if (anexoTabelaBody) {
-            anexoTabelaBody.appendChild(fragLinhas);
-          }
-          if (anexoHiddenInputs) {
-            anexoHiddenInputs.appendChild(fragHidden);
-          }
-        };
-
-        const setAnexosDados = (lista, prontuario, { setOriginal = false } = {}) => {
-          const normalizados = Array.isArray(lista)
-            ? lista
-                .map((item, index) => normalizarAnexoItem(item, index))
-                .filter((item) => item)
-            : [];
-          anexosProntuarioAtual = prontuario || '';
-          anexosDadosAtuais = cloneAnexosLista(normalizados);
-          if (setOriginal) {
-            anexosDadosOriginais = cloneAnexosLista(normalizados);
-          }
-          renderizarTabelaAnexos(anexosDadosAtuais);
-        };
-
-        const restaurarTabelaAnexos = () => {
-          renderizarTabelaAnexos(anexosDadosAtuais);
-        };
-
-        const carregarAnexosDoProntuario = async (prontuario) => {
-          const codigo = typeof prontuario === 'string' ? prontuario.trim() : prontuario;
-          if (!codigo) {
-            setAnexosDados([], '', { setOriginal: true });
-            return [];
-          }
-          const requestId = ++anexoRequestToken;
-          try {
-            const url = new URL(
-              'https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/recupera-arquivos',
-            );
-            url.searchParams.set('prontuario', codigo);
-            const resposta = await fetch(url.toString(), { method: 'GET' });
-            if (!resposta.ok) {
-              throw new Error('Falha ao recuperar anexos.');
-            }
-            const dados = await resposta.json();
-            if (requestId !== anexoRequestToken) {
-              return [];
-            }
-            let lista = [];
-            if (Array.isArray(dados)) {
-              lista = dados;
-            } else if (dados && typeof dados === 'object') {
-              if (Array.isArray(dados.data)) {
-                lista = dados.data;
-              } else if (Array.isArray(dados.arquivos)) {
-                lista = dados.arquivos;
-              } else if (Array.isArray(dados.registros)) {
-                lista = dados.registros;
-              }
-            }
-            setAnexosDados(lista, codigo, { setOriginal: true });
-            return lista;
-          } catch (error) {
-            console.error(error);
-            if (requestId !== anexoRequestToken) {
-              return [];
-            }
-            setAnexosDados([], codigo, { setOriginal: true });
-            return [];
-          }
-        };
-
-        const setAnexoModalFeedback = (message = '', type = 'info') => {
-          if (!anexoModalFeedback) return;
-          if (!message) {
-            anexoModalFeedback.textContent = '';
-            anexoModalFeedback.className = 'alert d-none mb-3';
-            return;
-          }
-          anexoModalFeedback.textContent = message;
-          anexoModalFeedback.className = `alert alert-${type} mb-3`;
         };
 
         if (anexoModalElement && anexoModalForm) {
@@ -7341,7 +6245,6 @@
 
           anexoModalElement.addEventListener('show.bs.modal', () => {
             atualizarDataAnexo();
-            setAnexoModalFeedback();
             if (anexoDescricaoInput) {
               setTimeout(() => anexoDescricaoInput.focus({ preventScroll: true }), 150);
             }
@@ -7349,10 +6252,9 @@
 
           anexoModalElement.addEventListener('hidden.bs.modal', () => {
             anexoModalForm.reset();
-            setAnexoModalFeedback();
           });
 
-          anexoModalForm.addEventListener('submit', async (event) => {
+          anexoModalForm.addEventListener('submit', (event) => {
             event.preventDefault();
             if (!anexoModalForm.checkValidity()) {
               anexoModalForm.reportValidity();
@@ -7367,73 +6269,57 @@
               anexoModalForm.reportValidity();
               return;
             }
-            const prontuarioInputEl =
-              numeroProntuarioInput || document.getElementById('numeroProntuario');
-            const prontuarioDisplayEl =
-              numeroProntuarioDisplay || document.getElementById('numeroProntuarioDisplay');
-            const displayValor =
-              prontuarioDisplayEl && prontuarioDisplayEl.textContent
-                ? prontuarioDisplayEl.textContent.trim()
+            const dataFormatada = window.dayjs && dataValor ? dayjs(dataValor).format('DD/MM/YYYY') : dataValor;
+            const urlAnexo =
+              arquivo && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function'
+                ? URL.createObjectURL(arquivo)
                 : '';
-            const prontuarioAtual =
-              (prontuarioInputEl && prontuarioInputEl.value.trim()) ||
-              (displayValor && displayValor !== '—' ? displayValor : '') ||
-              anexosProntuarioAtual;
-            if (!prontuarioAtual) {
-              setAnexoModalFeedback('Informe o número do prontuário antes de enviar um anexo.', 'warning');
-              return;
+            const registroIndex = anexosRegistros.push({
+              data: dataValor,
+              descricao: descricaoValor,
+              nome: nomeArquivo,
+              url: urlAnexo,
+            }) - 1;
+            if (anexoTabelaBody) {
+              const vazio = document.getElementById('anexoVazio');
+              if (vazio) vazio.remove();
+              const linha = document.createElement('tr');
+              [dataFormatada, descricaoValor, nomeArquivo].forEach((valor) => {
+                const td = document.createElement('td');
+                td.textContent = valor;
+                linha.appendChild(td);
+              });
+              const acaoTd = document.createElement('td');
+              acaoTd.className = 'text-center';
+              const botao = document.createElement('button');
+              botao.type = 'button';
+              botao.className = 'btn btn-sm btn-outline-primary';
+              botao.setAttribute('data-visualizar-anexo', String(registroIndex));
+              botao.title = 'Visualizar anexo';
+              const icone = document.createElement('i');
+              icone.className = 'bi bi-eye';
+              botao.appendChild(icone);
+              const srText = document.createElement('span');
+              srText.className = 'visually-hidden';
+              srText.textContent = `Visualizar ${nomeArquivo}`;
+              botao.appendChild(srText);
+              acaoTd.appendChild(botao);
+              linha.appendChild(acaoTd);
+              anexoTabelaBody.appendChild(linha);
             }
-            const submitBtn = anexoModalForm.querySelector('button[type="submit"]');
-            const originalSubmitHtml = submitBtn ? submitBtn.innerHTML : '';
-            const toggleSubmitting = (submitting) => {
-              if (!submitBtn) return;
-              submitBtn.disabled = submitting;
-              submitBtn.innerHTML = submitting
-                ? '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando...'
-                : originalSubmitHtml;
-            };
-            toggleSubmitting(true);
-            setAnexoModalFeedback('Enviando anexo...', 'info');
-            const uploadData = new FormData();
-            uploadData.append('prontuario', prontuarioAtual);
-            uploadData.append('descricao', descricaoValor);
-            if (arquivo) {
-              uploadData.append('file', arquivo);
-            }
-            try {
-              const resposta = await fetch(
-                'https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/recebe-arquivo',
-                {
-                  method: 'POST',
-                  body: uploadData,
-                },
-              );
-              if (!resposta.ok) {
-                throw new Error(`Falha ao enviar anexo: ${resposta.status}`);
-              }
-            } catch (error) {
-              console.error(error);
-              setAnexoModalFeedback('Não foi possível enviar o anexo. Tente novamente.', 'danger');
-              toggleSubmitting(false);
-              return;
-            }
-            toggleSubmitting(false);
-            setAnexoModalFeedback();
-            const novoRegistro = normalizarAnexoItem(
-              {
-                data: dataValor,
-                descricao: descricaoValor,
-                arquivo,
-                nome: nomeArquivo,
-                contentType: arquivo ? arquivo.type : '',
-                prontuario: prontuarioAtual,
-              },
-              anexosDadosAtuais.length,
-            );
-            if (novoRegistro) {
-              const novaLista = cloneAnexosLista(anexosDadosAtuais);
-              novaLista.push(novoRegistro);
-              setAnexosDados(novaLista, prontuarioAtual);
+            if (anexoHiddenInputs) {
+              const wrapper = document.createElement('div');
+              const adicionarHidden = (name, value) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                wrapper.appendChild(input);
+              };
+              adicionarHidden('anexos[data][]', dataValor);
+              adicionarHidden('anexos[descricao][]', descricaoValor);
+              adicionarHidden('anexos[arquivo][]', nomeArquivo);
+              anexoHiddenInputs.appendChild(wrapper);
             }
             if (anexoArquivoInput) {
               anexoArquivoInput.value = '';
@@ -7521,13 +6407,7 @@
               }
             }
             if (modal) {
-              if (
-                window.modalStackManager &&
-                typeof window.modalStackManager.prepareForNestedModal === 'function'
-              ) {
-                window.modalStackManager.prepareForNestedModal(target, visualizarAnexoModalElement);
-              }
-              modal.show(target);
+              modal.show();
             }
           });
         }
@@ -7563,7 +6443,7 @@
         };
 
         const maskConfig = [
-          { selector: '#cpf_usuaria', mask: '000.000.000-00' },
+          { selector: '#cpfUsuario', mask: '000.000.000-00' },
           { selector: '#autorCpf', mask: '000.000.000-00' },
           { selector: '#cep', mask: '00000-000' },
           { selector: '#autorCep', mask: '00000-000' },
@@ -7632,8 +6512,8 @@
             .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
             .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
             .addField('#horaAtendimento', [{ rule: 'required', errorMessage: 'Informe a hora do atendimento.' }])
-            .addField('#nome_usuaria', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
-            .addField('#cpf_usuaria', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
+            .addField('#nomeUsuario', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
+            .addField('#cpfUsuario', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
             .addField('#dataNascimento', [{ rule: 'required', errorMessage: 'Informe a data de nascimento.' }])
             .addField('#cep', [{ rule: 'required', errorMessage: 'Informe o CEP.' }])
             .addField('#logradouro', [{ rule: 'required', errorMessage: 'Informe o logradouro.' }])
@@ -8145,8 +7025,11 @@
         const registroModalCancelarBtn = document.getElementById('registroModalCancelarBtn');
         const registroModalFecharBtn = document.getElementById('registroModalFecharBtn');
         const registroModalFooter = document.getElementById('registroModalFooter');
+        const registroModalInstance =
+          registroModalEl && window.bootstrap ? bootstrap.Modal.getOrCreateInstance(registroModalEl, { backdrop: 'static' }) : null;
         let formSnapshot = '';
         let isFormDirty = false;
+        let skipUnsavedPrompt = false;
         const UNSAVED_CHANGES_MESSAGE = 'As alterações serão perdidas. Deseja continuar?';
         const unsavedModalEl = document.getElementById('unsavedChangesModal');
         const unsavedModalInstance =
@@ -8158,7 +7041,7 @@
         let lastLoadedMode = 'create';
         let lastLoadedProntuario = '';
 
-        const promptUnsavedChanges = (triggerEl = null) => {
+        const promptUnsavedChanges = () => {
           if (!unsavedModalInstance) {
             return Promise.resolve(window.confirm(UNSAVED_CHANGES_MESSAGE));
           }
@@ -8166,19 +7049,7 @@
             unsavedMessageEl.textContent = UNSAVED_CHANGES_MESSAGE;
           }
           pendingUnsavedResult = false;
-          const opener =
-            triggerEl instanceof HTMLElement
-              ? triggerEl
-              : document.activeElement instanceof HTMLElement
-              ? document.activeElement
-              : registroModalEl;
-          if (
-            window.modalStackManager &&
-            typeof window.modalStackManager.prepareForNestedModal === 'function'
-          ) {
-            window.modalStackManager.prepareForNestedModal(opener, unsavedModalEl);
-          }
-          unsavedModalInstance.show(opener instanceof HTMLElement ? opener : undefined);
+          unsavedModalInstance.show();
           return new Promise((resolve) => {
             pendingUnsavedResolve = resolve;
           });
@@ -8222,7 +7093,6 @@
           formSnapshot = serializeForm();
           isFormDirty = false;
           evolucoesDadosOriginais = cloneEvolucoesLista(evolucoesDadosAtuais);
-          anexosDadosOriginais = cloneAnexosLista(anexosDadosAtuais);
         };
 
         const focusModalContext = () => {
@@ -8273,28 +7143,17 @@
           if (registroModalBody) {
             registroModalBody.scrollTop = 0;
           }
-          if (registroModalEl) {
-            registroModalEl.classList.remove('d-none');
-            registroModalEl.setAttribute('aria-hidden', 'false');
-            requestAnimationFrame(() => {
-              focusModalContext();
-            });
+          if (registroModalInstance) {
+            registroModalInstance.show();
           }
         };
 
         const closeRegistroModal = (options = {}) => {
-          if (!registroModalEl) return;
-          if (options && options.skipPrompt !== true && registroForm && registroForm.dataset.mode !== 'view') {
-            updateDirtyState();
-            if (isFormDirty) {
-              return;
-            }
+          if (!registroModalInstance) return;
+          if (options.skipPrompt) {
+            skipUnsavedPrompt = true;
           }
-          registroModalEl.classList.add('d-none');
-          registroModalEl.setAttribute('aria-hidden', 'true');
-          if (registroForm) {
-            registroForm.classList.remove('was-validated');
-          }
+          registroModalInstance.hide();
         };
 
         window.portalRegistroModal = window.portalRegistroModal || {};
@@ -8304,7 +7163,48 @@
         window.closeRegistroModal = closeRegistroModal;
 
         if (registroModalEl) {
-          registroModalEl.setAttribute('aria-hidden', 'true');
+          registroModalEl.addEventListener('hide.bs.modal', async (event) => {
+            if (event.target !== registroModalEl) {
+              return;
+            }
+            if (skipUnsavedPrompt) {
+              skipUnsavedPrompt = false;
+              return;
+            }
+            if (!registroForm) return;
+            const mode = registroForm.dataset.mode || 'view';
+            if (mode === 'view') {
+              return;
+            }
+            updateDirtyState();
+            if (isFormDirty) {
+              event.preventDefault();
+              const confirmar = await promptUnsavedChanges();
+              if (confirmar) {
+                skipUnsavedPrompt = true;
+                closeRegistroModal({ skipPrompt: true });
+              }
+            }
+          });
+
+          registroModalEl.addEventListener('hidden.bs.modal', (event) => {
+            if (event.target !== registroModalEl) {
+              return;
+            }
+            if (formWrapper) {
+              formWrapper.classList.add('d-none');
+            }
+            if (registroForm) {
+              registroForm.classList.remove('was-validated');
+            }
+          });
+
+          registroModalEl.addEventListener('shown.bs.modal', (event) => {
+            if (event.target !== registroModalEl) {
+              return;
+            }
+            focusModalContext();
+          });
         }
 
         if (registroForm) {
@@ -8329,7 +7229,6 @@
             preencherCursos([]);
             toggleIdentificacaoReadOnly('create');
             setEvolucoesDados([], '', { setOriginal: true });
-            setAnexosDados([], '', { setOriginal: true });
             setTimeout(() => {
               refreshFormInteractions();
               if (registroForm.dataset.mode === 'create') {
@@ -8357,7 +7256,7 @@
               closeRegistroModal({ skipPrompt: true });
               return;
             }
-            const confirmar = await promptUnsavedChanges(registroModalCancelarBtn);
+            const confirmar = await promptUnsavedChanges();
             if (!confirmar) {
               return;
             }
@@ -8367,7 +7266,6 @@
               populateFormWithData(lastLoadedPayload);
               toggleIdentificacaoReadOnly('edit');
               setEvolucoesDados(evolucoesDadosOriginais, lastLoadedProntuario, { setOriginal: true });
-              setAnexosDados(anexosDadosOriginais, lastLoadedProntuario, { setOriginal: true });
               updateFormStatus('edit', lastLoadedProntuario);
               lastLoadedMode = 'edit';
             } else {
@@ -8375,7 +7273,6 @@
               setFormMode('create');
               toggleIdentificacaoReadOnly('create');
               setEvolucoesDados([], '', { setOriginal: true });
-              setAnexosDados([], '', { setOriginal: true });
               updateNumeroProntuarioDisplay('');
               updateFormStatus('create', '');
               setCurrentDateTime();
@@ -8387,12 +7284,6 @@
               refreshFormInteractions();
               markFormClean();
             }, 0);
-            closeRegistroModal({ skipPrompt: true });
-          });
-        }
-
-        if (registroModalFecharBtn) {
-          registroModalFecharBtn.addEventListener('click', () => {
             closeRegistroModal({ skipPrompt: true });
           });
         }
@@ -8559,9 +7450,9 @@
 
         const payloadKeyMapping = [
           ['prontuario', { targets: ['numeroProntuario'] }],
-          ['nome', { targets: ['nome_usuaria'] }],
+          ['nome', { targets: ['nomeUsuario'] }],
           ['nome_social', { targets: ['nomeSocial'] }],
-          ['cpf', { targets: ['cpf_usuaria'], transform: formatCpfForInput }],
+          ['cpf', { targets: ['cpfUsuario'], transform: formatCpfForInput }],
           ['demandante', 'demandante'],
           ['unidade_atendimento', 'unidadeAtendimento'],
           ['data_pri_atendimento', { targets: ['dataAtendimento'], transform: formatDateToBR }],
@@ -8586,7 +7477,7 @@
           ['cidade_nascimento', 'cidadeNascimento'],
           ['estadocivil_vitima', 'estadoCivil'],
           ['conjuge', 'conjuge'],
-          ['rg', 'rg_usuaria'],
+          ['rg', 'rgUsuario'],
           ['expedicao', 'orgaoExpedidor'],
           ['uf_rg', 'ufExpedicao'],
           ['orientacao_vitima', 'orientacaoSexual'],
@@ -8802,9 +7693,6 @@
           if (registroModalBody) {
             registroModalBody.scrollTop = 0;
           }
-          if (registroModalEl && typeof registroModalEl.scrollIntoView === 'function') {
-            registroModalEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
         };
 
         const updateFormStatus = (mode, prontuario) => {
@@ -8822,7 +7710,6 @@
           setFormMode('create');
           toggleIdentificacaoReadOnly('create');
           setEvolucoesDados([], '', { setOriginal: true });
-          setAnexosDados([], '', { setOriginal: true });
           lastLoadedPayload = null;
           lastLoadedMode = 'create';
           lastLoadedProntuario = '';
@@ -8881,16 +7768,12 @@
           scrollToForm();
           if (normalizedMode !== 'create') {
             setEvolucoesDados([], prontuarioValor, { setOriginal: true });
-            setAnexosDados([], prontuarioValor, { setOriginal: true });
           }
           setTimeout(() => {
             refreshFormInteractions();
             markFormClean();
             if (normalizedMode !== 'create' && prontuarioValor) {
-              Promise.all([
-                carregarEvolucoesDoProntuario(prontuarioValor),
-                carregarAnexosDoProntuario(prontuarioValor),
-              ]).then(() => {
+              carregarEvolucoesDoProntuario(prontuarioValor).then(() => {
                 if (!isFormDirty) {
                   markFormClean();
                 }
@@ -8911,7 +7794,6 @@
           setFormMode(normalizedMode);
           toggleIdentificacaoReadOnly(normalizedMode);
           setEvolucoesDados([], '', { setOriginal: true });
-          setAnexosDados([], '', { setOriginal: true });
           lastLoadedPayload = null;
           lastLoadedMode = normalizedMode;
           lastLoadedProntuario = '';
@@ -8933,7 +7815,6 @@
           openExistingProntuario,
           openBlankForm,
           loadEvolucoes: carregarEvolucoesDoProntuario,
-          loadAnexos: carregarAnexosDoProntuario,
         };
 
         window.prontuarioFormManager = prontuarioFormManager;
@@ -9045,13 +7926,10 @@
             if (wrapper) {
               wrapper.classList.remove('d-none');
             }
-            const container = document.getElementById('registroModal');
-            if (container) {
-              container.classList.remove('d-none');
-              container.setAttribute('aria-hidden', 'false');
-              if (typeof container.scrollIntoView === 'function') {
-                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
+            const modalEl = document.getElementById('registroModal');
+            if (modalEl && window.bootstrap) {
+              const instance = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
+              instance.show();
             }
           }
           if (!abrirProntuarioNoFormulario(payload, modo, prontuario)) {
@@ -9309,12 +8187,9 @@
             wrapper.classList.remove('d-none');
           }
           const modalEl = document.getElementById('registroModal');
-          if (modalEl) {
-            modalEl.classList.remove('d-none');
-            modalEl.setAttribute('aria-hidden', 'false');
-            if (typeof modalEl.scrollIntoView === 'function') {
-              modalEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+          if (modalEl && window.bootstrap) {
+            const instance = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
+            instance.show();
           }
         };
 

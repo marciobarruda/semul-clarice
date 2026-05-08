@@ -744,8 +744,8 @@
     <script defer>
       (function () {
         const KEYCLOAK_SCRIPT_SOURCES = [
-          'https://login.recife.pe.gov.br/auth/js/keycloak.js',
-          'https://login.recife.pe.gov.br/js/keycloak.js',
+          'https://loginteste.recife.pe.gov.br/auth/js/keycloak.js',
+          'https://loginteste.recife.pe.gov.br/js/keycloak.js',
           'https://cdn.jsdelivr.net/npm/keycloak-js@9.0.3/dist/keycloak.min.js',
         ];
 
@@ -810,8 +810,6 @@
           document.body.classList.add(state);
           if (state !== 'auth-pending') {
             document.body.removeAttribute('inert');
-          } else {
-            document.body.setAttribute('inert', '');
           }
         }
 
@@ -827,60 +825,15 @@
           }
         }
 
-        function isSandboxedFrame() {
-          try {
-            return Boolean(window.frameElement?.hasAttribute('sandbox'));
-          } catch (error) {
-            console.warn('Não foi possível verificar o estado de sandbox do frame.', error);
-            return true;
-          }
-        }
-
-        function hasCookieAccess() {
-          try {
-            document.cookie = 'kc_probe=1; path=/';
-            const hasProbe = document.cookie.includes('kc_probe=1');
-            if (hasProbe) {
-              document.cookie = 'kc_probe=; Max-Age=0; path=/';
-            }
-            return hasProbe;
-          } catch (error) {
-            console.warn('Cookies bloqueados no contexto atual.', error);
-            return false;
-          }
-        }
-
-        function canRedirectTop() {
-          try {
-            if (window.top === window.self) return true;
-            // Acesso ao href lança em contextos sandbox ou cross-origin sem permissão
-            void window.top.location.href;
-            return true;
-          } catch (error) {
-            console.warn('Redirecionamento direto para o topo está bloqueado.', error);
-            return false;
-          }
-        }
-
         function toNativePromise(adapterPromise) {
-          if (adapterPromise == null) {
-            return Promise.resolve();
-          }
-
-          if (typeof adapterPromise.then === 'function') {
-            return new Promise((resolve, reject) => {
-              adapterPromise.then(resolve, reject);
-            });
+          if (!adapterPromise) {
+            return Promise.reject(new Error('Operação Keycloak inválida.'));
           }
 
           if (
             typeof adapterPromise.success === 'function' &&
             typeof adapterPromise.error === 'function'
           ) {
-            console.warn(
-              '[KEYCLOAK] Adaptador retornou promessa legada. Atualize para APIs baseadas em Promise.'
-            );
-
             return new Promise((resolve, reject) => {
               adapterPromise
                 .success(function () {
@@ -896,133 +849,19 @@
             });
           }
 
-          return Promise.resolve(adapterPromise);
-        }
-
-        function ensureLogin(keycloak, options) {
-          if (!keycloak) {
-            return Promise.reject(new Error('Instância do Keycloak indisponível.'));
-          }
-
-          const isHttpProtocol = /^https?:/i.test(window.location.protocol);
-          const loginOptions = Object.assign(
-            {},
-            isHttpProtocol
-              ? {
-                  redirectUri: window.location.href,
-                }
-              : null,
-            options
-          );
-
-          const prepareOverlayForRedirect = () => {
-            setAuthState('auth-pending');
-            const overlayCard = document.querySelector('.auth-overlay-card');
-            if (!overlayCard) return;
-
-            const heading = overlayCard.querySelector('h2');
-            if (heading) {
-              heading.textContent = 'Redirecionando para login...';
-            }
-
-            const description = overlayCard.querySelector('p');
-            if (description) {
-              description.textContent = 'Abrindo a tela segura da Prefeitura do Recife.';
-            }
-          };
-
-          const showSandboxFallback = (loginUrl) => {
-            const overlayCard = document.querySelector('.auth-overlay-card');
-            if (!overlayCard) return;
-
-            const linkLabel =
-              'Abrir login em nova aba (necessário por causa das restrições de sandbox do n8n)';
-
-            overlayCard.innerHTML = `
-              <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
-              <h2 class="fw-bold">Permissão necessária</h2>
-              <p>O ambiente do n8n está bloqueando o redirecionamento automático para o Keycloak.</p>
-              <p class="mb-3">Clique abaixo para abrir a tela segura em uma nova aba.</p>
-              <a class="btn btn-primary w-100" href="${loginUrl}" target="_blank" rel="noopener">${linkLabel}</a>
-            `;
-          };
-
-          const attemptRedirect = (loginUrl) => {
-            const sandboxed = isSandboxedFrame();
-
-            if (!sandboxed && window.top && window.top !== window.self) {
-              try {
-                window.top.location.assign(loginUrl);
-                return true;
-              } catch (frameError) {
-                console.warn('Navegação no contexto superior bloqueada. Tentando fallback.', frameError);
-              }
-            }
-
-            try {
-              window.location.assign(loginUrl);
-              return true;
-            } catch (selfNavError) {
-              console.warn('Redirecionamento direto bloqueado. Avaliando fallback.', selfNavError);
-            }
-
-            if (sandboxed) {
-              const popup = window.open(loginUrl, '_blank', 'noopener');
-              if (popup) {
-                popup.focus?.();
-                return true;
-              }
-
-              showSandboxFallback(loginUrl);
-            }
-
-            return false;
-          };
-
-          try {
-            const loginUrl = keycloak.createLoginUrl(loginOptions);
-            if (typeof loginUrl === 'string') {
-              prepareOverlayForRedirect();
-              const redirected = attemptRedirect(loginUrl);
-              if (redirected) {
-                return Promise.resolve(loginUrl);
-              }
-            }
-          } catch (frameError) {
-            console.warn('Não foi possível construir ou usar a URL de login.', frameError);
-          }
-
-          try {
-            prepareOverlayForRedirect();
-            return toNativePromise(keycloak.login(loginOptions)).catch((loginError) => {
-              if (!isHttpProtocol && typeof window.top?.location?.href === 'string') {
-                console.warn(
-                  'Requisição de login falhou no protocolo atual. Redirecionando utilizando a URL padrão do Keycloak.',
-                  loginError
-                );
-
-                try {
-                  const fallbackUrl = keycloak.createLoginUrl(options || {});
-                  if (typeof fallbackUrl === 'string') {
-                    window.location.href = fallbackUrl;
-                    return fallbackUrl;
-                  }
-                } catch (fallbackError) {
-                  console.error('Não foi possível construir a URL de login de contingência.', fallbackError);
-                }
-              }
-
-              throw loginError;
+          if (typeof adapterPromise.then === 'function') {
+            return new Promise((resolve, reject) => {
+              adapterPromise.then(resolve, reject);
             });
-          } catch (loginError) {
-            return Promise.reject(loginError);
           }
+
+          return Promise.resolve(adapterPromise);
         }
 
         function scheduleTokenRefresh(keycloak) {
           const refresh = () =>
             toNativePromise(keycloak.updateToken(60)).catch(() => {
-              return ensureLogin(keycloak);
+              toNativePromise(keycloak.login());
             });
 
           const intervalId = window.setInterval(refresh, 20000);
@@ -1053,8 +892,8 @@
               }
 
               const keycloak = new window.Keycloak({
-                url: 'https://login.recife.pe.gov.br/auth',
-                realm: 'prefeitura',
+                url: 'https://loginteste.recife.pe.gov.br/auth',
+                realm: 'recife',
                 clientId: 'portal-crcl',
               });
 
@@ -1068,7 +907,7 @@
               )
                 .then((authenticated) => {
                   if (!authenticated) {
-                    return ensureLogin(keycloak);
+                    return toNativePromise(keycloak.login());
                   }
 
                   scheduleTokenRefresh(keycloak);
@@ -1091,76 +930,7 @@
             });
         }
 
-        function showSandboxEscape(targetUrl) {
-          setAuthState('auth-pending');
-
-          const overlayCard = document.querySelector('.auth-overlay-card');
-          if (!overlayCard) return;
-
-          overlayCard.innerHTML = `
-            <div class="mb-3 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle-fill"></i></div>
-            <h2 class="fw-bold">Abra em uma nova aba para continuar</h2>
-            <p>O ambiente do n8n está isolando esta página em um sandbox. Para autenticar com segurança, abra o portal em uma nova aba.</p>
-            <a class="btn btn-primary w-100 mb-2" href="${targetUrl}" target="_blank" rel="noopener">Abrir portal em nova aba</a>
-            <button type="button" class="btn btn-outline-secondary w-100" id="copyEscapeUrl">Copiar link de acesso</button>
-          `;
-
-          const copyBtn = overlayCard.querySelector('#copyEscapeUrl');
-          if (copyBtn && navigator?.clipboard) {
-            copyBtn.addEventListener('click', () => {
-              navigator.clipboard
-                .writeText(targetUrl)
-                .then(() => {
-                  copyBtn.textContent = 'Link copiado. Cole em uma nova aba.';
-                  copyBtn.classList.replace('btn-outline-secondary', 'btn-success');
-                  setTimeout(() => {
-                    copyBtn.textContent = 'Copiar link de acesso';
-                    copyBtn.classList.replace('btn-success', 'btn-outline-secondary');
-                  }, 3200);
-                })
-                .catch(() => {
-                  copyBtn.textContent = 'Não foi possível copiar. Copie manualmente o endereço acima.';
-                  copyBtn.classList.replace('btn-outline-secondary', 'btn-warning');
-                });
-            });
-          }
-        }
-
-        function requestSandboxEscape() {
-          const current = new URL(window.location.href);
-          const escapeFlag = 'kc_escape';
-
-          if (!current.searchParams.has(escapeFlag)) {
-            current.searchParams.set(escapeFlag, '1');
-          }
-
-          const targetUrl = current.toString();
-
-          if (canRedirectTop()) {
-            window.top.location.href = targetUrl;
-            return;
-          }
-
-          const opened = window.open(targetUrl, '_blank', 'noopener');
-
-          if (!opened) {
-            showSandboxEscape(targetUrl);
-          } else {
-            opened.focus?.();
-            showSandboxEscape(targetUrl);
-          }
-        }
-
         function startAuth() {
-          const sandboxed = isSandboxedFrame();
-          const cookieBlocked = !hasCookieAccess();
-          const isEscapeRequest = new URLSearchParams(window.location.search).has('kc_escape');
-
-          if ((sandboxed || cookieBlocked) && !isEscapeRequest) {
-            requestSandboxEscape();
-            return;
-          }
-
           bootstrapKeycloak().catch((error) => {
             if (!document.body) return;
 
@@ -1650,12 +1420,12 @@
                       <h3 class="subsection-heading">Documentação e identificação civil</h3>
                       <div class="row g-3">
                         <div class="col-12 field-cpf">
-                          <label for="cpf_usuaria" class="form-label required">CPF</label>
-                          <input type="text" class="form-control cpf-input" id="cpf_usuaria" name="cpf_usuaria" required />
+                          <label for="cpfUsuario" class="form-label required">CPF</label>
+                          <input type="text" class="form-control cpf-input" id="cpfUsuario" name="cpfUsuario" required />
                         </div>
                         <div class="col-12 nome-completo-field">
-                          <label for="nome_usuaria" class="form-label required">Nome completo</label>
-                          <input type="text" class="form-control" id="nome_usuaria" name="nome_usuaria" autocomplete="name" required />
+                          <label for="nomeUsuario" class="form-label required">Nome completo</label>
+                          <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario" autocomplete="name" required />
                         </div>
                         <div class="col-12 nome-social-field">
                           <label for="nomeSocial" class="form-label">Nome social</label>
@@ -1676,8 +1446,8 @@
                         <div class="col-12">
                           <div class="row g-3">
                             <div class="col-12 col-md-4 col-xl-4">
-                              <label for="rg_usuaria" class="form-label">RG</label>
-                              <input type="text" class="form-control" id="rg_usuaria" name="rg_usuaria" />
+                              <label for="rgUsuario" class="form-label">RG</label>
+                              <input type="text" class="form-control" id="rgUsuario" name="rgUsuario" />
                             </div>
                             <div class="col-12 col-md-5 col-xl-5">
                               <label for="orgaoExpedidor" class="form-label">Órgão de expedição</label>
@@ -5397,9 +5167,9 @@
         configurarCidadeDependente('autorUfNascimento', 'autorCidadeNascimento');
 
         const dataNascimentoInput = document.getElementById('dataNascimento');
-        const cpf_usuariaInput = document.getElementById('cpf_usuaria');
-        const nome_usuariaInput = document.getElementById('nome_usuaria');
-        const rg_usuariaInput = document.getElementById('rg_usuaria');
+        const cpfUsuarioInput = document.getElementById('cpfUsuario');
+        const nomeUsuarioInput = document.getElementById('nomeUsuario');
+        const rgUsuarioInput = document.getElementById('rgUsuario');
         const orgaoExpedidorInput = document.getElementById('orgaoExpedidor');
         const ufExpedicaoSelect = document.getElementById('ufExpedicao');
         const nacionalidadeInput = document.getElementById('nacionalidade');
@@ -5462,10 +5232,10 @@
           const isViewMode = normalized === 'view';
           const lockWhenFilled = normalized === 'edit';
           const campos = [
-            cpf_usuariaInput,
-            nome_usuariaInput,
+            cpfUsuarioInput,
+            nomeUsuarioInput,
             dataNascimentoInput,
-            rg_usuariaInput,
+            rgUsuarioInput,
             orgaoExpedidorInput,
             ufExpedicaoSelect,
             nacionalidadeInput,
@@ -7563,7 +7333,7 @@
         };
 
         const maskConfig = [
-          { selector: '#cpf_usuaria', mask: '000.000.000-00' },
+          { selector: '#cpfUsuario', mask: '000.000.000-00' },
           { selector: '#autorCpf', mask: '000.000.000-00' },
           { selector: '#cep', mask: '00000-000' },
           { selector: '#autorCep', mask: '00000-000' },
@@ -7632,8 +7402,8 @@
             .addField('#unidadeAtendimento', [{ rule: 'required', errorMessage: 'Selecione a unidade.' }])
             .addField('#dataAtendimento', [{ rule: 'required', errorMessage: 'Informe a data do atendimento.' }])
             .addField('#horaAtendimento', [{ rule: 'required', errorMessage: 'Informe a hora do atendimento.' }])
-            .addField('#nome_usuaria', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
-            .addField('#cpf_usuaria', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
+            .addField('#nomeUsuario', [{ rule: 'required', errorMessage: 'Informe o nome completo.' }])
+            .addField('#cpfUsuario', [{ rule: 'required', errorMessage: 'Informe o CPF.' }])
             .addField('#dataNascimento', [{ rule: 'required', errorMessage: 'Informe a data de nascimento.' }])
             .addField('#cep', [{ rule: 'required', errorMessage: 'Informe o CEP.' }])
             .addField('#logradouro', [{ rule: 'required', errorMessage: 'Informe o logradouro.' }])
@@ -8559,9 +8329,9 @@
 
         const payloadKeyMapping = [
           ['prontuario', { targets: ['numeroProntuario'] }],
-          ['nome', { targets: ['nome_usuaria'] }],
+          ['nome', { targets: ['nomeUsuario'] }],
           ['nome_social', { targets: ['nomeSocial'] }],
-          ['cpf', { targets: ['cpf_usuaria'], transform: formatCpfForInput }],
+          ['cpf', { targets: ['cpfUsuario'], transform: formatCpfForInput }],
           ['demandante', 'demandante'],
           ['unidade_atendimento', 'unidadeAtendimento'],
           ['data_pri_atendimento', { targets: ['dataAtendimento'], transform: formatDateToBR }],
@@ -8586,7 +8356,7 @@
           ['cidade_nascimento', 'cidadeNascimento'],
           ['estadocivil_vitima', 'estadoCivil'],
           ['conjuge', 'conjuge'],
-          ['rg', 'rg_usuaria'],
+          ['rg', 'rgUsuario'],
           ['expedicao', 'orgaoExpedidor'],
           ['uf_rg', 'ufExpedicao'],
           ['orientacao_vitima', 'orientacaoSexual'],
