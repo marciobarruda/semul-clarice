@@ -3319,20 +3319,26 @@
                     });
 
                     // 4. Tratamento de Tipos conforme Schema
-                    if (data.idade) data.idade = parseInt(data.idade) || 0;
+                    if (data.idade) data.idade = parseInt(data.idade) || null;
+                    else data.idade = null;
+                    
                     if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
 
                     // Converter datas para YYYY-MM-DD (BQ espera DATE)
                     ['dataatendimento', 'datanascimento'].forEach(f => {
-                        if (data[f] && data[f].includes('/')) {
-                            const m = dayjs(data[f], 'DD/MM/YYYY');
+                        let val = data[f];
+                        if (val && typeof val === 'string' && val.includes('/')) {
+                            const m = dayjs(val, 'DD/MM/YYYY');
                             if (m.isValid()) data[f] = m.format('YYYY-MM-DD');
-                        } else if (!data[f] || data[f] === '') {
-                            data[f] = null;
                         }
                     });
 
-                    console.log('[DEBUG] Payload enviado:', data);
+                    // Saneamento Geral: converter strings vazias em null para o BigQuery
+                    Object.keys(data).forEach(k => {
+                        if (data[k] === "") data[k] = null;
+                    });
+
+                    console.log('[DEBUG] Payload Final para BQ:', JSON.stringify(data, null, 2));
 
                     // Adicionar arquivos pendentes se houver
                     if (state.pendingFiles.length > 0) {
