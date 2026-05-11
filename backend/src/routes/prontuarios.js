@@ -2,73 +2,86 @@
 
 const express = require('express');
 const router = express.Router();
-const { query, dml, tbl, DATASET, PROJECT } = require('../db');
+const { query, dml, tbl } = require('../db');
 const dayjs = require('dayjs');
 
 /**
- * Utilitário para gerar o próximo número de prontuário (YYYYMM-XXXX)
+ * Tipos para BigQuery MERGE para evitar erros com valores NULL
  */
+const BQ_TYPES = {
+  numeroprontuario: 'STRING', unidadeatendimento: 'STRING', dataatendimento: 'DATE', horaatendimento: 'STRING',
+  demandante: 'STRING', avaliacaoinicial: 'STRING', atendimento: ['STRING'], origemservico: ['STRING'],
+  nomeusuaria: 'STRING', cpfusuaria: 'STRING', nomesocial: 'STRING', datanascimento: 'DATE', idade: 'INT64',
+  rgusuaria: 'STRING', orgaoexpedidor: 'STRING', ufexpedicao: 'STRING', nacionalidade: 'STRING',
+  ufnascimento: 'STRING', cidadenascimento: 'STRING', estadocivil: 'STRING', conjuge: 'STRING',
+  identidadegenero: 'STRING', orientacaosexual: 'STRING', corraca: 'STRING', religiao: 'STRING',
+  nomemae: 'STRING', nomepai: 'STRING', cep: 'STRING', logradouro: 'STRING', numeroendereco: 'STRING',
+  complementoendereco: 'STRING', bairro: 'STRING', rpa: 'STRING', cidade: 'STRING', uf: 'STRING', 
+  pontoreferencia: 'STRING', telefone: 'STRING', telefonesecundario: 'STRING', email: 'STRING', 
+  escolaridade: 'STRING', situacaoescolar: 'STRING', anoperiodo: 'STRING', cursoformacao: 'STRING', 
+  situacaoocupacional: 'STRING', profissao: 'STRING', rendaindividual: 'STRING', situacaotrabalho: 'STRING', 
+  beneficios: 'STRING', rendafamiliar: 'STRING', redeapoio: 'STRING', situacaohabitacional: 'STRING',
+  situacaohabitacionaloutro: 'STRING', totalfilhos: 'INT64', numerosus: 'STRING',
+  deficienciasindrome: 'BOOL', deficienciaqual: 'STRING', atendimentopsicologo: 'BOOL',
+  atendimentopsiquiatra: 'BOOL', usomedicamento: 'BOOL', medquais: 'STRING', gestante: 'BOOL',
+  examehiv: 'BOOL', tipoviolencia: 'STRING', localviolencia: 'STRING', frequencia: 'STRING',
+  violenciafisica: ['STRING'], violenciapsicologica: ['STRING'], fatoresrelacionados: ['STRING'],
+  relatocaso: 'STRING', createdat: 'TIMESTAMP', updatedat: 'TIMESTAMP',
+  outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING', relato_ciods: 'STRING', outro_local_agressao: 'STRING'
+};
+
 async function gerarProximoNumero() {
   const prefix = dayjs().format('YYYYMM');
-  const sql = `
-    SELECT MAX(CAST(SUBSTR(numeroprontuario, 8) AS INT64)) as max_num
-    FROM ${tbl('prontuario')}
-    WHERE numeroprontuario LIKE @prefix
-  `;
-  const rows = await query(sql, { prefix: `${prefix}-%` });
+  const sql = `SELECT MAX(CAST(SUBSTR(numeroprontuario, 8) AS INT64)) as max_num FROM ${tbl('prontuario')} WHERE numeroprontuario LIKE @prefix`;
+  const rows = await query(sql, { prefix: `${prefix}-%` }, { prefix: 'STRING' });
   const prox = (rows[0].max_num || 0) + 1;
   return `${prefix}-${String(prox).padStart(4, '0')}`;
 }
 
-/**
- * Calcula idade com base na data de nascimento
- */
-function calcularIdade(datanascimento) {
-  if (!datanascimento) return null;
-  return dayjs().diff(dayjs(datanascimento), 'year');
-}
-
-/**
- * Mapeia o payload para o objeto de banco BigQuery
- */
 function mapPayload(body) {
   const d = { ...body };
-  
-  // Tratar campos de data
   if (d.dataatendimento) d.dataatendimento = dayjs(d.dataatendimento).format('YYYY-MM-DD');
   if (d.datanascimento) d.datanascimento = dayjs(d.datanascimento).format('YYYY-MM-DD');
+  d.idade = d.datanascimento ? dayjs().diff(dayjs(d.datanascimento), 'year') : null;
   
-  // Calcular idade se houver nascimento
-  d.idade = calcularIdade(d.datanascimento);
-  
-  // Garantir que campos REPEATED sejam arrays
   const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
   arrayFields.forEach(f => {
-    if (d[f] && !Array.isArray(d[f])) {
-      d[f] = String(d[f]).split(',').map(s => s.trim()).filter(Boolean);
-    } else if (!d[f]) {
-      d[f] = [];
-    }
+    if (d[f] && !Array.isArray(d[f])) d[f] = String(d[f]).split(',').map(s => s.trim()).filter(Boolean);
+    else if (!d[f]) d[f] = [];
   });
 
-  // Booleanos
   const boolFields = ['deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 'usomedicamento', 'gestante', 'examehiv'];
-  boolFields.forEach(f => {
-    if (d[f] !== undefined) {
-      d[f] = String(d[f]).toLowerCase() === 'true' || d[f] === true || d[f] === '1';
-    }
-  });
-
-  // Inteiros
+  boolFields.forEach(f => { if (d[f] !== undefined) d[f] = String(d[f]).toLowerCase() === 'true' || d[f] === true || d[f] === '1'; });
   if (d.total_filhos !== undefined) d.totalfilhos = parseInt(d.total_filhos, 10) || 0;
-
   return d;
 }
 
-// ── POST /api/prontuarios ─────────────────────────────────────────────────────
+// ── GET /api/prontuarios/stats (Dashboard otimizado) ────────────────────────
+router.get('/stats', async (req, res) => {
+  try {
+    const sql = `
+      SELECT 
+        COUNT(*) as total,
+        COUNTIF(DATE(createdat) = CURRENT_DATE()) as hoje,
+        COUNTIF(EXTRACT(MONTH FROM createdat) = EXTRACT(MONTH FROM CURRENT_DATE()) AND EXTRACT(YEAR FROM createdat) = EXTRACT(YEAR FROM CURRENT_DATE())) as mes,
+        AVG(idade) as media_idade,
+        COUNTIF(atendimentopsicologo = true) as psicologico,
+        COUNTIF(atendimentopsiquiatra = true) as psiquiatrico
+      FROM ${tbl('prontuario')}
+    `;
+    const [stats] = await query(sql);
+    res.json(stats);
+  } catch (err) {
+    console.error('[BQ Stats] Erro:', err);
+    res.status(500).json({ error: 'Erro ao carregar estatísticas' });
+  }
+});
+
+// ── POST /api/prontuarios (Listagem com limite para evitar OOM) ──────────────
 router.post('/', async (req, res) => {
   try {
-    const sql = `SELECT * FROM ${tbl('prontuario')} ORDER BY createdat DESC`;
+    // Limitamos a 2000 registros para evitar que o Node trave ao serializar o JSON
+    const sql = `SELECT * FROM ${tbl('prontuario')} ORDER BY createdat DESC LIMIT 2000`;
     const rows = await query(sql);
     res.json(rows);
   } catch (err) {
@@ -77,20 +90,12 @@ router.post('/', async (req, res) => {
   }
 });
 
-// ── POST /api/prontuarios/buscar ──────────────────────────────────────────────
 router.post('/buscar', async (req, res) => {
   const { termo } = req.body;
   if (!termo) return res.status(400).json({ error: 'Termo obrigatório' });
-  
   try {
-    const sql = `
-      SELECT * FROM ${tbl('prontuario')}
-      WHERE nomeusuaria LIKE @termo
-         OR cpfusuaria LIKE @termo
-         OR numeroprontuario LIKE @termo
-      ORDER BY createdat DESC
-    `;
-    const rows = await query(sql, { termo: `%${termo}%` });
+    const sql = `SELECT * FROM ${tbl('prontuario')} WHERE nomeusuaria LIKE @termo OR cpfusuaria LIKE @termo OR numeroprontuario LIKE @termo ORDER BY createdat DESC LIMIT 500`;
+    const rows = await query(sql, { termo: `%${termo}%` }, { termo: 'STRING' });
     res.json(rows);
   } catch (err) {
     console.error('[BQ Buscar] Erro:', err);
@@ -98,64 +103,34 @@ router.post('/buscar', async (req, res) => {
   }
 });
 
-// ── POST /api/prontuarios/get ─────────────────────────────────────────────────
 router.post('/get', async (req, res) => {
   const num = req.body.prontuario || req.body.numeroprontuario || req.body.id;
   if (!num) return res.status(400).json({ error: 'ID obrigatório' });
-
   try {
-    const sql = `SELECT * FROM ${tbl('prontuario')} WHERE numeroprontuario = @num`;
-    const rows = await query(sql, { num: String(num) });
-    res.json(rows); // Retorna array para manter compatibilidade frontend
+    const rows = await query(`SELECT * FROM ${tbl('prontuario')} WHERE numeroprontuario = @num`, { num: String(num) }, { num: 'STRING' });
+    res.json(rows);
   } catch (err) {
-    console.error('[BQ Get] Erro:', err);
     res.status(500).json({ error: 'Erro ao buscar' });
   }
 });
 
-// ── POST /api/prontuarios/salvar ──────────────────────────────────────────────
 router.post('/salvar', async (req, res) => {
   try {
     const body = mapPayload(req.body);
     let isNew = !body.numeroprontuario || body.numeroprontuario === 'NOVO';
-    
     if (isNew) {
       body.numeroprontuario = await gerarProximoNumero();
       body.createdat = new Date().toISOString();
     }
     body.updatedat = new Date().toISOString();
 
-    // Colunas para UPSERT (MERGE)
-    const cols = [
-      'numeroprontuario', 'unidadeatendimento', 'dataatendimento', 'horaatendimento',
-      'demandante', 'avaliacaoinicial', 'atendimento', 'origemservico',
-      'nomeusuaria', 'cpfusuaria', 'nomesocial', 'datanascimento', 'idade',
-      'rgusuaria', 'orgaoexpedidor', 'ufexpedicao', 'nacionalidade',
-      'ufnascimento', 'cidadenascimento', 'estadocivil', 'conjuge',
-      'identidadegenero', 'orientacaosexual', 'corraca', 'religiao',
-      'nomemae', 'nomepai', 'cep', 'logradouro', 'numeroendereco',
-      'complementoendereco', 'bairro', 'rpa', 'cidade', 'uf', 'pontoreferencia',
-      'telefone', 'telefonesecundario', 'email', 'escolaridade',
-      'situacaoescolar', 'anoperiodo', 'cursoformacao', 'situacaoocupacional',
-      'profissao', 'rendaindividual', 'situacaotrabalho', 'beneficios',
-      'rendafamiliar', 'redeapoio', 'situacaohabitacional',
-      'situacaohabitacionaloutro', 'totalfilhos', 'numerosus',
-      'deficienciasindrome', 'deficienciaqual', 'atendimentopsicologo',
-      'atendimentopsiquiatra', 'usomedicamento', 'medquais', 'gestante',
-      'examehiv', 'tipoviolencia', 'localviolencia', 'frequencia',
-      'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados',
-      'relatocaso', 'createdat', 'updatedat', 'outras_viol_fisicas',
-      'outras_viol_psicologicas', 'relato_ciods', 'outro_local_agressao'
-    ];
-
+    const cols = Object.keys(BQ_TYPES);
     const params = {};
-    cols.forEach(c => params[c] = body[c] || null);
-    // Ajustar tipos específicos para BigQuery
-    params.atendimento = body.atendimento || [];
-    params.origemservico = body.origemservico || [];
-    params.violenciafisica = body.violenciafisica || [];
-    params.violenciapsicologica = body.violenciapsicologica || [];
-    params.fatoresrelacionados = body.fatoresrelacionados || [];
+    const types = {};
+    cols.forEach(c => {
+      params[c] = body[c] === undefined ? null : body[c];
+      types[c] = BQ_TYPES[c];
+    });
 
     const mergeSql = `
       MERGE ${tbl('prontuario')} T
@@ -167,7 +142,7 @@ router.post('/salvar', async (req, res) => {
         INSERT (${cols.join(', ')}) VALUES (${cols.map(c => `@${c}`).join(', ')})
     `;
 
-    await dml(mergeSql, params);
+    await dml(mergeSql, params, types);
     res.json({ success: true, prontuario: { numeroprontuario: body.numeroprontuario } });
   } catch (err) {
     console.error('[BQ Salvar] Erro:', err);
@@ -175,22 +150,14 @@ router.post('/salvar', async (req, res) => {
   }
 });
 
-// ── GET /api/prontuarios/novo ─────────────────────────────────────────────────
 router.get('/novo', async (req, res) => {
   const { cpf } = req.query;
   if (!cpf) return res.status(400).json({ error: 'CPF obrigatório' });
-
   try {
-    const sql = `
-      SELECT * FROM ${tbl('prontuario')}
-      WHERE cpfusuaria = @cpf
-      ORDER BY createdat DESC LIMIT 1
-    `;
-    const rows = await query(sql, { cpf: String(cpf) });
+    const rows = await query(`SELECT * FROM ${tbl('prontuario')} WHERE cpfusuaria = @cpf ORDER BY createdat DESC LIMIT 1`, { cpf: String(cpf) }, { cpf: 'STRING' });
     if (rows.length === 0) return res.status(404).json({ error: 'Não encontrado' });
     res.json(rows[0]);
   } catch (err) {
-    console.error('[BQ Novo] Erro:', err);
     res.status(500).json({ error: 'Erro ao buscar novo' });
   }
 });

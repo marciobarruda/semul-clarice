@@ -2292,6 +2292,7 @@
             const API_BASE = '';
             const WEBHOOKS = {
                 ALL_DATA:      `${API_BASE}/api/prontuarios`,
+                STATS:         `${API_BASE}/api/prontuarios/stats`,
                 LIST:          `${API_BASE}/api/prontuarios/buscar`,
                 GET:           `${API_BASE}/api/prontuarios/get`,
                 SAVE:          `${API_BASE}/api/prontuarios/salvar`,
@@ -2343,6 +2344,11 @@
                 
                 state.currentView = viewName;
                 
+                if (viewName === 'dashboard') {
+                    loadDashboardStats();
+                    loadProntuariosData('', false); // Carrega os dados em background para os gráficos
+                }
+
                 // Toggle header save button visibility
                 const headerSave = document.getElementById('registro_modal_salvar_btn');
                 if (headerSave) {
@@ -2761,6 +2767,22 @@
             if (dataNascEl) IMask(dataNascEl, maskOptions.date);
 
             // Data Loading
+            async function loadDashboardStats() {
+                try {
+                    const response = await fetch(WEBHOOKS.STATS);
+                    const stats = await response.json();
+                    
+                    if (document.getElementById('kpi-total')) document.getElementById('kpi-total').textContent = stats.total || 0;
+                    if (document.getElementById('kpi_hoje')) document.getElementById('kpi_hoje').textContent = stats.hoje || 0;
+                    if (document.getElementById('kpi_ativos')) document.getElementById('kpi_ativos').textContent = stats.mes || 0;
+                    if (document.getElementById('kpi_idade')) document.getElementById('kpi_idade').textContent = Math.round(stats.media_idade || 0);
+                    if (document.getElementById('kpi_psicologico')) document.getElementById('kpi_psicologico').textContent = stats.psicologico || 0;
+                    if (document.getElementById('kpi_psiquiatrico')) document.getElementById('kpi_psiquiatrico').textContent = stats.psiquiatrico || 0;
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            }
+
             // Data Loading with Search and Pagination
             async function loadProntuariosData(searchTerm = '', showOverlay = false, isRetry = false) {
                 if (showOverlay) showGlobalLoader();
