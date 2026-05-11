@@ -1017,11 +1017,11 @@
                                             </div>
                                             <div class="col-12 col-md-2">
                                                 <label for="data_atendimento" class="form-label required">Data</label>
-                                                <input type="text" class="form-control" id="data_atendimento" name="data_atendimento" required />
+                                                <input type="text" class="form-control bg-light" id="data_atendimento" name="data_atendimento" readonly required />
                                             </div>
                                             <div class="col-12 col-md-2">
                                                 <label for="hora_atendimento" class="form-label required">Hora</label>
-                                                <input type="text" class="form-control" id="hora_atendimento" name="hora_atendimento" required />
+                                                <input type="text" class="form-control bg-light" id="hora_atendimento" name="hora_atendimento" readonly required />
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <label for="demandante" class="form-label">Demandante</label>
@@ -2599,9 +2599,12 @@
             function toggleFormReadOnly(isReadOnly) {
                 state.isReadOnly = isReadOnly;
                 const elements = registro_form.querySelectorAll('input, select, textarea');
+                const fixedFields = ['numero_prontuario', 'data_atendimento', 'hora_atendimento'];
                 elements.forEach(el => {
-                    if (el.id !== 'numero_prontuario') { // Keep prontuario number read-only always
+                    if (!fixedFields.includes(el.id)) {
                         el.disabled = isReadOnly;
+                    } else {
+                        el.readOnly = true; // Sempre readonly
                     }
                 });
 
