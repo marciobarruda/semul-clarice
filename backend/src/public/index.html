@@ -3318,46 +3318,90 @@
                         if (el) data[f] = el.value;
                     });
 
-                    // 4. Tratamento de Tipos conforme Schema
-                    data.idade = parseInt(data.idade) || null;
+                    // 4. Tratamento de Tipos e Datas conforme Schema BQ
+                    data.idade = (data.idade && data.idade !== "") ? parseInt(data.idade) : null;
                     if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
 
-                    // Converter datas para YYYY-MM-DD (BQ espera DATE)
                     ['dataatendimento', 'datanascimento'].forEach(f => {
                         let val = data[f];
-                        if (!val || val === '') {
+                        if (!val || val === "") {
                             data[f] = null;
-                            return;
-                        }
-                        
-                        // Se já for ISO YYYY-MM-DD, apenas limpa
-                        if (/^\d{4}-\d{2}-\d{2}/.test(val)) {
+                        } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+                            const m = dayjs(val, 'DD/MM/YYYY');
+                            data[f] = m.isValid() ? m.format('YYYY-MM-DD') : null;
+                        } else if (/^\d{4}-\d{2}-\d{2}/.test(val)) {
                             data[f] = val.substring(0, 10);
-                            return;
-                        }
-
-                        // Converter de DD/MM/YYYY
-                        const m = dayjs(val, 'DD/MM/YYYY');
-                        if (m.isValid()) {
-                            data[f] = m.format('YYYY-MM-DD');
                         } else {
                             data[f] = null;
                         }
                     });
 
-                    // Redundância para compatibilidade (enviar com e sem underscore)
-                    data.data_atendimento = data.dataatendimento;
-                    data.data_nascimento = data.datanascimento;
-                    data.numero_prontuario = data.numeroprontuario;
-                    data.nome_usuaria = data.nomeusuaria;
-                    data.cpf_usuaria = data.cpfusuaria;
+                    // 5. Redundância Total de Compatibilidade (com e sem underscore)
+                    const fieldsToDuplicate = {
+                        'dataatendimento': 'data_atendimento',
+                        'datanascimento': 'data_nascimento',
+                        'numeroprontuario': 'numero_prontuario',
+                        'nomeusuaria': 'nome_usuaria',
+                        'cpfusuaria': 'cpf_usuaria',
+                        'rgusuaria': 'rg_usuaria',
+                        'unidadeatendimento': 'unidade_atendimento',
+                        'avaliacaoinicial': 'avaliacao_inicial',
+                        'nomesocial': 'nome_social',
+                        'identidadegenero': 'identidade_genero',
+                        'orientacaosexual': 'orientacao_sexual',
+                        'corraca': 'cor_raca',
+                        'ufnascimento': 'uf_nascimento',
+                        'cidadenascimento': 'cidade_nascimento',
+                        'estadocivil': 'estado_civil',
+                        'nomemae': 'nome_mae',
+                        'nomepai': 'nome_pai',
+                        'numeroendereco': 'numero_endereco',
+                        'complementoendereco': 'complemento_endereco',
+                        'pontoreferencia': 'ponto_referencia',
+                        'telefonesecundario': 'telefone_secundario',
+                        'situacaoescolar': 'situacao_escolar',
+                        'anoperiodo': 'ano_periodo',
+                        'cursoformacao': 'curso_formacao',
+                        'situacaoocupacional': 'situacao_ocupacional',
+                        'rendaindividual': 'renda_individual',
+                        'situacaotrabalho': 'situacao_trabalho',
+                        'rendafamiliar': 'renda_familiar',
+                        'redeapoio': 'rede_apoio',
+                        'situacaohabitacional': 'situacao_habitacional',
+                        'situacaohabitacionaloutro': 'situacao_habitacional_outro',
+                        'totalfilhos': 'total_filhos',
+                        'numerosus': 'numero_sus',
+                        'deficienciaqual': 'deficiencia_qual',
+                        'atendimentopsicologo': 'atendimento_psicologo',
+                        'atendimentopsiquiatra': 'atendimento_psiquiatra',
+                        'qualprobsaude': 'qual_prob_saude',
+                        'usomedicamento': 'uso_medicamento',
+                        'quaismedicamentos': 'quais_medicamentos',
+                        'examehiv': 'exame_hiv',
+                        'tipoviolencia': 'tipo_violencia',
+                        'localviolencia': 'local_violencia',
+                        'outrolocalagressao': 'outro_local_agressao',
+                        'outrasviolfisicas': 'outras_viol_fisicas',
+                        'outrasviolpsicologicas': 'outras_viol_psicologicas',
+                        'outrasviolsexuais': 'outras_viol_sexuais',
+                        'relatociods': 'relato_ciods',
+                        'relatocaso': 'relato_caso',
+                        'deficienciasindrome': 'deficiencia_sindrome',
+                        'emitirsenhaciods': 'emitir_senha_ciods'
+                    };
 
-                    // Saneamento Geral: converter strings vazias em null
+                    Object.keys(fieldsToDuplicate).forEach(key => {
+                        if (data[key] !== undefined) {
+                            data[fieldsToDuplicate[key]] = data[key];
+                        }
+                    });
+
+                    // Saneamento de strings vazias finais
                     Object.keys(data).forEach(k => {
                         if (data[k] === "") data[k] = null;
                     });
 
-                    console.log('[DEBUG] Payload Final:', JSON.stringify(data));
+                    console.log('[DEBUG] Payload Final Sincronizado:', data);
 
                     // Adicionar arquivos pendentes se houver
                     if (state.pendingFiles.length > 0) {
