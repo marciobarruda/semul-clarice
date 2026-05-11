@@ -2593,6 +2593,9 @@
 
                 // Preenchimento automático de data e hora
                 const now = dayjs();
+                const dataAtend = document.getElementById('dataatendimento');
+                const horaAtend = document.getElementById('horaatendimento');
+                
                 if (dataAtend) {
                     dataAtend.value = now.format('DD/MM/YYYY');
                     // Não precisa de máscara explícita aqui pois não tem mask instanciada para dataatendimento (é readonly)
