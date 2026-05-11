@@ -3319,7 +3319,15 @@
 
                     // 4. Tratamento de Tipos conforme Schema
                     if (data.idade) data.idade = parseInt(data.idade) || 0;
-                    if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos); // Schema diz STRING agora
+                    if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
+
+                    // Converter datas para YYYY-MM-DD (BQ espera DATE)
+                    ['dataatendimento', 'datanascimento'].forEach(f => {
+                        if (data[f] && data[f].includes('/')) {
+                            const m = dayjs(data[f], 'DD/MM/YYYY');
+                            if (m.isValid()) data[f] = m.format('YYYY-MM-DD');
+                        }
+                    });
 
                     console.log('[DEBUG] Payload enviado:', data);
 
