@@ -2607,12 +2607,13 @@
             function toggleFormReadOnly(isReadOnly) {
                 state.isReadOnly = isReadOnly;
                 const elements = registroform.querySelectorAll('input, select, textarea');
-                const fixedFields = ['numeroprontuario', 'dataatendimento', 'horaatendimento', 'datanascimento'];
+                const autoFields = ['numeroprontuario', 'dataatendimento', 'horaatendimento'];
                 elements.forEach(el => {
-                    if (!fixedFields.includes(el.id)) {
-                        el.disabled = isReadOnly;
+                    if (autoFields.includes(el.id)) {
+                        el.readOnly = true;
                     } else {
-                        el.readOnly = true; // Sempre readonly
+                        el.disabled = isReadOnly;
+                        if (!isReadOnly) el.readOnly = false;
                     }
                 });
 
@@ -3326,6 +3327,8 @@
                         if (data[f] && data[f].includes('/')) {
                             const m = dayjs(data[f], 'DD/MM/YYYY');
                             if (m.isValid()) data[f] = m.format('YYYY-MM-DD');
+                        } else if (!data[f] || data[f] === '') {
+                            data[f] = null;
                         }
                     });
 
