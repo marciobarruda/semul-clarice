@@ -40,8 +40,17 @@ async function gerarProximoNumero() {
 
 function mapPayload(body) {
   const d = { ...body };
-  if (d.dataatendimento) d.dataatendimento = dayjs(d.dataatendimento).format('YYYY-MM-DD');
-  if (d.datanascimento) d.datanascimento = dayjs(d.datanascimento).format('YYYY-MM-DD');
+  
+  // Garantir que datas vazias ou "Invalid Date" vindo do front não quebrem o BQ
+  const parseDate = (val) => {
+    if (!val || val === 'Invalid Date' || val === 'null' || val === '') return null;
+    const m = dayjs(val, 'DD/MM/YYYY');
+    return m.isValid() ? m.format('YYYY-MM-DD') : null;
+  };
+
+  d.dataatendimento = parseDate(d.data_atendimento || d.dataatendimento);
+  d.datanascimento = parseDate(d.data_nascimento || d.datanascimento);
+  
   d.idade = d.datanascimento ? dayjs().diff(dayjs(d.datanascimento), 'year') : null;
   
   const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];

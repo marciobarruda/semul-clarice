@@ -2244,8 +2244,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/pt-br.js"></script>
-    <script>dayjs.locale('pt-br');</script>
+    <script>
+        dayjs.extend(dayjs_plugin_customParseFormat);
+        dayjs.locale('pt-br');
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/imask"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/just-validate@4.2.1/dist/just-validate.production.min.js"></script>
@@ -3137,15 +3141,22 @@
                 Object.entries(mapping).forEach(([fieldId, value]) => {
                     const el = document.getElementById(fieldId);
                     if (el) {
-                        el.value = value;
+                        // Se for campo de data e vier do BQ (YYYY-MM-DD), formatar para PT-BR
+                        let displayValue = value;
+                        if (fieldId.includes('data_') && value && value.includes('-')) {
+                             const m = dayjs(value);
+                             if (m.isValid()) displayValue = m.format('DD/MM/YYYY');
+                        }
+                        
+                        el.value = displayValue || '';
                         
                         // Fallback para SELECTs se a opção ainda não existir (carregamento assíncrono)
-                        if (el.tagName === 'SELECT' && el.value !== String(value) && value) {
+                        if (el.tagName === 'SELECT' && el.value !== String(displayValue) && displayValue) {
                             const opt = document.createElement('option');
-                            opt.value = value;
-                            opt.textContent = value;
+                            opt.value = displayValue;
+                            opt.textContent = displayValue;
                             el.appendChild(opt);
-                            el.value = value;
+                            el.value = displayValue;
                         }
                     }
                 });
@@ -3419,6 +3430,15 @@
                 
                 const formData = new FormData(registro_form);
                 const data = Object.fromEntries(formData.entries());
+
+                // Validação de datas antes de enviar
+                const dateFields = ['data_atendimento', 'data_nascimento'];
+                for (const f of dateFields) {
+                    if (data[f] === 'Invalid Date') {
+                        Swal.fire('Erro de Data', `O campo ${f.replace('_', ' ')} possui um valor inválido. Por favor, corrija.`, 'error');
+                        return;
+                    }
+                }
 
                 // Tratar campos de múltipla escolha como arrays conforme solicitado
                 const arrayFields = {
