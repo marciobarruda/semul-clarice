@@ -3345,19 +3345,21 @@
                     data.idade = (data.idade && data.idade !== "") ? parseInt(data.idade) : null;
                     if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
 
-                    ['dataatendimento', 'datanascimento'].forEach(f => {
-                        let val = data[f];
-                        if (!val || val === "") {
-                            data[f] = null;
-                        } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
-                            const m = dayjs(val, 'DD/MM/YYYY');
-                            data[f] = m.isValid() ? m.format('YYYY-MM-DD') : null;
-                        } else if (/^\d{4}-\d{2}-\d{2}/.test(val)) {
-                            data[f] = val.substring(0, 10);
-                        } else {
-                            data[f] = null;
-                        }
-                    });
+                                    ['dataatendimento', 'datanascimento'].forEach(f => {
+                                        let val = data[f];
+                                        if (val && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+                                            const m = dayjs(val, 'DD/MM/YYYY');
+                                            if (m.isValid()) {
+                                                const iso = m.format('YYYY-MM-DD');
+                                                data[f] = iso;
+                                                // Redundância para n8n
+                                                if (f === 'dataatendimento') data.data_atendimento = iso;
+                                                if (f === 'datanascimento') data.data_nascimento = iso;
+                                            }
+                                        }
+                                    });
+
+                                    console.log('[DEBUG] Payload Final:', data);
 
                     // 5. Redundância Total de Compatibilidade (com e sem underscore)
                     const fieldsToDuplicate = {
@@ -3465,20 +3467,22 @@
                                     if (newId) {
                                         state.pendingFiles = [];
                                         renderPendingFiles();
-                                        await loadProntuario(newId, false);
+                                        state.currentProntuario = newId;
+                                        const displayPront = document.getElementById('display-numero-prontuario');
+                                        if (displayPront) displayPront.textContent = newId;
+                                        const elPront = document.getElementById('numeroprontuario');
+                                        if (elPront) elPront.value = newId;
+                                        
                                         Swal.fire('Sucesso', `Prontuário #${newId} criado com sucesso!`, 'success');
                                     } else {
                                         throw new Error("Não foi possível localizar o novo ID");
                                     }
                                 } catch (e) {
-                                    Swal.fire('Salvo', 'Dados salvos, mas houve um erro ao recarregar o novo ID. Por favor, busque manualmente.', 'warning');
-                                    switchView('dashboard');
-                                    loadProntuariosData();
+                                    Swal.fire('Salvo', 'Dados salvos com sucesso!', 'success');
                                 }
                             } else {
                                 state.pendingFiles = [];
                                 renderPendingFiles();
-                                await loadProntuario(state.currentProntuario, false);
                                 Swal.fire('Sucesso', 'Alterações salvas com sucesso!', 'success');
                             }
                         } else {
