@@ -2703,21 +2703,23 @@
                 } catch (e) { console.error("Erro RPA:", e); }
             }
             
+            function calculateAge(birthDateStr) {
+                if (!birthDateStr || birthDateStr.length !== 10) return;
+                const birthDate = dayjs(birthDateStr, 'DD/MM/YYYY');
+                if (birthDate.isValid()) {
+                    const age = dayjs().diff(birthDate, 'year');
+                    const idadeEl = document.getElementById('idade');
+                    if (idadeEl) idadeEl.value = age >= 0 ? age : '';
+                }
+            }
+
             const dataNascimentoEl = document.getElementById('datanascimento');
             if (dataNascimentoEl) {
                 state.masks.datanascimento = IMask(dataNascimentoEl, maskOptions.date);
                 
                 // Cálculo de Idade automático
                 dataNascimentoEl.addEventListener('blur', () => {
-                    const val = dataNascimentoEl.value;
-                    if (val && val.length === 10) {
-                        const birthDate = dayjs(val, 'DD/MM/YYYY');
-                        if (birthDate.isValid()) {
-                            const age = dayjs().diff(birthDate, 'year');
-                            const idadeEl = document.getElementById('idade');
-                            if (idadeEl) idadeEl.value = age >= 0 ? age : '';
-                        }
-                    }
+                    calculateAge(dataNascimentoEl.value);
                 });
             }
 
@@ -3138,7 +3140,9 @@
                 
                 // 5. Recalcular Idade
                 const dnEl = document.getElementById('datanascimento');
-                if (dnEl && dnEl.value) calculateAge(dnEl.value);
+                if (dnEl && dnEl.value) {
+                    calculateAge(dnEl.value);
+                }
             }
 
             // Risco Iminente Badge Listener
