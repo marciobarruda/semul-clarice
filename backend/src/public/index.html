@@ -1832,7 +1832,7 @@
                                             <th>Descrição</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="evolucao_tabela_body">
+                                    <tbody id="evolucaotabelabody">
                                         <tr><td colspan="2" class="text-center text-muted">Nenhuma evolução registrada</td></tr>
                                     </tbody>
                                 </table>
@@ -1874,7 +1874,7 @@
                                             <th class="text-end pe-3">Ações</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="anexo_tabela_body">
+                                    <tbody id="anexotabelabody">
                                         <tr><td colspan="4" class="text-center text-muted py-4">Carregue um prontuário para ver os arquivos.</td></tr>
                                     </tbody>
                                 </table>
@@ -2241,7 +2241,7 @@
                 </div>
                 <div class="modal-footer bg-light p-3">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary px-5 shadow-sm" id="modal_juridico_save_btn" onclick="bootstrap.Modal.getInstance(document.getElementById('juridico_modal')).hide()">
+                    <button type="button" class="btn btn-primary px-5 shadow-sm" id="modal_juridico_save_btn" onclick="bootstrap.Modal.getInstance(document.getElementById('juridicomodal')).hide()">
                         <i class="bi bi-check2-circle me-2"></i> Confirmar Alterações
                     </button>
                 </div>
@@ -2282,8 +2282,8 @@
                 sortDirection: 'desc',
                 loadingTasks: 0,
                 isDashboardRendered: false,
-                userRole: 'advogada', // Perfil do usuário atual
-                pendingFiles: [] // Arquivos selecionados mas não salvos
+                pendingFiles: [], // Arquivos selecionados mas não salvos
+                masks: {} // Armazenar instâncias do IMask
             };
 
             function showGlobalLoader() {
@@ -2389,7 +2389,7 @@
             }
 
             window.openJuridicoModal = function() {
-                const modalEl = document.getElementById('juridico_modal');
+                const modalEl = document.getElementById('juridicomodal');
                 if (!modalEl) return;
                 
                 const modal = new bootstrap.Modal(modalEl);
@@ -2593,10 +2593,16 @@
 
                 // Preenchimento automático de data e hora
                 const now = dayjs();
-                const dataAtend = document.getElementById('dataatendimento');
-                const horaAtend = document.getElementById('horaatendimento');
-                if (dataAtend) dataAtend.value = now.format('DD/MM/YYYY');
+                if (dataAtend) {
+                    dataAtend.value = now.format('DD/MM/YYYY');
+                    // Não precisa de máscara explícita aqui pois não tem mask instanciada para dataatendimento (é readonly)
+                }
                 if (horaAtend) horaAtend.value = now.format('HH:mm');
+
+                // Limpar máscaras
+                Object.keys(state.masks).forEach(k => {
+                    state.masks[k].value = '';
+                });
 
                 state.currentProntuario = null;
                 state.isEditing = false;
@@ -2638,11 +2644,11 @@
             };
 
             const cpfEl = document.getElementById('cpfusuaria');
-            if (cpfEl) IMask(cpfEl, maskOptions.cpf);
+            if (cpfEl) state.masks.cpfusuaria = IMask(cpfEl, maskOptions.cpf);
             
             const cepEl = document.getElementById('cep');
             if (cepEl) {
-                IMask(cepEl, maskOptions.cep);
+                state.masks.cep = IMask(cepEl, maskOptions.cep);
                 
                 cepEl.addEventListener('blur', async function() {
                     const cep = this.value.replace(/\D/g, '');
@@ -2696,7 +2702,7 @@
             
             const dataNascimentoEl = document.getElementById('datanascimento');
             if (dataNascimentoEl) {
-                IMask(dataNascimentoEl, maskOptions.date);
+                state.masks.datanascimento = IMask(dataNascimentoEl, maskOptions.date);
                 
                 // Cálculo de Idade automático
                 dataNascimentoEl.addEventListener('blur', () => {
@@ -3106,7 +3112,12 @@
                         } else if (el.type === 'radio') {
                             el.checked = (String(el.value).toLowerCase() === String(val).toLowerCase());
                         } else {
-                            el.value = val;
+                            const maskKey = el.id || el.name.replace('[]', '');
+                            if (state.masks[maskKey]) {
+                                state.masks[maskKey].value = String(val || '');
+                            } else {
+                                el.value = val || '';
+                            }
                         }
                         
                         // Trigger change para regras de visibilidade
@@ -3139,6 +3150,7 @@
 
             async function loadEvolucoes(prontuarioId) {
                 const tbody = document.getElementById('evolucaotabelabody');
+                if (!tbody) return;
                 tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Carregando...</td></tr>';
                 
                 try {
@@ -3182,6 +3194,7 @@
 
             async function loadAnexos(prontuarioId) {
                 const tbody = document.getElementById('anexotabelabody');
+                if (!tbody) return;
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-2 text-muted">Carregando...</td></tr>';
                 
                 try {
@@ -3315,7 +3328,14 @@
                     const forceFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'dataatendimento', 'horaatendimento', 'datanascimento'];
                     forceFields.forEach(f => {
                         const el = document.getElementById(f);
-                        if (el) data[f] = el.value;
+                        if (el) {
+                            // Se tiver máscara, pegar o valor formatado da máscara
+                            if (state.masks[f]) {
+                                data[f] = state.masks[f].value;
+                            } else {
+                                data[f] = el.value;
+                            }
+                        }
                     });
 
                     // 4. Tratamento de Tipos e Datas conforme Schema BQ
