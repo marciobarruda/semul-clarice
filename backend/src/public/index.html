@@ -3347,28 +3347,27 @@
 
                     // 4. Tratamento de Tipos e Datas conforme Schema BQ
                     data.idade = (data.idade && data.idade !== "") ? parseInt(data.idade) : null;
-                    if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
+                    
+                    ['dataatendimento', 'datanascimento'].forEach(f => {
+                        let val = data[f];
+                        if (val && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+                            const m = dayjs(val, 'DD/MM/YYYY');
+                            if (m.isValid()) {
+                                data[f] = m.format('YYYY-MM-DD');
+                            } else {
+                                data[f] = null;
+                            }
+                        } else if (val && /^\d{4}-\d{2}-\d{2}/.test(val)) {
+                            data[f] = val.substring(0, 10);
+                        } else {
+                            data[f] = null;
+                        }
+                    });
 
-                                    ['dataatendimento', 'datanascimento'].forEach(f => {
-                                        let val = data[f];
-                                        if (val && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
-                                            const m = dayjs(val, 'DD/MM/YYYY');
-                                            if (m.isValid()) {
-                                                const iso = m.format('YYYY-MM-DD');
-                                                data[f] = iso;
-                                                // Redundância para n8n
-                                                if (f === 'dataatendimento') data.data_atendimento = iso;
-                                                if (f === 'datanascimento') data.data_nascimento = iso;
-                                            }
-                                        }
-                                    });
-
-                                    console.log('[DEBUG] Payload Final:', data);
+                    console.log('[DEBUG] Payload Final para BQ:', data);
 
                     // 5. Redundância Total de Compatibilidade (com e sem underscore)
                     const fieldsToDuplicate = {
-                        'dataatendimento': 'data_atendimento',
-                        'datanascimento': 'data_nascimento',
                         'numeroprontuario': 'numero_prontuario',
                         'nomeusuaria': 'nome_usuaria',
                         'cpfusuaria': 'cpf_usuaria',
