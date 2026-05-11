@@ -3319,26 +3319,45 @@
                     });
 
                     // 4. Tratamento de Tipos conforme Schema
-                    if (data.idade) data.idade = parseInt(data.idade) || null;
-                    else data.idade = null;
-                    
+                    data.idade = parseInt(data.idade) || null;
                     if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
 
                     // Converter datas para YYYY-MM-DD (BQ espera DATE)
                     ['dataatendimento', 'datanascimento'].forEach(f => {
                         let val = data[f];
-                        if (val && typeof val === 'string' && val.includes('/')) {
-                            const m = dayjs(val, 'DD/MM/YYYY');
-                            if (m.isValid()) data[f] = m.format('YYYY-MM-DD');
+                        if (!val || val === '') {
+                            data[f] = null;
+                            return;
+                        }
+                        
+                        // Se já for ISO YYYY-MM-DD, apenas limpa
+                        if (/^\d{4}-\d{2}-\d{2}/.test(val)) {
+                            data[f] = val.substring(0, 10);
+                            return;
+                        }
+
+                        // Converter de DD/MM/YYYY
+                        const m = dayjs(val, 'DD/MM/YYYY');
+                        if (m.isValid()) {
+                            data[f] = m.format('YYYY-MM-DD');
+                        } else {
+                            data[f] = null;
                         }
                     });
 
-                    // Saneamento Geral: converter strings vazias em null para o BigQuery
+                    // Redundância para compatibilidade (enviar com e sem underscore)
+                    data.data_atendimento = data.dataatendimento;
+                    data.data_nascimento = data.datanascimento;
+                    data.numero_prontuario = data.numeroprontuario;
+                    data.nome_usuaria = data.nomeusuaria;
+                    data.cpf_usuaria = data.cpfusuaria;
+
+                    // Saneamento Geral: converter strings vazias em null
                     Object.keys(data).forEach(k => {
                         if (data[k] === "") data[k] = null;
                     });
 
-                    console.log('[DEBUG] Payload Final para BQ:', JSON.stringify(data, null, 2));
+                    console.log('[DEBUG] Payload Final:', JSON.stringify(data));
 
                     // Adicionar arquivos pendentes se houver
                     if (state.pendingFiles.length > 0) {
