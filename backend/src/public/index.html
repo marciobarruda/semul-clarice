@@ -1006,12 +1006,12 @@
                                         <h3 class="subsection-title"><i class="bi bi-journal-medical"></i>Atendimento Inicial</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-3">
-                                                <label for="numero_prontuario" class="form-label required">Nº do prontuário</label>
-                                                <input type="text" class="form-control fw-bold text-primary" id="numero_prontuario" name="numero_prontuario" readonly />
+                                                <label for="numeroprontuario" class="form-label required">Nº do prontuário</label>
+                                                <input type="text" class="form-control fw-bold text-primary" id="numeroprontuario" name="numeroprontuario" readonly />
                                             </div>
                                             <div class="col-12 col-md-5">
-                                                <label for="unidade_atendimento" class="form-label required">Unidade de atendimento</label>
-                                                <select id="unidade_atendimento" name="unidade_atendimento" class="form-select" required>
+                                                <label for="unidadeatendimento" class="form-label required">Unidade de atendimento</label>
+                                                <select id="unidadeatendimento" name="unidadeatendimento" class="form-select" required>
                                                     <option value="">Selecione</option>
                                                     <option value="COMPAZ DOM HELDER CÂMARA">COMPAZ DOM HELDER CÂMARA</option>
                                                     <option value="UNIDADE DESCENTRALIZADA">UNIDADE DESCENTRALIZADA</option>
@@ -1027,12 +1027,12 @@
                                                 </select>
                                             </div>
                                             <div class="col-12 col-md-2">
-                                                <label for="data_atendimento" class="form-label required">Data</label>
-                                                <input type="text" class="form-control bg-light" id="data_atendimento" name="data_atendimento" readonly required />
+                                                <label for="dataatendimento" class="form-label required">Data</label>
+                                                <input type="text" class="form-control bg-light" id="dataatendimento" name="dataatendimento" readonly required />
                                             </div>
                                             <div class="col-12 col-md-2">
-                                                <label for="hora_atendimento" class="form-label required">Hora</label>
-                                                <input type="text" class="form-control bg-light" id="hora_atendimento" name="hora_atendimento" readonly required />
+                                                <label for="horaatendimento" class="form-label required">Hora</label>
+                                                <input type="text" class="form-control bg-light" id="horaatendimento" name="horaatendimento" readonly required />
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <label for="demandante" class="form-label">Demandante</label>
@@ -1042,16 +1042,16 @@
                                                 <label class="form-label required d-block">Avaliação inicial</label>
                                                 <div class="d-flex flex-wrap gap-3 mt-2">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="avaliacao_inicial" id="aval_risco" value="Risco iminente" required>
-                                                        <label class="form-check-label" for="aval_risco">Risco iminente</label>
+                                                        <input class="form-check-input" type="radio" name="avaliacaoinicial" id="avalrisco" value="Risco iminente" required>
+                                                        <label class="form-check-label" for="avalrisco">Risco iminente</label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="avaliacao_inicial" id="aval_acomp" value="Acompanhamento" required>
-                                                        <label class="form-check-label" for="aval_acomp">Acompanhamento</label>
+                                                        <input class="form-check-input" type="radio" name="avaliacaoinicial" id="avalacomp" value="Acompanhamento" required>
+                                                        <label class="form-check-label" for="avalacomp">Acompanhamento</label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="avaliacao_inicial" id="aval_outra" value="Outra" required>
-                                                        <label class="form-check-label" for="aval_outra">Outra</label>
+                                                        <input class="form-check-input" type="radio" name="avaliacaoinicial" id="avaloutra" value="Outra" required>
+                                                        <label class="form-check-label" for="avaloutra">Outra</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1064,26 +1064,26 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Doméstica/Familiar" id="atend_dom">
-                                                    <label class="form-check-label" for="atend_dom">Doméstica/Familiar</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Doméstica/Familiar" id="atenddom">
+                                                    <label class="form-check-label" for="atenddom">Doméstica/Familiar</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Sexista" id="atend_sex">
-                                                    <label class="form-check-label" for="atend_sex">Sexista</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Sexista" id="atendsex">
+                                                    <label class="form-check-label" for="atendsex">Sexista</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Acolhida/Orientação" id="atend_acol">
-                                                    <label class="form-check-label" for="atend_acol">Acolhida/Orientação</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Acolhida/Orientação" id="atendacol">
+                                                    <label class="form-check-label" for="atendacol">Acolhida/Orientação</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Outros Municípios" id="atend_out">
-                                                    <label class="form-check-label" for="atend_out">Outros Municípios</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Outros Municípios" id="atendout">
+                                                    <label class="form-check-label" for="atendout">Outros Municípios</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1095,26 +1095,26 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="origem_servico[]" value="Parente" id="orig_parente">
-                                                    <label class="form-check-label" for="orig_parente">Parente</label>
+                                                    <input class="form-check-input" type="checkbox" name="origemservico[]" value="Parente" id="origparente">
+                                                    <label class="form-check-label" for="origparente">Parente</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="origem_servico[]" value="Campanhas" id="orig_camp">
-                                                    <label class="form-check-label" for="orig_camp">Campanhas</label>
+                                                    <input class="form-check-input" type="checkbox" name="origemservico[]" value="Campanhas" id="origcamp">
+                                                    <label class="form-check-label" for="origcamp">Campanhas</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="origem_servico[]" value="Amiga(o)" id="orig_amiga">
-                                                    <label class="form-check-label" for="orig_amiga">Amiga(o)</label>
+                                                    <input class="form-check-input" type="checkbox" name="origemservico[]" value="Amiga(o)" id="origamiga">
+                                                    <label class="form-check-label" for="origamiga">Amiga(o)</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="origem_servico[]" value="Outras(os)" id="orig_outros">
-                                                    <label class="form-check-label" for="orig_outros">Outras(os)</label>
+                                                    <input class="form-check-input" type="checkbox" name="origemservico[]" value="Outras(os)" id="origoutros">
+                                                    <label class="form-check-label" for="origoutros">Outras(os)</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1132,36 +1132,30 @@
                                         <h3 class="subsection-title"><i class="bi bi-card-text"></i>Documentação Básica</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-8">
-                                                <label for="nome_usuaria" class="form-label required">Nome completo</label>
-                                                <input type="text" class="form-control" id="nome_usuaria" name="nome_usuaria" required />
+                                                <label for="nomeusuaria" class="form-label required">Nome completo</label>
+                                                <input type="text" class="form-control" id="nomeusuaria" name="nomeusuaria" required />
                                             </div>
                                             <div class="col-12 col-md-4">
-                                                <label for="cpf_usuaria" class="form-label required">CPF</label>
-                                                <input type="text" class="form-control" id="cpf_usuaria" name="cpf_usuaria" required />
+                                                <label for="cpfusuaria" class="form-label required">CPF</label>
+                                                <input type="text" class="form-control" id="cpfusuaria" name="cpfusuaria" required />
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <label for="nome_social" class="form-label">Nome social</label>
-                                                <input type="text" class="form-control" id="nome_social" name="nome_social" />
+                                                <label for="nomesocial" class="form-label">Nome social</label>
+                                                <input type="text" class="form-control" id="nomesocial" name="nomesocial" />
                                             </div>
                                             <div class="col-12 col-md-3">
-                                                <label for="data_nascimento" class="form-label required">Data de nascimento</label>
-                                                <input type="text" class="form-control" id="data_nascimento" name="data_nascimento" required />
+                                                <label for="datanascimento" class="form-label required">Data de nascimento</label>
+                                                <input type="text" class="form-control" id="datanascimento" name="datanascimento" required />
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <label for="idade" class="form-label">Idade</label>
                                                 <input type="text" class="form-control readonly-field" id="idade" name="idade" readonly />
                                             </div>
                                             <div class="col-12 col-md-4">
-                                                <label for="rg_usuaria" class="form-label">RG</label>
-                                                <input type="text" class="form-control" id="rg_usuaria" name="rg_usuaria" />
-                                            </div>
-                                            <div class="col-12 col-md-5">
-                                                <label for="orgao_expedidor" class="form-label">Órgão de expedição</label>
-                                                <input type="text" class="form-control" id="orgao_expedidor" name="orgao_expedidor" />
                                             </div>
                                             <div class="col-12 col-md-3">
-                                                <label for="uf_expedicao" class="form-label">UF</label>
-                                                <select id="uf_expedicao" name="uf_expedicao" class="form-select">
+                                                <label for="ufexpedicao" class="form-label">UF</label>
+                                                <select id="ufexpedicao" name="ufexpedicao" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
                                                 </select>
@@ -1181,21 +1175,21 @@
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="uf_nascimento" class="form-label">UF Nascimento</label>
-                                                <select id="uf_nascimento" name="uf_nascimento" class="form-select">
+                                                <label for="ufnascimento" class="form-label">UF Nascimento</label>
+                                                <select id="ufnascimento" name="ufnascimento" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="cidade_nascimento" class="form-label">Cidade Nascimento</label>
-                                                <select id="cidade_nascimento" name="cidade_nascimento" class="form-select">
+                                                <label for="cidadenascimento" class="form-label">Cidade Nascimento</label>
+                                                <select id="cidadenascimento" name="cidadenascimento" class="form-select">
                                                     <option value="">Selecione UF primeiro</option>
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="estado_civil" class="form-label">Estado civil</label>
-                                                <select id="estado_civil" name="estado_civil" class="form-select">
+                                                <label for="estadocivil" class="form-label">Estado civil</label>
+                                                <select id="estadocivil" name="estadocivil" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Solteira</option>
                                                     <option>Casada</option>
@@ -1218,8 +1212,8 @@
                                         <h3 class="subsection-title"><i class="bi bi-person-heart"></i>Identidade e Social</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="identidade_genero" class="form-label">Identidade de gênero</label>
-                                                <select id="identidade_genero" name="identidade_genero" class="form-select">
+                                                <label for="identidadegenero" class="form-label">Identidade de gênero</label>
+                                                <select id="identidadegenero" name="identidadegenero" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Mulher cisgênero</option>
                                                     <option>Mulher trans</option>
@@ -1230,8 +1224,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="orientacao_sexual" class="form-label">Orientação sexual</label>
-                                                <select id="orientacao_sexual" name="orientacao_sexual" class="form-select">
+                                                <label for="orientacaosexual" class="form-label">Orientação sexual</label>
+                                                <select id="orientacaosexual" name="orientacaosexual" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Assexual</option>
                                                     <option>Bissexual</option>
@@ -1245,8 +1239,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="cor_raca" class="form-label">Cor/raça</label>
-                                                <select id="cor_raca" name="cor_raca" class="form-select">
+                                                <label for="corraca" class="form-label">Cor/raça</label>
+                                                <select id="corraca" name="corraca" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Branca</option>
                                                     <option>Preta</option>
@@ -1277,12 +1271,12 @@
                                         <h3 class="subsection-title"><i class="bi bi-people"></i>Filiação</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-6">
-                                                <label for="nome_mae" class="form-label">Nome da mãe</label>
-                                                <input type="text" class="form-control" id="nome_mae" name="nome_mae" />
+                                                <label for="nomemae" class="form-label">Nome da mãe</label>
+                                                <input type="text" class="form-control" id="nomemae" name="nomemae" />
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <label for="nome_pai" class="form-label">Nome do pai</label>
-                                                <input type="text" class="form-control" id="nome_pai" name="nome_pai" />
+                                                <label for="nomepai" class="form-label">Nome do pai</label>
+                                                <input type="text" class="form-control" id="nomepai" name="nomepai" />
                                             </div>
                                         </div>
                                     </div>
@@ -1307,12 +1301,12 @@
                                                 <input type="text" class="form-control" id="logradouro" name="logradouro" readonly required />
                                             </div>
                                             <div class="col-12 col-md-2">
-                                                <label for="numero_endereco" class="form-label">Número</label>
-                                                <input type="text" class="form-control" id="numero_endereco" name="numero_endereco" />
+                                                <label for="numeroendereco" class="form-label">Número</label>
+                                                <input type="text" class="form-control" id="numeroendereco" name="numeroendereco" />
                                             </div>
                                             <div class="col-12 col-md-3">
-                                                <label for="complemento_endereco" class="form-label">Complemento</label>
-                                                <input type="text" class="form-control" id="complemento_endereco" name="complemento_endereco" />
+                                                <label for="complementoendereco" class="form-label">Complemento</label>
+                                                <input type="text" class="form-control" id="complementoendereco" name="complementoendereco" />
                                             </div>
                                             <div class="col-12 col-md-4">
                                                 <label for="bairro" class="form-label required">Bairro</label>
@@ -1331,8 +1325,8 @@
                                                 <input type="text" class="form-control" id="uf" name="uf" readonly required />
                                             </div>
                                             <div class="col-12 col-md-12">
-                                                <label for="ponto_referencia" class="form-label">Ponto de referência</label>
-                                                <input type="text" class="form-control" id="ponto_referencia" name="ponto_referencia" />
+                                                <label for="pontoreferencia" class="form-label">Ponto de referência</label>
+                                                <input type="text" class="form-control" id="pontoreferencia" name="pontoreferencia" />
                                             </div>
                                         </div>
                                     </div>
@@ -1346,8 +1340,8 @@
                                                 <input type="text" class="form-control" id="telefone" name="telefone" required />
                                             </div>
                                             <div class="col-12 col-md-4">
-                                                <label for="telefone_secundario" class="form-label">Telefone alternativo</label>
-                                                <input type="text" class="form-control" id="telefone_secundario" name="telefone_secundario" />
+                                                <label for="telefonesecundario" class="form-label">Telefone alternativo</label>
+                                                <input type="text" class="form-control" id="telefonesecundario" name="telefonesecundario" />
                                             </div>
                                             <div class="col-12 col-md-4">
                                                 <label for="email" class="form-label">E-mail</label>
@@ -1389,21 +1383,21 @@
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="situacao_escolar" class="form-label">Situação</label>
-                                                <select id="situacao_escolar" name="situacao_escolar" class="form-select">
+                                                <label for="situacaoescolar" class="form-label">Situação</label>
+                                                <select id="situacaoescolar" name="situacaoescolar" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Completo</option>
                                                     <option>Cursando</option>
                                                     <option>Incompleto</option>
                                                 </select>
                                             </div>
-                                            <div class="col-6 d-none" id="group_ano_periodo">
-                                                <label for="ano_periodo" class="form-label">Ano/Período</label>
-                                                <input type="text" class="form-control" id="ano_periodo" name="ano_periodo" />
+                                            <div class="col-6 d-none" id="groupanoperiodo">
+                                                <label for="anoperiodo" class="form-label">Ano/Período</label>
+                                                <input type="text" class="form-control" id="anoperiodo" name="anoperiodo" />
                                             </div>
-                                            <div class="col-12 d-none" id="group_curso_formacao">
-                                                <label for="curso_formacao" class="form-label">Curso/Formação</label>
-                                                <input type="text" class="form-control" id="curso_formacao" name="curso_formacao" />
+                                            <div class="col-12 d-none" id="groupcursoformacao">
+                                                <label for="cursoformacao" class="form-label">Curso/Formação</label>
+                                                <input type="text" class="form-control" id="cursoformacao" name="cursoformacao" />
                                             </div>
                                         </div>
                                     </div>
@@ -1413,8 +1407,8 @@
                                         <h3 class="subsection-title"><i class="bi bi-briefcase"></i>Situação Profissional</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="situacao_ocupacional" class="form-label">Situação ocupacional</label>
-                                                <select id="situacao_ocupacional" name="situacao_ocupacional" class="form-select">
+                                                <label for="situacaoocupacional" class="form-label">Situação ocupacional</label>
+                                                <select id="situacaoocupacional" name="situacaoocupacional" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Empregada formal</option>
                                                     <option>Trabalhadora autônoma</option>
@@ -1428,12 +1422,12 @@
                                                 <input type="text" class="form-control" id="profissao" name="profissao" />
                                             </div>
                                             <div class="col-6">
-                                                <label for="renda_individual" class="form-label">Renda individual</label>
-                                                <input type="text" class="form-control" id="renda_individual" name="renda_individual" />
+                                                <label for="rendaindividual" class="form-label">Renda individual</label>
+                                                <input type="text" class="form-control" id="rendaindividual" name="rendaindividual" />
                                             </div>
                                             <div class="col-6">
-                                                <label for="situacao_trabalho" class="form-label">Vínculo</label>
-                                                <select id="situacao_trabalho" name="situacao_trabalho" class="form-select">
+                                                <label for="situacaotrabalho" class="form-label">Vínculo</label>
+                                                <select id="situacaotrabalho" name="situacaotrabalho" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Carteira assinada</option>
                                                     <option>Informal</option>
@@ -1466,8 +1460,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="renda_familiar" class="form-label">Renda familiar total</label>
-                                                <select id="renda_familiar" name="renda_familiar" class="form-select">
+                                                <label for="rendafamiliar" class="form-label">Renda familiar total</label>
+                                                <select id="rendafamiliar" name="rendafamiliar" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Até 1 salário mínimo</option>
                                                     <option>De 1 a 2 salários mínimos</option>
@@ -1476,8 +1470,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="rede_apoio" class="form-label">Rede de apoio</label>
-                                                <input type="text" class="form-control" id="rede_apoio" name="rede_apoio" placeholder="Quem ajuda no dia a dia?" />
+                                                <label for="redeapoio" class="form-label">Rede de apoio</label>
+                                                <input type="text" class="form-control" id="redeapoio" name="redeapoio" placeholder="Quem ajuda no dia a dia?" />
                                             </div>
                                         </div>
                                     </div>
@@ -1487,8 +1481,8 @@
                                         <h3 class="subsection-title"><i class="bi bi-house-heart"></i>Habitação</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="situacao_habitacional" class="form-label">Situação habitacional</label>
-                                                <select id="situacao_habitacional" name="situacao_habitacional" class="form-select">
+                                                <label for="situacaohabitacional" class="form-label">Situação habitacional</label>
+                                                <select id="situacaohabitacional" name="situacaohabitacional" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Própria</option>
                                                     <option>Alugada</option>
@@ -1497,13 +1491,13 @@
                                                     <option>Outros</option>
                                                 </select>
                                             </div>
-                                            <div class="col-12 d-none" id="group_hab_outro">
-                                                <label for="situacao_habitacional_outro" class="form-label">Especifique habitação</label>
-                                                <input type="text" class="form-control" id="situacao_habitacional_outro" name="situacao_habitacional_outro" />
+                                            <div class="col-12 d-none" id="grouphabitacionaloutro">
+                                                <label for="situacaohabitacionaloutro" class="form-label">Especifique habitação</label>
+                                                <input type="text" class="form-control" id="situacaohabitacionaloutro" name="situacaohabitacionaloutro" />
                                             </div>
                                             <div class="col-12">
-                                                <label for="total_filhos" class="form-label">Total de filhos(as)</label>
-                                                <select id="total_filhos" name="total_filhos" class="form-select">
+                                                <label for="totalfilhos" class="form-label">Total de filhos(as)</label>
+                                                <select id="totalfilhos" name="totalfilhos" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>0</option>
                                                     <option>1</option>
@@ -1533,8 +1527,8 @@
                                                         <th class="text-end px-3">Ações</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="familia_tabela_body">
-                                                    <tr id="familia_vazia">
+                                                <tbody id="familiatabelabody">
+                                                    <tr id="familiavazia">
                                                         <td colspan="4" class="text-center text-muted py-3">Nenhum membro informado.</td>
                                                     </tr>
                                                 </tbody>
@@ -1554,19 +1548,19 @@
                                         <h3 class="subsection-title"><i class="bi bi-person-vcard"></i>SUS e Deficiências</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="numero_sus" class="form-label">Número do Cartão SUS</label>
-                                                <input type="text" class="form-control" id="numero_sus" name="numero_sus" />
+                                                <label for="numerosus" class="form-label">Número do Cartão SUS</label>
+                                                <input type="text" class="form-control" id="numerosus" name="numerosus" />
                                             </div>
                                             <div class="col-12">
                                                 <label class="form-label d-block">Apresenta alguma deficiência?</label>
                                                 <div class="form-check form-switch mt-2">
-                                                    <input class="form-check-input" type="checkbox" name="deficiencia_sindrome" id="deficiencia_sindrome" value="Sim">
-                                                    <label class="form-check-label" for="deficiencia_sindrome">Sim</label>
+                                                    <input class="form-check-input" type="checkbox" name="deficienciasindrome" id="deficienciasindrome" value="Sim">
+                                                    <label class="form-check-label" for="deficienciasindrome">Sim</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 d-none" id="group_def_qual">
-                                                <label for="deficiencia_qual" class="form-label">Qual deficiência?</label>
-                                                <select id="deficiencia_qual" name="deficiencia_qual" class="form-select">
+                                            <div class="col-12 d-none" id="groupdeficienciaqual">
+                                                <label for="deficienciaqual" class="form-label">Qual deficiência?</label>
+                                                <select id="deficienciaqual" name="deficienciaqual" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Física</option>
                                                     <option>Auditiva</option>
@@ -1585,31 +1579,31 @@
                                             <div class="col-12">
                                                 <label class="form-label d-block">Já foi atendido por psicólogo?</label>
                                                 <div class="form-check form-switch mt-2">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento_psicologo" id="atendimento_psicologo" value="Sim">
-                                                    <label class="form-check-label" for="atendimento_psicologo">Sim</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimentopsicologo" id="atendimentopsicologo" value="Sim">
+                                                    <label class="form-check-label" for="atendimentopsicologo">Sim</label>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <label class="form-label d-block">Já foi atendido por psiquiatra?</label>
                                                 <div class="form-check form-switch mt-2">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento_psiquiatra" id="atendimento_psiquiatra" value="Sim">
-                                                    <label class="form-check-label" for="atendimento_psiquiatra">Sim</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimentopsiquiatra" id="atendimentopsiquiatra" value="Sim">
+                                                    <label class="form-check-label" for="atendimentopsiquiatra">Sim</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 d-none" id="group_prob_saude">
-                                                <label for="qual_prob_saude" class="form-label">Qual problema de saúde?</label>
-                                                <input type="text" class="form-control" id="qual_prob_saude" name="qual_prob_saude" />
+                                            <div class="col-12 d-none" id="groupprobsaude">
+                                                <label for="qualprobsaude" class="form-label">Qual problema de saúde?</label>
+                                                <input type="text" class="form-control" id="qualprobsaude" name="qualprobsaude" />
                                             </div>
                                             <div class="col-12">
                                                 <label class="form-label d-block">Usa medicamento contínuo?</label>
                                                 <div class="form-check form-switch mt-2">
-                                                    <input class="form-check-input" type="checkbox" name="uso_medicamento" id="uso_medicamento" value="Sim">
-                                                    <label class="form-check-label" for="uso_medicamento">Sim</label>
+                                                    <input class="form-check-input" type="checkbox" name="usomedicamento" id="usomedicamento" value="Sim">
+                                                    <label class="form-check-label" for="usomedicamento">Sim</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 d-none" id="group_med_quais">
-                                                <label for="quais_medicamentos" class="form-label">Quais medicamentos?</label>
-                                                <input type="text" class="form-control" id="quais_medicamentos" name="quais_medicamentos" />
+                                            <div class="col-12 d-none" id="groupmedquais">
+                                                <label for="quaismedicamentos" class="form-label">Quais medicamentos?</label>
+                                                <input type="text" class="form-control" id="quaismedicamentos" name="quaismedicamentos" />
                                             </div>
                                         </div>
                                     </div>
@@ -1628,8 +1622,8 @@
                                             <div class="col-12">
                                                 <label class="form-label d-block">Realizou exame de HIV?</label>
                                                 <div class="form-check form-switch mt-2">
-                                                    <input class="form-check-input" type="checkbox" name="exame_hiv" id="exame_hiv" value="Sim">
-                                                    <label class="form-check-label" for="exame_hiv">Sim</label>
+                                                    <input class="form-check-input" type="checkbox" name="examehiv" id="examehiv" value="Sim">
+                                                    <label class="form-check-label" for="examehiv">Sim</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1643,8 +1637,8 @@
                             <h2 class="form-section-title"><i class="bi bi-exclamation-triangle"></i>Tipificação da violência</h2>
                             <div class="row g-4">
                                 <div class="col-12 col-md-4">
-                                    <label for="tipo_violencia" class="form-label required">Tipo de violência principal</label>
-                                    <select id="tipo_violencia" name="tipo_violencia" class="form-select" required>
+                                    <label for="tipoviolencia" class="form-label required">Tipo de violência principal</label>
+                                    <select id="tipoviolencia" name="tipoviolencia" class="form-select" required>
                                         <option value="">Selecione</option>
                                         <option>Violência física</option>
                                         <option>Violência psicológica</option>
@@ -1654,12 +1648,12 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <label for="local_violencia" class="form-label required">Local principal</label>
-                                    <input type="text" class="form-control" id="local_violencia" name="local_violencia" required />
+                                    <label for="localviolencia" class="form-label required">Local principal</label>
+                                    <input type="text" class="form-control" id="localviolencia" name="localviolencia" required />
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <label for="outro_local_agressao" class="form-label">Especifique local</label>
-                                    <input type="text" class="form-control" id="outro_local_agressao" name="outro_local_agressao" />
+                                    <label for="outrolocalagressao" class="form-label">Especifique local</label>
+                                    <input type="text" class="form-control" id="outrolocalagressao" name="outrolocalagressao" />
                                 </div>
                                 <div class="col-12 col-md-4">
                                     <label for="frequencia" class="form-label">Frequência</label>
@@ -1678,39 +1672,39 @@
                                             <div class="col-12 col-md-6 col-xl-4">
                                                 <label class="form-label fw-bold">Física</label>
                                                 <div class="row g-2">
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violencia_fisica[]" value="Tapa" id="vf_tapa"><label class="form-check-label" for="vf_tapa">Tapa/Empurrão</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violencia_fisica[]" value="Soco" id="vf_soco"><label class="form-check-label" for="vf_soco">Soco/Pontapé</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violencia_fisica[]" value="Espancamento" id="vf_esp"><label class="form-check-label" for="vf_esp">Espancamento</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Tapa" id="vftapa"><label class="form-check-label" for="vftapa">Tapa/Empurrão</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Soco" id="vfsoco"><label class="form-check-label" for="vfsoco">Soco/Pontapé</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Espancamento" id="vfesp"><label class="form-check-label" for="vfesp">Espancamento</label></div></div>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-xl-4">
                                                 <label class="form-label fw-bold">Psicológica</label>
                                                 <div class="row g-2">
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violencia_psicologica[]" value="Ameaça" id="vp_ame"><label class="form-check-label" for="vp_ame">Ameaça</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violencia_psicologica[]" value="Humilhação" id="vp_hum"><label class="form-check-label" for="vp_hum">Humilhação</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violencia_psicologica[]" value="Chantagem" id="vp_cha"><label class="form-check-label" for="vp_cha">Chantagem</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Ameaça" id="vpame"><label class="form-check-label" for="vpame">Ameaça</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Humilhação" id="vphum"><label class="form-check-label" for="vphum">Humilhação</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Chantagem" id="vpcha"><label class="form-check-label" for="vpcha">Chantagem</label></div></div>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-xl-4">
                                                 <label class="form-label fw-bold">Fatores Relacionados</label>
                                                 <div class="row g-2">
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatores_relacionados[]" value="Ciúmes" id="fr_ciu"><label class="form-check-label" for="fr_ciu">Ciúmes</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatores_relacionados[]" value="Drogas" id="fr_dro"><label class="form-check-label" for="fr_dro">Uso de drogas</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatoresrelacionados[]" value="Ciúmes" id="frciu"><label class="form-check-label" for="frciu">Ciúmes</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatoresrelacionados[]" value="Drogas" id="frdro"><label class="form-check-label" for="frdro">Uso de drogas</label></div></div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row g-3 mt-1">
                                                     <div class="col-12 col-md-4">
-                                                        <label for="outras_viol_fisicas" class="form-label">Outras viol. físicas</label>
-                                                        <input type="text" class="form-control" id="outras_viol_fisicas" name="outras_viol_fisicas">
+                                                        <label for="outrasviolfisicas" class="form-label">Outras viol. físicas</label>
+                                                        <input type="text" class="form-control" id="outrasviolfisicas" name="outrasviolfisicas">
                                                     </div>
                                                     <div class="col-12 col-md-4">
-                                                        <label for="outras_viol_psicologicas" class="form-label">Outras viol. psicodigitais</label>
-                                                        <input type="text" class="form-control" id="outras_viol_psicologicas" name="outras_viol_psicologicas">
+                                                        <label for="outrasviolpsicologicas" class="form-label">Outras viol. psicodigitais</label>
+                                                        <input type="text" class="form-control" id="outrasviolpsicologicas" name="outrasviolpsicologicas">
                                                     </div>
                                                     <div class="col-12 col-md-4">
-                                                        <label for="outras_viol_sexuais" class="form-label">Outras viol. sexuais</label>
-                                                        <input type="text" class="form-control" id="outras_viol_sexuais" name="outras_viol_sexuais">
+                                                        <label for="outrasviolsexuais" class="form-label">Outras viol. sexuais</label>
+                                                        <input type="text" class="form-control" id="outrasviolsexuais" name="outrasviolsexuais">
                                                     </div>
                                                 </div>
                                             </div>
@@ -1765,8 +1759,8 @@
                                                         <th class="text-end px-3">Ações</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="autor_tabela_body">
-                                                    <tr id="autor_vazio">
+                                                <tbody id="autortabelabody">
+                                                    <tr id="autorvazio">
                                                         <td colspan="3" class="text-center text-muted py-3">Nenhum autor informado.</td>
                                                     </tr>
                                                 </tbody>
@@ -1788,14 +1782,14 @@
                                                 <label class="form-label d-block fw-bold mb-0">Deseja emitir senha CIODS?</label>
                                                 <p class="text-muted small mb-2">Gera solicitação automática via email</p>
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="emitir_senha_ciods" id="emitir_senha_ciods" value="Sim">
-                                                    <label class="form-check-label" for="emitir_senha_ciods">Sim</label>
+                                                    <input class="form-check-input" type="checkbox" name="emitirsenhaciods" id="emitirsenhaciods" value="Sim">
+                                                    <label class="form-check-label" for="emitirsenhaciods">Sim</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 d-none" id="group_ciods_relato">
+                                            <div class="col-12 d-none" id="groupciodsrelato">
                                                 <div class="mt-3">
-                                                    <label for="relato_ciods" class="form-label fw-bold">Breve relato para corpo do email</label>
-                                                    <textarea class="form-control border-warning-subtle" id="relato_ciods" name="relato_ciods" rows="4" placeholder="Descreva aqui os detalhes que devem constar no corpo do email para a CIODS..."></textarea>
+                                                    <label for="relatociods" class="form-label fw-bold">Breve relato para corpo do email</label>
+                                                    <textarea class="form-control border-warning-subtle" id="relatociods" name="relatociods" rows="4" placeholder="Descreva aqui os detalhes que devem constar no corpo do email para a CIODS..."></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -1807,14 +1801,14 @@
                         <section class="card-section mb-4" id="relato-caso">
                             <h2 class="form-section-title"><i class="bi bi-chat-left-text"></i>Relato do caso</h2>
                             <div class="row g-3">
-                                <div class="col-12" id="relato_casoContainer">
+                                <div class="col-12" id="relatocasoContainer">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <label for="relato_caso" class="form-label required mb-0">Descrição detalhada</label>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('relato_caso', 'Relato do Caso')">
+                                        <label for="relatocaso" class="form-label required mb-0">Descrição detalhada</label>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('relatocaso', 'Relato do Caso')">
                                             <i class="bi bi-arrows-fullscreen me-1"></i> <span class="btn-text">Expandir</span>
                                         </button>
                                     </div>
-                                    <textarea class="form-control" id="relato_caso" name="relato_caso" rows="8" required></textarea>
+                                    <textarea class="form-control" id="relatocaso" name="relatocaso" rows="8" required></textarea>
                                 </div>
                             </div>
                         </section>
@@ -2431,14 +2425,14 @@
                 }
 
                 const visibilityRules = [
-                    { trigger: 'deficiencia_sindrome', target: 'group_def_qual', type: 'checkbox' },
-                    { trigger: 'situacao_habitacional', target: 'group_hab_outro', type: 'select', value: 'Outros' },
-                    { trigger: 'atendimento_psicologo', target: 'group_prob_saude', type: 'checkbox' },
-                    { trigger: 'atendimento_psiquiatra', target: 'group_prob_saude', type: 'checkbox' },
-                    { trigger: 'uso_medicamento', target: 'group_med_quais', type: 'checkbox' },
-                    { trigger: 'emitir_senha_ciods', target: 'group_ciods_relato', type: 'checkbox' },
-                    { trigger: 'situacao_escolar', target: 'group_ano_periodo', type: 'select', condition: (val) => val !== 'Completo' && val !== '' },
-                    { trigger: 'escolaridade', target: 'group_curso_formacao', type: 'select', condition: (val) => {
+                    { trigger: 'deficienciasindrome', target: 'groupdeficienciaqual', type: 'checkbox' },
+                    { trigger: 'situacaohabitacional', target: 'grouphabitacionaloutro', type: 'select', value: 'Outros' },
+                    { trigger: 'atendimentopsicologo', target: 'groupprobsaude', type: 'checkbox' },
+                    { trigger: 'atendimentopsiquiatra', target: 'groupprobsaude', type: 'checkbox' },
+                    { trigger: 'usomedicamento', target: 'groupmedquais', type: 'checkbox' },
+                    { trigger: 'emitirsenhaciods', target: 'groupciodsrelato', type: 'checkbox' },
+                    { trigger: 'situacaoescolar', target: 'groupanoperiodo', type: 'select', condition: (val) => val !== 'Completo' && val !== '' },
+                    { trigger: 'escolaridade', target: 'groupcursoformacao', type: 'select', condition: (val) => {
                         const higherLevels = ['Curso Técnico Profissionalizante', 'Curso Tecnológico', 'Ensino Superior Incompleto', 'Ensino Superior Completo', 'Pós Graduação'];
                         return higherLevels.includes(val);
                     }}
@@ -2452,10 +2446,9 @@
                         const updateVisibility = () => {
                             let isVisible = false;
                             if (rule.type === 'checkbox') {
-                                // For prob_saude, we want it visible if EITHER psicologo OR psiquiatra is checked
-                                if (rule.target === 'group_prob_saude') {
-                                    isVisible = (document.getElementById('atendimento_psicologo')?.checked || 
-                                                 document.getElementById('atendimento_psiquiatra')?.checked);
+                                if (rule.target === 'groupprobsaude') {
+                                    isVisible = (document.getElementById('atendimentopsicologo')?.checked || 
+                                                 document.getElementById('atendimentopsiquiatra')?.checked);
                                 } else {
                                     isVisible = triggerEl.checked;
                                 }
@@ -2470,7 +2463,7 @@
                         };
 
                         triggerEl.addEventListener('change', updateVisibility);
-                        updateVisibility(); // Initial state
+                        updateVisibility(); 
                     }
                 });
             }
@@ -3063,257 +3056,79 @@
 
             function populateForm(data) {
                 resetForm();
-                const id = data.prontuario || data.numero_prontuario || data.numeroprontuario || '';
+                console.log('Populating form with data:', data);
+
+                const id = data.prontuario || data.numeroprontuario || data.numero_prontuario || '';
                 state.currentProntuario = id;
                 state.isEditing = true;
 
-                // Update header badge
-                const headerBadge = document.getElementById('header-user-badge');
+                // 1. Cabeçalho
                 const displayName = document.getElementById('display-nome-usuaria');
                 const displayProntuario = document.getElementById('display-numero-prontuario');
-                const nomeUsuaria = data.nome_usuaria || data.nomeusuaria || data.nome || '';
+                const headerBadge = document.getElementById('header-user-badge');
                 
-                if (headerBadge && displayName && displayProntuario) {
-                    displayName.textContent = nomeUsuaria;
-                    displayProntuario.textContent = id;
-                    headerBadge.style.display = 'flex';
-                }
-                
-                const mapping = {
-                    'numero_prontuario': id,
-                    'unidade_atendimento': data.unidadeatendimento || data.unidade_atendimento || '',
-                    'data_atendimento': (data.dataatendimento || data.data_atendimento || data.data_pri_atendimento) ? dayjs(data.dataatendimento || data.data_atendimento || data.data_pri_atendimento).format('DD/MM/YYYY') : '',
-                    'hora_atendimento': data.horaatendimento || data.hora_atendimento || '',
-                    'nome_usuaria': data.nomeusuaria || data.nome_usuaria || data.nome || '',
-                    'cpf_usuaria': data.cpfusuaria || data.cpf_usuaria || data.cpf || '',
-                    'nome_social': data.nomesocial || data.nome_social || '',
-                    'data_nascimento': (data.datanascimento || data.data_nascimento || data.nascimento) ? dayjs(data.datanascimento || data.data_nascimento || data.nascimento).format('DD/MM/YYYY') : '',
-                    'idade': data.idade || '',
-                    'rg_usuaria': data.rgusuaria || data.rg_usuaria || data.rgusuario || data.rg || '',
-                    'orgao_expedidor': data.orgaoexpedidor || data.orgao_expedidor || '',
-                    'uf_expedicao': data.ufexpedicao || data.uf_expedicao || '',
-                    'nacionalidade': normalizeNationality(data.nacionalidade),
-                    'uf_nascimento': data.ufnascimento || data.uf_nascimento || '',
-                    'cidade_nascimento': data.cidadenascimento || data.cidade_nascimento || '',
-                    'estado_civil': data.estadocivil || data.estado_civil || data.estadocivil_vitima || '',
-                    'nome_mae': data.nomemae || data.nome_mae || '',
-                    'nome_pai': data.nomepai || data.nome_pai || '',
-                    'demandante': data.demandante || '',
-                    'conjuge': data.conjuge || '',
-                    'cep': data.cep || '',
-                    'logradouro': data.logradouro || '',
-                    'numero_endereco': data.numeroendereco || data.numero_endereco || data.numero || '',
-                    'complemento_endereco': data.complementoendereco || data.complemento_endereco || data.complemento || '',
-                    'bairro': data.bairro || '',
-                    'ponto_referencia': data.pontoreferencia || data.ponto_referencia || '',
-                    'cidade': data.cidade || '',
-                    'uf': data.uf || '',
-                    'rpa': data.rpa || '',
-                    'telefone': data.telefone || '',
-                    'telefone_secundario': data.telefonesecundario || data.telefone_secundario || '',
-                    'email': data.email || data.emailusuario || '',
-                    'cor_raca': data.corraca || data.cor_raca || data.racacor || '',
-                    'orientacao_sexual': data.orientacaosexual || data.orientacao_sexual || '',
-                    'identidade_genero': data.identidadegenero || data.identidade_genero || '',
-                    'religiao': data.religiao || '',
-                    'escolaridade': data.escolaridade || data.escolaridavitim || '',
-                    'curso_formacao': data.cursoformacao || data.curso_formacao || '',
-                    'situacao_escolar': data.situacaoescolar || data.situacao_escolar || '',
-                    'ano_periodo': data.anoperiodo || data.ano_periodo || '',
-                    'situacao_ocupacional': data.situacaoocupacional || data.situacao_ocupacional || '',
-                    'profissao': data.profissao || data.ocupacao || '',
-                    'renda_individual': data.rendaindividual || data.renda_individual || '',
-                    'situacao_trabalho': data.situacaotrabalho || data.situacao_trabalho || '',
-                    'beneficios': data.beneficios || '',
-                    'renda_familiar': data.rendafamiliar || data.renda_familiar || '',
-                    'rede_apoio': data.redeapoio || data.rede_apoio || '',
-                    'situacao_habitacional': data.situacaohabitacional || data.situacao_habitacional || '',
-                    'total_filhos': data.totalfilhos || data.total_filhos || '',
-                    'numero_sus': data.numerosus || data.numero_sus || data.catao_sus || '',
-                    'tipo_violencia': data.tipoviolencia || data.tipo_violencia || '',
-                    'local_violencia': data.localviolencia || data.local_violencia || '',
-                    'frequencia': data.frequencia || '',
-                    'relato_caso': data.relatocaso || data.relato || data.breve_relato || '',
-                    'numero_processo': data.numeroprocesso || data.numero_processo || '',
-                    'quais_medicamentos': data.medquais || data.quais_medicamentos || '',
-                    'qual_prob_saude': data.qual_prob_saude || '',
-                    'deficiencia_qual': data.deficienciaqual || data.tipo_deficiencia || '',
-                    'relato_ciods': data.relato_ciods || '',
-                    'outro_local_agressao': data.outro_local_agressao || data.outro_local || '',
-                    'outras_viol_fisicas': data.outras_viol_fisicas || '',
-                    'outras_viol_psicologicas': data.outras_viol_psicologicas || '',
-                    'outras_viol_sexuais': data.outras_viol_sexuais || ''
-                };
+                if (displayName) displayName.textContent = data.nomeusuaria || data.nome_usuaria || '';
+                if (displayProntuario) displayProntuario.textContent = id;
+                if (headerBadge) headerBadge.style.display = 'flex';
 
-                // Update Risco Badge
-                const badgeRisco = document.getElementById('badge-risco-iminente');
-                if (badgeRisco) {
-                    const aval = data.avaliacao_inicial || data.avaliacaoinicial || data.avaliacao || '';
-                    badgeRisco.classList.toggle('d-none', aval !== 'Risco iminente');
-                }
+                // 2. Preenchimento Genérico e Inteligente
+                Object.keys(data).forEach(key => {
+                    let val = data[key];
+                    if (val === null || val === undefined) return;
 
-                // Simple Fields
-                Object.entries(mapping).forEach(([fieldId, value]) => {
-                    const el = document.getElementById(fieldId);
-                    if (el) {
-                        // Se for campo de data e vier do BQ (YYYY-MM-DD), formatar para PT-BR
-                        let displayValue = value;
-                        if (fieldId.includes('data_') && value && value.includes('-')) {
-                             const m = dayjs(value);
-                             if (m.isValid()) displayValue = m.format('DD/MM/YYYY');
+                    const cleanKey = key.replace(/_/g, '').toLowerCase();
+                    const els = document.querySelectorAll(`[name="${cleanKey}"], [id="${cleanKey}"], [name="${cleanKey}[]"]`);
+
+                    els.forEach(el => {
+                        // Formatação de Datas
+                        if (cleanKey.includes('data') && val && String(val).includes('-')) {
+                            const m = dayjs(val);
+                            if (m.isValid()) val = m.format('DD/MM/YYYY');
                         }
-                        
-                        el.value = displayValue || '';
-                        
-                        // Fallback para SELECTs se a opção ainda não existir (carregamento assíncrono)
-                        if (el.tagName === 'SELECT' && el.value !== String(displayValue) && displayValue) {
-                            const opt = document.createElement('option');
-                            opt.value = displayValue;
-                            opt.textContent = displayValue;
-                            el.appendChild(opt);
-                            el.value = displayValue;
-                        }
-                    }
-                });
 
-                // Switches (Checks)
-                const binaryFields = [
-                    'deficiencia_sindrome', 'atendimento_psicologo', 'atendimento_psiquiatra', 
-                    'uso_medicamento', 'gestante', 'exame_hiv', 'medida_protetiva', 'boletim_ocorrencia',
-                    'registro_ocorrencia', 'fianca', 'aceitou_abrigamento', 'brigada_maria_penha',
-                    'violencia_institucional', 'gerar_procuracao', 'emitir_senha_ciods'
-                ];
-                
-                binaryFields.forEach(name => {
-                    const el = document.getElementById(name);
-                    if (el) {
-                        // Busca o valor em várias combinações possíveis (snake_case, camelCase, etc)
-                        const possibleKeys = [
-                            name, 
-                            name.toLowerCase(), 
-                            name.replace(/_/g, ''), 
-                            name.replace(/_/g, '').toLowerCase()
-                        ];
-                        let val = null;
-                        for (let k of possibleKeys) {
-                            if (data[k] !== undefined) {
-                                val = data[k];
-                                break;
+                        if (el.type === 'checkbox') {
+                            if (el.name.endsWith('[]')) {
+                                // Arrays (Multi-select)
+                                let list = [];
+                                if (Array.isArray(val)) list = val;
+                                else if (typeof val === 'string') {
+                                    list = val.replace(/[{}]/g, '').split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+                                }
+                                el.checked = list.some(item => String(item).toLowerCase() === String(el.value).toLowerCase());
+                            } else {
+                                // Booleanos
+                                el.checked = (String(val).toLowerCase() === 'sim' || val === true || val === 1 || String(val).toLowerCase() === 't');
                             }
+                        } else if (el.type === 'radio') {
+                            el.checked = (String(el.value).toLowerCase() === String(val).toLowerCase());
+                        } else {
+                            el.value = val;
                         }
                         
-                        // Infer state from extra fields if explicit binary is empty
-                        if (name === 'atendimento_psicologo') val = (val !== null) ? val : data.tempo_psico;
-                        if (name === 'atendimento_psiquiatra') val = (val !== null) ? val : data.tempo_psiquiatra;
-                        if (name === 'uso_medicamento') val = (val !== null) ? val : (data.tempo_medicamento || data.quais_medicamentos);
-                        if (name === 'deficiencia_sindrome') val = (val !== null) ? val : (data.deficiencia_sindrome || data.tipo_deficiencia);
-
-                        if (typeof val === 'string') {
-                            const v = val.trim().toLowerCase();
-                            val = (v === 'sim' || v === 'true' || v === 't' || v === '1');
-                        }
-                        el.checked = !!val;
-                        // Trigger change to update visibility groups
+                        // Trigger change para regras de visibilidade
                         el.dispatchEvent(new Event('change'));
-                    }
-                });
-
-                // Array-based Multi-switches (atendimento, origemservico, violenciafisica, violenciapsicologica, fatoresrelacionados)
-                const arrayLoadingMapping = {
-                    'atendimento': 'atendimento[]',
-                    'origemservico': 'origem_servico[]',
-                    'violencia_servico': 'origem_servico[]',
-                    'violenciafisica': 'violencia_fisica[]',
-                    'violencia_fisica': 'violencia_fisica[]',
-                    'violenciapsicologica': 'violencia_psicologica[]',
-                    'violencia_psicologica': 'violencia_psicologica[]',
-                    'fatoresrelacionados': 'fatores_relacionados[]',
-                    'fatores_relacionados': 'fatores_relacionados[]'
-                };
-
-                Object.entries(arrayLoadingMapping).forEach(([jsonKey, htmlName]) => {
-                    // Busca exaustiva e case-insensitive pela chave no objeto de dados
-                    let val = undefined;
-                    const normalizedTarget = jsonKey.toLowerCase().replace(/_/g, '');
-                    
-                    for (let k in data) {
-                        const normalizedKey = k.toLowerCase().replace(/_/g, '');
-                        if (normalizedKey === normalizedTarget) {
-                            val = data[k];
-                            break;
-                        }
-                    }
-
-                    if (val === undefined || val === null) return;
-
-                    // Converte para array se for string separada por vírgula ou formato Postgres {a,b,c}
-                    let list = [];
-                    if (Array.isArray(val)) {
-                        list = val;
-                    } else if (typeof val === 'string') {
-                        let str = val.trim();
-                        if (str.startsWith('{') && str.endsWith('}')) {
-                            // Formato Postgres: {Item 1,"Item 2",Item 3}
-                            str = str.substring(1, str.length - 1);
-                            // Split por vírgula que não esteja dentro de aspas (simplificado)
-                            list = str.split(',').map(s => s.replace(/^"|"$/g, '').trim());
-                        } else {
-                            list = str.split(',').map(s => s.trim());
-                        }
-                    }
-                    
-                    // Marca os checkboxes correspondentes
-                    document.querySelectorAll(`input[name="${htmlName}"]`).forEach(checkbox => {
-                        const cbValue = String(checkbox.value).toLowerCase().trim();
-                        checkbox.checked = list.some(item => String(item).toLowerCase().trim() === cbValue);
-                        // Trigger change to update related visibility groups
-                        checkbox.dispatchEvent(new Event('change'));
                     });
                 });
 
-                // Radios (Avaliação Inicial)
-                const avalValue = data.avaliacao_inicial || data.avaliacaoinicial || data.avaliacao || '';
-                document.querySelectorAll('input[name="avaliacao_inicial"]').forEach(radio => {
-                    radio.checked = (String(radio.value).toLowerCase() === String(avalValue).toLowerCase());
-                });
+                // 3. Badge de Risco
+                const aval = data.avaliacaoinicial || data.avaliacao_inicial || '';
+                const badge = document.getElementById('badge-risco-iminente');
+                if (badge) badge.classList.toggle('d-none', aval !== 'Risco iminente');
 
-                // Recalcular idade após preencher data_nascimento
-                const dnEl = document.getElementById('data_nascimento');
-                if (dnEl && dnEl.value && dnEl.value.length === 10) {
-                    const birthDate = dayjs(dnEl.value, 'DD/MM/YYYY');
-                    if (birthDate.isValid()) {
-                        const age = dayjs().diff(birthDate, 'year');
-                        const idadeEl = document.getElementById('idade');
-                        if (idadeEl) idadeEl.value = age >= 0 ? age : '';
-                    }
-                }
-
-                // Header is already updated in populateForm
-                // document.getElementById('numero_prontuario_display').textContent = mapping.numero_prontuario;
+                // 4. Inicializar Visibilidade
+                initFormVisibility();
+                
+                // 5. Recalcular Idade
+                const dnEl = document.getElementById('datanascimento');
+                if (dnEl && dnEl.value) calculateAge(dnEl.value);
             }
 
             // Risco Iminente Badge Listener
-            document.querySelectorAll('input[name="avaliacao_inicial"]').forEach(radio => {
+            document.querySelectorAll('input[name="avaliacaoinicial"]').forEach(radio => {
                 radio.addEventListener('change', (e) => {
                     const badge = document.getElementById('badge-risco-iminente');
-                    const headerBadge = document.getElementById('header-user-badge');
                     if (badge) {
-                        const isRisco = e.target.value === 'Risco iminente';
-                        badge.classList.toggle('d-none', !isRisco);
-                        
-                        // Garante que o cabeçalho esteja visível se for risco
-                        if (isRisco && headerBadge) {
-                            headerBadge.style.display = 'flex';
-                            // Se for novo e não tiver nome, preenche um placeholder
-                            const nameDisplay = document.getElementById('display-nome-usuaria');
-                            if (nameDisplay && (!nameDisplay.textContent || nameDisplay.textContent === 'Usuária em preenchimento')) {
-                                nameDisplay.textContent = 'USUÁRIA EM PREENCHIMENTO';
-                            }
-                            const prontDisplay = document.getElementById('display-numero-prontuario');
-                            if (prontDisplay && !prontDisplay.textContent) {
-                                prontDisplay.textContent = 'NOVO';
-                            }
-                        }
+                        badge.classList.toggle('d-none', e.target.value !== 'Risco iminente');
                     }
                 });
             });
@@ -3452,68 +3267,49 @@
             // Save Function
             document.getElementById('registro_modal_salvar_btn').addEventListener('click', async () => {
                 const isNew = !state.currentProntuario || state.currentProntuario === 'NOVO';
-                const cpf = document.getElementById('cpf_usuaria')?.value || '';
                 
                 const formEl = document.getElementById('registro_form');
-                if (!formEl) {
-                    console.error('Formulário registro_form não encontrado');
-                    return;
-                }
+                if (!formEl) return;
 
                 const formData = new FormData(formEl);
-                const rawData = Object.fromEntries(formData.entries());
-
-                // Normalização: Converter snake_case para nomes sem underline (ex: numero_prontuario -> numeroprontuario)
-                // Isso garante compatibilidade com o BQ_TYPES do backend
                 const data = {};
-                Object.keys(rawData).forEach(key => {
-                    const normalizedKey = key.replace(/_/g, '').toLowerCase();
-                    data[normalizedKey] = rawData[key];
-                });
 
-                // Validação de datas antes de enviar (usando chaves normalizadas)
-                const dateFields = ['dataatendimento', 'datanascimento'];
-                for (const f of dateFields) {
-                    if (data[f] === 'Invalid Date') {
-                        Swal.fire('Erro de Data', `O campo ${f} possui um valor inválido. Por favor, corrija.`, 'error');
-                        return;
+                // 1. Capturar todos os campos do formulário (normalizados)
+                formData.forEach((value, key) => {
+                    const cleanKey = key.replace(/_/g, '').replace('[]', '').toLowerCase();
+                    
+                    // Tratar Checkboxes (Arrays)
+                    if (key.endsWith('[]')) {
+                        if (!data[cleanKey]) data[cleanKey] = [];
+                        data[cleanKey].push(value);
+                    } else {
+                        data[cleanKey] = value;
                     }
-                }
-
-                // Tratar campos de múltipla escolha como arrays conforme solicitado
-                // Mapeamento: Chave Final no Payload -> Nome no HTML (com [])
-                const arrayMapping = {
-                    'atendimento': 'atendimento[]',
-                    'origemservico': 'origem_servico[]',
-                    'violenciafisica': 'violencia_fisica[]',
-                    'violenciapsicologica': 'violencia_psicologica[]',
-                    'fatoresrelacionados': 'fatores_relacionados[]'
-                };
-
-                Object.entries(arrayMapping).forEach(([payloadKey, htmlName]) => {
-                    data[payloadKey] = formData.getAll(htmlName);
-                    // Remover qualquer versão "suja" que possa ter vindo do fromEntries
-                    delete data[htmlName.replace(/_/g, '').replace('[]', '')];
                 });
 
-                // Garantir envio de campos booleanos e IDs
-                data.numeroprontuario = state.currentProntuario || 'NOVO';
-                data.senhaciods = document.getElementById('emitir_senha_ciods')?.checked;
-                data.atendimentopsicologo = document.getElementById('atendimento_psicologo')?.checked;
-                data.atendimentopsiquiatra = document.getElementById('atendimento_psiquiatra')?.checked;
-                data.usomedicamento = document.getElementById('uso_medicamento')?.checked;
-                data.examehiv = document.getElementById('exame_hiv')?.checked;
-                data.avaliacaoinicial = document.querySelector('input[name="avaliacao_inicial"]:checked')?.value || '';
-                
-                // CEP e Endereço (Garantir que sejam capturados mesmo se readonly)
-                data.cep = document.getElementById('cep')?.value || '';
-                data.logradouro = document.getElementById('logradouro')?.value || '';
-                data.bairro = document.getElementById('bairro')?.value || '';
-                data.cidade = document.getElementById('cidade')?.value || '';
-                data.uf = document.getElementById('uf')?.value || '';
-                data.numeroendereco = document.getElementById('numero_endereco')?.value || '';
+                // 2. Garantir envio de Switches (Booleanos)
+                const switches = formEl.querySelectorAll('input[type="checkbox"]:not([name$="[]"])');
+                switches.forEach(sw => {
+                    const cleanKey = sw.name.replace(/_/g, '').toLowerCase();
+                    data[cleanKey] = sw.checked;
+                });
 
-                console.log('[DEBUG] Payload enviado ao servidor:', data);
+                // 3. Garantir IDs e Campos Readonly
+                data.numeroprontuario = state.currentProntuario || 'NOVO';
+                data.avaliacaoinicial = document.querySelector('input[name="avaliacaoinicial"]:checked')?.value || '';
+                
+                // Forçar captura de campos que podem estar vazios no formData se readonly
+                const forceFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'dataatendimento', 'horaatendimento'];
+                forceFields.forEach(f => {
+                    const el = document.getElementById(f);
+                    if (el) data[f] = el.value;
+                });
+
+                // 4. Tratamento de Tipos conforme Schema
+                if (data.idade) data.idade = parseInt(data.idade) || 0;
+                if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos); // Schema diz STRING agora
+
+                console.log('[DEBUG] Payload enviado:', data);
 
                 // Adicionar arquivos pendentes se houver
                 if (state.pendingFiles.length > 0) {
@@ -3523,7 +3319,7 @@
                         data[`arquivo_desc_${index}`] = item.description;
                         data[`arquivo_data_${index}`] = item.date;
                     });
-                    data.total_anexos = state.pendingFiles.length;
+                    data.totalanexos = state.pendingFiles.length;
                 }
 
                 Swal.fire({
