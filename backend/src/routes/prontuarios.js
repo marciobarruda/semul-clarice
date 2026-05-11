@@ -158,6 +158,8 @@ router.post('/salvar', async (req, res) => {
       types[c] = BQ_TYPES[c];
     });
 
+    console.log(`[BQ Salvar] Prontuario: ${body.numeroprontuario}, Params:`, JSON.stringify(params, null, 2));
+
     const mergeSql = `
       MERGE ${tbl('prontuario')} T
       USING (SELECT @numeroprontuario as val) S

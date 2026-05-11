@@ -2242,6 +2242,7 @@
         </div>
     </div>
 
+    <script src="/js/auth-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
@@ -3264,6 +3265,17 @@
                 document.querySelectorAll('input[name="avaliacao_inicial"]').forEach(radio => {
                     radio.checked = (String(radio.value).toLowerCase() === String(avalValue).toLowerCase());
                 });
+
+                // Recalcular idade após preencher data_nascimento
+                const dnEl = document.getElementById('data_nascimento');
+                if (dnEl && dnEl.value && dnEl.value.length === 10) {
+                    const birthDate = dayjs(dnEl.value, 'DD/MM/YYYY');
+                    if (birthDate.isValid()) {
+                        const age = dayjs().diff(birthDate, 'year');
+                        const idadeEl = document.getElementById('idade');
+                        if (idadeEl) idadeEl.value = age >= 0 ? age : '';
+                    }
+                }
 
                 // Header is already updated in populateForm
                 // document.getElementById('numero_prontuario_display').textContent = mapping.numero_prontuario;
