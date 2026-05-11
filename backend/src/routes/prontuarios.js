@@ -21,12 +21,13 @@ const BQ_TYPES = {
   escolaridade: 'STRING', situacaoescolar: 'STRING', anoperiodo: 'STRING', cursoformacao: 'STRING',
   situacaoocupacional: 'STRING', profissao: 'STRING', rendaindividual: 'STRING', situacaotrabalho: 'STRING',
   beneficios: 'STRING', rendafamiliar: 'STRING', redeapoio: 'STRING', situacaohabitacional: 'STRING',
-  situacaohabitacionaloutro: 'STRING', totalfilhos: 'INT64', numerosus: 'STRING',
+  situacaohabitacionaloutro: 'STRING', totalfilhos: 'STRING', numerosus: 'STRING',
   deficienciasindrome: 'BOOL', deficienciaqual: 'STRING', atendimentopsicologo: 'BOOL',
   atendimentopsiquiatra: 'BOOL', usomedicamento: 'BOOL', medquais: 'STRING', gestante: 'BOOL',
   examehiv: 'BOOL', tipoviolencia: 'STRING', localviolencia: 'STRING', frequencia: 'STRING',
   relatocaso: 'STRING', createdat: 'TIMESTAMP', updatedat: 'TIMESTAMP',
-  outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING', relato_ciods: 'STRING', outro_local_agressao: 'STRING'
+  outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING', relato_ciods: 'STRING', outro_local_agressao: 'STRING',
+  oidsesuite: 'STRING', wfid: 'STRING'
 };
 
 // Campos array (text[]) — tratados separadamente no SQL
@@ -70,7 +71,13 @@ function mapPayload(body) {
 
   const boolFields = ['deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 'usomedicamento', 'gestante', 'examehiv'];
   boolFields.forEach(f => { if (d[f] !== undefined) d[f] = String(d[f]).toLowerCase() === 'true' || d[f] === true || d[f] === '1'; });
-  if (d.total_filhos !== undefined) d.totalfilhos = parseInt(d.total_filhos, 10) || 0;
+  
+  // Tratar strings vazias como null para evitar erros em colunas não-string
+  const nonStringFields = ['idade', 'createdat', 'updatedat', 'deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 'usomedicamento', 'gestante', 'examehiv'];
+  nonStringFields.forEach(f => {
+    if (d[f] === '' || d[f] === 'null' || d[f] === undefined) d[f] = null;
+  });
+
   return d;
 }
 
