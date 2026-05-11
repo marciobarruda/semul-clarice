@@ -10,25 +10,27 @@ const dayjs = require('dayjs');
  */
 const BQ_TYPES = {
   numeroprontuario: 'STRING', unidadeatendimento: 'STRING', dataatendimento: 'DATE', horaatendimento: 'STRING',
-  demandante: 'STRING', avaliacaoinicial: 'STRING', atendimento: ['STRING'], origemservico: ['STRING'],
+  demandante: 'STRING', avaliacaoinicial: 'STRING',
   nomeusuaria: 'STRING', cpfusuaria: 'STRING', nomesocial: 'STRING', datanascimento: 'DATE', idade: 'INT64',
   rgusuaria: 'STRING', orgaoexpedidor: 'STRING', ufexpedicao: 'STRING', nacionalidade: 'STRING',
   ufnascimento: 'STRING', cidadenascimento: 'STRING', estadocivil: 'STRING', conjuge: 'STRING',
   identidadegenero: 'STRING', orientacaosexual: 'STRING', corraca: 'STRING', religiao: 'STRING',
   nomemae: 'STRING', nomepai: 'STRING', cep: 'STRING', logradouro: 'STRING', numeroendereco: 'STRING',
-  complementoendereco: 'STRING', bairro: 'STRING', rpa: 'STRING', cidade: 'STRING', uf: 'STRING', 
-  pontoreferencia: 'STRING', telefone: 'STRING', telefonesecundario: 'STRING', email: 'STRING', 
-  escolaridade: 'STRING', situacaoescolar: 'STRING', anoperiodo: 'STRING', cursoformacao: 'STRING', 
-  situacaoocupacional: 'STRING', profissao: 'STRING', rendaindividual: 'STRING', situacaotrabalho: 'STRING', 
+  complementoendereco: 'STRING', bairro: 'STRING', rpa: 'STRING', cidade: 'STRING', uf: 'STRING',
+  pontoreferencia: 'STRING', telefone: 'STRING', telefonesecundario: 'STRING', email: 'STRING',
+  escolaridade: 'STRING', situacaoescolar: 'STRING', anoperiodo: 'STRING', cursoformacao: 'STRING',
+  situacaoocupacional: 'STRING', profissao: 'STRING', rendaindividual: 'STRING', situacaotrabalho: 'STRING',
   beneficios: 'STRING', rendafamiliar: 'STRING', redeapoio: 'STRING', situacaohabitacional: 'STRING',
   situacaohabitacionaloutro: 'STRING', totalfilhos: 'INT64', numerosus: 'STRING',
   deficienciasindrome: 'BOOL', deficienciaqual: 'STRING', atendimentopsicologo: 'BOOL',
   atendimentopsiquiatra: 'BOOL', usomedicamento: 'BOOL', medquais: 'STRING', gestante: 'BOOL',
   examehiv: 'BOOL', tipoviolencia: 'STRING', localviolencia: 'STRING', frequencia: 'STRING',
-  violenciafisica: ['STRING'], violenciapsicologica: ['STRING'], fatoresrelacionados: ['STRING'],
   relatocaso: 'STRING', createdat: 'TIMESTAMP', updatedat: 'TIMESTAMP',
   outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING', relato_ciods: 'STRING', outro_local_agressao: 'STRING'
 };
+
+// Campos array (text[]) — tratados separadamente no SQL
+const ARRAY_FIELDS = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
 
 async function gerarProximoNumero() {
   const prefix = dayjs().format('YYYYMM');
@@ -40,23 +42,30 @@ async function gerarProximoNumero() {
 
 function mapPayload(body) {
   const d = { ...body };
-  
-  // Garantir que datas vazias ou "Invalid Date" vindo do front não quebrem o BQ
+
+  // Aceitar tanto DD/MM/YYYY (frontend) quanto YYYY-MM-DD (banco)
   const parseDate = (val) => {
     if (!val || val === 'Invalid Date' || val === 'null' || val === '') return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val; // já no formato correto
     const m = dayjs(val, 'DD/MM/YYYY');
     return m.isValid() ? m.format('YYYY-MM-DD') : null;
   };
 
   d.dataatendimento = parseDate(d.data_atendimento || d.dataatendimento);
-  d.datanascimento = parseDate(d.data_nascimento || d.datanascimento);
-  
+  d.datanascimento  = parseDate(d.data_nascimento  || d.datanascimento);
+
+  // Idade: calcular a partir da data de nascimento já convertida
   d.idade = d.datanascimento ? dayjs().diff(dayjs(d.datanascimento), 'year') : null;
-  
-  const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
-  arrayFields.forEach(f => {
-    if (d[f] && !Array.isArray(d[f])) d[f] = String(d[f]).split(',').map(s => s.trim()).filter(Boolean);
-    else if (!d[f]) d[f] = [];
+
+  // Campos array: garantir que sejam arrays de strings limpas
+  ARRAY_FIELDS.forEach(f => {
+    if (Array.isArray(d[f])) {
+      d[f] = d[f].map(s => String(s).trim()).filter(Boolean);
+    } else if (d[f] && typeof d[f] === 'string') {
+      d[f] = d[f].split(',').map(s => s.trim()).filter(Boolean);
+    } else {
+      d[f] = [];
+    }
   });
 
   const boolFields = ['deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 'usomedicamento', 'gestante', 'examehiv'];
@@ -143,38 +152,59 @@ router.post('/get', async (req, res) => {
 router.post('/salvar', async (req, res) => {
   try {
     const body = mapPayload(req.body);
-    let isNew = !body.numeroprontuario || body.numeroprontuario === 'NOVO';
+    const isNew = !body.numeroprontuario || body.numeroprontuario === 'NOVO';
     if (isNew) {
       body.numeroprontuario = await gerarProximoNumero();
       body.createdat = new Date().toISOString();
     }
     body.updatedat = new Date().toISOString();
 
-    const cols = Object.keys(BQ_TYPES);
+    // Colunas escalares (sem arrays)
+    const scalarCols = Object.keys(BQ_TYPES);
     const params = {};
     const types = {};
-    cols.forEach(c => {
+    scalarCols.forEach(c => {
       params[c] = body[c] === undefined ? null : body[c];
-      types[c] = BQ_TYPES[c];
+      types[c]  = BQ_TYPES[c];
     });
 
-    console.log(`[BQ Salvar] Prontuario: ${body.numeroprontuario}, Params:`, JSON.stringify(params, null, 2));
+    // Serializar arrays como literais SQL: ['a','b'] → ["a","b"]
+    const toArrayLiteral = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return 'CAST([] AS ARRAY<STRING>)';
+      const escaped = arr.map(v => `"${String(v).replace(/"/g, '\\"')}"`).join(', ');
+      return `[${escaped}]`;
+    };
+
+    // Construir SET e VALUES para os campos array diretamente no SQL
+    const arraySetClauses  = ARRAY_FIELDS.map(f => `${f} = ${toArrayLiteral(body[f])}`).join(', ');
+    const scalarSetClauses = scalarCols
+      .filter(c => c !== 'numeroprontuario' && c !== 'createdat')
+      .map(c => `${c} = @${c}`).join(', ');
+
+    const allInsertCols   = [...scalarCols, ...ARRAY_FIELDS];
+    const insertColsSql   = allInsertCols.join(', ');
+    const insertValsSql   = [
+      ...scalarCols.map(c => `@${c}`),
+      ...ARRAY_FIELDS.map(f => toArrayLiteral(body[f]))
+    ].join(', ');
+
+    console.log(`[BQ Salvar] #${body.numeroprontuario} arrays:`, ARRAY_FIELDS.map(f => `${f}=${JSON.stringify(body[f])}`).join(' | '));
 
     const mergeSql = `
       MERGE ${tbl('prontuario')} T
       USING (SELECT @numeroprontuario as val) S
       ON T.numeroprontuario = S.val
       WHEN MATCHED THEN
-        UPDATE SET ${cols.filter(c => c !== 'numeroprontuario' && c !== 'createdat').map(c => `${c} = @${c}`).join(', ')}
+        UPDATE SET ${scalarSetClauses}, ${arraySetClauses}
       WHEN NOT MATCHED THEN
-        INSERT (${cols.join(', ')}) VALUES (${cols.map(c => `@${c}`).join(', ')})
+        INSERT (${insertColsSql}) VALUES (${insertValsSql})
     `;
 
     await dml(mergeSql, params, types);
     res.json({ success: true, prontuario: { numeroprontuario: body.numeroprontuario } });
   } catch (err) {
     console.error('[BQ Salvar] Erro:', err);
-    res.status(500).json({ error: 'Erro ao salvar' });
+    res.status(500).json({ error: 'Erro ao salvar: ' + err.message });
   }
 });
 
