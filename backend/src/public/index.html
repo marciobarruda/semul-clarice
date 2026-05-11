@@ -2868,21 +2868,6 @@
                 const hasSearch = searchInput && searchInput.value.trim().length > 0;
                 
                 let records = allRecords;
-
-                // Performance optimization: If no search, filter for last 3 years
-                if (!hasSearch) {
-                    const currentYear = new Date().getFullYear();
-                    const minYear = currentYear - 2; // e.g., 2026, 2025, 2024
-                    
-                    records = allRecords.filter(r => {
-                        const id = String(r.numeroprontuario || r.prontuario || '');
-                        if (id.length >= 4) {
-                            const year = parseInt(id.substring(0, 4));
-                            return !isNaN(year) && year >= minYear;
-                        }
-                        return true; // Keep records without standard format just in case
-                    });
-                }
                 // Sorting logic
                 if (state.sortColumn) {
                     const colMap = {
