@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Painel Administrativo ÔÇó CRCL</title>
+    <title>Painel Administrativo • CRCL</title>
     <link
       rel="icon"
       href="https://storage.googleapis.com/clarice-lispector/Logo%20Clarice.png"
@@ -587,7 +587,7 @@
           <div class="nav-item">
             <a href="#" class="nav-link active" id="nav-prontuarios">
               <i class="bi bi-folder2-open"></i>
-              <span>Prontu├írios</span>
+              <span>Prontuários</span>
             </a>
           </div>
           <div class="nav-item">
@@ -600,7 +600,7 @@
           <div class="nav-item">
             <a href="#" class="nav-link" id="nav-config">
               <i class="bi bi-gear-fill"></i>
-              <span>Configura├º├Áes</span>
+              <span>Configurações</span>
             </a>
           </div>
         </nav>
@@ -608,18 +608,18 @@
           <img src="https://ui-avatars.com/api/?name=Ana+Paula&background=b366a6&color=fff" alt="Avatar" class="rounded-circle border border-2 border-primary-light shadow-sm" width="38">
           <div class="user-details overflow-hidden">
             <p class="mb-0 fw-bold text-main small text-truncate">Ana Paula</p>
-            <small class="text-muted" style="font-size: 0.65rem; color: #7f8c8d !important;">Psic├│loga S├¬nior</small>
+            <small class="text-muted" style="font-size: 0.65rem; color: #7f8c8d !important;">Psicóloga Sênior</small>
           </div>
         </div>
-        <!-- ÔöÇÔöÇ Indicador de Vers├úo ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ -->
+        <!-- ── Indicador de Versão ─────────────────────────────── -->
         <div style="padding: 0.6rem 1rem 0.8rem; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem;">
-          <div style="font-size: 0.6rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Vers├úo do sistema</div>
+          <div style="font-size: 0.6rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Versão do sistema</div>
           <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 600; font-family: monospace;">v2026.05.11-7</div>
           <div style="font-size: 0.58rem; color: rgba(255,255,255,0.35); margin-top: 0.35rem; line-height: 1.6;">
-            Ô£ö totalfilhos como STRING (Fix erro)<br>
-            Ô£ö Normaliza├º├úo global de campos<br>
-            Ô£ö Corre├º├úo isNew (numero_prontuario fix)<br>
-            Ô£ö Arrays BQ via SQL literal
+            ✔ totalfilhos como STRING (Fix erro)<br>
+            ✔ Normalização global de campos<br>
+            ✔ Correção isNew (numero_prontuario fix)<br>
+            ✔ Arrays BQ via SQL literal
           </div>
         </div>
       </aside>
@@ -641,7 +641,7 @@
 
           <div class="ms-auto d-flex align-items-center gap-3">
             <button class="btn btn-success px-4 py-2 rounded-pill shadow-sm border-0 d-flex align-items-center fw-bold d-none" id="registro_modal_salvar_btn">
-              <i class="bi bi-save me-2"></i> Salvar Prontu├írio
+              <i class="bi bi-save me-2"></i> Salvar Prontuário
             </button>
           </div>
         </header>
@@ -651,10 +651,10 @@
           <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
               <h4 class="mb-0 fw-bold">Painel de Indicadores</h4>
-              <p class="text-muted small mb-0">Vis├úo geral anal├¡tica do sistema.</p>
+              <p class="text-muted small mb-0">Visão geral analítica do sistema.</p>
             </div>
             <button id="btnrecarregardash" class="btn btn-outline-primary rounded-pill px-4 btn-carregar-global">
-              <i class="bi bi-arrow-clockwise me-2"></i> Carregar prontu├írios
+              <i class="bi bi-arrow-clockwise me-2"></i> Carregar prontuários
             </button>
           </div>
 
@@ -667,7 +667,7 @@
                 </div>
                 <div class="kpi-data">
                   <div class="value" id="kpitotal">0</div>
-                  <div class="label" style="font-size: 0.8rem;">Total Prontu├írios</div>
+                  <div class="label" style="font-size: 0.8rem;">Total Prontuários</div>
                 </div>
               </div>
             </div>
@@ -678,7 +678,7 @@
                 </div>
                 <div class="kpi-data">
                   <div class="value" id="kpiativos">0</div>
-                  <div class="label" style="font-size: 0.8rem;">Atendimentos no M├¬s</div>
+                  <div class="label" style="font-size: 0.8rem;">Atendimentos no Mês</div>
                 </div>
               </div>
             </div>
@@ -700,7 +700,7 @@
                 </div>
                 <div class="kpi-data">
                   <div class="value" id="kpiidade">0</div>
-                  <div class="label" style="font-size: 0.8rem;">M├®dia de Idade</div>
+                  <div class="label" style="font-size: 0.8rem;">Média de Idade</div>
                 </div>
               </div>
             </div>
@@ -711,7 +711,7 @@
                 </div>
                 <div class="kpi-data">
                   <div class="value" id="kpipsiquiatrico">0</div>
-                  <div class="label" style="font-size: 0.8rem;">Atend. Psiqui├ítrico</div>
+                  <div class="label" style="font-size: 0.8rem;">Atend. Psiquiátrico</div>
                 </div>
               </div>
             </div>
@@ -722,7 +722,7 @@
                 </div>
                 <div class="kpi-data">
                   <div class="value" id="kpipsicologico">0</div>
-                  <div class="label" style="font-size: 0.8rem;">Atend. Psicol├│gico</div>
+                  <div class="label" style="font-size: 0.8rem;">Atend. Psicológico</div>
                 </div>
               </div>
             </div>
@@ -743,7 +743,7 @@
             <div class="col-12">
               <div class="card-premium h-100">
                 <div class="card-premium-header">
-                  <h5 class="mb-0"><i class="bi bi-building text-primary me-2"></i>Distribui├º├úo por Unidade</h5>
+                  <h5 class="mb-0"><i class="bi bi-building text-primary me-2"></i>Distribuição por Unidade</h5>
                 </div>
                 <div class="card-premium-body">
                   <div id="chart-unidades" style="min-height: 350px;"></div>
@@ -757,33 +757,33 @@
             
             <div class="col-12 col-lg-6">
               <div class="card-premium h-100">
-                <div class="card-premium-header"><h5 class="mb-0">Tipifica├º├úo da Viol├¬ncia</h5></div>
+                <div class="card-premium-header"><h5 class="mb-0">Tipificação da Violência</h5></div>
                 <div class="card-premium-body"><div id="chart-violencia" style="min-height: 380px;"></div></div>
               </div>
             </div>
             <div class="col-12 col-lg-6">
               <div class="card-premium h-100">
-                <div class="card-premium-header"><h5 class="mb-0">Bairros com Maior Incid├¬ncia</h5></div>
+                <div class="card-premium-header"><h5 class="mb-0">Bairros com Maior Incidência</h5></div>
                 <div class="card-premium-body"><div id="chart-bairros" style="min-height: 380px;"></div></div>
               </div>
             </div>
 
             <div class="col-12 col-lg-6">
               <div class="card-premium h-100">
-                <div class="card-premium-header"><h5 class="mb-0">Situa├º├úo Ocupacional</h5></div>
+                <div class="card-premium-header"><h5 class="mb-0">Situação Ocupacional</h5></div>
                 <div class="card-premium-body"><div id="chart-ocupacao" style="min-height: 350px;"></div></div>
               </div>
             </div>
             <div class="col-12 col-lg-6">
               <div class="card-premium h-100">
-                <div class="card-premium-header"><h5 class="mb-0">Situa├º├úo Trabalhista</h5></div>
+                <div class="card-premium-header"><h5 class="mb-0">Situação Trabalhista</h5></div>
                 <div class="card-premium-body"><div id="chart-trabalho" style="min-height: 350px;"></div></div>
               </div>
             </div>
 
             <div class="col-12 col-lg-6">
               <div class="card-premium h-100">
-                <div class="card-premium-header"><h5 class="mb-0">Faixa Et├íria</h5></div>
+                <div class="card-premium-header"><h5 class="mb-0">Faixa Etária</h5></div>
                 <div class="card-premium-body"><div id="chart-idades" style="min-height: 350px;"></div></div>
               </div>
             </div>
@@ -814,19 +814,19 @@
             <div class="card-premium-header">
               <h5 class="mb-0">Atividades Recentes</h5>
               <button class="btn btn-primary btn-new-record btn-sm px-3">
-                <i class="bi bi-plus-lg me-1"></i> Novo Prontu├írio
+                <i class="bi bi-plus-lg me-1"></i> Novo Prontuário
               </button>
             </div>
             <div class="table-responsive">
               <table class="table table-premium align-middle mb-0">
                 <thead>
                   <tr>
-                    <th>Prontu├írio</th>
-                    <th>Nome da Usu├íria</th>
+                    <th>Prontuário</th>
+                    <th>Nome da Usuária</th>
                     <th>CPF</th>
                     <th>Data</th>
                     <th>Status</th>
-                    <th class="text-end">A├º├Áes</th>
+                    <th class="text-end">Ações</th>
                   </tr>
                 </thead>
                 <tbody id="tbody-prontuarios-dash">
@@ -837,16 +837,16 @@
           </div>
         </div>
 
-        <!-- Prontu├írios View -->
+        <!-- Prontuários View -->
         <div class="content-body" id="prontuarios-view">
             <div class="card-premium animate__animated animate__fadeIn">
                 <div class="card-premium-header">
                     <div>
-                        <h5 class="mb-1">Consulta de Prontu├írios</h5>
-                        <p class="text-muted small mb-0">Gerencie e busque por todos os prontu├írios registrados.</p>
+                        <h5 class="mb-1">Consulta de Prontuários</h5>
+                        <p class="text-muted small mb-0">Gerencie e busque por todos os prontuários registrados.</p>
                     </div>
                     <button class="btn btn-primary btn-new-record btn-sm px-4">
-                        <i class="bi bi-plus-lg me-1"></i> Novo Prontu├írio
+                        <i class="bi bi-plus-lg me-1"></i> Novo Prontuário
                     </button>
                 </div>
                 
@@ -855,13 +855,13 @@
                         <div class="col-12 col-md-8 col-lg-9">
                             <div class="premium-search-box">
                                 <i class="bi bi-search search-icon"></i>
-                                <input type="text" class="form-control" id="searchprontuario" placeholder="Buscar por nome, CPF ou n├║mero do prontu├írio...">
+                                <input type="text" class="form-control" id="searchprontuario" placeholder="Buscar por nome, CPF ou número do prontuário...">
                                 <button class="btn btn-primary btn-search-action">Pesquisar</button>
                             </div>
                         </div>
                         <div class="col-12 col-md-4 col-lg-3">
                             <button id="btnrecarregartabela" class="btn btn-outline-primary w-100 h-100 rounded-pill px-4 btn-carregar-global">
-                                <i class="bi bi-arrow-clockwise fs-5 me-2"></i> Carregar prontu├írios
+                                <i class="bi bi-arrow-clockwise fs-5 me-2"></i> Carregar prontuários
                             </button>
                         </div>
                     </div>
@@ -870,12 +870,12 @@
                         <table class="table table-premium align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="sortable" data-sort="prontuario" onclick="handleSort('prontuario')">Prontu├írio <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="sortable" data-sort="nome" onclick="handleSort('nome')">Nome da Usu├íria <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="sortable" data-sort="prontuario" onclick="handleSort('prontuario')">Prontuário <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="sortable" data-sort="nome" onclick="handleSort('nome')">Nome da Usuária <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
                                     <th class="sortable" data-sort="cpf" onclick="handleSort('cpf')">CPF <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
                                     <th class="sortable" data-sort="data_pri_atendimento" onclick="handleSort('data_pri_atendimento')">Data de Registro <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
                                     <th class="sortable" data-sort="unidade_atendimento" onclick="handleSort('unidade_atendimento')">Unidade <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="text-end">A├º├Áes</th>
+                                    <th class="text-end">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-prontuarios-full">
@@ -887,12 +887,12 @@
             </div>
         </div>
 
-        <!-- Configura├º├Áes (Administra├º├úo) View -->
+        <!-- Configurações (Administração) View -->
         <div class="content-body d-none" id="config-view">
             <section class="card-section">
                 <div class="section-header">
                     <div>
-                        <h2 class="h4 mb-1">Gest├úo de Usu├írias e Acessos</h2>
+                        <h2 class="h4 mb-1">Gestão de Usuárias e Acessos</h2>
                         <p class="text-muted small mb-0">Administre as profissionais com acesso ao sistema Clarice.</p>
                     </div>
                     <button class="btn btn-primary">
@@ -905,11 +905,11 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Profissional</th>
-                                <th>Cargo/Fun├º├úo</th>
+                                <th>Cargo/Função</th>
                                 <th>E-mail</th>
-                                <th>├Ültimo Acesso</th>
+                                <th>Último Acesso</th>
                                 <th>Status</th>
-                                <th class="text-end">A├º├Áes</th>
+                                <th class="text-end">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -920,7 +920,7 @@
                                         <span class="fw-bold">Ana Paula Santos</span>
                                     </div>
                                 </td>
-                                <td>Psic├│loga</td>
+                                <td>Psicóloga</td>
                                 <td>anapaula@recife.pe.gov.br</td>
                                 <td>Hoje, 10:45</td>
                                 <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
@@ -952,40 +952,40 @@
         <!-- Form View (Hidden by default) -->
         <div class="content-body d-none" id="form-view">
             <div class="row g-4">
-                <!-- Se├º├Áes do Formul├írio (Sidebar Interna) -->
+                <!-- Seções do Formulário (Sidebar Interna) -->
                 <aside class="col-12 col-xl-3">
                     <div class="card-premium sticky-top p-3" style="top: 100px; z-index: 10;">
-                        <h3 class="small text-uppercase fw-bold mb-3 text-muted px-2">Se├º├Áes do Prontu├írio</h3>
+                        <h3 class="small text-uppercase fw-bold mb-3 text-muted px-2">Seções do Prontuário</h3>
                         <nav class="form-section-nav d-flex flex-column gap-2" id="form-section-nav">
                             <a href="#dados-preliminares" class="section-nav-link active" data-section="dados-preliminares">
                                 <i class="bi bi-info-circle"></i> Dados Preliminares
                             </a>
                             <a href="#dados-identificacao" class="section-nav-link" data-section="dados-identificacao">
-                                <i class="bi bi-person"></i> Identifica├º├úo
+                                <i class="bi bi-person"></i> Identificação
                             </a>
                             <a href="#endereco-contatos" class="section-nav-link" data-section="endereco-contatos">
-                                <i class="bi bi-geo-alt"></i> Endere├ºo
+                                <i class="bi bi-geo-alt"></i> Endereço
                             </a>
                             <a href="#escolaridade-trabalho" class="section-nav-link" data-section="escolaridade-trabalho">
                                 <i class="bi bi-mortarboard"></i> Escolaridade
                             </a>
                             <a href="#dados-sociais-familia" class="section-nav-link" data-section="dados-sociais-familia">
-                                <i class="bi bi-people"></i> Fam├¡lia
+                                <i class="bi bi-people"></i> Família
                             </a>
                             <a href="#dados-saude" class="section-nav-link" data-section="dados-saude">
-                                <i class="bi bi-heart-pulse"></i> Sa├║de
+                                <i class="bi bi-heart-pulse"></i> Saúde
                             </a>
                             <a href="#tipificacao-violencia" class="section-nav-link" data-section="tipificacao-violencia">
-                                <i class="bi bi-exclamation-triangle"></i> Viol├¬ncia
+                                <i class="bi bi-exclamation-triangle"></i> Violência
                             </a>
                             <a href="#relato-caso" class="section-nav-link" data-section="relato-caso">
                                 <i class="bi bi-chat-left-text"></i> Relato
                             </a>
                             <a href="javascript:void(0)" onclick="window.openJuridicoModal()" class="section-nav-link">
-                                <i class="bi bi-shield-check"></i> Jur├¡dico
+                                <i class="bi bi-shield-check"></i> Jurídico
                             </a>
                             <a href="#evolucao-casos" class="section-nav-link" data-section="evolucao-casos">
-                                <i class="bi bi-journal-text"></i> Evolu├º├úo
+                                <i class="bi bi-journal-text"></i> Evolução
                             </a>
                             <a href="#repositorio-arquivos" class="section-nav-link" data-section="repositorio-arquivos">
                                 <i class="bi bi-paperclip"></i> Arquivos
@@ -994,7 +994,7 @@
                     </div>
                 </aside>
 
-                <!-- Conte├║do do Formul├írio -->
+                <!-- Conteúdo do Formulário -->
                 <div class="col-12 col-xl-9">
                     <form id="registroform">
                         <!-- Dados Preliminares -->
@@ -1006,24 +1006,24 @@
                                         <h3 class="subsection-title"><i class="bi bi-journal-medical"></i>Atendimento Inicial</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-3">
-                                                <label for="numeroprontuario" class="form-label required">N┬║ do prontu├írio</label>
+                                                <label for="numeroprontuario" class="form-label required">Nº do prontuário</label>
                                                 <input type="text" class="form-control fw-bold text-primary" id="numeroprontuario" name="numeroprontuario" readonly />
                                             </div>
                                             <div class="col-12 col-md-5">
                                                 <label for="unidadeatendimento" class="form-label required">Unidade de atendimento</label>
                                                 <select id="unidadeatendimento" name="unidadeatendimento" class="form-select" required>
                                                     <option value="">Selecione</option>
-                                                    <option value="COMPAZ DOM HELDER C├éMARA">COMPAZ DOM HELDER C├éMARA</option>
+                                                    <option value="COMPAZ DOM HELDER CÂMARA">COMPAZ DOM HELDER CÂMARA</option>
                                                     <option value="UNIDADE DESCENTRALIZADA">UNIDADE DESCENTRALIZADA</option>
                                                     <option value="COMPAZ EDUARDO CAMPOS">COMPAZ EDUARDO CAMPOS</option>
                                                     <option value="COMPAZ LEDA ALVES">COMPAZ LEDA ALVES</option>
                                                     <option value="COMPAZ ARIANO SUASSUNA">COMPAZ ARIANO SUASSUNA</option>
                                                     <option value="VOLANTE">VOLANTE</option>
                                                     <option value="COMPAZ PAULO FREIRE">COMPAZ PAULO FREIRE</option>
-                                                    <option value="UNIDADE M├ôVEL">UNIDADE M├ôVEL</option>
+                                                    <option value="UNIDADE MÓVEL">UNIDADE MÓVEL</option>
                                                     <option value="SER CLARICE">SER CLARICE</option>
                                                     <option value="SER CLARICE LISPECTOR">SER CLARICE LISPECTOR</option>
-                                                    <option value="CENTRO DE REFER├èNCIA CLARICE LISPECTOR">CENTRO DE REFER├èNCIA CLARICE LISPECTOR</option>
+                                                    <option value="CENTRO DE REFERÊNCIA CLARICE LISPECTOR">CENTRO DE REFERÊNCIA CLARICE LISPECTOR</option>
                                                 </select>
                                             </div>
                                             <div class="col-12 col-md-2">
@@ -1039,7 +1039,7 @@
                                                 <input type="text" class="form-control" id="demandante" name="demandante" placeholder="Quem solicitou o atendimento?" />
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <label class="form-label required d-block">Avalia├º├úo inicial</label>
+                                                <label class="form-label required d-block">Avaliação inicial</label>
                                                 <div class="d-flex flex-wrap gap-3 mt-2">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio" name="avaliacaoinicial" id="avalrisco" value="Risco iminente" required>
@@ -1064,8 +1064,8 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Dom├®stica/Familiar" id="atenddom">
-                                                    <label class="form-check-label" for="atenddom">Dom├®stica/Familiar</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Doméstica/Familiar" id="atenddom">
+                                                    <label class="form-check-label" for="atenddom">Doméstica/Familiar</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
@@ -1076,14 +1076,14 @@
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Acolhida/Orienta├º├úo" id="atendacol">
-                                                    <label class="form-check-label" for="atendacol">Acolhida/Orienta├º├úo</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Acolhida/Orientação" id="atendacol">
+                                                    <label class="form-check-label" for="atendacol">Acolhida/Orientação</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Outros Munic├¡pios" id="atendout">
-                                                    <label class="form-check-label" for="atendout">Outros Munic├¡pios</label>
+                                                    <input class="form-check-input" type="checkbox" name="atendimento[]" value="Outros Municípios" id="atendout">
+                                                    <label class="form-check-label" for="atendout">Outros Municípios</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1091,7 +1091,7 @@
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-question-circle"></i>Como soube do servi├ºo</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-question-circle"></i>Como soube do serviço</h3>
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <div class="form-check form-switch">
@@ -1123,13 +1123,13 @@
                             </div>
                         </section>
 
-                        <!-- Identifica├º├úo -->
+                        <!-- Identificação -->
                         <section class="card-section mb-4" id="dados-identificacao">
-                            <h2 class="form-section-title"><i class="bi bi-person"></i>Identifica├º├úo da usu├íria</h2>
+                            <h2 class="form-section-title"><i class="bi bi-person"></i>Identificação da usuária</h2>
                             <div class="row g-4">
                                 <div class="col-12">
                                     <div class="subsection-card">
-                                        <h3 class="subsection-title"><i class="bi bi-card-text"></i>Documenta├º├úo B├ísica</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-card-text"></i>Documentação Básica</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-8">
                                                 <label for="nomeusuaria" class="form-label required">Nome completo</label>
@@ -1195,14 +1195,14 @@
                                                     <option value="">Selecione</option>
                                                     <option>Solteira</option>
                                                     <option>Casada</option>
-                                                    <option>Uni├úo est├ível</option>
+                                                    <option>União estável</option>
                                                     <option>Separada</option>
                                                     <option>Divorciada</option>
-                                                    <option>Vi├║va</option>
+                                                    <option>Viúva</option>
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="conjuge" class="form-label">C├┤njuge/companheiro(a)</label>
+                                                <label for="conjuge" class="form-label">Cônjuge/companheiro(a)</label>
                                                 <input type="text" class="form-control" id="conjuge" name="conjuge" />
                                             </div>
                                         </div>
@@ -1214,19 +1214,19 @@
                                         <h3 class="subsection-title"><i class="bi bi-person-heart"></i>Identidade e Social</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="identidadegenero" class="form-label">Identidade de g├¬nero</label>
+                                                <label for="identidadegenero" class="form-label">Identidade de gênero</label>
                                                 <select id="identidadegenero" name="identidadegenero" class="form-select">
                                                     <option value="">Selecione</option>
-                                                    <option>Mulher cisg├¬nero</option>
+                                                    <option>Mulher cisgênero</option>
                                                     <option>Mulher trans</option>
                                                     <option>Travesti</option>
-                                                    <option>N├úo-bin├íria</option>
+                                                    <option>Não-binária</option>
                                                     <option>Outra</option>
-                                                    <option>Prefere n├úo informar</option>
+                                                    <option>Prefere não informar</option>
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="orientacaosexual" class="form-label">Orienta├º├úo sexual</label>
+                                                <label for="orientacaosexual" class="form-label">Orientação sexual</label>
                                                 <select id="orientacaosexual" name="orientacaosexual" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Assexual</option>
@@ -1234,35 +1234,35 @@
                                                     <option>Gay</option>
                                                     <option>Heterossexual</option>
                                                     <option>Homossexual</option>
-                                                    <option>L├®sbica</option>
+                                                    <option>Lésbica</option>
                                                     <option>Outra</option>
                                                     <option>Pansexual</option>
-                                                    <option>Prefere n├úo informar</option>
+                                                    <option>Prefere não informar</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="corraca" class="form-label">Cor/ra├ºa</label>
+                                                <label for="corraca" class="form-label">Cor/raça</label>
                                                 <select id="corraca" name="corraca" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Branca</option>
                                                     <option>Preta</option>
                                                     <option>Parda</option>
                                                     <option>Amarela</option>
-                                                    <option>Ind├¡gena</option>
-                                                    <option>Prefere n├úo informar</option>
+                                                    <option>Indígena</option>
+                                                    <option>Prefere não informar</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="religiao" class="form-label">Religi├úo</label>
+                                                <label for="religiao" class="form-label">Religião</label>
                                                 <select id="religiao" name="religiao" class="form-select">
                                                     <option value="">Selecione</option>
-                                                    <option>Cat├│lica</option>
-                                                    <option>Esp├¡rita</option>
-                                                    <option>Evang├®lica</option>
+                                                    <option>Católica</option>
+                                                    <option>Espírita</option>
+                                                    <option>Evangélica</option>
                                                     <option>Matriz Africana</option>
-                                                    <option>N├úo possui</option>
+                                                    <option>Não possui</option>
                                                     <option>Outra</option>
-                                                    <option>Prefere n├úo informar</option>
+                                                    <option>Prefere não informar</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1270,10 +1270,10 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="subsection-card">
-                                        <h3 class="subsection-title"><i class="bi bi-people"></i>Filia├º├úo</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-people"></i>Filiação</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-6">
-                                                <label for="nomemae" class="form-label">Nome da m├úe</label>
+                                                <label for="nomemae" class="form-label">Nome da mãe</label>
                                                 <input type="text" class="form-control" id="nomemae" name="nomemae" />
                                             </div>
                                             <div class="col-12 col-md-6">
@@ -1286,13 +1286,13 @@
                             </div>
                         </section>
 
-                        <!-- Endere├ºo -->
+                        <!-- Endereço -->
                         <section class="card-section mb-4" id="endereco-contatos">
-                            <h2 class="form-section-title"><i class="bi bi-geo-alt"></i>Endere├ºo e contatos</h2>
+                            <h2 class="form-section-title"><i class="bi bi-geo-alt"></i>Endereço e contatos</h2>
                             <div class="row g-4">
                                 <div class="col-12">
                                     <div class="subsection-card">
-                                        <h3 class="subsection-title"><i class="bi bi-map"></i>Localiza├º├úo</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-map"></i>Localização</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-3">
                                                 <label for="cep" class="form-label required">CEP</label>
@@ -1303,7 +1303,7 @@
                                                 <input type="text" class="form-control" id="logradouro" name="logradouro" readonly required />
                                             </div>
                                             <div class="col-12 col-md-2">
-                                                <label for="numeroendereco" class="form-label">N├║mero</label>
+                                                <label for="numeroendereco" class="form-label">Número</label>
                                                 <input type="text" class="form-control" id="numeroendereco" name="numeroendereco" />
                                             </div>
                                             <div class="col-12 col-md-3">
@@ -1327,7 +1327,7 @@
                                                 <input type="text" class="form-control" id="uf" name="uf" readonly required />
                                             </div>
                                             <div class="col-12 col-md-12">
-                                                <label for="pontoreferencia" class="form-label">Ponto de refer├¬ncia</label>
+                                                <label for="pontoreferencia" class="form-label">Ponto de referência</label>
                                                 <input type="text" class="form-control" id="pontoreferencia" name="pontoreferencia" />
                                             </div>
                                         </div>
@@ -1335,7 +1335,7 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="subsection-card">
-                                        <h3 class="subsection-title"><i class="bi bi-telephone"></i>Contatos de Emerg├¬ncia/Notifica├º├úo</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-telephone"></i>Contatos de Emergência/Notificação</h3>
                                         <div class="row g-3">
                                             <div class="col-12 col-md-4">
                                                 <label for="telefone" class="form-label required">Telefone principal</label>
@@ -1361,31 +1361,31 @@
                             <div class="row g-4">
                                 <div class="col-12 col-lg-6">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-book"></i>Forma├º├úo Acad├¬mica</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-book"></i>Formação Acadêmica</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
                                                 <label for="escolaridade" class="form-label required">Escolaridade</label>
                                                 <select id="escolaridade" name="escolaridade" class="form-select" required>
                                                     <option value="">Selecione</option>
-                                                    <option>N├úo Alfabetizado(a)</option>
+                                                    <option>Não Alfabetizado(a)</option>
                                                     <option>Sabe Ler</option>
                                                     <option>Sabe Ler e Escrever</option>
                                                     <option>Ensino Fundamental I Incompleto</option>
-                                                    <option>Ensino Fundamental I Completo (1┬║ a 4┬║ ano)</option>
+                                                    <option>Ensino Fundamental I Completo (1º a 4º ano)</option>
                                                     <option>Ensino Fundamental II Incompleto</option>
-                                                    <option>Ensino Fundamental II Completo (1┬║ a 9┬║ ano)</option>
-                                                    <option>Ensino M├®dio Incompleto</option>
-                                                    <option>Ensino M├®dio Completo</option>
+                                                    <option>Ensino Fundamental II Completo (1º a 9º ano)</option>
+                                                    <option>Ensino Médio Incompleto</option>
+                                                    <option>Ensino Médio Completo</option>
                                                     <option>EJA/Projovem e Afins</option>
-                                                    <option>Curso T├®cnico Profissionalizante</option>
-                                                    <option>Curso Tecnol├│gico</option>
+                                                    <option>Curso Técnico Profissionalizante</option>
+                                                    <option>Curso Tecnológico</option>
                                                     <option>Ensino Superior Incompleto</option>
                                                     <option>Ensino Superior Completo</option>
-                                                    <option>P├│s Gradua├º├úo</option>
+                                                    <option>Pós Graduação</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="situacaoescolar" class="form-label">Situa├º├úo</label>
+                                                <label for="situacaoescolar" class="form-label">Situação</label>
                                                 <select id="situacaoescolar" name="situacaoescolar" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Completo</option>
@@ -1394,11 +1394,11 @@
                                                 </select>
                                             </div>
                                             <div class="col-6 d-none" id="groupanoperiodo">
-                                                <label for="anoperiodo" class="form-label">Ano/Per├¡odo</label>
+                                                <label for="anoperiodo" class="form-label">Ano/Período</label>
                                                 <input type="text" class="form-control" id="anoperiodo" name="anoperiodo" />
                                             </div>
                                             <div class="col-12 d-none" id="groupcursoformacao">
-                                                <label for="cursoformacao" class="form-label">Curso/Forma├º├úo</label>
+                                                <label for="cursoformacao" class="form-label">Curso/Formação</label>
                                                 <input type="text" class="form-control" id="cursoformacao" name="cursoformacao" />
                                             </div>
                                         </div>
@@ -1406,21 +1406,21 @@
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-briefcase"></i>Situa├º├úo Profissional</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-briefcase"></i>Situação Profissional</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="situacaoocupacional" class="form-label">Situa├º├úo ocupacional</label>
+                                                <label for="situacaoocupacional" class="form-label">Situação ocupacional</label>
                                                 <select id="situacaoocupacional" name="situacaoocupacional" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Empregada formal</option>
-                                                    <option>Trabalhadora aut├┤noma</option>
+                                                    <option>Trabalhadora autônoma</option>
                                                     <option>Desempregada</option>
                                                     <option>Aposentada/Pensionista</option>
                                                     <option>Dona de casa</option>
                                                 </select>
                                             </div>
                                             <div class="col-12">
-                                                <label for="profissao" class="form-label">Profiss├úo/Ocupa├º├úo</label>
+                                                <label for="profissao" class="form-label">Profissão/Ocupação</label>
                                                 <input type="text" class="form-control" id="profissao" name="profissao" />
                                             </div>
                                             <div class="col-6">
@@ -1428,12 +1428,12 @@
                                                 <input type="text" class="form-control" id="rendaindividual" name="rendaindividual" />
                                             </div>
                                             <div class="col-6">
-                                                <label for="situacaotrabalho" class="form-label">V├¡nculo</label>
+                                                <label for="situacaotrabalho" class="form-label">Vínculo</label>
                                                 <select id="situacaotrabalho" name="situacaotrabalho" class="form-select">
                                                     <option value="">Selecione</option>
                                                     <option>Carteira assinada</option>
                                                     <option>Informal</option>
-                                                    <option>Estatut├íria</option>
+                                                    <option>Estatutária</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1442,21 +1442,21 @@
                             </div>
                         </section>
 
-                        <!-- Dados Sociais e Fam├¡lia -->
+                        <!-- Dados Sociais e Família -->
                         <section class="card-section mb-4" id="dados-sociais-familia">
-                            <h2 class="form-section-title"><i class="bi bi-people"></i>Dados sociais e fam├¡lia</h2>
+                            <h2 class="form-section-title"><i class="bi bi-people"></i>Dados sociais e família</h2>
                             <div class="row g-4">
                                 <div class="col-12 col-lg-6">
                                     <div class="subsection-card h-100">
                                         <h3 class="subsection-title"><i class="bi bi-cash-stack"></i>Apoio e Renda</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="beneficios" class="form-label">Benef├¡cios sociais</label>
+                                                <label for="beneficios" class="form-label">Benefícios sociais</label>
                                                 <select id="beneficios" name="beneficios" class="form-select">
                                                     <option value="">Selecione</option>
-                                                    <option>Bolsa Fam├¡lia</option>
+                                                    <option>Bolsa Família</option>
                                                     <option>BPC</option>
-                                                    <option>Aux├¡lio Municipal</option>
+                                                    <option>Auxílio Municipal</option>
                                                     <option>Nenhum</option>
                                                     <option>Outro</option>
                                                 </select>
@@ -1465,10 +1465,10 @@
                                                 <label for="rendafamiliar" class="form-label">Renda familiar total</label>
                                                 <select id="rendafamiliar" name="rendafamiliar" class="form-select">
                                                     <option value="">Selecione</option>
-                                                    <option>At├® 1 sal├írio m├¡nimo</option>
-                                                    <option>De 1 a 2 sal├írios m├¡nimos</option>
-                                                    <option>De 2 a 3 sal├írios m├¡nimos</option>
-                                                    <option>Acima de 3 sal├írios m├¡nimos</option>
+                                                    <option>Até 1 salário mínimo</option>
+                                                    <option>De 1 a 2 salários mínimos</option>
+                                                    <option>De 2 a 3 salários mínimos</option>
+                                                    <option>Acima de 3 salários mínimos</option>
                                                 </select>
                                             </div>
                                             <div class="col-12">
@@ -1480,21 +1480,21 @@
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-house-heart"></i>Habita├º├úo</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-house-heart"></i>Habitação</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="situacaohabitacional" class="form-label">Situa├º├úo habitacional</label>
+                                                <label for="situacaohabitacional" class="form-label">Situação habitacional</label>
                                                 <select id="situacaohabitacional" name="situacaohabitacional" class="form-select">
                                                     <option value="">Selecione</option>
-                                                    <option>Pr├│pria</option>
+                                                    <option>Própria</option>
                                                     <option>Alugada</option>
                                                     <option>Cedida</option>
-                                                    <option>Ocupa├º├úo</option>
+                                                    <option>Ocupação</option>
                                                     <option>Outros</option>
                                                 </select>
                                             </div>
                                             <div class="col-12 d-none" id="grouphabitacionaloutro">
-                                                <label for="situacaohabitacionaloutro" class="form-label">Especifique habita├º├úo</label>
+                                                <label for="situacaohabitacionaloutro" class="form-label">Especifique habitação</label>
                                                 <input type="text" class="form-control" id="situacaohabitacionaloutro" name="situacaohabitacionaloutro" />
                                             </div>
                                             <div class="col-12">
@@ -1514,7 +1514,7 @@
                                 <div class="col-12">
                                     <div class="subsection-card">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h3 class="subsection-title mb-0"><i class="bi bi-person-plus"></i>Composi├º├úo Familiar (Residentes)</h3>
+                                            <h3 class="subsection-title mb-0"><i class="bi bi-person-plus"></i>Composição Familiar (Residentes)</h3>
                                             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#familia_modal">
                                                 <i class="bi bi-plus-lg me-1"></i>Adicionar Membro
                                             </button>
@@ -1526,7 +1526,7 @@
                                                         <th>Nome completo</th>
                                                         <th>Parentesco</th>
                                                         <th>Idade</th>
-                                                        <th class="text-end px-3">A├º├Áes</th>
+                                                        <th class="text-end px-3">Ações</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="familiatabelabody">
@@ -1541,30 +1541,30 @@
                             </div>
                         </section>
 
-                        <!-- Sa├║de -->
+                        <!-- Saúde -->
                         <section class="card-section mb-4" id="dados-saude">
-                            <h2 class="form-section-title"><i class="bi bi-heart-pulse"></i>Dados de sa├║de</h2>
+                            <h2 class="form-section-title"><i class="bi bi-heart-pulse"></i>Dados de saúde</h2>
                             <div class="row g-4">
                                 <div class="col-12 col-xl-4">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-person-vcard"></i>SUS e Defici├¬ncias</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-person-vcard"></i>SUS e Deficiências</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label for="numerosus" class="form-label">N├║mero do Cart├úo SUS</label>
+                                                <label for="numerosus" class="form-label">Número do Cartão SUS</label>
                                                 <input type="text" class="form-control" id="numerosus" name="numerosus" />
                                             </div>
                                             <div class="col-12">
-                                                <label class="form-label d-block">Apresenta alguma defici├¬ncia?</label>
+                                                <label class="form-label d-block">Apresenta alguma deficiência?</label>
                                                 <div class="form-check form-switch mt-2">
                                                     <input class="form-check-input" type="checkbox" name="deficienciasindrome" id="deficienciasindrome" value="Sim">
                                                     <label class="form-check-label" for="deficienciasindrome">Sim</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 d-none" id="groupdeficienciaqual">
-                                                <label for="deficienciaqual" class="form-label">Qual defici├¬ncia?</label>
+                                                <label for="deficienciaqual" class="form-label">Qual deficiência?</label>
                                                 <select id="deficienciaqual" name="deficienciaqual" class="form-select">
                                                     <option value="">Selecione</option>
-                                                    <option>F├¡sica</option>
+                                                    <option>Física</option>
                                                     <option>Auditiva</option>
                                                     <option>Visual</option>
                                                     <option>Intelectual</option>
@@ -1576,28 +1576,28 @@
                                 </div>
                                 <div class="col-12 col-xl-4">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-brain"></i>Sa├║de Mental</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-brain"></i>Saúde Mental</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <label class="form-label d-block">J├í foi atendido por psic├│logo?</label>
+                                                <label class="form-label d-block">Já foi atendido por psicólogo?</label>
                                                 <div class="form-check form-switch mt-2">
                                                     <input class="form-check-input" type="checkbox" name="atendimentopsicologo" id="atendimentopsicologo" value="Sim">
                                                     <label class="form-check-label" for="atendimentopsicologo">Sim</label>
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <label class="form-label d-block">J├í foi atendido por psiquiatra?</label>
+                                                <label class="form-label d-block">Já foi atendido por psiquiatra?</label>
                                                 <div class="form-check form-switch mt-2">
                                                     <input class="form-check-input" type="checkbox" name="atendimentopsiquiatra" id="atendimentopsiquiatra" value="Sim">
                                                     <label class="form-check-label" for="atendimentopsiquiatra">Sim</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 d-none" id="groupprobsaude">
-                                                <label for="qualprobsaude" class="form-label">Qual problema de sa├║de?</label>
+                                                <label for="qualprobsaude" class="form-label">Qual problema de saúde?</label>
                                                 <input type="text" class="form-control" id="qualprobsaude" name="qualprobsaude" />
                                             </div>
                                             <div class="col-12">
-                                                <label class="form-label d-block">Usa medicamento cont├¡nuo?</label>
+                                                <label class="form-label d-block">Usa medicamento contínuo?</label>
                                                 <div class="form-check form-switch mt-2">
                                                     <input class="form-check-input" type="checkbox" name="usomedicamento" id="usomedicamento" value="Sim">
                                                     <label class="form-check-label" for="usomedicamento">Sim</label>
@@ -1612,7 +1612,7 @@
                                 </div>
                                 <div class="col-12 col-xl-4">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-gender-female"></i>Gesta├º├úo e Exames</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-gender-female"></i>Gestação e Exames</h3>
                                         <div class="row g-3">
                                             <div class="col-12">
                                                 <label class="form-label d-block">Gestante?</label>
@@ -1634,19 +1634,19 @@
                             </div>
                         </section>
 
-                        <!-- Tipifica├º├úo e Viol├¬ncia -->
+                        <!-- Tipificação e Violência -->
                         <section class="card-section mb-4" id="tipificacao-violencia">
-                            <h2 class="form-section-title"><i class="bi bi-exclamation-triangle"></i>Tipifica├º├úo da viol├¬ncia</h2>
+                            <h2 class="form-section-title"><i class="bi bi-exclamation-triangle"></i>Tipificação da violência</h2>
                             <div class="row g-4">
                                 <div class="col-12 col-md-4">
-                                    <label for="tipoviolencia" class="form-label required">Tipo de viol├¬ncia principal</label>
+                                    <label for="tipoviolencia" class="form-label required">Tipo de violência principal</label>
                                     <select id="tipoviolencia" name="tipoviolencia" class="form-select" required>
                                         <option value="">Selecione</option>
-                                        <option>Viol├¬ncia f├¡sica</option>
-                                        <option>Viol├¬ncia psicol├│gica</option>
-                                        <option>Viol├¬ncia sexual</option>
-                                        <option>Viol├¬ncia moral</option>
-                                        <option>Viol├¬ncia patrimonial</option>
+                                        <option>Violência física</option>
+                                        <option>Violência psicológica</option>
+                                        <option>Violência sexual</option>
+                                        <option>Violência moral</option>
+                                        <option>Violência patrimonial</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-4">
@@ -1658,7 +1658,7 @@
                                     <input type="text" class="form-control" id="outrolocalagressao" name="outrolocalagressao" />
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <label for="frequencia" class="form-label">Frequ├¬ncia</label>
+                                    <label for="frequencia" class="form-label">Frequência</label>
                                     <select id="frequencia" name="frequencia" class="form-select">
                                         <option value="">Selecione</option>
                                         <option>Recente</option>
@@ -1669,35 +1669,35 @@
                                 
                                 <div class="col-12">
                                     <div class="subsection-card">
-                                        <h3 class="subsection-title"><i class="bi bi-shield-exclamation"></i>Formas de Agress├úo Detectadas</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-shield-exclamation"></i>Formas de Agressão Detectadas</h3>
                                         <div class="row g-4">
                                             <div class="col-12 col-md-6 col-xl-4">
-                                                <label class="form-label fw-bold">F├¡sica</label>
+                                                <label class="form-label fw-bold">Física</label>
                                                 <div class="row g-2">
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Tapa" id="vftapa"><label class="form-check-label" for="vftapa">Tapa/Empurr├úo</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Soco" id="vfsoco"><label class="form-check-label" for="vfsoco">Soco/Pontap├®</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Tapa" id="vftapa"><label class="form-check-label" for="vftapa">Tapa/Empurrão</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Soco" id="vfsoco"><label class="form-check-label" for="vfsoco">Soco/Pontapé</label></div></div>
                                                     <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Espancamento" id="vfesp"><label class="form-check-label" for="vfesp">Espancamento</label></div></div>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-xl-4">
-                                                <label class="form-label fw-bold">Psicol├│gica</label>
+                                                <label class="form-label fw-bold">Psicológica</label>
                                                 <div class="row g-2">
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Amea├ºa" id="vpame"><label class="form-check-label" for="vpame">Amea├ºa</label></div></div>
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Humilha├º├úo" id="vphum"><label class="form-check-label" for="vphum">Humilha├º├úo</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Ameaça" id="vpame"><label class="form-check-label" for="vpame">Ameaça</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Humilhação" id="vphum"><label class="form-check-label" for="vphum">Humilhação</label></div></div>
                                                     <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Chantagem" id="vpcha"><label class="form-check-label" for="vpcha">Chantagem</label></div></div>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-xl-4">
                                                 <label class="form-label fw-bold">Fatores Relacionados</label>
                                                 <div class="row g-2">
-                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatoresrelacionados[]" value="Ci├║mes" id="frciu"><label class="form-check-label" for="frciu">Ci├║mes</label></div></div>
+                                                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatoresrelacionados[]" value="Ciúmes" id="frciu"><label class="form-check-label" for="frciu">Ciúmes</label></div></div>
                                                     <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="fatoresrelacionados[]" value="Drogas" id="frdro"><label class="form-check-label" for="frdro">Uso de drogas</label></div></div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row g-3 mt-1">
                                                     <div class="col-12 col-md-4">
-                                                        <label for="outrasviolfisicas" class="form-label">Outras viol. f├¡sicas</label>
+                                                        <label for="outrasviolfisicas" class="form-label">Outras viol. físicas</label>
                                                         <input type="text" class="form-control" id="outrasviolfisicas" name="outrasviolfisicas">
                                                     </div>
                                                     <div class="col-12 col-md-4">
@@ -1716,23 +1716,23 @@
                             </div>
                         </section>
 
-                        <!-- Acesso Jur├¡dico e Encaminhamentos -->
+                        <!-- Acesso Jurídico e Encaminhamentos -->
                         <section class="card-section mb-4" id="secao-acesso-juridico">
-                            <h2 class="form-section-title"><i class="bi bi-shield-lock"></i>Dados Jur├¡dicos e Encaminhamentos</h2>
+                            <h2 class="form-section-title"><i class="bi bi-shield-lock"></i>Dados Jurídicos e Encaminhamentos</h2>
                             <div class="row g-4">
                                 <div class="col-12">
                                     <div class="subsection-card p-5 text-center shadow-sm" style="border: 2px dashed var(--primary-light); background: rgba(155, 89, 182, 0.02);">
                                         <div class="mb-4">
                                             <i class="bi bi-gavel" style="font-size: 4.5rem; color: var(--primary);"></i>
                                         </div>
-                                        <h3 class="mb-3">M├│dulo Jur├¡dico e Rede de Apoio</h3>
+                                        <h3 class="mb-3">Módulo Jurídico e Rede de Apoio</h3>
                                         <p class="text-muted mb-4 mx-auto" style="max-width: 550px;">
-                                            Esta se├º├úo cont├®m informa├º├Áes sens├¡veis de processos criminais, c├¡veis e encaminhamentos externos. 
-                                            O preenchimento ├® restrito ao perfil de <strong>Advogada</strong>.
+                                            Esta seção contém informações sensíveis de processos criminais, cíveis e encaminhamentos externos. 
+                                            O preenchimento é restrito ao perfil de <strong>Advogada</strong>.
                                         </p>
                                         <div class="d-flex justify-content-center gap-3">
                                             <button type="button" class="btn btn-primary btn-lg px-5 shadow-sm" onclick="window.openJuridicoModal()">
-                                                <i class="bi bi-window-stack me-2"></i> Abrir Painel Jur├¡dico
+                                                <i class="bi bi-window-stack me-2"></i> Abrir Painel Jurídico
                                             </button>
                                         </div>
                                     </div>
@@ -1741,11 +1741,11 @@
                         </section>
 
                         <section class="card-section mb-4" id="autores-violencia">
-                            <h2 class="form-section-title"><i class="bi bi-person-badge"></i>Autores da Viol├¬ncia</h2>
+                            <h2 class="form-section-title"><i class="bi bi-person-badge"></i>Autores da Violência</h2>
                             <div class="row g-4">
                                 <div class="col-12">
                                     <div class="subsection-card h-100">
-                                        <h3 class="subsection-title"><i class="bi bi-person-badge"></i>Autores da Viol├¬ncia</h3>
+                                        <h3 class="subsection-title"><i class="bi bi-person-badge"></i>Autores da Violência</h3>
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <span class="text-muted small">Relacionados ao caso</span>
                                             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#autor_modal">
@@ -1757,8 +1757,8 @@
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>Nome</th>
-                                                        <th>V├¡nculo</th>
-                                                        <th class="text-end px-3">A├º├Áes</th>
+                                                        <th>Vínculo</th>
+                                                        <th class="text-end px-3">Ações</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="autortabelabody">
@@ -1772,9 +1772,9 @@
                                 </div>
                             </div>
                         </section>
-                        <!-- Solicita├º├Áes CIODS -->
+                        <!-- Solicitações CIODS -->
                         <section class="card-section mb-4" id="solicitacao-ciods">
-                            <h2 class="form-section-title"><i class="bi bi-envelope-at"></i>Solicita├º├Áes Especiais</h2>
+                            <h2 class="form-section-title"><i class="bi bi-envelope-at"></i>Solicitações Especiais</h2>
                             <div class="row g-4">
                                 <div class="col-12">
                                     <div class="subsection-card shadow-sm" style="border-left: 4px solid var(--warning);">
@@ -1782,7 +1782,7 @@
                                         <div class="row g-3 align-items-center">
                                             <div class="col-12 col-md-6">
                                                 <label class="form-label d-block fw-bold mb-0">Deseja emitir senha CIODS?</label>
-                                                <p class="text-muted small mb-2">Gera solicita├º├úo autom├ítica via email</p>
+                                                <p class="text-muted small mb-2">Gera solicitação automática via email</p>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox" name="emitirsenhaciods" id="emitirsenhaciods" value="Sim">
                                                     <label class="form-check-label" for="emitirsenhaciods">Sim</label>
@@ -1805,7 +1805,7 @@
                             <div class="row g-3">
                                 <div class="col-12" id="relatocasoContainer">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <label for="relatocaso" class="form-label required mb-0">Descri├º├úo detalhada</label>
+                                        <label for="relatocaso" class="form-label required mb-0">Descrição detalhada</label>
                                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('relatocaso', 'Relato do Caso')">
                                             <i class="bi bi-arrows-fullscreen me-1"></i> <span class="btn-text">Expandir</span>
                                         </button>
@@ -1815,13 +1815,13 @@
                             </div>
                         </section>
 
-                        <!-- Evolu├º├úo -->
+                        <!-- Evolução -->
                         <section class="card-section mb-4" id="evolucao-casos">
-                            <h2 class="form-section-title"><i class="bi bi-journal-text"></i>Evolu├º├úo</h2>
+                            <h2 class="form-section-title"><i class="bi bi-journal-text"></i>Evolução</h2>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="text-muted mb-0">Hist├│rico de atendimentos</p>
+                                <p class="text-muted mb-0">Histórico de atendimentos</p>
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#evolucao_modal">
-                                    <i class="bi bi-plus-lg me-1"></i> Nova Evolu├º├úo
+                                    <i class="bi bi-plus-lg me-1"></i> Nova Evolução
                                 </button>
                             </div>
                             <div class="table-responsive">
@@ -1829,20 +1829,20 @@
                                     <thead>
                                         <tr>
                                             <th>Data</th>
-                                            <th>Descri├º├úo</th>
+                                            <th>Descrição</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="evolucao_tabela_body">
-                                        <tr><td colspan="2" class="text-center text-muted">Nenhuma evolu├º├úo registrada</td></tr>
+                                    <tbody id="evolucaotabelabody">
+                                        <tr><td colspan="2" class="text-center text-muted">Nenhuma evolução registrada</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </section>
 
                         <!-- Arquivos -->
-                        <!-- Reposit├│rio de Arquivos -->
+                        <!-- Repositório de Arquivos -->
                         <section class="card-section mb-4" id="repositorio-arquivos">
-                            <h2 class="form-section-title"><i class="bi bi-paperclip"></i>Reposit├│rio de arquivos</h2>
+                            <h2 class="form-section-title"><i class="bi bi-paperclip"></i>Repositório de arquivos</h2>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <p class="text-muted mb-0">Documentos anexados</p>
                                 <div>
@@ -1858,7 +1858,7 @@
                                 <div class="col-12">
                                     <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center py-2 mb-3">
                                         <i class="bi bi-info-circle-fill me-2"></i>
-                                        <small class="fw-medium">Estes arquivos ser├úo salvos junto com o prontu├írio.</small>
+                                        <small class="fw-medium">Estes arquivos serão salvos junto com o prontuário.</small>
                                     </div>
                                     <div id="lista_arquivos_pendentes" class="row g-3"></div>
                                 </div>
@@ -1869,13 +1869,13 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th class="ps-3">Data</th>
-                                            <th>Descri├º├úo</th>
+                                            <th>Descrição</th>
                                             <th>Arquivo</th>
-                                            <th class="text-end pe-3">A├º├Áes</th>
+                                            <th class="text-end pe-3">Ações</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="anexo_tabela_body">
-                                        <tr><td colspan="4" class="text-center text-muted py-4">Carregue um prontu├írio para ver os arquivos.</td></tr>
+                                    <tbody id="anexotabelabody">
+                                        <tr><td colspan="4" class="text-center text-muted py-4">Carregue um prontuário para ver os arquivos.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -1892,7 +1892,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="text_view_title">Visualiza├º├úo de Texto</h5>
+                    <h5 class="modal-title" id="text_view_title">Visualização de Texto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -1910,7 +1910,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Adicionar Evolu├º├úo</h5>
+                    <h5 class="modal-title">Adicionar Evolução</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="evolucaomodalform">
@@ -1921,8 +1921,8 @@
                         </div>
                         <div class="mb-3" id="evolucaodescricaocontainer">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label for="evolucaodescricao" class="form-label mb-0">Descri├º├úo da Evolu├º├úo</label>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('evolucaodescricao', 'Descri├º├úo da Evolu├º├úo')">
+                                <label for="evolucaodescricao" class="form-label mb-0">Descrição da Evolução</label>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('evolucaodescricao', 'Descrição da Evolução')">
                                     <i class="bi bi-arrows-fullscreen me-1"></i> <span class="btn-text">Expandir</span>
                                 </button>
                             </div>
@@ -1931,7 +1931,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar Evolu├º├úo</button>
+                        <button type="submit" class="btn btn-primary">Salvar Evolução</button>
                     </div>
                 </form>
             </div>
@@ -1962,7 +1962,7 @@
                                     <option>Ex-namorado(a)</option>
                                     <option>Primo(a)</option>
                                     <option>Namorado(a)</option>
-                                    <option>Irm├úo/Irm├ú</option>
+                                    <option>Irmão/Irmã</option>
                                     <option>Sobrinho(a)</option>
                                     <option>Sogro(a)</option>
                                     <option>Enteado(a)</option>
@@ -1973,7 +1973,7 @@
                                     <option>Tio(a)</option>
                                     <option>Mulher/Companheira</option>
                                     <option>Amigo(a)</option>
-                                    <option>M├úe/Madrasta</option>
+                                    <option>Mãe/Madrasta</option>
                                     <option>Outro(a)</option>
                                 </select>
                             </div>
@@ -1996,7 +1996,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Adicionar Autor da Viol├¬ncia</h5>
+                    <h5 class="modal-title">Adicionar Autor da Violência</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="autormodalform">
@@ -2011,7 +2011,7 @@
                                 <input type="text" class="form-control" id="autorcpf" name="autorcpf">
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="autorvinculo" class="form-label">V├¡nculo com a usu├íria</label>
+                                <label for="autorvinculo" class="form-label">Vínculo com a usuária</label>
                                 <select id="autorvinculo" name="autorvinculo" class="form-select" required>
                                     <option value="">Selecione</option>
                                     <option>Ex-companheiro(a)</option>
@@ -2022,7 +2022,7 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="autorprofissao" class="form-label">Ocupa├º├úo/Profiss├úo</label>
+                                <label for="autorprofissao" class="form-label">Ocupação/Profissão</label>
                                 <input type="text" class="form-control" id="autorprofissao" name="autorprofissao">
                             </div>
                         </div>
@@ -2043,7 +2043,7 @@
         <div class="loader-content text-center">
             <div class="spinner-border text-primary mb-3" role="status" style="width: 4rem; height: 4rem; border-width: 0.3em;"></div>
             <h4 class="text-primary fw-bold" style="letter-spacing: -0.5px;">Carregando dados...</h4>
-            <p class="text-muted mb-0 mx-auto" style="max-width: 300px;">Por favor, aguarde um momento enquanto processamos as informa├º├Áes do sistema.</p>
+            <p class="text-muted mb-0 mx-auto" style="max-width: 300px;">Por favor, aguarde um momento enquanto processamos as informações do sistema.</p>
         </div>
     </div>
     <div class="modal fade" id="juridicomodal" tabindex="-1" aria-hidden="true">
@@ -2059,14 +2059,14 @@
                     <div>
                         <h5 class="modal-title d-flex align-items-center gap-2">
                             <i class="bi bi-shield-check" style="font-size: 1.5rem;"></i>
-                            M├│dulo Jur├¡dico e Encaminhamentos
+                            Módulo Jurídico e Encaminhamentos
                         </h5>
-                        <p class="mb-0 opacity-75 small">Gerenciamento de processos e rede de prote├º├úo</p>
+                        <p class="mb-0 opacity-75 small">Gerenciamento de processos e rede de proteção</p>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 bg-light">
-                    <!-- Conte├║do Jur├¡dico -->
+                    <!-- Conteúdo Jurídico -->
                     <div class="row g-4">
                         <!-- Natureza do Processo -->
                         <div class="col-12 col-lg-4">
@@ -2074,10 +2074,10 @@
                                 <h3 class="subsection-title"><i class="bi bi-file-earmark-text"></i>Natureza do Processo</h3>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label for="tipocivel" class="form-label">C├¡vel</label>
+                                        <label for="tipocivel" class="form-label">Cível</label>
                                         <select id="tipocivel" name="tipocivel" class="form-select">
                                             <option value="">Selecione</option>
-                                            <option>Indeniza├º├úo</option>
+                                            <option>Indenização</option>
                                             <option>Patrimonial</option>
                                             <option>Familiar</option>
                                         </select>
@@ -2086,9 +2086,9 @@
                                         <label for="tipocriminal" class="form-label">Criminal</label>
                                         <select id="tipocriminal" name="tipocriminal" class="form-select">
                                             <option value="">Selecione</option>
-                                            <option>Viol├¬ncia Dom├®stica</option>
-                                            <option>Viol├¬ncia Urbana</option>
-                                            <option>Viol├¬ncia Sexista</option>
+                                            <option>Violência Doméstica</option>
+                                            <option>Violência Urbana</option>
+                                            <option>Violência Sexista</option>
                                             <option>Outros</option>
                                         </select>
                                     </div>
@@ -2096,7 +2096,7 @@
                                         <label for="tipotrabalhista" class="form-label">Trabalhista</label>
                                         <select id="tipotrabalhista" name="tipotrabalhista" class="form-select">
                                             <option value="">Selecione</option>
-                                            <option>Ass├®dio Moral</option>
+                                            <option>Assédio Moral</option>
                                             <option>Direitos Trabalhistas</option>
                                             <option>Outros</option>
                                         </select>
@@ -2105,13 +2105,13 @@
                             </div>
                         </div>
 
-                        <!-- Registro e Inqu├®rito -->
+                        <!-- Registro e Inquérito -->
                         <div class="col-12 col-lg-4">
                             <div class="subsection-card h-100 bg-white">
-                                <h3 class="subsection-title"><i class="bi bi-shield-lock"></i>Registro e Inqu├®rito</h3>
+                                <h3 class="subsection-title"><i class="bi bi-shield-lock"></i>Registro e Inquérito</h3>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label d-block">Registro da ocorr├¬ncia?</label>
+                                        <label class="form-label d-block">Registro da ocorrência?</label>
                                         <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="registro_ocorrencia" id="registro_ocorrencia" value="Sim">
                                             <label class="form-check-label" for="registro_ocorrencia">Sim</label>
@@ -2122,13 +2122,13 @@
                                         <select id="origem_procedimento" name="origem_procedimento" class="form-select">
                                             <option value="">Selecione</option>
                                             <option>Delegacia</option>
-                                            <option>Minist├®rio P├║blico</option>
-                                            <option>Judici├írio</option>
+                                            <option>Ministério Público</option>
+                                            <option>Judiciário</option>
                                             <option>Outros</option>
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label for="numero_inquerito" class="form-label">N┬║ do inqu├®rito</label>
+                                        <label for="numero_inquerito" class="form-label">Nº do inquérito</label>
                                         <input type="text" class="form-control" id="numero_inquerito" name="numero_inquerito" />
                                     </div>
                                     <div class="col-12">
@@ -2136,12 +2136,12 @@
                                         <select id="exame_corpo_delito" name="exame_corpo_delito" class="form-select">
                                             <option value="">Selecione</option>
                                             <option>Sim</option>
-                                            <option>N├úo</option>
+                                            <option>Não</option>
                                             <option>Em andamento</option>
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label d-block">Fian├ºa?</label>
+                                        <label class="form-label d-block">Fiança?</label>
                                         <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="fianca" id="fianca" value="Sim">
                                             <label class="form-check-label" for="fianca">Sim</label>
@@ -2154,17 +2154,17 @@
                         <!-- Medidas e Complementares -->
                         <div class="col-12 col-lg-4">
                             <div class="subsection-card h-100 bg-white">
-                                <h3 class="subsection-title"><i class="bi bi-info-square"></i>Medidas e Prote├º├úo</h3>
+                                <h3 class="subsection-title"><i class="bi bi-info-square"></i>Medidas e Proteção</h3>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label d-block">J├í solicitou medida protetiva?</label>
+                                        <label class="form-label d-block">Já solicitou medida protetiva?</label>
                                         <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="medida_protetiva" id="medida_protetiva" value="Sim">
                                             <label class="form-check-label" for="medida_protetiva">Sim</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label d-block">V├¡tima aceitou abrigamento?</label>
+                                        <label class="form-label d-block">Vítima aceitou abrigamento?</label>
                                         <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="aceitou_abrigamento" id="aceitou_abrigamento" value="Sim">
                                             <label class="form-check-label" for="aceitou_abrigamento">Sim</label>
@@ -2178,11 +2178,11 @@
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label for="numero_processo" class="form-label">N┬║ do Processo</label>
+                                        <label for="numero_processo" class="form-label">Nº do Processo</label>
                                         <input type="text" class="form-control" id="numero_processo" name="numero_processo" />
                                     </div>
                                     <div class="col-12">
-                                        <label for="observacoes_juridicas" class="form-label">Observa├º├Áes</label>
+                                        <label for="observacoes_juridicas" class="form-label">Observações</label>
                                         <textarea class="form-control" id="observacoes_juridicas" name="observacoes_juridicas" rows="2"></textarea>
                                     </div>
                                 </div>
@@ -2193,42 +2193,42 @@
                         <div class="col-12">
                             <div class="subsection-card bg-white">
                                 <h3 class="subsection-title"><i class="bi bi-signpost-2"></i>Encaminhamentos Externos</h3>
-                                <p class="text-muted small mb-3">Selecione os encaminhamentos realizados para a rede de prote├º├úo</p>
+                                <p class="text-muted small mb-3">Selecione os encaminhamentos realizados para a rede de proteção</p>
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3">
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_abrigamento" value="N├║cleo Abrigamento"><label class="form-check-label" for="enc_abrigamento">N├║cleo Abrigamento</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_centro_ref" value="Centro de Refer├¬ncia"><label class="form-check-label" for="enc_centro_ref">Centro de Refer├¬ncia</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_vara_viol" value="Vara de Viol├¬ncia Dom├®stica e Familiar"><label class="form-check-label" for="enc_vara_viol">Vara de Viol├¬ncia Dom├®stica</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_abrigamento" value="Núcleo Abrigamento"><label class="form-check-label" for="enc_abrigamento">Núcleo Abrigamento</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_centro_ref" value="Centro de Referência"><label class="form-check-label" for="enc_centro_ref">Centro de Referência</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_vara_viol" value="Vara de Violência Doméstica e Familiar"><label class="form-check-label" for="enc_vara_viol">Vara de Violência Doméstica</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_defensoria" value="Defensoria Especializada"><label class="form-check-label" for="enc_defensoria">Defensoria Especializada</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_mppe" value="N├║cleo de Apoio ├á Mulher do MPPE"><label class="form-check-label" for="enc_mppe">N├║cleo Apoio Mulher MPPE</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_mppe" value="Núcleo de Apoio à Mulher do MPPE"><label class="form-check-label" for="enc_mppe">Núcleo Apoio Mulher MPPE</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_delegacia_esp" value="Delegacia Especializada em VDFCM"><label class="form-check-label" for="enc_delegacia_esp">Delegacia Esp. VDFCM</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_delegacia_inf" value="Delegacia da Inf├óncia e Juventude"><label class="form-check-label" for="enc_delegacia_inf">Delegacia Inf├óncia/Juv.</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_delegacia_inf" value="Delegacia da Infância e Juventude"><label class="form-check-label" for="enc_delegacia_inf">Delegacia Infância/Juv.</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_delegacia_idoso" value="Delegacia do Idoso"><label class="form-check-label" for="enc_delegacia_idoso">Delegacia do Idoso</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_delegacia_comum" value="Delegacia de Policia ÔÇô Crimes Comuns"><label class="form-check-label" for="enc_delegacia_comum">Delegacia Crimes Comuns</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_saude_fisica" value="Sa├║de F├¡sica"><label class="form-check-label" for="enc_saude_fisica">Sa├║de F├¡sica</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_saude_mental" value="Sa├║de Mental"><label class="form-check-label" for="enc_saude_mental">Sa├║de Mental</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_justica_cid" value="Casa da Justi├ºa e Cidadania"><label class="form-check-label" for="enc_justica_cid">Casa Justi├ºa e Cidadania</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_saude_sex" value="Sa├║de Especializada Viol├¬ncia Sexual"><label class="form-check-label" for="enc_saude_sex">Sa├║de Esp. Viol. Sexual</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_assistencia" value="Rede de Assist├¬ncia Social"><label class="form-check-label" for="enc_assistencia">Rede Assist├¬ncia Social</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_documentacao" value="Emiss├úo de Documenta├º├úo B├ísica"><label class="form-check-label" for="enc_documentacao">Emiss├úo Documenta├º├úo</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_delegacia_comum" value="Delegacia de Policia – Crimes Comuns"><label class="form-check-label" for="enc_delegacia_comum">Delegacia Crimes Comuns</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_saude_fisica" value="Saúde Física"><label class="form-check-label" for="enc_saude_fisica">Saúde Física</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_saude_mental" value="Saúde Mental"><label class="form-check-label" for="enc_saude_mental">Saúde Mental</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_justica_cid" value="Casa da Justiça e Cidadania"><label class="form-check-label" for="enc_justica_cid">Casa Justiça e Cidadania</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_saude_sex" value="Saúde Especializada Violência Sexual"><label class="form-check-label" for="enc_saude_sex">Saúde Esp. Viol. Sexual</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_assistencia" value="Rede de Assistência Social"><label class="form-check-label" for="enc_assistencia">Rede Assistência Social</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_documentacao" value="Emissão de Documentação Básica"><label class="form-check-label" for="enc_documentacao">Emissão Documentação</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_centro_mulher" value="Centro Municipal da Mulher"><label class="form-check-label" for="enc_centro_mulher">Centro Municipal Mulher</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_cursos" value="Cursos Profissionalizantes"><label class="form-check-label" for="enc_cursos">Cursos Profissionalizantes</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_educacao" value="Educa├º├úo Formal"><label class="form-check-label" for="enc_educacao">Educa├º├úo Formal</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_educacao" value="Educação Formal"><label class="form-check-label" for="enc_educacao">Educação Formal</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_emprego" value="Emprego e Renda"><label class="form-check-label" for="enc_emprego">Emprego e Renda</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_cnh" value="Emiss├úo de CNH Popular"><label class="form-check-label" for="enc_cnh">Emiss├úo CNH Popular</label></div></div>
-                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_cartorio" value="Cart├│rio Registro Civil ou Im├│veis"><label class="form-check-label" for="enc_cartorio">Cart├│rio Registro Civil</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_cnh" value="Emissão de CNH Popular"><label class="form-check-label" for="enc_cnh">Emissão CNH Popular</label></div></div>
+                                    <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_cartorio" value="Cartório Registro Civil ou Imóveis"><label class="form-check-label" for="enc_cartorio">Cartório Registro Civil</label></div></div>
                                     <div class="col"><div class="form-check form-switch"><input class="form-check-input enc-ext" type="checkbox" name="origemservico[]" id="enc_outros" value="Outros"><label class="form-check-label" for="enc_outros">Outros</label></div></div>
                                 </div>
                                 <hr class="my-4">
                                 <div class="row g-3">
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label d-block">Viol├¬ncia institucional?</label>
+                                        <label class="form-label d-block">Violência institucional?</label>
                                         <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="violencia_institucional" id="violencia_institucional" value="Sim">
                                             <label class="form-check-label" for="violencia_institucional">Sim</label>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label d-block">Gerar procura├º├úo?</label>
+                                        <label class="form-label d-block">Gerar procuração?</label>
                                         <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="gerar_procuracao" id="gerar_procuracao" value="Sim">
                                             <label class="form-check-label" for="gerar_procuracao">Sim</label>
@@ -2241,8 +2241,8 @@
                 </div>
                 <div class="modal-footer bg-light p-3">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary px-5 shadow-sm" id="modal_juridico_save_btn" onclick="bootstrap.Modal.getInstance(document.getElementById('juridico_modal')).hide()">
-                        <i class="bi bi-check2-circle me-2"></i> Confirmar Altera├º├Áes
+                    <button type="button" class="btn btn-primary px-5 shadow-sm" id="modal_juridico_save_btn" onclick="bootstrap.Modal.getInstance(document.getElementById('juridicomodal')).hide()">
+                        <i class="bi bi-check2-circle me-2"></i> Confirmar Alterações
                     </button>
                 </div>
             </div>
@@ -2282,8 +2282,8 @@
                 sortDirection: 'desc',
                 loadingTasks: 0,
                 isDashboardRendered: false,
-                userRole: 'advogada', // Perfil do usu├írio atual
-                pendingFiles: [] // Arquivos selecionados mas n├úo salvos
+                pendingFiles: [], // Arquivos selecionados mas não salvos
+                masks: {} // Armazenar instâncias do IMask
             };
 
             function showGlobalLoader() {
@@ -2300,7 +2300,7 @@
             }
 
             // API endpoints (Cloud Run - mesmo origin)
-            // Naturalidades e RPA s├úo proxiados pelo backend para o n8n
+            // Naturalidades e RPA são proxiados pelo backend para o n8n
             const API_BASE = '';
             const WEBHOOKS = {
                 ALL_DATA:      `${API_BASE}/api/prontuarios`,
@@ -2330,7 +2330,7 @@
                 config: document.getElementById('nav-config')
             };
 
-            // Carregamento Imediato: Disparar fetch o mais cedo poss├¡vel
+            // Carregamento Imediato: Disparar fetch o mais cedo possível
             switchView('prontuarios');
             loadProntuariosData('', true);
             loadNationalities();
@@ -2358,7 +2358,7 @@
                 
                 if (viewName === 'dashboard') {
                     loadDashboardStats();
-                    loadProntuariosData('', false); // Carrega os dados em background para os gr├íficos
+                    loadProntuariosData('', false); // Carrega os dados em background para os gráficos
                 }
 
                 // Toggle header save button visibility
@@ -2389,12 +2389,12 @@
             }
 
             window.openJuridicoModal = function() {
-                const modalEl = document.getElementById('juridico_modal');
+                const modalEl = document.getElementById('juridicomodal');
                 if (!modalEl) return;
                 
                 const modal = new bootstrap.Modal(modalEl);
                 
-                // RBAC Logic: Solo 'advogada' pode editar se o formul├írio permitir edi├º├úo
+                // RBAC Logic: Solo 'advogada' pode editar se o formulário permitir edição
                 const isAdvogada = (state.userRole === 'advogada');
                 const isFormEditable = state.isEditing && !state.isReadOnly;
                 const canEdit = isAdvogada && isFormEditable;
@@ -2435,7 +2435,7 @@
                     { trigger: 'emitirsenhaciods', target: 'groupciodsrelato', type: 'checkbox' },
                     { trigger: 'situacaoescolar', target: 'groupanoperiodo', type: 'select', condition: (val) => val !== 'Completo' && val !== '' },
                     { trigger: 'escolaridade', target: 'groupcursoformacao', type: 'select', condition: (val) => {
-                        const higherLevels = ['Curso T├®cnico Profissionalizante', 'Curso Tecnol├│gico', 'Ensino Superior Incompleto', 'Ensino Superior Completo', 'P├│s Gradua├º├úo'];
+                        const higherLevels = ['Curso Técnico Profissionalizante', 'Curso Tecnológico', 'Ensino Superior Incompleto', 'Ensino Superior Completo', 'Pós Graduação'];
                         return higherLevels.includes(val);
                     }}
                 ];
@@ -2499,7 +2499,7 @@
                 });
             });
 
-            // Bot├Áes Carregar Prontu├írios (Global)
+            // Botões Carregar Prontuários (Global)
             document.querySelectorAll('.btn-carregar-global').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -2578,7 +2578,7 @@
                 if (headerBadge) {
                     headerBadge.style.display = 'flex';
                     const nameDisplay = document.getElementById('display-nome-usuaria');
-                    if (nameDisplay) nameDisplay.textContent = 'USU├üRIA EM PREENCHIMENTO';
+                    if (nameDisplay) nameDisplay.textContent = 'USUÁRIA EM PREENCHIMENTO';
                     const prontDisplay = document.getElementById('display-numero-prontuario');
                     if (prontDisplay) prontDisplay.textContent = 'NOVO';
                 }
@@ -2591,12 +2591,21 @@
                 const badgeRisco = document.getElementById('badge-risco-iminente');
                 if (badgeRisco) badgeRisco.classList.add('d-none');
 
-                // Preenchimento autom├ítico de data e hora
+                // Preenchimento automático de data e hora
                 const now = dayjs();
                 const dataAtend = document.getElementById('dataatendimento');
                 const horaAtend = document.getElementById('horaatendimento');
-                if (dataAtend) dataAtend.value = now.format('DD/MM/YYYY');
+                
+                if (dataAtend) {
+                    dataAtend.value = now.format('DD/MM/YYYY');
+                    // Não precisa de máscara explícita aqui pois não tem mask instanciada para dataatendimento (é readonly)
+                }
                 if (horaAtend) horaAtend.value = now.format('HH:mm');
+
+                // Limpar máscaras
+                Object.keys(state.masks).forEach(k => {
+                    state.masks[k].value = '';
+                });
 
                 state.currentProntuario = null;
                 state.isEditing = false;
@@ -2613,6 +2622,7 @@
                         el.readOnly = true;
                     } else {
                         el.disabled = isReadOnly;
+                        if (!isReadOnly) el.readOnly = false;
                     }
                 });
 
@@ -2625,7 +2635,7 @@
                 // Update UI hints
                 const title = document.querySelector('#form-view h2.form-section-title');
                 if (title) {
-                    const hint = isReadOnly ? ' (Visualiza├º├úo)' : ' (Edi├º├úo)';
+                    const hint = isReadOnly ? ' (Visualização)' : ' (Edição)';
                 }
             }
 
@@ -2637,11 +2647,11 @@
             };
 
             const cpfEl = document.getElementById('cpfusuaria');
-            if (cpfEl) IMask(cpfEl, maskOptions.cpf);
+            if (cpfEl) state.masks.cpfusuaria = IMask(cpfEl, maskOptions.cpf);
             
             const cepEl = document.getElementById('cep');
             if (cepEl) {
-                IMask(cepEl, maskOptions.cep);
+                state.masks.cep = IMask(cepEl, maskOptions.cep);
                 
                 cepEl.addEventListener('blur', async function() {
                     const cep = this.value.replace(/\D/g, '');
@@ -2695,9 +2705,9 @@
             
             const dataNascimentoEl = document.getElementById('datanascimento');
             if (dataNascimentoEl) {
-                IMask(dataNascimentoEl, maskOptions.date);
+                state.masks.datanascimento = IMask(dataNascimentoEl, maskOptions.date);
                 
-                // C├ílculo de Idade autom├ítico
+                // Cálculo de Idade automático
                 dataNascimentoEl.addEventListener('blur', () => {
                     const val = dataNascimentoEl.value;
                     if (val && val.length === 10) {
@@ -2722,19 +2732,19 @@
                     const rg = e.target.value;
                     const cpf = document.getElementById('cpfusuaria').value.replace(/\D/g, '');
                     if (rg && rg === cpf) {
-                        Swal.fire('Valida├º├úo', 'O RG n├úo pode ser igual ao CPF.', 'warning');
+                        Swal.fire('Validação', 'O RG não pode ser igual ao CPF.', 'warning');
                         e.target.value = '';
                     }
                 });
             }
 
-            // Atualiza├º├úo do cabe├ºalho em tempo real
+            // Atualização do cabeçalho em tempo real
             const nomeUsuariaEl = document.getElementById('nomeusuaria');
             if (nomeUsuariaEl) {
                 nomeUsuariaEl.addEventListener('input', (e) => {
                     const val = e.target.value;
                     const display = document.getElementById('display-nome-usuaria');
-                    if (display) display.textContent = val || 'USU├üRIA EM PREENCHIMENTO';
+                    if (display) display.textContent = val || 'USUÁRIA EM PREENCHIMENTO';
                 });
             }
 
@@ -2874,17 +2884,17 @@
                 const tr = document.createElement('tr');
                 tr.className = 'prontuario-row';
                 
-                const prontuarioId = record.numeroprontuario || record.prontuario || 'ÔÇö';
-                const nome = record.nomeusuaria || record.nome || 'ÔÇö';
-                const cpf = record.cpfusuaria || record.cpf || 'ÔÇö';
+                const prontuarioId = record.numeroprontuario || record.prontuario || '—';
+                const nome = record.nomeusuaria || record.nome || '—';
+                const cpf = record.cpfusuaria || record.cpf || '—';
                 const dataAtend = record.dataatendimento || record.data_pri_atendimento;
-                const unidade = record.unidadeatendimento || record.unidade_atendimento || 'ÔÇö';
+                const unidade = record.unidadeatendimento || record.unidade_atendimento || '—';
 
                 tr.innerHTML = `
                     <td><span class="fw-bold">#${prontuarioId}</span></td>
                     <td class="fw-medium">${nome}</td>
                     <td class="text-muted">${cpf}</td>
-                    <td>${dataAtend ? dayjs(dataAtend).format('DD/MM/YYYY') : 'ÔÇö'}</td>
+                    <td>${dataAtend ? dayjs(dataAtend).format('DD/MM/YYYY') : '—'}</td>
                     ${isFull ? `<td><span class="badge-soft badge-soft-primary">${unidade}</span></td>` : `<td><span class="badge-soft badge-soft-success">Ativa</span></td>`}
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-2">
@@ -2942,7 +2952,7 @@
 
                 tbodyFull.innerHTML = '';
                 if (records.length === 0) {
-                    tbodyFull.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhum prontu├írio encontrado.</td></tr>';
+                    tbodyFull.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhum prontuário encontrado.</td></tr>';
                     return;
                 }
 
@@ -3041,18 +3051,18 @@
                         
                         Swal.close();
                     } else {
-                        throw new Error('Prontu├írio n├úo encontrado');
+                        throw new Error('Prontuário não encontrado');
                     }
                 } catch (error) {
                     if (!isRetry) {
-                        console.warn('Falha no carregamento do prontu├írio. Tentando novamente...', error);
+                        console.warn('Falha no carregamento do prontuário. Tentando novamente...', error);
                         return loadProntuario(id, isReadOnly, true);
                     }
                     console.error('Error loading record:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro de Carregamento',
-                        text: 'N├úo foi poss├¡vel recuperar os dados do prontu├írio ap├│s duas tentativas. Verifique sua conex├úo.'
+                        text: 'Não foi possível recuperar os dados do prontuário após duas tentativas. Verifique sua conexão.'
                     });
                 }
             }
@@ -3065,7 +3075,7 @@
                 state.currentProntuario = id;
                 state.isEditing = true;
 
-                // 1. Cabe├ºalho
+                // 1. Cabeçalho
                 const displayName = document.getElementById('display-nome-usuaria');
                 const displayProntuario = document.getElementById('display-numero-prontuario');
                 const headerBadge = document.getElementById('header-user-badge');
@@ -3074,7 +3084,7 @@
                 if (displayProntuario) displayProntuario.textContent = id;
                 if (headerBadge) headerBadge.style.display = 'flex';
 
-                // 2. Preenchimento Gen├®rico e Inteligente
+                // 2. Preenchimento Genérico e Inteligente
                 Object.keys(data).forEach(key => {
                     let val = data[key];
                     if (val === null || val === undefined) return;
@@ -3083,7 +3093,7 @@
                     const els = document.querySelectorAll(`[name="${cleanKey}"], [id="${cleanKey}"], [name="${cleanKey}[]"]`);
 
                     els.forEach(el => {
-                        // Formata├º├úo de Datas
+                        // Formatação de Datas
                         if (cleanKey.includes('data') && val && String(val).includes('-')) {
                             const m = dayjs(val);
                             if (m.isValid()) val = m.format('DD/MM/YYYY');
@@ -3105,7 +3115,12 @@
                         } else if (el.type === 'radio') {
                             el.checked = (String(el.value).toLowerCase() === String(val).toLowerCase());
                         } else {
-                            el.value = val;
+                            const maskKey = el.id || el.name.replace('[]', '');
+                            if (state.masks[maskKey]) {
+                                state.masks[maskKey].value = String(val || '');
+                            } else {
+                                el.value = val || '';
+                            }
                         }
                         
                         // Trigger change para regras de visibilidade
@@ -3138,6 +3153,7 @@
 
             async function loadEvolucoes(prontuarioId) {
                 const tbody = document.getElementById('evolucaotabelabody');
+                if (!tbody) return;
                 tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Carregando...</td></tr>';
                 
                 try {
@@ -3151,7 +3167,7 @@
                     
                     tbody.innerHTML = '';
                     if (list.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Nenhuma evolu├º├úo registrada</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Nenhuma evolução registrada</td></tr>';
                         return;
                     }
                     
@@ -3159,8 +3175,8 @@
                         const tr = document.createElement('tr');
                         tr.style.cursor = 'pointer';
                         tr.className = 'hover-row';
-                        const dateStr = item.data ? dayjs(item.data).format('DD/MM/YYYY') : 'ÔÇö';
-                        const fullText = item.registro || item.descricao || 'ÔÇö';
+                        const dateStr = item.data ? dayjs(item.data).format('DD/MM/YYYY') : '—';
+                        const fullText = item.registro || item.descricao || '—';
                         const shortText = fullText.length > 100 ? fullText.substring(0, 100) + '...' : fullText;
 
                         tr.innerHTML = `
@@ -3169,7 +3185,7 @@
                         `;
 
                         tr.addEventListener('click', () => {
-                            window.expandTextValue(fullText, `Evolu├º├úo - ${dateStr}`);
+                            window.expandTextValue(fullText, `Evolução - ${dateStr}`);
                         });
                         tbody.appendChild(tr);
                     });
@@ -3181,6 +3197,7 @@
 
             async function loadAnexos(prontuarioId) {
                 const tbody = document.getElementById('anexotabelabody');
+                if (!tbody) return;
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-2 text-muted">Carregando...</td></tr>';
                 
                 try {
@@ -3205,9 +3222,9 @@
                         const tr = document.createElement('tr');
                         const dataFormatada = item.data || item.data_arquivo || item.created_at || '';
                         tr.innerHTML = `
-                            <td>${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : 'ÔÇö'}</td>
-                            <td>${item.descricao || item.nome_arquivo || 'ÔÇö'}</td>
-                            <td>${item.nome || item.nome_arquivo || 'ÔÇö'}</td>
+                            <td>${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</td>
+                            <td>${item.descricao || item.nome_arquivo || '—'}</td>
+                            <td>${item.nome || item.nome_arquivo || '—'}</td>
                             <td class="text-center">
                                 <a href="${item.url || '#'}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
                             </td>
@@ -3233,7 +3250,7 @@
                     else if (data.nacionalidades && Array.isArray(data.nacionalidades)) list = data.nacionalidades;
                     else if (data.data && Array.isArray(data.data)) list = data.data;
 
-                    // Preservar Brasileira como padr├úo se n├úo estiver na lista ou no topo
+                    // Preservar Brasileira como padrão se não estiver na lista ou no topo
                     select.innerHTML = '<option value="Brasileira">Brasileira</option>';
                     
                     list.forEach(item => {
@@ -3257,7 +3274,7 @@
                 const brVariants = [
                     'BRASLEIRA', 'BRASILEIRO', 'BRAS', 'BRASILEIRA', 'NACIONALIDADE', 
                     'BRASILEIRA6105682', 'BRASILEITA', 'BEASILEIRA', 'NAIONALIDADE', 
-                    'BRASIELEIRA', 'BR', 'BRASIL', 'BARSILEIRA', 'BRASI├çEIRA', 
+                    'BRASIELEIRA', 'BR', 'BRASIL', 'BARSILEIRA', 'BRASIÇEIRA', 
                     'BTASILEIRA', 'PE', 'PERNAMBUCO', 'BRASIL', 'BRAS'
                 ];
                 
@@ -3279,7 +3296,7 @@
                     const formData = new FormData(formEl);
                     const data = {};
 
-                    // 1. Capturar todos os campos do formul├írio (normalizados)
+                    // 1. Capturar todos os campos do formulário (normalizados)
                     formData.forEach((value, key) => {
                         const cleanKey = key.replace(/_/g, '').replace('[]', '').toLowerCase();
                         
@@ -3295,7 +3312,7 @@
                     // 2. Garantir envio de Switches (Booleanos ou Arrays)
                     const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
                     
-                    // Inicializar arrays vazios para campos obrigat├│rios de schema REPEATED
+                    // Inicializar arrays vazios para campos obrigatórios de schema REPEATED
                     arrayFields.forEach(f => {
                         if (!data[f]) data[f] = [];
                     });
@@ -3303,38 +3320,111 @@
                     const switches = formEl.querySelectorAll('input[type="checkbox"]:not([name$="[]"])');
                     switches.forEach(sw => {
                         const cleanKey = sw.name.replace(/_/g, '').toLowerCase();
-                        if (!cleanKey) return; // Pular se n├úo tiver name
+                        if (!cleanKey) return; // Pular se não tiver name
                         data[cleanKey] = sw.checked;
                     });
 
                     // 3. Garantir IDs e Campos Readonly
                     data.numeroprontuario = state.currentProntuario || 'NOVO';
                     
-                    // For├ºar captura de campos que podem estar vazios no formData se readonly
+                    // Forçar captura de campos que podem estar vazios no formData se readonly
                     const forceFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'dataatendimento', 'horaatendimento', 'datanascimento'];
                     forceFields.forEach(f => {
                         const el = document.getElementById(f);
-                        if (el) data[f] = el.value;
-                    });
-
-                    // 4. Tratamento de Tipos e Datas conforme Schema BQ
-                    if (data.idade) data.idade = parseInt(data.idade) || 0;
-                    
-                    ['dataatendimento', 'datanascimento'].forEach(f => {
-                        let val = data[f];
-                        if (val && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
-                            const m = dayjs(val, 'DD/MM/YYYY');
-                            if (m.isValid()) {
-                                const iso = m.format('YYYY-MM-DD');
-                                data[f] = iso;
-                                // Redundância para n8n
-                                if (f === 'dataatendimento') data.data_atendimento = iso;
-                                if (f === 'datanascimento') data.data_nascimento = iso;
+                        if (el) {
+                            // Se tiver máscara, pegar o valor formatado da máscara
+                            if (state.masks[f]) {
+                                data[f] = state.masks[f].value;
+                            } else {
+                                data[f] = el.value;
                             }
                         }
                     });
 
-                    console.log('[DEBUG] Payload enviado:', data);
+                    // 4. Tratamento de Tipos e Datas conforme Schema BQ
+                    data.idade = (data.idade && data.idade !== "") ? parseInt(data.idade) : null;
+                    if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos);
+
+                    ['dataatendimento', 'datanascimento'].forEach(f => {
+                        let val = data[f];
+                        if (!val || val === "") {
+                            data[f] = null;
+                        } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+                            const m = dayjs(val, 'DD/MM/YYYY');
+                            data[f] = m.isValid() ? m.format('YYYY-MM-DD') : null;
+                        } else if (/^\d{4}-\d{2}-\d{2}/.test(val)) {
+                            data[f] = val.substring(0, 10);
+                        } else {
+                            data[f] = null;
+                        }
+                    });
+
+                    // 5. Redundância Total de Compatibilidade (com e sem underscore)
+                    const fieldsToDuplicate = {
+                        'dataatendimento': 'data_atendimento',
+                        'datanascimento': 'data_nascimento',
+                        'numeroprontuario': 'numero_prontuario',
+                        'nomeusuaria': 'nome_usuaria',
+                        'cpfusuaria': 'cpf_usuaria',
+                        'rgusuaria': 'rg_usuaria',
+                        'unidadeatendimento': 'unidade_atendimento',
+                        'avaliacaoinicial': 'avaliacao_inicial',
+                        'nomesocial': 'nome_social',
+                        'identidadegenero': 'identidade_genero',
+                        'orientacaosexual': 'orientacao_sexual',
+                        'corraca': 'cor_raca',
+                        'ufnascimento': 'uf_nascimento',
+                        'cidadenascimento': 'cidade_nascimento',
+                        'estadocivil': 'estado_civil',
+                        'nomemae': 'nome_mae',
+                        'nomepai': 'nome_pai',
+                        'numeroendereco': 'numero_endereco',
+                        'complementoendereco': 'complemento_endereco',
+                        'pontoreferencia': 'ponto_referencia',
+                        'telefonesecundario': 'telefone_secundario',
+                        'situacaoescolar': 'situacao_escolar',
+                        'anoperiodo': 'ano_periodo',
+                        'cursoformacao': 'curso_formacao',
+                        'situacaoocupacional': 'situacao_ocupacional',
+                        'rendaindividual': 'renda_individual',
+                        'situacaotrabalho': 'situacao_trabalho',
+                        'rendafamiliar': 'renda_familiar',
+                        'redeapoio': 'rede_apoio',
+                        'situacaohabitacional': 'situacao_habitacional',
+                        'situacaohabitacionaloutro': 'situacao_habitacional_outro',
+                        'totalfilhos': 'total_filhos',
+                        'numerosus': 'numero_sus',
+                        'deficienciaqual': 'deficiencia_qual',
+                        'atendimentopsicologo': 'atendimento_psicologo',
+                        'atendimentopsiquiatra': 'atendimento_psiquiatra',
+                        'qualprobsaude': 'qual_prob_saude',
+                        'usomedicamento': 'uso_medicamento',
+                        'quaismedicamentos': 'quais_medicamentos',
+                        'examehiv': 'exame_hiv',
+                        'tipoviolencia': 'tipo_violencia',
+                        'localviolencia': 'local_violencia',
+                        'outrolocalagressao': 'outro_local_agressao',
+                        'outrasviolfisicas': 'outras_viol_fisicas',
+                        'outrasviolpsicologicas': 'outras_viol_psicologicas',
+                        'outrasviolsexuais': 'outras_viol_sexuais',
+                        'relatociods': 'relato_ciods',
+                        'relatocaso': 'relato_caso',
+                        'deficienciasindrome': 'deficiencia_sindrome',
+                        'emitirsenhaciods': 'emitir_senha_ciods'
+                    };
+
+                    Object.keys(fieldsToDuplicate).forEach(key => {
+                        if (data[key] !== undefined) {
+                            data[fieldsToDuplicate[key]] = data[key];
+                        }
+                    });
+
+                    // Saneamento de strings vazias finais
+                    Object.keys(data).forEach(k => {
+                        if (data[k] === "") data[k] = null;
+                    });
+
+                    console.log('[DEBUG] Payload Final Sincronizado:', data);
 
                     // Adicionar arquivos pendentes se houver
                     if (state.pendingFiles.length > 0) {
@@ -3363,7 +3453,7 @@
                         
                         if (response.ok) {
                             if (isNew) {
-                                // Buscar novo prontu├írio sem dar reload na p├ígina
+                                // Buscar novo prontuário sem dar reload na página
                                 try {
                                     const urlGetNew = `${WEBHOOKS.GET_NEW}?cpf=${data.cpfusuaria?.replace(/\D/g, '') || ''}`;
                                     
@@ -3376,9 +3466,9 @@
                                         state.pendingFiles = [];
                                         renderPendingFiles();
                                         await loadProntuario(newId, false);
-                                        Swal.fire('Sucesso', `Prontu├írio #${newId} criado com sucesso!`, 'success');
+                                        Swal.fire('Sucesso', `Prontuário #${newId} criado com sucesso!`, 'success');
                                     } else {
-                                        throw new Error("N├úo foi poss├¡vel localizar o novo ID");
+                                        throw new Error("Não foi possível localizar o novo ID");
                                     }
                                 } catch (e) {
                                     Swal.fire('Salvo', 'Dados salvos, mas houve um erro ao recarregar o novo ID. Por favor, busque manualmente.', 'warning');
@@ -3389,7 +3479,7 @@
                                 state.pendingFiles = [];
                                 renderPendingFiles();
                                 await loadProntuario(state.currentProntuario, false);
-                                Swal.fire('Sucesso', 'Altera├º├Áes salvas com sucesso!', 'success');
+                                Swal.fire('Sucesso', 'Alterações salvas com sucesso!', 'success');
                             }
                         } else {
                             throw new Error('Erro ao salvar');
@@ -3589,7 +3679,7 @@
             function updateCharts(records) {
                 const data = (records || []).filter(r => r != null);
                 
-                const getVal = (v) => { const str = (v || '').toString().trim(); return str ? str : 'N├úo Informada'; };
+                const getVal = (v) => { const str = (v || '').toString().trim(); return str ? str : 'Não Informada'; };
 
                 // Aggregations
                 const byDate = {};
@@ -3625,7 +3715,7 @@
                     let dem = getVal(r.demandante);
                     const demUpper = dem.toUpperCase();
                     if (demUpper.includes('ESPONT') || demUpper.includes('EXPONT')) {
-                        dem = 'Espont├ónea';
+                        dem = 'Espontânea';
                     }
                     byDemandante[dem] = (byDemandante[dem] || 0) + 1;
 
@@ -3673,7 +3763,7 @@
                 renderChart('chart-violencia', {
                     type: 'bar',
                     horizontal: true,
-                    series: [{ name: 'Ocorr├¬ncias', data: sortedVio.map(v => v[1]) }],
+                    series: [{ name: 'Ocorrências', data: sortedVio.map(v => v[1]) }],
                     labels: sortedVio.map(v => v[0]),
                     colors: ['#b366a6']
                 });
@@ -3715,7 +3805,7 @@
                     colors: ['#eeb1d5']
                 });
 
-                // 8. Situa├º├úo Ocupacional (Pie) - Top 8
+                // 8. Situação Ocupacional (Pie) - Top 8
                 const sortedOcu = Object.entries(byOcupacao).sort((a,b) => b[1] - a[1]).slice(0, 8);
                 renderChart('chart-ocupacao', {
                     type: 'pie',
@@ -3723,7 +3813,7 @@
                     labels: sortedOcu.map(o => o[0])
                 });
 
-                // 9. Situa├º├úo Trabalhista (Donut) - Top 8
+                // 9. Situação Trabalhista (Donut) - Top 8
                 const sortedTrab = Object.entries(byTrabalho).sort((a,b) => b[1] - a[1]).slice(0, 8);
                 renderChart('chart-trabalho', {
                     type: 'donut',
@@ -3734,12 +3824,12 @@
                 // 10. Renda Individual (Horizontal Bar) - Ordered Logically
                 const rendaOrder = [
                     'Sem renda',
-                    'Menos de 1 sal├írio m├¡nimo',
-                    'De 1 a 3 sal├írios m├¡nimos',
-                    'De 3 a 6 sal├írios m├¡nimos',
-                    'De 6 a 9 sal├írios m├¡nimos',
-                    'Acima de 9 sal├írios m├¡nimos',
-                    'N├úo Informada'
+                    'Menos de 1 salário mínimo',
+                    'De 1 a 3 salários mínimos',
+                    'De 3 a 6 salários mínimos',
+                    'De 6 a 9 salários mínimos',
+                    'Acima de 9 salários mínimos',
+                    'Não Informada'
                 ];
                 
                 const normalizedRenda = {};
@@ -3748,12 +3838,12 @@
                 Object.entries(byRenda).forEach(([k, v]) => {
                     const norm = k.toLowerCase();
                     if (norm.includes('sem renda')) normalizedRenda['Sem renda'] += v;
-                    else if (norm.includes('menos de 1')) normalizedRenda['Menos de 1 sal├írio m├¡nimo'] += v;
-                    else if (norm.includes('de 1 a 3')) normalizedRenda['De 1 a 3 sal├írios m├¡nimos'] += v;
-                    else if (norm.includes('de 3 a 6')) normalizedRenda['De 3 a 6 sal├írios m├¡nimos'] += v;
-                    else if (norm.includes('de 6 a 9')) normalizedRenda['De 6 a 9 sal├írios m├¡nimos'] += v;
-                    else if (norm.includes('acima de 9')) normalizedRenda['Acima de 9 sal├írios m├¡nimos'] += v;
-                    else normalizedRenda['N├úo Informada'] += v;
+                    else if (norm.includes('menos de 1')) normalizedRenda['Menos de 1 salário mínimo'] += v;
+                    else if (norm.includes('de 1 a 3')) normalizedRenda['De 1 a 3 salários mínimos'] += v;
+                    else if (norm.includes('de 3 a 6')) normalizedRenda['De 3 a 6 salários mínimos'] += v;
+                    else if (norm.includes('de 6 a 9')) normalizedRenda['De 6 a 9 salários mínimos'] += v;
+                    else if (norm.includes('acima de 9')) normalizedRenda['Acima de 9 salários mínimos'] += v;
+                    else normalizedRenda['Não Informada'] += v;
                 });
 
                 const sortedRen = rendaOrder.map(k => [k, normalizedRenda[k]]);
@@ -3826,7 +3916,7 @@
                 try {
                     let validRecords = [];
                     
-                    // Se j├í temos registros no estado, usamos eles. Sen├úo, buscamos.
+                    // Se já temos registros no estado, usamos eles. Senão, buscamos.
                     if (state.currentRecords && state.currentRecords.length > 0) {
                         validRecords = state.currentRecords.filter(r => r != null);
                     } else {
@@ -3891,12 +3981,12 @@
                         updateCharts(validRecords);
                     } catch (chartErr) {
                         console.error('Error drawing charts:', chartErr);
-                        Swal.fire('Erro Gr├ífico', 'Os dados foram recebidos, mas houve uma falha ao desenhar os gr├íficos: ' + chartErr.message, 'error');
+                        Swal.fire('Erro Gráfico', 'Os dados foram recebidos, mas houve uma falha ao desenhar os gráficos: ' + chartErr.message, 'error');
                     }
 
                 } catch (error) {
                     console.error('Error loading dashboard data:', error);
-                    Swal.fire('Falha de Execu├º├úo', 'Ocorreu um erro na p├ígina: ' + error.message, 'error');
+                    Swal.fire('Falha de Execução', 'Ocorreu um erro na página: ' + error.message, 'error');
                 } finally {
                     if (showOverlay) hideGlobalLoader();
                 }
@@ -3914,7 +4004,7 @@
 
 
 
-            // Inicializar intera├º├Áes ap├│s o carregamento autom├ítico
+            // Inicializar interações após o carregamento automático
             setTimeout(initMicroInteractions, 500);
     </script>
 
@@ -3922,15 +4012,15 @@
     <script>
         window.expandText = function(fieldId, title) {
             var el = document.getElementById(fieldId);
-            var content = el ? el.value : 'Conte├║do n├úo encontrado.';
+            var content = el ? el.value : 'Conteúdo não encontrado.';
             window.expandTextValue(content, title);
         };
 
         window.expandTextValue = function(text, title) {
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
-                    title: title || 'Visualiza├º├úo',
-                    html: '<div style="text-align: left; white-space: pre-wrap; font-family: sans-serif; font-size: 15px; line-height: 1.6; max-height: 70vh; overflow-y: auto; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e9ecef;">' + (text || 'Nenhum conte├║do informado.') + '</div>',
+                    title: title || 'Visualização',
+                    html: '<div style="text-align: left; white-space: pre-wrap; font-family: sans-serif; font-size: 15px; line-height: 1.6; max-height: 70vh; overflow-y: auto; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e9ecef;">' + (text || 'Nenhum conteúdo informado.') + '</div>',
                     confirmButtonText: 'Fechar',
                     width: '80%',
                     maxWidth: '850px',
