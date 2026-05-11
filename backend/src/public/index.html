@@ -653,7 +653,7 @@
               <h4 class="mb-0 fw-bold">Painel de Indicadores</h4>
               <p class="text-muted small mb-0">Visão geral analítica do sistema.</p>
             </div>
-            <button id="btn-recarregar-dash" class="btn btn-outline-primary rounded-pill px-4 btn-carregar-global">
+            <button id="btnrecarregardash" class="btn btn-outline-primary rounded-pill px-4 btn-carregar-global">
               <i class="bi bi-arrow-clockwise me-2"></i> Carregar prontuários
             </button>
           </div>
@@ -666,7 +666,7 @@
                   <i class="bi bi-people-fill"></i>
                 </div>
                 <div class="kpi-data">
-                  <div class="value" id="kpi-total">0</div>
+                  <div class="value" id="kpitotal">0</div>
                   <div class="label" style="font-size: 0.8rem;">Total Prontuários</div>
                 </div>
               </div>
@@ -677,7 +677,7 @@
                   <i class="bi bi-calendar-month-fill"></i>
                 </div>
                 <div class="kpi-data">
-                  <div class="value" id="kpi_ativos">0</div>
+                  <div class="value" id="kpiativos">0</div>
                   <div class="label" style="font-size: 0.8rem;">Atendimentos no Mês</div>
                 </div>
               </div>
@@ -688,7 +688,7 @@
                   <i class="bi bi-calendar-event-fill"></i>
                 </div>
                 <div class="kpi-data">
-                  <div class="value" id="kpi_hoje">0</div>
+                  <div class="value" id="kpihoje">0</div>
                   <div class="label" style="font-size: 0.8rem;">Atendimentos Hoje</div>
                 </div>
               </div>
@@ -699,7 +699,7 @@
                   <i class="bi bi-clock-history"></i>
                 </div>
                 <div class="kpi-data">
-                  <div class="value" id="kpi_idade">0</div>
+                  <div class="value" id="kpiidade">0</div>
                   <div class="label" style="font-size: 0.8rem;">Média de Idade</div>
                 </div>
               </div>
@@ -710,7 +710,7 @@
                   <i class="bi bi-activity"></i>
                 </div>
                 <div class="kpi-data">
-                  <div class="value" id="kpi_psiquiatrico">0</div>
+                  <div class="value" id="kpipsiquiatrico">0</div>
                   <div class="label" style="font-size: 0.8rem;">Atend. Psiquiátrico</div>
                 </div>
               </div>
@@ -721,7 +721,7 @@
                   <i class="bi bi-heart-pulse-fill"></i>
                 </div>
                 <div class="kpi-data">
-                  <div class="value" id="kpi_psicologico">0</div>
+                  <div class="value" id="kpipsicologico">0</div>
                   <div class="label" style="font-size: 0.8rem;">Atend. Psicológico</div>
                 </div>
               </div>
@@ -855,12 +855,12 @@
                         <div class="col-12 col-md-8 col-lg-9">
                             <div class="premium-search-box">
                                 <i class="bi bi-search search-icon"></i>
-                                <input type="text" class="form-control" id="search_prontuario" placeholder="Buscar por nome, CPF ou número do prontuário...">
+                                <input type="text" class="form-control" id="searchprontuario" placeholder="Buscar por nome, CPF ou número do prontuário...">
                                 <button class="btn btn-primary btn-search-action">Pesquisar</button>
                             </div>
                         </div>
                         <div class="col-12 col-md-4 col-lg-3">
-                            <button id="btn-recarregar-tabela" class="btn btn-outline-primary w-100 h-100 rounded-pill px-4 btn-carregar-global">
+                            <button id="btnrecarregartabela" class="btn btn-outline-primary w-100 h-100 rounded-pill px-4 btn-carregar-global">
                                 <i class="bi bi-arrow-clockwise fs-5 me-2"></i> Carregar prontuários
                             </button>
                         </div>
@@ -996,7 +996,7 @@
 
                 <!-- Conteúdo do Formulário -->
                 <div class="col-12 col-xl-9">
-                    <form id="registro_form">
+                    <form id="registroform">
                         <!-- Dados Preliminares -->
                         <section class="card-section mb-4" id="dados-preliminares">
                             <h2 class="form-section-title"><i class="bi bi-info-circle"></i>Dados preliminares</h2>
@@ -1904,27 +1904,27 @@
     </div>
 
     <!-- Modals -->
-    <div class="modal fade" id="evolucao_modal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="evolucaomodal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Adicionar Evolução</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="evolucao_modalForm">
+                <form id="evolucaomodalform">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="evolucao_data" class="form-label">Data</label>
-                            <input type="date" class="form-control" id="evolucao_data" name="evolucao_data" readonly>
+                            <label for="evolucaodata" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="evolucaodata" name="evolucaodata" readonly>
                         </div>
-                        <div class="mb-3" id="evolucao_descricaoContainer">
+                        <div class="mb-3" id="evolucaodescricaocontainer">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label for="evolucao_descricao" class="form-label mb-0">Descrição da Evolução</label>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('evolucao_descricao', 'Descrição da Evolução')">
+                                <label for="evolucaodescricao" class="form-label mb-0">Descrição da Evolução</label>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('evolucaodescricao', 'Descrição da Evolução')">
                                     <i class="bi bi-arrows-fullscreen me-1"></i> <span class="btn-text">Expandir</span>
                                 </button>
                             </div>
-                            <textarea class="form-control" id="evolucao_descricao" name="evolucao_descricao" rows="5" required></textarea>
+                            <textarea class="form-control" id="evolucaodescricao" name="evolucaodescricao" rows="5" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1938,23 +1938,23 @@
 
     <!-- Modais legados removidos -->
 
-    <div class="modal fade" id="familia_modal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="familiamodal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Adicionar Membro Familiar</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="familia_modal_form">
+                <form id="familiamodalform">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label for="familia_nome" class="form-label">Nome Completo</label>
-                                <input type="text" class="form-control" id="familia_nome" name="familia_nome" required>
+                                <label for="familianome" class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="familianome" name="familianome" required>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="familia_parentesco" class="form-label">Grau de Parentesco</label>
-                                <select id="familia_parentesco" name="familia_parentesco" class="form-select" required>
+                                <label for="familiaparentesco" class="form-label">Grau de Parentesco</label>
+                                <select id="familiaparentesco" name="familiaparentesco" class="form-select" required>
                                     <option value="">Selecione</option>
                                     <option>Filho(a)</option>
                                     <option>Ex-namorado(a)</option>
@@ -1976,8 +1976,8 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="familia_idade" class="form-label">Idade (Anos)</label>
-                                <input type="number" class="form-control" id="familia_idade" name="familia_idade" required>
+                                <label for="familiaidade" class="form-label">Idade (Anos)</label>
+                                <input type="number" class="form-control" id="familiaidade" name="familiaidade" required>
                             </div>
                         </div>
                     </div>
@@ -1990,27 +1990,27 @@
         </div>
     </div>
 
-    <div class="modal fade" id="autor_modal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="autormodal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Adicionar Autor da Violência</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="autor_modal_form">
+                <form id="autormodalform">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-12 col-md-8">
-                                <label for="autor_nome" class="form-label">Nome Completo</label>
-                                <input type="text" class="form-control" id="autor_nome" name="autor_nome" required>
+                                <label for="autornome" class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="autornome" name="autornome" required>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label for="autor_cpf" class="form-label">CPF (se souber)</label>
-                                <input type="text" class="form-control" id="autor_cpf" name="autor_cpf">
+                                <label for="autorcpf" class="form-label">CPF (se souber)</label>
+                                <input type="text" class="form-control" id="autorcpf" name="autorcpf">
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="autor_vinculo" class="form-label">Vínculo com a usuária</label>
-                                <select id="autor_vinculo" name="autor_vinculo" class="form-select" required>
+                                <label for="autorvinculo" class="form-label">Vínculo com a usuária</label>
+                                <select id="autorvinculo" name="autorvinculo" class="form-select" required>
                                     <option value="">Selecione</option>
                                     <option>Ex-companheiro(a)</option>
                                     <option>Companheiro(a) atual</option>
@@ -2020,8 +2020,8 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="autor_profissao" class="form-label">Ocupação/Profissão</label>
-                                <input type="text" class="form-control" id="autor_profissao" name="autor_profissao">
+                                <label for="autorprofissao" class="form-label">Ocupação/Profissão</label>
+                                <input type="text" class="form-control" id="autorprofissao" name="autorprofissao">
                             </div>
                         </div>
                     </div>
@@ -2044,7 +2044,7 @@
             <p class="text-muted mb-0 mx-auto" style="max-width: 300px;">Por favor, aguarde um momento enquanto processamos as informações do sistema.</p>
         </div>
     </div>
-    <div class="modal fade" id="juridico_modal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="juridicomodal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); overflow: hidden;">
                 <style>
@@ -2072,8 +2072,8 @@
                                 <h3 class="subsection-title"><i class="bi bi-file-earmark-text"></i>Natureza do Processo</h3>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label for="tipo_civel" class="form-label">Cível</label>
-                                        <select id="tipo_civel" name="tipo_civel" class="form-select">
+                                        <label for="tipocivel" class="form-label">Cível</label>
+                                        <select id="tipocivel" name="tipocivel" class="form-select">
                                             <option value="">Selecione</option>
                                             <option>Indenização</option>
                                             <option>Patrimonial</option>
@@ -2081,8 +2081,8 @@
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label for="tipo_criminal" class="form-label">Criminal</label>
-                                        <select id="tipo_criminal" name="tipo_criminal" class="form-select">
+                                        <label for="tipocriminal" class="form-label">Criminal</label>
+                                        <select id="tipocriminal" name="tipocriminal" class="form-select">
                                             <option value="">Selecione</option>
                                             <option>Violência Doméstica</option>
                                             <option>Violência Urbana</option>
@@ -2091,8 +2091,8 @@
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label for="tipo_trabalhista" class="form-label">Trabalhista</label>
-                                        <select id="tipo_trabalhista" name="tipo_trabalhista" class="form-select">
+                                        <label for="tipotrabalhista" class="form-label">Trabalhista</label>
+                                        <select id="tipotrabalhista" name="tipotrabalhista" class="form-select">
                                             <option value="">Selecione</option>
                                             <option>Assédio Moral</option>
                                             <option>Direitos Trabalhistas</option>
@@ -2501,7 +2501,7 @@
             document.querySelectorAll('.btn-carregar-global').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const searchInp = document.getElementById('search_prontuario');
+                    const searchInp = document.getElementById('searchprontuario');
                     if (searchInp) searchInp.value = '';
                     
                     // Reset flags to force reload
@@ -2557,10 +2557,10 @@
             });
 
             // Form Logic
-            const registro_form = document.getElementById('registro_form');
+            const registroform = document.getElementById('registroform');
 
             // Global uppercase for text inputs
-            registro_form.addEventListener('input', (e) => {
+            registroform.addEventListener('input', (e) => {
                 if ((e.target.tagName === 'INPUT' && e.target.type === 'text') || e.target.tagName === 'TEXTAREA') {
                     if (e.target.id !== 'email' && !e.target.classList.contains('no-uppercase')) {
                         const start = e.target.selectionStart;
@@ -2581,17 +2581,18 @@
                     if (prontDisplay) prontDisplay.textContent = 'NOVO';
                 }
 
-                registro_form.reset();
+                registroform.reset();
                 toggleFormReadOnly(false);
-                document.getElementById('numero_prontuario').value = 'NOVO';
+                const elPront = document.getElementById('numeroprontuario');
+                if (elPront) elPront.value = 'NOVO';
                 
                 const badgeRisco = document.getElementById('badge-risco-iminente');
                 if (badgeRisco) badgeRisco.classList.add('d-none');
 
                 // Preenchimento automático de data e hora
                 const now = dayjs();
-                const dataAtend = document.getElementById('data_atendimento');
-                const horaAtend = document.getElementById('hora_atendimento');
+                const dataAtend = document.getElementById('dataatendimento');
+                const horaAtend = document.getElementById('horaatendimento');
                 if (dataAtend) dataAtend.value = now.format('DD/MM/YYYY');
                 if (horaAtend) horaAtend.value = now.format('HH:mm');
 
@@ -2603,8 +2604,8 @@
 
             function toggleFormReadOnly(isReadOnly) {
                 state.isReadOnly = isReadOnly;
-                const elements = registro_form.querySelectorAll('input, select, textarea');
-                const fixedFields = ['numero_prontuario', 'data_atendimento', 'hora_atendimento'];
+                const elements = registroform.querySelectorAll('input, select, textarea');
+                const fixedFields = ['numeroprontuario', 'dataatendimento', 'horaatendimento'];
                 elements.forEach(el => {
                     if (!fixedFields.includes(el.id)) {
                         el.disabled = isReadOnly;
@@ -2633,7 +2634,7 @@
                 cep: { mask: '00000-000' }
             };
 
-            const cpfEl = document.getElementById('cpf_usuaria');
+            const cpfEl = document.getElementById('cpfusuaria');
             if (cpfEl) IMask(cpfEl, maskOptions.cpf);
             
             const cepEl = document.getElementById('cep');
@@ -2690,7 +2691,7 @@
                 } catch (e) { console.error("Erro RPA:", e); }
             }
             
-            const dataNascimentoEl = document.getElementById('data_nascimento');
+            const dataNascimentoEl = document.getElementById('datanascimento');
             if (dataNascimentoEl) {
                 IMask(dataNascimentoEl, maskOptions.date);
                 
@@ -2708,7 +2709,7 @@
                 });
             }
 
-            const rgEl = document.getElementById('rg_usuaria');
+            const rgEl = document.getElementById('rgusuaria');
             if (rgEl) {
                 rgEl.addEventListener('input', (e) => {
                     const raw = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
@@ -2717,7 +2718,7 @@
                 
                 rgEl.addEventListener('blur', (e) => {
                     const rg = e.target.value;
-                    const cpf = document.getElementById('cpf_usuaria').value.replace(/\D/g, '');
+                    const cpf = document.getElementById('cpfusuaria').value.replace(/\D/g, '');
                     if (rg && rg === cpf) {
                         Swal.fire('Validação', 'O RG não pode ser igual ao CPF.', 'warning');
                         e.target.value = '';
@@ -2726,7 +2727,7 @@
             }
 
             // Atualização do cabeçalho em tempo real
-            const nomeUsuariaEl = document.getElementById('nome_usuaria');
+            const nomeUsuariaEl = document.getElementById('nomeusuaria');
             if (nomeUsuariaEl) {
                 nomeUsuariaEl.addEventListener('input', (e) => {
                     const val = e.target.value;
@@ -2735,11 +2736,11 @@
                 });
             }
 
-            const ufNascimentoEl = document.getElementById('uf_nascimento');
+            const ufNascimentoEl = document.getElementById('ufnascimento');
             if (ufNascimentoEl) {
                 ufNascimentoEl.addEventListener('change', async (e) => {
                     const uf = e.target.value;
-                    const cidadeSelect = document.getElementById('cidade_nascimento');
+                    const cidadeSelect = document.getElementById('cidadenascimento');
                     if (!cidadeSelect) return;
 
                     if (!uf) {
@@ -2772,10 +2773,10 @@
                 });
             }
             
-            const dataAtendEl = document.getElementById('data_atendimento');
+            const dataAtendEl = document.getElementById('dataatendimento');
             if (dataAtendEl) IMask(dataAtendEl, maskOptions.date);
             
-            const dataNascEl = document.getElementById('data_nascimento');
+            const dataNascEl = document.getElementById('datanascimento');
             if (dataNascEl) IMask(dataNascEl, maskOptions.date);
 
             // Data Loading
@@ -2784,12 +2785,12 @@
                     const response = await fetch(WEBHOOKS.STATS);
                     const stats = await response.json();
                     
-                    if (document.getElementById('kpi-total')) document.getElementById('kpi-total').textContent = stats.total || 0;
-                    if (document.getElementById('kpi_hoje')) document.getElementById('kpi_hoje').textContent = stats.hoje || 0;
-                    if (document.getElementById('kpi_ativos')) document.getElementById('kpi_ativos').textContent = stats.mes || 0;
-                    if (document.getElementById('kpi_idade')) document.getElementById('kpi_idade').textContent = Math.round(stats.media_idade || 0);
-                    if (document.getElementById('kpi_psicologico')) document.getElementById('kpi_psicologico').textContent = stats.psicologico || 0;
-                    if (document.getElementById('kpi_psiquiatrico')) document.getElementById('kpi_psiquiatrico').textContent = stats.psiquiatrico || 0;
+                    if (document.getElementById('kpitotal')) document.getElementById('kpitotal').textContent = stats.total || 0;
+                    if (document.getElementById('kpihoje')) document.getElementById('kpihoje').textContent = stats.hoje || 0;
+                    if (document.getElementById('kpiativos')) document.getElementById('kpiativos').textContent = stats.mes || 0;
+                    if (document.getElementById('kpiidade')) document.getElementById('kpiidade').textContent = Math.round(stats.media_idade || 0);
+                    if (document.getElementById('kpipsicologico')) document.getElementById('kpipsicologico').textContent = stats.psicologico || 0;
+                    if (document.getElementById('kpipsiquiatrico')) document.getElementById('kpipsiquiatrico').textContent = stats.psiquiatrico || 0;
                 } catch (error) {
                     console.error('Error loading stats:', error);
                 }
@@ -3134,7 +3135,7 @@
             });
 
             async function loadEvolucoes(prontuarioId) {
-                const tbody = document.getElementById('evolucao_tabela_body');
+                const tbody = document.getElementById('evolucaotabelabody');
                 tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Carregando...</td></tr>';
                 
                 try {
@@ -3177,7 +3178,7 @@
             }
 
             async function loadAnexos(prontuarioId) {
-                const tbody = document.getElementById('anexo_tabela_body');
+                const tbody = document.getElementById('anexotabelabody');
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-2 text-muted">Carregando...</td></tr>';
                 
                 try {
@@ -3265,126 +3266,128 @@
             }
 
             // Save Function
-            document.getElementById('registro_modal_salvar_btn').addEventListener('click', async () => {
-                const isNew = !state.currentProntuario || state.currentProntuario === 'NOVO';
-                
-                const formEl = document.getElementById('registro_form');
-                if (!formEl) return;
-
-                const formData = new FormData(formEl);
-                const data = {};
-
-                // 1. Capturar todos os campos do formulário (normalizados)
-                formData.forEach((value, key) => {
-                    const cleanKey = key.replace(/_/g, '').replace('[]', '').toLowerCase();
+            const btnSalvar = document.getElementById('registrosalvarbtn') || document.getElementById('registro_modal_salvar_btn');
+            if (btnSalvar) {
+                btnSalvar.addEventListener('click', async () => {
+                    const isNew = !state.currentProntuario || state.currentProntuario === 'NOVO';
                     
-                    // Tratar Checkboxes (Arrays)
-                    if (key.endsWith('[]')) {
-                        if (!data[cleanKey]) data[cleanKey] = [];
-                        data[cleanKey].push(value);
-                    } else {
-                        data[cleanKey] = value;
+                    const formEl = document.getElementById('registroform');
+                    if (!formEl) return;
+
+                    const formData = new FormData(formEl);
+                    const data = {};
+
+                    // 1. Capturar todos os campos do formulário (normalizados)
+                    formData.forEach((value, key) => {
+                        const cleanKey = key.replace(/_/g, '').replace('[]', '').toLowerCase();
+                        
+                        // Tratar Checkboxes (Arrays)
+                        if (key.endsWith('[]')) {
+                            if (!data[cleanKey]) data[cleanKey] = [];
+                            data[cleanKey].push(value);
+                        } else {
+                            data[cleanKey] = value;
+                        }
+                    });
+
+                    // 2. Garantir envio de Switches (Booleanos ou Arrays)
+                    const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
+                    
+                    // Inicializar arrays vazios para campos obrigatórios de schema REPEATED
+                    arrayFields.forEach(f => {
+                        if (!data[f]) data[f] = [];
+                    });
+
+                    const switches = formEl.querySelectorAll('input[type="checkbox"]:not([name$="[]"])');
+                    switches.forEach(sw => {
+                        const cleanKey = sw.name.replace(/_/g, '').toLowerCase();
+                        if (!cleanKey) return; // Pular se não tiver name
+                        data[cleanKey] = sw.checked;
+                    });
+
+                    // 3. Garantir IDs e Campos Readonly
+                    data.numeroprontuario = state.currentProntuario || 'NOVO';
+                    
+                    // Forçar captura de campos que podem estar vazios no formData se readonly
+                    const forceFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'dataatendimento', 'horaatendimento'];
+                    forceFields.forEach(f => {
+                        const el = document.getElementById(f);
+                        if (el) data[f] = el.value;
+                    });
+
+                    // 4. Tratamento de Tipos conforme Schema
+                    if (data.idade) data.idade = parseInt(data.idade) || 0;
+                    if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos); // Schema diz STRING agora
+
+                    console.log('[DEBUG] Payload enviado:', data);
+
+                    // Adicionar arquivos pendentes se houver
+                    if (state.pendingFiles.length > 0) {
+                        state.pendingFiles.forEach((item, index) => {
+                            data[`arquivo_${index}`] = item.base64;
+                            data[`arquivo_nome_${index}`] = item.file.name;
+                            data[`arquivo_desc_${index}`] = item.description;
+                            data[`arquivo_data_${index}`] = item.date;
+                        });
+                        data.totalanexos = state.pendingFiles.length;
                     }
-                });
 
-                // 2. Garantir envio de Switches (Booleanos ou Arrays)
-                const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
-                
-                // Inicializar arrays vazios para campos obrigatórios de schema REPEATED
-                arrayFields.forEach(f => {
-                    if (!data[f]) data[f] = [];
-                });
-
-                const switches = formEl.querySelectorAll('input[type="checkbox"]:not([name$="[]"])');
-                switches.forEach(sw => {
-                    const cleanKey = sw.name.replace(/_/g, '').toLowerCase();
-                    if (!cleanKey) return; // Pular se não tiver name
-                    data[cleanKey] = sw.checked;
-                });
-
-                // 3. Garantir IDs e Campos Readonly
-                data.numeroprontuario = state.currentProntuario || 'NOVO';
-                data.avaliacaoinicial = document.querySelector('input[name="avaliacaoinicial"]:checked')?.value || '';
-                
-                // Forçar captura de campos que podem estar vazios no formData se readonly
-                const forceFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'dataatendimento', 'horaatendimento'];
-                forceFields.forEach(f => {
-                    const el = document.getElementById(f);
-                    if (el) data[f] = el.value;
-                });
-
-                // 4. Tratamento de Tipos conforme Schema
-                if (data.idade) data.idade = parseInt(data.idade) || 0;
-                if (data.totalfilhos) data.totalfilhos = String(data.totalfilhos); // Schema diz STRING agora
-
-                console.log('[DEBUG] Payload enviado:', data);
-
-                // Adicionar arquivos pendentes se houver
-                if (state.pendingFiles.length > 0) {
-                    state.pendingFiles.forEach((item, index) => {
-                        data[`arquivo_${index}`] = item.base64;
-                        data[`arquivo_nome_${index}`] = item.file.name;
-                        data[`arquivo_desc_${index}`] = item.description;
-                        data[`arquivo_data_${index}`] = item.date;
+                    Swal.fire({
+                        title: 'Salvando...',
+                        text: 'Por favor, aguarde enquanto processamos os dados e arquivos.',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
                     });
-                    data.totalanexos = state.pendingFiles.length;
-                }
 
-                Swal.fire({
-                    title: 'Salvando...',
-                    text: 'Por favor, aguarde enquanto processamos os dados e arquivos.',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
-                });
-
-                try {
-                    const response = await fetch(WEBHOOKS.SAVE, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-                    
-                    if (response.ok) {
-                        if (isNew) {
-                            // Buscar novo prontuário sem dar reload na página
-                            try {
-                                const urlGetNew = `${WEBHOOKS.GET_NEW}?cpf=${cpf.replace(/\D/g, '')}`;
-                                
-                                const respNew = await fetch(urlGetNew);
-                                const dataNew = await respNew.json();
-                                
-                                const newId = dataNew.numeroprontuario || dataNew.prontuario || dataNew.id;
-                                
-                                if (newId) {
-                                    state.pendingFiles = [];
-                                    renderPendingFiles();
-                                    await loadProntuario(newId, false);
-                                    Swal.fire('Sucesso', `Prontuário #${newId} criado com sucesso!`, 'success');
-                                } else {
-                                    throw new Error("Não foi possível localizar o novo ID");
+                    try {
+                        const response = await fetch(WEBHOOKS.SAVE, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        
+                        if (response.ok) {
+                            if (isNew) {
+                                // Buscar novo prontuário sem dar reload na página
+                                try {
+                                    const urlGetNew = `${WEBHOOKS.GET_NEW}?cpf=${data.cpfusuaria?.replace(/\D/g, '') || ''}`;
+                                    
+                                    const respNew = await fetch(urlGetNew);
+                                    const dataNew = await respNew.json();
+                                    
+                                    const newId = dataNew.numeroprontuario || dataNew.prontuario || dataNew.id;
+                                    
+                                    if (newId) {
+                                        state.pendingFiles = [];
+                                        renderPendingFiles();
+                                        await loadProntuario(newId, false);
+                                        Swal.fire('Sucesso', `Prontuário #${newId} criado com sucesso!`, 'success');
+                                    } else {
+                                        throw new Error("Não foi possível localizar o novo ID");
+                                    }
+                                } catch (e) {
+                                    Swal.fire('Salvo', 'Dados salvos, mas houve um erro ao recarregar o novo ID. Por favor, busque manualmente.', 'warning');
+                                    switchView('dashboard');
+                                    loadProntuariosData();
                                 }
-                            } catch (e) {
-                                Swal.fire('Salvo', 'Dados salvos, mas houve um erro ao recarregar o novo ID. Por favor, busque manualmente.', 'warning');
-                                switchView('dashboard');
-                                loadProntuariosData();
+                            } else {
+                                state.pendingFiles = [];
+                                renderPendingFiles();
+                                await loadProntuario(state.currentProntuario, false);
+                                Swal.fire('Sucesso', 'Alterações salvas com sucesso!', 'success');
                             }
                         } else {
-                            state.pendingFiles = [];
-                            renderPendingFiles();
-                            await loadProntuario(state.currentProntuario, false);
-                            Swal.fire('Sucesso', 'Alterações salvas com sucesso!', 'success');
+                            throw new Error('Erro ao salvar');
                         }
-                    } else {
-                        throw new Error('Erro ao salvar');
+                    } catch (error) {
+                        console.error('Error saving:', error);
+                        Swal.fire('Erro', 'Houve um problema ao salvar os dados: ' + error.message, 'error');
                     }
-                } catch (error) {
-                    console.error('Error saving:', error);
-                    Swal.fire('Erro', 'Houve um problema ao salvar os dados: ' + error.message, 'error');
-                }
-            });
+                });
+            }
 
             // Attachment Handling Logic
-            const anexoInputFile = document.getElementById('anexo_input_file');
+            const anexoInputFile = document.getElementById('anexoinputfile');
             if (anexoInputFile) {
                 anexoInputFile.addEventListener('change', async (e) => {
                     const files = Array.from(e.target.files);
