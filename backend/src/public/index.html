@@ -614,12 +614,11 @@
         <!-- ── Indicador de Versão ─────────────────────────────── -->
         <div style="padding: 0.6rem 1rem 0.8rem; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem;">
           <div style="font-size: 0.6rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Versão do sistema</div>
-          <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 600; font-family: monospace;">v2026.05.11-5</div>
+          <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 600; font-family: monospace;">v2026.05.11-6</div>
           <div style="font-size: 0.58rem; color: rgba(255,255,255,0.35); margin-top: 0.35rem; line-height: 1.6;">
+            ✔ Normalização global de campos (CEP fix)<br>
+            ✔ Correção isNew (numero_prontuario fix)<br>
             ✔ Arrays BQ via SQL literal<br>
-            ✔ Achatamento de objetos DATE/BQ<br>
-            ✔ parseDate aceita YYYY-MM-DD<br>
-            ✔ Erro de salvar com detalhe<br>
             ✔ Recálculo de idade ao carregar
           </div>
         </div>
@@ -3453,22 +3452,37 @@
             // Save Function
             document.getElementById('registro_modal_salvar_btn').addEventListener('click', async () => {
                 const isNew = !state.currentProntuario || state.currentProntuario === 'NOVO';
-                const cpf = document.getElementById('cpf_usuaria').value;
+                const cpf = document.getElementById('cpf_usuaria')?.value || '';
                 
-                const formData = new FormData(registro_form);
-                const data = Object.fromEntries(formData.entries());
+                const formEl = document.getElementById('registro_form');
+                if (!formEl) {
+                    console.error('Formulário registro_form não encontrado');
+                    return;
+                }
 
-                // Validação de datas antes de enviar
-                const dateFields = ['data_atendimento', 'data_nascimento'];
+                const formData = new FormData(formEl);
+                const rawData = Object.fromEntries(formData.entries());
+
+                // Normalização: Converter snake_case para nomes sem underline (ex: numero_prontuario -> numeroprontuario)
+                // Isso garante compatibilidade com o BQ_TYPES do backend
+                const data = {};
+                Object.keys(rawData).forEach(key => {
+                    const normalizedKey = key.replace(/_/g, '').toLowerCase();
+                    data[normalizedKey] = rawData[key];
+                });
+
+                // Validação de datas antes de enviar (usando chaves normalizadas)
+                const dateFields = ['dataatendimento', 'datanascimento'];
                 for (const f of dateFields) {
                     if (data[f] === 'Invalid Date') {
-                        Swal.fire('Erro de Data', `O campo ${f.replace('_', ' ')} possui um valor inválido. Por favor, corrija.`, 'error');
+                        Swal.fire('Erro de Data', `O campo ${f} possui um valor inválido. Por favor, corrija.`, 'error');
                         return;
                     }
                 }
 
                 // Tratar campos de múltipla escolha como arrays conforme solicitado
-                const arrayFields = {
+                // Mapeamento: Chave Final no Payload -> Nome no HTML (com [])
+                const arrayMapping = {
                     'atendimento': 'atendimento[]',
                     'origemservico': 'origem_servico[]',
                     'violenciafisica': 'violencia_fisica[]',
@@ -3476,12 +3490,14 @@
                     'fatoresrelacionados': 'fatores_relacionados[]'
                 };
 
-                Object.entries(arrayFields).forEach(([payloadKey, htmlName]) => {
+                Object.entries(arrayMapping).forEach(([payloadKey, htmlName]) => {
                     data[payloadKey] = formData.getAll(htmlName);
-                    delete data[htmlName]; // Remover a chave original do Object.fromEntries
+                    // Remover qualquer versão "suja" que possa ter vindo do fromEntries
+                    delete data[htmlName.replace(/_/g, '').replace('[]', '')];
                 });
 
-                // Garantir envio de senhaciods e outros campos booleanos conforme solicitado
+                // Garantir envio de campos booleanos e IDs
+                data.numeroprontuario = state.currentProntuario || 'NOVO';
                 data.senhaciods = document.getElementById('emitir_senha_ciods')?.checked;
                 data.atendimentopsicologo = document.getElementById('atendimento_psicologo')?.checked;
                 data.atendimentopsiquiatra = document.getElementById('atendimento_psiquiatra')?.checked;
@@ -3489,10 +3505,20 @@
                 data.examehiv = document.getElementById('exame_hiv')?.checked;
                 data.avaliacaoinicial = document.querySelector('input[name="avaliacao_inicial"]:checked')?.value || '';
                 
+                // CEP e Endereço (Garantir que sejam capturados mesmo se readonly)
+                data.cep = document.getElementById('cep')?.value || '';
+                data.logradouro = document.getElementById('logradouro')?.value || '';
+                data.bairro = document.getElementById('bairro')?.value || '';
+                data.cidade = document.getElementById('cidade')?.value || '';
+                data.uf = document.getElementById('uf')?.value || '';
+                data.numeroendereco = document.getElementById('numero_endereco')?.value || '';
+
+                console.log('[DEBUG] Payload enviado ao servidor:', data);
+
                 // Adicionar arquivos pendentes se houver
                 if (state.pendingFiles.length > 0) {
                     state.pendingFiles.forEach((item, index) => {
-                        data[`arquivo_${index}`] = item.base64; // Enviando como base64 no JSON para compatibilidade
+                        data[`arquivo_${index}`] = item.base64;
                         data[`arquivo_nome_${index}`] = item.file.name;
                         data[`arquivo_desc_${index}`] = item.description;
                         data[`arquivo_data_${index}`] = item.date;
