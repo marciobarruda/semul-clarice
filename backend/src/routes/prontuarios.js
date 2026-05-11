@@ -65,6 +65,23 @@ function mapPayload(body) {
   return d;
 }
 
+/**
+ * Achata objetos do BigQuery (DATE, DATETIME, TIMESTAMP) para strings simples
+ */
+function flattenRows(rows) {
+  if (!rows) return [];
+  const list = Array.isArray(rows) ? rows : [rows];
+  return list.map(row => {
+    const newRow = { ...row };
+    Object.keys(newRow).forEach(key => {
+      if (newRow[key] && typeof newRow[key] === 'object' && newRow[key].value) {
+        newRow[key] = newRow[key].value;
+      }
+    });
+    return newRow;
+  });
+}
+
 // ── GET /api/prontuarios/stats (Dashboard otimizado) ────────────────────────
 router.get('/stats', async (req, res) => {
   try {
@@ -78,8 +95,8 @@ router.get('/stats', async (req, res) => {
         COUNTIF(atendimentopsiquiatra = true) as psiquiatrico
       FROM ${tbl('prontuario')}
     `;
-    const [stats] = await query(sql);
-    res.json(stats);
+    const rows = await query(sql);
+    res.json(flattenRows(rows)[0] || {});
   } catch (err) {
     console.error('[BQ Stats] Erro:', err);
     res.status(500).json({ error: 'Erro ao carregar estatísticas' });
@@ -92,7 +109,7 @@ router.post('/', async (req, res) => {
     // Limitamos a 2000 registros para evitar que o Node trave ao serializar o JSON
     const sql = `SELECT * FROM ${tbl('prontuario')} ORDER BY createdat DESC LIMIT 2000`;
     const rows = await query(sql);
-    res.json(rows);
+    res.json(flattenRows(rows));
   } catch (err) {
     console.error('[BQ Prontuarios] Erro:', err);
     res.status(500).json({ error: 'Erro ao listar prontuários' });
@@ -105,7 +122,7 @@ router.post('/buscar', async (req, res) => {
   try {
     const sql = `SELECT * FROM ${tbl('prontuario')} WHERE nomeusuaria LIKE @termo OR cpfusuaria LIKE @termo OR numeroprontuario LIKE @termo ORDER BY createdat DESC LIMIT 500`;
     const rows = await query(sql, { termo: `%${termo}%` }, { termo: 'STRING' });
-    res.json(rows);
+    res.json(flattenRows(rows));
   } catch (err) {
     console.error('[BQ Buscar] Erro:', err);
     res.status(500).json({ error: 'Erro na busca' });
@@ -117,7 +134,7 @@ router.post('/get', async (req, res) => {
   if (!num) return res.status(400).json({ error: 'ID obrigatório' });
   try {
     const rows = await query(`SELECT * FROM ${tbl('prontuario')} WHERE numeroprontuario = @num`, { num: String(num) }, { num: 'STRING' });
-    res.json(rows);
+    res.json(flattenRows(rows));
   } catch (err) {
     res.status(500).json({ error: 'Erro ao buscar' });
   }
@@ -165,7 +182,7 @@ router.get('/novo', async (req, res) => {
   try {
     const rows = await query(`SELECT * FROM ${tbl('prontuario')} WHERE cpfusuaria = @cpf ORDER BY createdat DESC LIMIT 1`, { cpf: String(cpf) }, { cpf: 'STRING' });
     if (rows.length === 0) return res.status(404).json({ error: 'Não encontrado' });
-    res.json(rows[0]);
+    res.json(flattenRows(rows)[0]);
   } catch (err) {
     res.status(500).json({ error: 'Erro ao buscar novo' });
   }
