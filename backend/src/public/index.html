@@ -3242,11 +3242,34 @@
                     list.forEach(item => {
                         const tr = document.createElement('tr');
                         const dataFormatada = item.dataupload || item.data || '';
+                        const ext = (item.formatoarquivo || '').toLowerCase();
+                        const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+                        
+                        let thumbnail = '';
+                        if (isImage) {
+                            thumbnail = `<img src="${item.medialink}" class="rounded shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">`;
+                        } else {
+                            const iconMap = {
+                                '.pdf': 'bi-file-earmark-pdf text-danger',
+                                '.doc': 'bi-file-earmark-word text-primary',
+                                '.docx': 'bi-file-earmark-word text-primary',
+                                '.xls': 'bi-file-earmark-excel text-success',
+                                '.xlsx': 'bi-file-earmark-excel text-success'
+                            };
+                            const iconClass = iconMap[ext] || 'bi-file-earmark-text text-secondary';
+                            thumbnail = `<i class="bi ${iconClass}" style="font-size: 1.8rem;"></i>`;
+                        }
+
                         tr.innerHTML = `
-                            <td>${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</td>
-                            <td>${item.categoriadoc || '—'}</td>
-                            <td>${item.nomearquivo || '—'}</td>
-                            <td class="text-center">
+                            <td class="small">${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</td>
+                            <td class="small">${item.categoriadoc || '—'}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    ${thumbnail}
+                                    <span class="text-truncate small" style="max-width: 150px;" title="${item.nomearquivo}">${item.nomearquivo}</span>
+                                </div>
+                            </td>
+                            <td class="text-end">
                                 <a href="${item.medialink || '#'}" target="_blank" class="btn btn-sm btn-outline-primary" title="Visualizar"><i class="bi bi-eye"></i></a>
                             </td>
                         `;
@@ -3460,6 +3483,9 @@
                                         const elPront = document.getElementById('numeroprontuario');
                                         if (elPront) elPront.value = newId;
                                         
+                                        // Recarregar anexos recém-salvos
+                                        loadAnexos(newId);
+                                        
                                         Swal.fire('Sucesso', `Prontuário #${newId} criado com sucesso!`, 'success');
                                     } else {
                                         throw new Error("Não foi possível localizar o novo ID");
@@ -3470,6 +3496,10 @@
                             } else {
                                 state.pendingFiles = [];
                                 renderPendingFiles();
+                                
+                                // Recarregar anexos
+                                loadAnexos(state.currentProntuario);
+                                
                                 Swal.fire('Sucesso', 'Alterações salvas com sucesso!', 'success');
                             }
                         } else {
