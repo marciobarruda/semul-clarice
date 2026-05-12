@@ -2882,6 +2882,23 @@
                 }
             }
 
+            function safeFormatDate(val) {
+                if (!val) return '—';
+                const s = (typeof val === 'object' && val.value) ? val.value : String(val);
+                
+                // Se já estiver no formato brasileiro, retornar como está
+                if (/^\d{2}\/\d{2}\/\d{4}/.test(s)) return s.substring(0, 10);
+                
+                // Se for formato ISO (banco)
+                if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+                    const [y, m, d] = s.substring(0, 10).split('-');
+                    return `${d}/${m}/${y}`;
+                }
+                
+                const m = dayjs(s);
+                return m.isValid() ? m.format('DD/MM/YYYY') : s;
+            }
+
             function createRecordRow(record, isFull = false) {
                 const tr = document.createElement('tr');
                 tr.className = 'prontuario-row';
@@ -2896,7 +2913,7 @@
                     <td><span class="fw-bold">#${prontuarioId}</span></td>
                     <td class="fw-medium">${nome}</td>
                     <td class="text-muted">${cpf}</td>
-                    <td>${dataAtend ? dayjs(dataAtend).format('DD/MM/YYYY') : '—'}</td>
+                    <td>${safeFormatDate(dataAtend)}</td>
                     ${isFull ? `<td><span class="badge-soft badge-soft-primary">${unidade}</span></td>` : `<td><span class="badge-soft badge-soft-success">Ativa</span></td>`}
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-2">
