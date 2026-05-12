@@ -16,9 +16,9 @@ dayjs.extend(timezone);
  * Tipos para BigQuery MERGE para evitar erros com valores NULL
  */
 const BQ_TYPES = {
-  id: 'INT64', numeroprontuario: 'STRING', unidadeatendimento: 'STRING', dataatendimento: 'DATE', horaatendimento: 'STRING',
+  id: 'INT64', numeroprontuario: 'STRING', unidadeatendimento: 'STRING', dataatendimento: 'STRING', horaatendimento: 'STRING',
   demandante: 'STRING', avaliacaoinicial: 'STRING',
-  nomeusuaria: 'STRING', cpfusuaria: 'STRING', nomesocial: 'STRING', datanascimento: 'DATE', idade: 'INT64',
+  nomeusuaria: 'STRING', cpfusuaria: 'STRING', nomesocial: 'STRING', datanascimento: 'STRING', idade: 'INT64',
   rgusuaria: 'STRING', orgaoexpedidor: 'STRING', ufexpedicao: 'STRING', nacionalidade: 'STRING',
   ufnascimento: 'STRING', cidadenascimento: 'STRING', estadocivil: 'STRING', conjuge: 'STRING',
   identidadegenero: 'STRING', orientacaosexual: 'STRING', corraca: 'STRING', religiao: 'STRING',
@@ -93,14 +93,18 @@ function mapPayload(body) {
   ];
 
   Object.keys(d).forEach(k => {
+    // 1. Se for um campo de ARRAY, não mexer (preservar lista)
+    if (ARRAY_FIELDS.includes(k)) return;
+
+    // 2. Tratar vazios
     if (d[k] === '' || d[k] === 'null' || d[k] === undefined) {
       d[k] = null;
     }
     
-    // Se o valor for boolean ou número, e estiver em nonStringFields, não mexer
+    // 3. Se for boolean ou número em nonStringFields, não converter para string
     if (nonStringFields.includes(k)) return;
     
-    // Caso contrário, se tiver valor, converter para string
+    // 4. Caso contrário, se tiver valor, converter para string
     if (d[k] !== null && d[k] !== undefined) {
       d[k] = String(d[k]);
     }
