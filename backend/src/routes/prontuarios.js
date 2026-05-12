@@ -4,12 +4,19 @@ const express = require('express');
 const router = express.Router();
 const { query, dml, tbl } = require('../db');
 const dayjs = require('dayjs');
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 /**
  * Tipos para BigQuery MERGE para evitar erros com valores NULL
  */
 const BQ_TYPES = {
-  numeroprontuario: 'STRING', unidadeatendimento: 'STRING', dataatendimento: 'DATE', horaatendimento: 'STRING',
+  id: 'INT64', numeroprontuario: 'STRING', unidadeatendimento: 'STRING', dataatendimento: 'DATE', horaatendimento: 'STRING',
   demandante: 'STRING', avaliacaoinicial: 'STRING',
   nomeusuaria: 'STRING', cpfusuaria: 'STRING', nomesocial: 'STRING', datanascimento: 'DATE', idade: 'INT64',
   rgusuaria: 'STRING', orgaoexpedidor: 'STRING', ufexpedicao: 'STRING', nacionalidade: 'STRING',
@@ -21,13 +28,13 @@ const BQ_TYPES = {
   escolaridade: 'STRING', situacaoescolar: 'STRING', anoperiodo: 'STRING', cursoformacao: 'STRING',
   situacaoocupacional: 'STRING', profissao: 'STRING', rendaindividual: 'STRING', situacaotrabalho: 'STRING',
   beneficios: 'STRING', rendafamiliar: 'STRING', redeapoio: 'STRING', situacaohabitacional: 'STRING',
-  situacaohabitacionaloutro: 'STRING', totalfilhos: 'STRING', numerosus: 'STRING',
+  situacaohabitacionaloutro: 'STRING', numerosus: 'STRING',
   deficienciasindrome: 'BOOL', deficienciaqual: 'STRING', atendimentopsicologo: 'BOOL',
   atendimentopsiquiatra: 'BOOL', usomedicamento: 'BOOL', medquais: 'STRING', gestante: 'BOOL',
   examehiv: 'BOOL', tipoviolencia: 'STRING', localviolencia: 'STRING', frequencia: 'STRING',
   relatocaso: 'STRING', createdat: 'TIMESTAMP', updatedat: 'TIMESTAMP',
-  outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING', relato_ciods: 'STRING', outro_local_agressao: 'STRING',
-  oidsesuite: 'STRING', wfid: 'STRING'
+  oidsesuite: 'STRING', wfid: 'STRING', outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING',
+  relato_ciods: 'STRING', outro_local_agressao: 'STRING', totalfilhos: 'STRING'
 };
 
 // Campos array (text[]) — tratados separadamente no SQL
@@ -46,9 +53,15 @@ function mapPayload(body) {
 
   // Aceitar tanto DD/MM/YYYY (frontend) quanto YYYY-MM-DD (banco)
   const parseDate = (val) => {
-    if (!val || val === 'Invalid Date' || val === 'null' || val === '') return null;
-    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val; // já no formato correto
-    const m = dayjs(val, 'DD/MM/YYYY');
+    if (!val) return null;
+    const s = String(val).trim();
+    if (s === 'Invalid Date' || s === 'null' || s === '' || s === 'undefined') return null;
+    
+    // Se já estiver no formato ISO, retornar apenas a parte da data
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+    
+    // Tentar parsear formato brasileiro
+    const m = dayjs(s, 'DD/MM/YYYY', true);
     return m.isValid() ? m.format('YYYY-MM-DD') : null;
   };
 
@@ -72,10 +85,25 @@ function mapPayload(body) {
   const boolFields = ['deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 'usomedicamento', 'gestante', 'examehiv'];
   boolFields.forEach(f => { if (d[f] !== undefined) d[f] = String(d[f]).toLowerCase() === 'true' || d[f] === true || d[f] === '1'; });
   
-  // Tratar strings vazias como null para evitar erros em colunas não-string
-  const nonStringFields = ['idade', 'createdat', 'updatedat', 'deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 'usomedicamento', 'gestante', 'examehiv'];
-  nonStringFields.forEach(f => {
-    if (d[f] === '' || d[f] === 'null' || d[f] === undefined) d[f] = null;
+  // Tratar campos vazios como null para evitar erros em colunas não-string
+  const nonStringFields = [
+    'idade', 'createdat', 'updatedat', 'oidsesuite', 'wfid', 'uf',
+    'deficienciasindrome', 'atendimentopsicologo', 'atendimentopsiquiatra', 
+    'usomedicamento', 'gestante', 'examehiv'
+  ];
+
+  Object.keys(d).forEach(k => {
+    if (d[k] === '' || d[k] === 'null' || d[k] === undefined) {
+      d[k] = null;
+    }
+    
+    // Se o valor for boolean ou número, e estiver em nonStringFields, não mexer
+    if (nonStringFields.includes(k)) return;
+    
+    // Caso contrário, se tiver valor, converter para string
+    if (d[k] !== null && d[k] !== undefined) {
+      d[k] = String(d[k]);
+    }
   });
 
   return d;
@@ -160,6 +188,9 @@ router.post('/salvar', async (req, res) => {
   try {
     const body = mapPayload(req.body);
     const isNew = !body.numeroprontuario || body.numeroprontuario === 'NOVO';
+    
+    console.log(`[BQ Salvar] Recebido: ${body.numeroprontuario} | DataAtend: ${body.dataatendimento} | DataNasc: ${body.datanascimento}`);
+
     if (isNew) {
       body.numeroprontuario = await gerarProximoNumero();
       body.createdat = new Date().toISOString();
@@ -185,7 +216,7 @@ router.post('/salvar', async (req, res) => {
     // Construir SET e VALUES para os campos array diretamente no SQL
     const arraySetClauses  = ARRAY_FIELDS.map(f => `${f} = ${toArrayLiteral(body[f])}`).join(', ');
     const scalarSetClauses = scalarCols
-      .filter(c => c !== 'numeroprontuario' && c !== 'createdat')
+      .filter(c => c !== 'numeroprontuario' && c !== 'createdat' && c !== 'id')
       .map(c => `${c} = @${c}`).join(', ');
 
     const allInsertCols   = [...scalarCols, ...ARRAY_FIELDS];
@@ -194,8 +225,6 @@ router.post('/salvar', async (req, res) => {
       ...scalarCols.map(c => `@${c}`),
       ...ARRAY_FIELDS.map(f => toArrayLiteral(body[f]))
     ].join(', ');
-
-    console.log(`[BQ Salvar] #${body.numeroprontuario} arrays:`, ARRAY_FIELDS.map(f => `${f}=${JSON.stringify(body[f])}`).join(' | '));
 
     const mergeSql = `
       MERGE ${tbl('prontuario')} T
@@ -207,11 +236,13 @@ router.post('/salvar', async (req, res) => {
         INSERT (${insertColsSql}) VALUES (${insertValsSql})
     `;
 
+    console.log('[BQ Salvar] Params:', JSON.stringify(params, null, 2));
+    
     await dml(mergeSql, params, types);
-    res.json({ success: true, prontuario: { numeroprontuario: body.numeroprontuario } });
+    res.json({ message: 'Salvo com sucesso!', numeroprontuario: body.numeroprontuario });
   } catch (err) {
-    console.error('[BQ Salvar] Erro:', err);
-    res.status(500).json({ error: 'Erro ao salvar: ' + err.message });
+    console.error('[BQ Salvar] Erro detalhado:', err);
+    res.status(500).json({ error: 'Erro ao salvar: ' + (err.message || err) });
   }
 });
 

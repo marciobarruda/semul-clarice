@@ -3350,12 +3350,13 @@
                     
                     ['dataatendimento', 'datanascimento'].forEach(f => {
                         let val = data[f];
-                        if (val && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+                        if (typeof val === 'string') val = val.trim();
+
+                        if (val && /^\d{2}\/\d{2}\/\d{4}/.test(val)) {
                             const m = dayjs(val, 'DD/MM/YYYY');
                             if (m.isValid()) {
                                 const iso = m.format('YYYY-MM-DD');
                                 data[f] = iso;
-                                // O SEU BACKEND BUSCA ESSAS CHAVES (Linhas 55-56 de prontuarios.js)
                                 if (f === 'dataatendimento') data.data_atendimento = iso;
                                 if (f === 'datanascimento') data.data_nascimento = iso;
                             }
@@ -3376,65 +3377,18 @@
                         }
                     });
 
-                    console.log('[DEBUG] Payload Sincronizado com Backend:', data);
-
-                    // 5. Redundância Total de Compatibilidade (com e sem underscore)
-                    const fieldsToDuplicate = {
-                        'numeroprontuario': 'numero_prontuario',
-                        'nomeusuaria': 'nome_usuaria',
-                        'cpfusuaria': 'cpf_usuaria',
-                        'rgusuaria': 'rg_usuaria',
-                        'unidadeatendimento': 'unidade_atendimento',
-                        'avaliacaoinicial': 'avaliacao_inicial',
-                        'nomesocial': 'nome_social',
-                        'identidadegenero': 'identidade_genero',
-                        'orientacaosexual': 'orientacao_sexual',
-                        'corraca': 'cor_raca',
-                        'ufnascimento': 'uf_nascimento',
-                        'cidadenascimento': 'cidade_nascimento',
-                        'estadocivil': 'estado_civil',
-                        'nomemae': 'nome_mae',
-                        'nomepai': 'nome_pai',
-                        'numeroendereco': 'numero_endereco',
-                        'complementoendereco': 'complemento_endereco',
-                        'pontoreferencia': 'ponto_referencia',
-                        'telefonesecundario': 'telefone_secundario',
-                        'situacaoescolar': 'situacao_escolar',
-                        'anoperiodo': 'ano_periodo',
-                        'cursoformacao': 'curso_formacao',
-                        'situacaoocupacional': 'situacao_ocupacional',
-                        'rendaindividual': 'renda_individual',
-                        'situacaotrabalho': 'situacao_trabalho',
-                        'rendafamiliar': 'renda_familiar',
-                        'redeapoio': 'rede_apoio',
-                        'situacaohabitacional': 'situacao_habitacional',
-                        'situacaohabitacionaloutro': 'situacao_habitacional_outro',
-                        'totalfilhos': 'total_filhos',
-                        'numerosus': 'numero_sus',
-                        'deficienciaqual': 'deficiencia_qual',
-                        'atendimentopsicologo': 'atendimento_psicologo',
-                        'atendimentopsiquiatra': 'atendimento_psiquiatra',
-                        'qualprobsaude': 'qual_prob_saude',
-                        'usomedicamento': 'uso_medicamento',
-                        'quaismedicamentos': 'quais_medicamentos',
-                        'examehiv': 'exame_hiv',
-                        'tipoviolencia': 'tipo_violencia',
-                        'localviolencia': 'local_violencia',
-                        'outrolocalagressao': 'outro_local_agressao',
-                        'outrasviolfisicas': 'outras_viol_fisicas',
-                        'outrasviolpsicologicas': 'outras_viol_psicologicas',
-                        'outrasviolsexuais': 'outras_viol_sexuais',
-                        'relatociods': 'relato_ciods',
-                        'relatocaso': 'relato_caso',
-                        'deficienciasindrome': 'deficiencia_sindrome',
-                        'emitirsenhaciods': 'emitir_senha_ciods'
-                    };
-
-                    Object.keys(fieldsToDuplicate).forEach(key => {
-                        if (data[key] !== undefined) {
-                            data[fieldsToDuplicate[key]] = data[key];
+                    // Normalização de Datas para ISO (YYYY-MM-DD) antes do envio
+                    const parseDateToISO = (val) => {
+                        if (!val) return null;
+                        const s = String(val).trim();
+                        if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
+                            const [d, m, y] = s.split('/');
+                            return `${y}-${m}-${d}`;
                         }
-                    });
+                        return s;
+                    };
+                    data.dataatendimento = parseDateToISO(data.dataatendimento);
+                    data.datanascimento  = parseDateToISO(data.datanascimento);
 
                     // Saneamento de strings vazias finais
                     Object.keys(data).forEach(k => {
@@ -3462,6 +3416,7 @@
                     });
 
                     try {
+                        console.log('[DEBUG] Enviando Payload para o Backend:', data);
                         const response = await fetch(WEBHOOKS.SAVE, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
