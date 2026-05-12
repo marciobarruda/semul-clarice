@@ -3235,7 +3235,7 @@
 
                     tbody.innerHTML = '';
                     if (list.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-2 text-muted">Nenhum arquivo anexado</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted">Nenhum arquivo/anexo vinculado a este prontuário</td></tr>';
                         return;
                     }
                     
@@ -3247,14 +3247,14 @@
                             <td>${item.categoriadoc || '—'}</td>
                             <td>${item.nomearquivo || '—'}</td>
                             <td class="text-center">
-                                <a href="${item.medialink || '#'}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                <a href="${item.medialink || '#'}" target="_blank" class="btn btn-sm btn-outline-primary" title="Visualizar"><i class="bi bi-eye"></i></a>
                             </td>
                         `;
                         tbody.appendChild(tr);
                     });
                 } catch (error) {
                     console.error('Error loading anexos:', error);
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-2 text-danger">Erro ao carregar</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted">Nenhum arquivo/anexo vinculado a este prontuário</td></tr>';
                 }
             }
 
