@@ -3241,13 +3241,13 @@
                     
                     list.forEach(item => {
                         const tr = document.createElement('tr');
-                        const dataFormatada = item.data || item.data_arquivo || item.created_at || '';
+                        const dataFormatada = item.dataupload || item.data || '';
                         tr.innerHTML = `
                             <td>${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</td>
-                            <td>${item.descricao || item.nome_arquivo || '—'}</td>
-                            <td>${item.nome || item.nome_arquivo || '—'}</td>
+                            <td>${item.categoriadoc || '—'}</td>
+                            <td>${item.nomearquivo || '—'}</td>
                             <td class="text-center">
-                                <a href="${item.url || '#'}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                <a href="${item.medialink || '#'}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
                             </td>
                         `;
                         tbody.appendChild(tr);

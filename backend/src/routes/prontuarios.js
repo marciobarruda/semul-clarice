@@ -1,8 +1,10 @@
 'use strict';
 
 const express = require('express');
+const path = require('path');
 const router = express.Router();
 const { query, dml, tbl } = require('../db');
+const { uploadFile } = require('../storage');
 const dayjs = require('dayjs');
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 const utc = require('dayjs/plugin/utc');
@@ -243,6 +245,54 @@ router.post('/salvar', async (req, res) => {
     console.log('[BQ Salvar] Params:', JSON.stringify(params, null, 2));
     
     await dml(mergeSql, params, types);
+
+    // ── Processamento de Anexos ──────────────────────────────────────────────
+    const totalAnexos = parseInt(req.body.totalanexos || 0);
+    if (totalAnexos > 0) {
+      console.log(`[Anexos] Processando ${totalAnexos} arquivos para o prontuário ${body.numeroprontuario}`);
+      
+      for (let i = 0; i < totalAnexos; i++) {
+        const base64 = req.body[`arquivo_${i}`];
+        const nome   = req.body[`arquivo_nome_${i}`];
+        const desc   = req.body[`arquivo_desc_${i}`] || '';
+        const data   = req.body[`arquivo_data_${i}`] || dayjs().format('YYYY-MM-DD');
+
+        if (base64 && nome) {
+          try {
+            const ext = path.extname(nome).toLowerCase();
+            const destination = `arquivos/${body.numeroprontuario}/${Date.now()}_${nome}`;
+            const mediaLink = await uploadFile(base64, destination, 'application/octet-stream');
+
+            const anexoParams = {
+              idanexo: Math.floor(Date.now() % 1000000000),
+              numeroprontuario: body.numeroprontuario,
+              idarquivoexterno: destination,
+              nomearquivo: nome,
+              formatoarquivo: ext,
+              categoriadoc: desc,
+              dataupload: new Date().toISOString(),
+              medialink: mediaLink
+            };
+
+            const anexoSql = `
+              INSERT INTO ${tbl('anexo')} (idanexo, numeroprontuario, idarquivoexterno, nomearquivo, formatoarquivo, categoriadoc, dataupload, medialink)
+              VALUES (@idanexo, @numeroprontuario, @idarquivoexterno, @nomearquivo, @formatoarquivo, @categoriadoc, @dataupload, @medialink)
+            `;
+
+            await dml(anexoSql, anexoParams, {
+              idanexo: 'INT64', numeroprontuario: 'STRING', idarquivoexterno: 'STRING', 
+              nomearquivo: 'STRING', formatoarquivo: 'STRING', categoriadoc: 'STRING', 
+              dataupload: 'TIMESTAMP', medialink: 'STRING'
+            });
+            
+            console.log(`[Anexos] Arquivo "${nome}" salvo com sucesso.`);
+          } catch (errAnexo) {
+            console.error(`[Anexos] Erro ao processar arquivo "${nome}":`, errAnexo);
+          }
+        }
+      }
+    }
+
     res.json({ message: 'Salvo com sucesso!', numeroprontuario: body.numeroprontuario });
   } catch (err) {
     console.error('[BQ Salvar] Erro detalhado:', err);
