@@ -276,13 +276,13 @@ router.post('/salvar', async (req, res) => {
 
             const anexoSql = `
               INSERT INTO ${tbl('anexo')} (idanexo, numeroprontuario, idarquivoexterno, nomearquivo, formatoarquivo, categoriadoc, dataupload, medialink)
-              VALUES (@idanexo, @numeroprontuario, @idarquivoexterno, @nomearquivo, @formatoarquivo, @categoriadoc, @dataupload, @medialink)
+              VALUES (@idanexo, @numeroprontuario, @idarquivoexterno, @nomearquivo, @formatoarquivo, @categoriadoc, CURRENT_TIMESTAMP(), @medialink)
             `;
 
             await dml(anexoSql, anexoParams, {
               idanexo: 'INT64', numeroprontuario: 'STRING', idarquivoexterno: 'STRING', 
               nomearquivo: 'STRING', formatoarquivo: 'STRING', categoriadoc: 'STRING', 
-              dataupload: 'TIMESTAMP', medialink: 'STRING'
+              medialink: 'STRING'
             });
             
             console.log(`[Anexos] Arquivo "${nome}" salvo com sucesso.`);

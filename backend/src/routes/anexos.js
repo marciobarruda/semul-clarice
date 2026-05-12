@@ -6,6 +6,8 @@ const { query, tbl } = require('../db');
 
 router.get('/', async (req, res) => {
   const num = req.query.prontuario || req.query.numeroprontuario;
+  console.log(`[API Anexos] Listando para o prontuário: "${num}"`);
+  
   if (!num) return res.status(400).json({ error: 'Prontuário obrigatório' });
 
   try {
