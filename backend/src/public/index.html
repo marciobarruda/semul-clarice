@@ -3094,7 +3094,7 @@
                 if (!tbodyFull) return;
 
                 let allRecords = [...(state.currentRecords || [])];
-                const searchInput = document.getElementById('search_prontuario');
+                const searchInput = document.getElementById('searchprontuario');
                 const hasSearch = searchInput && searchInput.value.trim().length > 0;
                 
                 let records = allRecords;
@@ -4010,15 +4010,33 @@
 
             // Search Listener with Debounce
             let searchTimeout;
-            const searchInput = document.getElementById('search_prontuario');
+            const searchInput = document.getElementById('searchprontuario');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
+                    const val = e.target.value.trim();
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
-                        loadProntuariosData(e.target.value);
-                    }, 500);
+                        loadProntuariosData(val, true);
+                    }, val.length > 0 ? 500 : 0);
+                });
+
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        clearTimeout(searchTimeout);
+                        loadProntuariosData(searchInput.value.trim(), true);
+                    }
                 });
             }
+
+            document.querySelectorAll('.btn-search-action').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const inp = document.getElementById('searchprontuario');
+                    if (inp) {
+                        clearTimeout(searchTimeout);
+                        loadProntuariosData(inp.value.trim(), true);
+                    }
+                });
+            });
 
 
 
