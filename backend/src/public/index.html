@@ -2986,13 +2986,12 @@
                 if (tbodyFull) tbodyFull.innerHTML = loadingHtml;
                 
                 try {
-                    const endpoint = searchTerm ? WEBHOOKS.LIST : WEBHOOKS.ALL_DATA;
-                    const payload = searchTerm ? { termo: searchTerm } : {};
+                    const url = new URL(`${API_BASE}/api/prontuarios`, window.location.origin);
+                    if (searchTerm) url.searchParams.set('q', searchTerm);
                     
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                    const response = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
                     });
                     
                     const data = await response.json();

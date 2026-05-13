@@ -154,14 +154,31 @@ router.get('/stats', async (req, res) => {
 });
 
 // ── POST /api/prontuarios (Listagem com limite para evitar OOM) ──────────────
-router.post('/', async (req, res) => {
+router.get('/', async (req, res) => {
+  const searchTerm = req.query.q || '';
+  
   try {
-    // Limitamos a 2000 registros para evitar que o Node trave ao serializar o JSON
-    const sql = `SELECT * FROM ${tbl('prontuario')} ORDER BY createdat DESC LIMIT 2000`;
-    const rows = await query(sql);
+    let sql = `SELECT * FROM ${tbl('prontuario')}`;
+    let params = {};
+
+    if (searchTerm) {
+      sql += ` 
+        WHERE LOWER(nomeusuaria) LIKE LOWER(@q) 
+        OR cpfusuaria LIKE @q_cpf
+        OR numeroprontuario LIKE @q_num
+      `;
+      params.q = `%${searchTerm}%`;
+      params.q_cpf = `%${searchTerm.replace(/\D/g, '')}%`;
+      params.q_num = `%${searchTerm.toUpperCase()}%`;
+      sql += ` ORDER BY nomeusuaria ASC LIMIT 500`;
+    } else {
+      sql += ` ORDER BY createdat DESC LIMIT 200`;
+    }
+
+    const rows = await query(sql, params);
     res.json(flattenRows(rows));
   } catch (err) {
-    console.error('[BQ Prontuarios] Erro:', err);
+    console.error('[BQ Prontuarios List] Erro:', err);
     res.status(500).json({ error: 'Erro ao listar prontuários' });
   }
 });
