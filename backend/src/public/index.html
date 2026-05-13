@@ -4549,11 +4549,23 @@
             }
 
             state.currentFamilia.forEach((m, idx) => {
+                let idadeDisplay = `${m.idade} anos`;
+                if (m.idade === 0) {
+                    if (m.datanascimento) {
+                        const meses = dayjs().diff(dayjs(m.datanascimento), 'month');
+                        idadeDisplay = meses === 1 ? '1 mês' : `${meses} meses`;
+                    } else {
+                        idadeDisplay = 'Recém-nascido';
+                    }
+                } else if (m.idade === 1) {
+                    idadeDisplay = '1 ano';
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="fw-medium">${m.nome}</td>
                     <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
-                    <td>${m.idade} anos</td>
+                    <td>${idadeDisplay}</td>
                     <td class="text-end px-3">
                         <button type="button" class="btn btn-sm btn-light border" onclick="editFamilia(${idx})">
                             <i class="bi bi-pencil"></i>
