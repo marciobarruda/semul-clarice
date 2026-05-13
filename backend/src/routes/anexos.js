@@ -13,11 +13,12 @@ router.get('/', async (req, res) => {
   try {
     const sql = `
       SELECT * FROM ${tbl('anexo')}
-      WHERE numeroprontuario = @num
+      WHERE TRIM(numeroprontuario) = TRIM(@num)
       ORDER BY dataupload DESC
     `;
-    const rows = await query(sql, { num: String(num) });
-    console.log(`[API Anexos] Encontrados ${rows.length} registros para "${num}"`);
+    const cleanNum = String(num).trim();
+    const rows = await query(sql, { num: cleanNum });
+    console.log(`[API Anexos] Query executada para: "${cleanNum}". Linhas encontradas: ${rows.length}`);
     res.json(rows);
   } catch (err) {
     console.error('[API Anexos] Erro crítico ao listar:', err);
