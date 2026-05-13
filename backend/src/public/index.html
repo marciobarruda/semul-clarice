@@ -2805,7 +2805,15 @@
 
                 // Hide/Show action buttons
                 document.getElementById('registro_modal_salvar_btn').classList.toggle('d-none', isReadOnly);
-                document.querySelectorAll('[data-bs-target="#evolucao_modal"], #btn_selecionar_anexos, #btnAddFamilia').forEach(btn => {
+                
+                // Ocultar todos os botões de ação (Adicionar, Selecionar, Nova Evolução)
+                const actionBtns = [
+                    '[data-bs-target="#evolucao_modal"]',
+                    '#btn_selecionar_anexos',
+                    '#btnAddFamilia',
+                    '[data-bs-target="#familia_modal"]'
+                ];
+                document.querySelectorAll(actionBtns.join(', ')).forEach(btn => {
                     btn.classList.toggle('d-none', isReadOnly);
                 });
 
@@ -4540,8 +4548,15 @@
 
         function renderFamiliaTable() {
             const tbody = document.getElementById('familiatabelabody');
+            const thead = tbody.parentElement.querySelector('thead tr');
             if (!tbody) return;
             tbody.innerHTML = '';
+
+            // Ajustar Header (Ocultar coluna de Ações)
+            if (thead) {
+                const actionHeader = thead.querySelector('th:last-child');
+                if (actionHeader) actionHeader.style.display = state.isReadOnly ? 'none' : '';
+            }
 
             if (!state.currentFamilia || state.currentFamilia.length === 0) {
                 tbody.innerHTML = '<tr id="familiavazia"><td colspan="4" class="text-center text-muted py-3">Nenhum membro informado.</td></tr>';
@@ -4562,15 +4577,19 @@
                 }
 
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="fw-medium">${m.nome}</td>
-                    <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
-                    <td>${idadeDisplay}</td>
+                const actionsHtml = state.isReadOnly ? '' : `
                     <td class="text-end px-3">
                         <button type="button" class="btn btn-sm btn-light border" onclick="editFamilia(${idx})">
                             <i class="bi bi-pencil"></i>
                         </button>
                     </td>
+                `;
+                
+                tr.innerHTML = `
+                    <td class="fw-medium">${m.nome}</td>
+                    <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
+                    <td>${idadeDisplay}</td>
+                    ${actionsHtml}
                 `;
                 tbody.appendChild(tr);
             });
