@@ -4490,135 +4490,138 @@
                 alert(title + ":\n\n" + text);
             }
         };
+
+        // ── Composição Familiar ──────────────────────────────────────────────────
+        async function loadFamilia(prontuarioId) {
+            const tbody = document.getElementById('familiatabelabody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando composição...</td></tr>';
+            
+            try {
+                // 1. Buscar do Legado via PROXY
+                const legacyPromise = fetch(`${WEBHOOKS.FAMILIA_LEGACY}/${prontuarioId}`).then(r => r.json()).catch(() => []);
+                // 2. Buscar do BigQuery
+                const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.origin);
+                bqUrl.searchParams.set('prontuario', prontuarioId);
+                const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
+
+                const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
+                
+                // Unificar e normalizar (Deduplicação por Nome)
+                const rawList = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
+                const seen = new Set();
+                state.currentFamilia = [];
+
+                rawList.forEach(item => {
+                    const nome = (item.familianome || item.nome || '').trim().toUpperCase();
+                    if (!seen.has(nome) && nome.length > 0) {
+                        seen.add(nome);
+                        state.currentFamilia.push({
+                            nome: nome,
+                            parentesco: item.familiaparentesco || item.parentesco || '',
+                            idade: item.familiaidade || item.idade || 0,
+                            datanascimento: item.datanascimento || ''
+                        });
+                    }
+                });
+
+                renderFamiliaTable();
+            } catch (error) {
+                console.error('Error loading familia:', error);
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-3">Erro ao carregar família</td></tr>';
+            }
+        }
+
+        function renderFamiliaTable() {
+            const tbody = document.getElementById('familiatabelabody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!state.currentFamilia || state.currentFamilia.length === 0) {
+                tbody.innerHTML = '<tr id="familiavazia"><td colspan="4" class="text-center text-muted py-3">Nenhum membro informado.</td></tr>';
+                return;
+            }
+
+            state.currentFamilia.forEach((m, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-medium">${m.nome}</td>
+                    <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
+                    <td>${m.idade} anos</td>
+                    <td class="text-end px-3">
+                        <button type="button" class="btn btn-sm btn-light border" onclick="editFamilia(${idx})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Cálculo Automático de Idade no Modal
+        const birthDateInput = document.getElementById('familia_datanascimento');
+        if (birthDateInput) {
+            const updateAge = function() {
+                const birthDate = birthDateInput.value;
+                if (birthDate) {
+                    const age = dayjs().diff(dayjs(birthDate), 'year');
+                    document.getElementById('familiaidade').value = age;
+                }
+            };
+            birthDateInput.addEventListener('change', updateAge);
+            birthDateInput.addEventListener('input', updateAge);
+        }
+
+        // Handler do Modal de Família
+        const familiaForm = document.getElementById('familiamodalform');
+        if (familiaForm) {
+            familiaForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(familiaForm);
+                const idx = parseInt(document.getElementById('familia_index').value);
+                
+                const membro = {
+                    nome: formData.get('familianome').toUpperCase(),
+                    parentesco: formData.get('familiaparentesco'),
+                    idade: parseInt(formData.get('familiaidade')),
+                    datanascimento: formData.get('datanascimento')
+                };
+
+                if (idx === -1) {
+                    state.currentFamilia.push(membro);
+                } else {
+                    state.currentFamilia[idx] = membro;
+                }
+
+                renderFamiliaTable();
+                bootstrap.Modal.getInstance(document.getElementById('familia_modal')).hide();
+            });
+        }
+
+        window.editFamilia = function(idx) {
+            const m = state.currentFamilia[idx];
+            if (!m) return;
+
+            document.getElementById('familia_index').value = idx;
+            document.getElementById('familianome').value = m.nome;
+            document.getElementById('familiaparentesco').value = m.parentesco;
+            document.getElementById('familia_datanascimento').value = m.datanascimento || '';
+            document.getElementById('familiaidade').value = m.idade;
+            document.getElementById('familiamodaltitle').textContent = 'Editar Membro Familiar';
+
+            const modal = new bootstrap.Modal(document.getElementById('familia_modal'));
+            modal.show();
+        }
+
+        // Garantir Reset ao fechar modal
+        const familiaModalEl = document.getElementById('familia_modal');
+        if (familiaModalEl) {
+            familiaModalEl.addEventListener('hidden.bs.modal', () => {
+                document.getElementById('familiamodalform').reset();
+                document.getElementById('familia_index').value = -1;
+                document.getElementById('familiamodaltitle').textContent = 'Adicionar Membro Familiar';
+            });
+        }
     </script>
   </body>
 </html>
-            // ── Composição Familiar ──────────────────────────────────────────────────
-            async function loadFamilia(prontuarioId) {
-                const tbody = document.getElementById('familiatabelabody');
-                if (!tbody) return;
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando composição...</td></tr>';
-                
-                try {
-                    // 1. Buscar do Legado via PROXY
-                    const legacyPromise = fetch(`${WEBHOOKS.FAMILIA_LEGACY}/${prontuarioId}`).then(r => r.json()).catch(() => []);
-                    // 2. Buscar do BigQuery
-                    const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.origin);
-                    bqUrl.searchParams.set('prontuario', prontuarioId);
-                    const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
-
-                    const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
-                    
-                    // Unificar e normalizar (Deduplicação por Nome)
-                    const rawList = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
-                    const seen = new Set();
-                    state.currentFamilia = [];
-
-                    rawList.forEach(item => {
-                        const nome = (item.familianome || item.nome || '').trim().toUpperCase();
-                        if (!seen.has(nome) && nome.length > 0) {
-                            seen.add(nome);
-                            state.currentFamilia.push({
-                                nome: nome,
-                                parentesco: item.familiaparentesco || item.parentesco || '',
-                                idade: item.familiaidade || item.idade || 0,
-                                datanascimento: item.datanascimento || ''
-                            });
-                        }
-                    });
-
-                    renderFamiliaTable();
-                } catch (error) {
-                    console.error('Error loading familia:', error);
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-3">Erro ao carregar família</td></tr>';
-                }
-            }
-
-            function renderFamiliaTable() {
-                const tbody = document.getElementById('familiatabelabody');
-                if (!tbody) return;
-                tbody.innerHTML = '';
-
-                if (!state.currentFamilia || state.currentFamilia.length === 0) {
-                    tbody.innerHTML = '<tr id="familiavazia"><td colspan="4" class="text-center text-muted py-3">Nenhum membro informado.</td></tr>';
-                    return;
-                }
-
-                state.currentFamilia.forEach((m, idx) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="fw-medium">${m.nome}</td>
-                        <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
-                        <td>${m.idade} anos</td>
-                        <td class="text-end px-3">
-                            <button type="button" class="btn btn-sm btn-light border" onclick="editFamilia(${idx})">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            // Cálculo Automático de Idade no Modal
-            const birthDateInput = document.getElementById('familia_datanascimento');
-            if (birthDateInput) {
-                birthDateInput.addEventListener('change', function() {
-                    const birthDate = this.value;
-                    if (birthDate) {
-                        const age = dayjs().diff(dayjs(birthDate), 'year');
-                        document.getElementById('familiaidade').value = age;
-                    }
-                });
-            }
-
-            // Handler do Modal de Família
-            const familiaForm = document.getElementById('familiamodalform');
-            if (familiaForm) {
-                familiaForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const formData = new FormData(familiaForm);
-                    const idx = parseInt(document.getElementById('familia_index').value);
-                    
-                    const membro = {
-                        nome: formData.get('familianome').toUpperCase(),
-                        parentesco: formData.get('familiaparentesco'),
-                        idade: parseInt(formData.get('familiaidade')),
-                        datanascimento: formData.get('datanascimento')
-                    };
-
-                    if (idx === -1) {
-                        state.currentFamilia.push(membro);
-                    } else {
-                        state.currentFamilia[idx] = membro;
-                    }
-
-                    renderFamiliaTable();
-                    bootstrap.Modal.getInstance(document.getElementById('familia_modal')).hide();
-                });
-            }
-
-            window.editFamilia = function(idx) {
-                const m = state.currentFamilia[idx];
-                if (!m) return;
-
-                document.getElementById('familia_index').value = idx;
-                document.getElementById('familianome').value = m.nome;
-                document.getElementById('familiaparentesco').value = m.parentesco;
-                document.getElementById('familia_datanascimento').value = m.datanascimento || '';
-                document.getElementById('familiaidade').value = m.idade;
-                document.getElementById('familiamodaltitle').textContent = 'Editar Membro Familiar';
-
-                const modal = new bootstrap.Modal(document.getElementById('familia_modal'));
-                modal.show();
-            }
-
-            // Garantir Reset ao fechar modal
-            const familiaModalEl = document.getElementById('familia_modal');
-            if (familiaModalEl) {
-                familiaModalEl.addEventListener('hidden.bs.modal', () => {
-                    document.getElementById('familiamodalform').reset();
-                    document.getElementById('familia_index').value = -1;
-                    document.getElementById('familiamodaltitle').textContent = 'Adicionar Membro Familiar';
-                });
-            }
