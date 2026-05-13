@@ -3,6 +3,6 @@
 // Por favor, preencha o segredo diretamente no servidor se necessário.
 const GOOGLE_CONFIG = {
     CLIENT_ID: '922301589213-injm805j2qj99jmfniqk2q458k1g78na.apps.googleusercontent.com',
-    CLIENT_SECRET: '' // Preencher manualmente
+    CLIENT_SECRET: 'COLOCAR_O_SECRET_AQUI' // Preencher manualmente no servidor
 };
 window.GOOGLE_CONFIG = GOOGLE_CONFIG;

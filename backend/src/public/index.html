@@ -608,6 +608,16 @@
         transform: translateY(0);
         transition: opacity 0.3s, transform 0.3s;
       }
+
+      .btn-white-alpha {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        transition: var(--transition);
+      }
+      .btn-white-alpha:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-1px);
+      }
     </style>
   </head>
   <body>
@@ -1932,21 +1942,25 @@
     <!-- File View Modal -->
     <div class="modal fade" id="file_view_modal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-primary text-white border-0">
-                    <h5 class="modal-title" id="file_view_title">Visualização de Documento</h5>
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); overflow: hidden;">
+                <div class="modal-header border-0 px-4 py-3" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-text text-white me-2 fs-5"></i>
+                        <h5 class="modal-title text-white fw-bold" id="file_view_title" style="font-family: 'Plus Jakarta Sans', sans-serif;">Visualização</h5>
+                    </div>
                     <div class="d-flex gap-2">
-                        <a href="#" id="file_view_download_btn" class="btn btn-sm btn-light" target="_blank" title="Baixar Original">
-                            <i class="bi bi-download"></i>
+                        <a href="#" id="file_view_download_btn" class="btn btn-sm btn-white-alpha" target="_blank" title="Baixar Original">
+                            <i class="bi bi-download text-white"></i>
                         </a>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                 </div>
-                <div class="modal-body p-0 bg-dark-subtle d-flex justify-content-center align-items-center" style="min-height: 500px;">
-                    <div id="file_view_loader" class="position-absolute top-50 start-50 translate-middle">
-                        <div class="spinner-border text-primary" role="status"></div>
+                <div class="modal-body p-0 bg-light d-flex justify-content-center align-items-center" style="min-height: 600px; position: relative;">
+                    <div id="file_view_loader" class="position-absolute top-50 start-50 translate-middle text-center">
+                        <div class="spinner-border text-primary mb-2" role="status" style="width: 3rem; height: 3rem;"></div>
+                        <p class="text-muted small fw-medium">Carregando documento...</p>
                     </div>
-                    <div id="file_view_container" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                    <div id="file_view_container" class="w-100 h-100 d-flex justify-content-center align-items-center p-3">
                         <!-- Content injected here (img or iframe) -->
                     </div>
                 </div>
@@ -3294,11 +3308,13 @@
                         const ext = (item.formatoarquivo || '').toLowerCase();
                         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
                         const isPDF = ext === '.pdf';
-                        const secureUrl = `${WEBHOOKS.ANEXOS}/view?file=${item.idarquivoexterno}`;
+                        // Fix: Codificar o caminho do arquivo para evitar quebras com espaços ou caracteres especiais
+                        const encodedPath = encodeURIComponent(item.idarquivoexterno || '');
+                        const secureUrl = `${WEBHOOKS.ANEXOS}/view?file=${encodedPath}`;
                         
                         let thumbnail = '';
                         if (isImage) {
-                            // Fix: Corrigido aspas no innerHTML do onerror
+                            // Fix: Corrigido aspas no innerHTML do onerror e encoding da URL
                             thumbnail = `<div class="file-thumb-container rounded shadow-sm border overflow-hidden bg-light" style="width: 42px; height: 42px;">
                                             <img src="${secureUrl}" class="w-100 h-100 object-fit-cover" loading="lazy" 
                                                  onerror="this.src='https://placehold.co/42x42?text=?'; this.parentElement.innerHTML='<i class=&#34;bi bi-file-earmark-image text-muted&#34;></i>';">
@@ -3343,7 +3359,7 @@
                             <td class="text-end pe-3">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-light border btn-view-file" 
-                                            data-url="${secureUrl}" data-type="${ext}" data-name="${item.nomearquivo}"
+                                            data-url="${secureUrl}" data-type="${ext}" data-name="${item.categoriadoc || item.nomearquivo || 'Visualização'}"
                                             title="Visualizar">
                                         <i class="bi bi-eye text-primary"></i>
                                     </button>
