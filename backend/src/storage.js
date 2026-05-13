@@ -34,14 +34,24 @@ async function uploadFile(content, destination, contentType) {
 
 /**
  * Gera uma URL assinada para download privado (válida por 15 minutos)
+ * @param {string} destination - Caminho no bucket
+ * @param {boolean} inline - Se true, força a visualização inline no navegador
  */
-async function getSignedUrl(destination) {
+async function getSignedUrl(destination, inline = false) {
   const file = bucket.file(destination);
-  const [url] = await file.getSignedUrl({
+  const options = {
     version: 'v4',
     action: 'read',
     expires: Date.now() + 15 * 60 * 1000, // 15 minutos
-  });
+  };
+
+  if (inline) {
+    options.queryParams = {
+      'response-content-disposition': 'inline'
+    };
+  }
+
+  const [url] = await file.getSignedUrl(options);
   return url;
 }
 

@@ -574,6 +574,40 @@
         max-width: 400px;
         padding: 2rem;
       }
+      /* Hover effects for tables */
+      .hover-row {
+        transition: var(--transition);
+      }
+      .hover-row:hover {
+        background-color: rgba(155, 89, 182, 0.05) !important;
+      }
+
+      /* File Thumbnails */
+      .file-thumb-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+      .file-thumb-container:hover {
+        transform: scale(1.1);
+        z-index: 10;
+      }
+      
+      .x-small {
+        font-size: 0.65rem;
+      }
+
+      /* Transitions */
+      .fade-enter {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .fade-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.3s, transform 0.3s;
+      }
     </style>
   </head>
   <body>
@@ -611,17 +645,7 @@
             <small class="text-muted" style="font-size: 0.65rem; color: #7f8c8d !important;">Psicóloga Sênior</small>
           </div>
         </div>
-        <!-- ── Indicador de Versão ─────────────────────────────── -->
-        <div style="padding: 0.6rem 1rem 0.8rem; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem;">
-          <div style="font-size: 0.6rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Versão do sistema</div>
-          <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 600; font-family: monospace;">v2026.05.11-7</div>
-          <div style="font-size: 0.58rem; color: rgba(255,255,255,0.35); margin-top: 0.35rem; line-height: 1.6;">
-            ✔ totalfilhos como STRING (Fix erro)<br>
-            ✔ Normalização global de campos<br>
-            ✔ Correção isNew (numero_prontuario fix)<br>
-            ✔ Arrays BQ via SQL literal
-          </div>
-        </div>
+        <!-- ── Indicador de Versão Removido ─────────────────────────────── -->
       </aside>
 
       <!-- Main Content -->
@@ -1900,6 +1924,31 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File View Modal -->
+    <div class="modal fade" id="file_view_modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title" id="file_view_title">Visualização de Documento</h5>
+                    <div class="d-flex gap-2">
+                        <a href="#" id="file_view_download_btn" class="btn btn-sm btn-light" target="_blank" title="Baixar Original">
+                            <i class="bi bi-download"></i>
+                        </a>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-0 bg-dark-subtle d-flex justify-content-center align-items-center" style="min-height: 500px;">
+                    <div id="file_view_loader" class="position-absolute top-50 start-50 translate-middle">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                    <div id="file_view_container" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <!-- Content injected here (img or iframe) -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -3219,7 +3268,7 @@
             async function loadAnexos(prontuarioId) {
                 const tbody = document.getElementById('anexotabelabody');
                 if (!tbody) return;
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-2 text-muted">Carregando...</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary me-2"></div><span class="text-muted">Carregando repositório...</span></td></tr>';
                 
                 try {
                     const url = new URL(WEBHOOKS.ANEXOS);
@@ -3228,59 +3277,147 @@
                     const response = await fetch(url.toString());
                     const data = await response.json();
                     
-                    let list = [];
-                    if (Array.isArray(data)) list = data;
-                    else if (data.data && Array.isArray(data.data)) list = data.data;
-                    else if (data.arquivos && Array.isArray(data.arquivos)) list = data.arquivos;
+                    let list = Array.isArray(data) ? data : (data.data || data.arquivos || []);
 
                     tbody.innerHTML = '';
                     if (list.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted">Nenhum arquivo/anexo vinculado a este prontuário</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted"><i class="bi bi-folder2-open d-block fs-2 mb-2 opacity-25"></i>Nenhum arquivo vinculado</td></tr>';
                         return;
                     }
                     
                     list.forEach(item => {
                         const tr = document.createElement('tr');
+                        tr.className = 'align-middle border-bottom-0 hover-row';
+                        
                         const dataFormatada = item.dataupload || item.data || '';
                         const ext = (item.formatoarquivo || '').toLowerCase();
                         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+                        const isPDF = ext === '.pdf';
                         const secureUrl = `${WEBHOOKS.ANEXOS}/view?file=${item.idarquivoexterno}`;
                         
                         let thumbnail = '';
                         if (isImage) {
-                            thumbnail = `<img src="${secureUrl}" class="rounded shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">`;
+                            thumbnail = `<div class="file-thumb-container rounded shadow-sm border overflow-hidden bg-light" style="width: 42px; height: 42px;">
+                                            <img src="${secureUrl}" class="w-100 h-100 object-fit-cover" loading="lazy" 
+                                                 onerror="this.src='https://placehold.co/42x42?text=?'; this.parentElement.innerHTML='<i class=\'bi bi-file-earmark-image text-muted\'></i>';">
+                                         </div>`;
                         } else {
                             const iconMap = {
-                                '.pdf': 'bi-file-earmark-pdf text-danger',
-                                '.doc': 'bi-file-earmark-word text-primary',
-                                '.docx': 'bi-file-earmark-word text-primary',
-                                '.xls': 'bi-file-earmark-excel text-success',
-                                '.xlsx': 'bi-file-earmark-excel text-success'
+                                '.pdf': 'bi-file-earmark-pdf-fill text-danger',
+                                '.doc': 'bi-file-earmark-word-fill text-primary',
+                                '.docx': 'bi-file-earmark-word-fill text-primary',
+                                '.xls': 'bi-file-earmark-excel-fill text-success',
+                                '.xlsx': 'bi-file-earmark-excel-fill text-success',
+                                '.zip': 'bi-file-earmark-zip-fill text-warning',
+                                '.rar': 'bi-file-earmark-zip-fill text-warning'
                             };
-                            const iconClass = iconMap[ext] || 'bi-file-earmark-text text-secondary';
-                            thumbnail = `<i class="bi ${iconClass}" style="font-size: 1.8rem;"></i>`;
+                            const iconClass = iconMap[ext] || 'bi-file-earmark-text-fill text-secondary';
+                            thumbnail = `<div class="d-flex align-items-center justify-content-center bg-light rounded shadow-sm border" style="width: 42px; height: 42px;">
+                                            <i class="bi ${iconClass} fs-4"></i>
+                                         </div>`;
                         }
 
                         tr.innerHTML = `
-                            <td class="small">${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</td>
-                            <td class="small">${item.categoriadoc || '—'}</td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    ${thumbnail}
-                                    <span class="text-truncate small" style="max-width: 150px;" title="${item.nomearquivo}">${item.nomearquivo}</span>
+                            <td class="ps-3">
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold text-main small">${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">${dataFormatada ? dayjs(dataFormatada).format('HH:mm') : ''}</span>
                                 </div>
                             </td>
-                            <td class="text-end">
-                                <a href="${secureUrl}" target="_blank" class="btn btn-sm btn-outline-primary" title="Visualizar"><i class="bi bi-eye"></i></a>
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size: 0.7rem;">
+                                    ${item.categoriadoc || 'Documento'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    ${thumbnail}
+                                    <div class="d-flex flex-column overflow-hidden" style="max-width: 250px;">
+                                        <span class="text-truncate fw-medium small text-main" title="${item.nomearquivo}">${item.nomearquivo}</span>
+                                        <span class="text-muted x-small">${ext.toUpperCase().replace('.', '')} • ${(item.idarquivoexterno || '').split('/').pop().substring(0, 8)}...</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end pe-3">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-light border btn-view-file" 
+                                            data-url="${secureUrl}" data-type="${ext}" data-name="${item.nomearquivo}"
+                                            title="Visualizar">
+                                        <i class="bi bi-eye text-primary"></i>
+                                    </button>
+                                    <a href="${secureUrl}&download=true" class="btn btn-sm btn-light border" title="Baixar">
+                                        <i class="bi bi-download text-muted"></i>
+                                    </a>
+                                </div>
                             </td>
                         `;
+
+                        tr.querySelector('.btn-view-file').addEventListener('click', (e) => {
+                            const btn = e.currentTarget;
+                            window.viewFile(btn.getAttribute('data-url'), btn.getAttribute('data-type'), btn.getAttribute('data-name'));
+                        });
+
                         tbody.appendChild(tr);
                     });
                 } catch (error) {
                     console.error('Error loading anexos:', error);
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted">Nenhum arquivo/anexo vinculado a este prontuário</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Erro ao carregar arquivos</td></tr>';
                 }
             }
+
+            // File Viewer Logic
+            window.viewFile = function(url, ext, name) {
+                const modalEl = document.getElementById('file_view_modal');
+                const container = document.getElementById('file_view_container');
+                const title = document.getElementById('file_view_title');
+                const loader = document.getElementById('file_view_loader');
+                const downloadBtn = document.getElementById('file_view_download_btn');
+                
+                title.textContent = name || 'Visualização de Documento';
+                downloadBtn.href = `${url}&download=true`;
+                container.innerHTML = '';
+                loader.classList.remove('d-none');
+                
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+
+                const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext.toLowerCase());
+                const isPDF = ext.toLowerCase() === '.pdf';
+
+                if (isImage) {
+                    const img = new Image();
+                    img.src = url;
+                    img.className = 'img-fluid shadow-lg rounded';
+                    img.style.maxHeight = '80vh';
+                    img.onload = () => {
+                        loader.classList.add('d-none');
+                        container.appendChild(img);
+                    };
+                    img.onerror = () => {
+                        loader.classList.add('d-none');
+                        container.innerHTML = '<div class="text-white text-center"><i class="bi bi-exclamation-octagon fs-1 d-block mb-3"></i>Erro ao carregar imagem</div>';
+                    };
+                } else if (isPDF) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = url;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '80vh';
+                    iframe.style.border = 'none';
+                    iframe.onload = () => loader.classList.add('d-none');
+                    container.appendChild(iframe);
+                } else {
+                    loader.classList.add('d-none');
+                    container.innerHTML = `
+                        <div class="text-white text-center p-5">
+                            <i class="bi bi-file-earmark-arrow-down fs-1 d-block mb-3 opacity-50"></i>
+                            <p class="mb-4">Este tipo de arquivo (${ext}) não pode ser visualizado diretamente no navegador.</p>
+                            <a href="${url}&download=true" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-download me-2"></i>Baixar Arquivo
+                            </a>
+                        </div>
+                    `;
+                }
+            };
 
             async function loadNationalities() {
                 const select = document.getElementById('nacionalidade');

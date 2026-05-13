@@ -31,11 +31,14 @@ router.get('/', async (req, res) => {
  */
 router.get('/view', async (req, res) => {
   const filePath = req.query.file; // idarquivoexterno
+  const forceDownload = req.query.download === 'true';
+  
   if (!filePath) return res.status(400).send('Arquivo não especificado');
 
   try {
     const { getSignedUrl } = require('../storage');
-    const signedUrl = await getSignedUrl(filePath);
+    // Se não for pedido download explícito, tentamos abrir inline
+    const signedUrl = await getSignedUrl(filePath, !forceDownload);
     res.redirect(signedUrl);
   } catch (err) {
     console.error('[Storage View] Erro ao gerar URL:', err);
