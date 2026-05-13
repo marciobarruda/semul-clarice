@@ -15,6 +15,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+    <!-- DayJS and Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
+    <script>
+      dayjs.extend(window.dayjs_plugin_utc);
+      dayjs.extend(window.dayjs_plugin_timezone);
+      dayjs.extend(window.dayjs_plugin_customParseFormat);
+      dayjs.tz.setDefault("America/Recife");
+    </script>
     <style>
       :root {
         --primary: #9b59b6;
@@ -3304,7 +3315,15 @@
                         const tr = document.createElement('tr');
                         tr.className = 'align-middle border-bottom-0 hover-row';
                         
-                        const dataFormatada = item.dataupload || item.data || '';
+                        // Fix: Tratar data do BigQuery que pode vir como objeto {value: ...} ou string
+                        let rawDate = item.dataupload || item.data;
+                        if (rawDate && rawDate.value) rawDate = rawDate.value;
+                        
+                        // Converter para o fuso de Recife (UTC-3)
+                        const djs = rawDate ? dayjs.tz(rawDate, "UTC").tz("America/Recife") : null;
+                        const dataDisplay = djs && djs.isValid() ? djs.format('DD/MM/YYYY') : '—';
+                        const horaDisplay = djs && djs.isValid() ? djs.format('HH:mm') : '';
+                        
                         const ext = (item.formatoarquivo || '').toLowerCase();
                         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
                         const isPDF = ext === '.pdf';
@@ -3338,8 +3357,8 @@
                         tr.innerHTML = `
                             <td class="ps-3">
                                 <div class="d-flex flex-column">
-                                    <span class="fw-bold text-main small">${dataFormatada ? dayjs(dataFormatada).format('DD/MM/YYYY') : '—'}</span>
-                                    <span class="text-muted" style="font-size: 0.65rem;">${dataFormatada ? dayjs(dataFormatada).format('HH:mm') : ''}</span>
+                                    <span class="fw-bold text-main small">${dataDisplay}</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">${horaDisplay}</span>
                                 </div>
                             </td>
                             <td>
