@@ -55,4 +55,4 @@ async function getSignedUrl(destination, inline = false) {
   return url;
 }
 
-module.exports = { uploadFile, getSignedUrl, BUCKET_NAME };
+module.exports = { uploadFile, getSignedUrl, BUCKET_NAME, storage };

@@ -36,13 +36,38 @@ router.get('/view', async (req, res) => {
   if (!filePath) return res.status(400).send('Arquivo não especificado');
 
   try {
-    const { getSignedUrl } = require('../storage');
-    // Se não for pedido download explícito, tentamos abrir inline
-    const signedUrl = await getSignedUrl(filePath, !forceDownload);
-    res.redirect(signedUrl);
+    const { BUCKET_NAME, storage } = require('../storage');
+    const bucket = storage.bucket(BUCKET_NAME);
+    const file = bucket.file(filePath);
+
+    // Verificar se o arquivo existe e obter metadados
+    const [exists] = await file.exists();
+    if (!exists) return res.status(404).send('Arquivo não encontrado no storage');
+
+    const [metadata] = await file.getMetadata();
+    
+    // Configurar headers para o navegador
+    res.setHeader('Content-Type', metadata.contentType || 'application/octet-stream');
+    
+    if (forceDownload) {
+      const fileName = filePath.split('/').pop();
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    } else {
+      res.setHeader('Content-Disposition', 'inline');
+    }
+
+    // Fazer o pipe do stream do GCS diretamente para a resposta do Express
+    console.log(`[API Anexos] Servindo arquivo via stream: ${filePath}`);
+    file.createReadStream()
+      .on('error', (err) => {
+        console.error('[Storage Stream] Erro no stream:', err);
+        if (!res.headersSent) res.status(500).send('Erro ao ler arquivo');
+      })
+      .pipe(res);
+
   } catch (err) {
-    console.error('[Storage View] Erro ao gerar URL:', err);
-    res.status(500).send('Erro ao gerar link de visualização');
+    console.error('[API Anexos View] Erro crítico:', err);
+    res.status(500).send('Erro interno ao processar arquivo');
   }
 });
 

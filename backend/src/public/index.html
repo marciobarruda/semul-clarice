@@ -1943,16 +1943,16 @@
     <div class="modal fade" id="file_view_modal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); overflow: hidden;">
-                <div class="modal-header border-0 px-4 py-3" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-file-earmark-text text-white me-2 fs-5"></i>
-                        <h5 class="modal-title text-white fw-bold" id="file_view_title" style="font-family: 'Plus Jakarta Sans', sans-serif;">Visualização</h5>
+                <div class="modal-header border-0 px-4 py-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                    <div class="d-flex align-items-center overflow-hidden me-3">
+                        <i class="bi bi-file-earmark-text text-white me-3 fs-4"></i>
+                        <h5 class="modal-title text-white fw-bold text-truncate" id="file_view_title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem;">Visualização</h5>
                     </div>
-                    <div class="d-flex gap-2">
-                        <a href="#" id="file_view_download_btn" class="btn btn-sm btn-white-alpha" target="_blank" title="Baixar Original">
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="#" id="file_view_download_btn" class="btn btn-sm btn-white-alpha d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;" target="_blank" title="Baixar Original">
                             <i class="bi bi-download text-white"></i>
                         </a>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.8rem;"></button>
                     </div>
                 </div>
                 <div class="modal-body p-0 bg-light d-flex justify-content-center align-items-center" style="min-height: 600px; position: relative;">
