@@ -625,9 +625,56 @@
         border: none;
         transition: var(--transition);
       }
-      .btn-white-alpha:hover {
-        background: rgba(255,255,255,0.3);
-        transform: translateY(-1px);
+      /* Evoluções Timeline */
+      .evolution-card {
+        border-left: 4px solid var(--primary);
+        transition: var(--transition);
+        background: #fff;
+      }
+      .evolution-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05) !important;
+      }
+      
+      /* Maximizable Modal */
+      .modal-fullscreen-toggle {
+        cursor: pointer;
+        padding: 0.5rem;
+        color: rgba(255,255,255,0.7);
+        transition: var(--transition);
+      }
+      .modal-fullscreen-toggle:hover {
+        color: #fff;
+      }
+      
+      .modal.maximized .modal-dialog {
+        max-width: 100vw !important;
+        margin: 0 !important;
+        height: 100vh !important;
+      }
+      .modal.maximized .modal-content {
+        height: 100vh !important;
+        border-radius: 0 !important;
+      }
+      .modal.maximized .modal-body {
+        overflow-y: auto;
+      }
+
+      .evolution-textarea {
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 1.5rem;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: none;
+        transition: var(--transition);
+        background-color: #fcfcfc;
+      }
+      .evolution-textarea:focus {
+        background-color: #fff;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-light);
+        outline: none;
       }
     </style>
   </head>
@@ -1981,31 +2028,48 @@
 
     <!-- Modals -->
     <div class="modal fade" id="evolucaomodal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Adicionar Evolução</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-lg modal-dialog-centered transition-all">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); overflow: hidden;">
+                <div class="modal-header border-0 px-4 py-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-journal-plus text-white me-3 fs-4"></i>
+                        <h5 class="modal-title text-white fw-bold" style="font-family: 'Plus Jakarta Sans', sans-serif;">Nova Evolução do Caso</h5>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-white-alpha modal-maximize-btn" title="Maximizar">
+                            <i class="bi bi-arrows-fullscreen text-white" style="font-size: 0.75rem;"></i>
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
-                <form id="evolucaomodalform">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="evolucaodata" class="form-label">Data</label>
-                            <input type="date" class="form-control" id="evolucaodata" name="evolucaodata" readonly>
-                        </div>
-                        <div class="mb-3" id="evolucaodescricaocontainer">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label for="evolucaodescricao" class="form-label mb-0">Descrição da Evolução</label>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.expandText('evolucaodescricao', 'Descrição da Evolução')">
-                                    <i class="bi bi-arrows-fullscreen me-1"></i> <span class="btn-text">Expandir</span>
-                                </button>
+                <form id="form_evolucao">
+                    <div class="modal-body p-4 bg-light">
+                        <div class="d-flex gap-3 mb-4 flex-wrap">
+                            <div class="p-3 bg-white rounded shadow-sm border-start border-primary border-4 flex-grow-1" style="min-width: 250px;">
+                                <label class="text-muted x-small text-uppercase fw-bold mb-1 d-block">Técnica Responsável</label>
+                                <span id="evolucao_tecnica_auto" class="fw-bold text-main">Ana Paula</span>
+                                <span id="evolucao_funcao_auto" class="badge bg-primary-subtle text-primary ms-2 x-small">Psicóloga Sênior</span>
                             </div>
-                            <textarea class="form-control" id="evolucaodescricao" name="evolucaodescricao" rows="5" required></textarea>
+                            <div class="p-3 bg-white rounded shadow-sm border-start border-secondary border-4" style="min-width: 150px;">
+                                <label class="text-muted x-small text-uppercase fw-bold mb-1 d-block">Data do Registro</label>
+                                <span id="evolucao_data_auto" class="fw-bold text-main">--/--/----</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group position-relative">
+                            <label for="evolucao_descricao" class="form-label fw-bold text-main small">Descrição Detalhada do Atendimento</label>
+                            <textarea class="form-control evolution-textarea" id="evolucao_descricao" name="evolucaodescricao" 
+                                      rows="12" placeholder="Descreva aqui o atendimento realizado, observações técnicas e próximos passos..." required></textarea>
+                            <div class="position-absolute bottom-0 end-0 p-3 text-muted x-small opacity-50">
+                                <i class="bi bi-textarea-resize"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar Evolução</button>
+                    <div class="modal-footer border-0 bg-white px-4 py-3">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                            <i class="bi bi-check2-circle me-2"></i>Salvar Evolução
+                        </button>
                     </div>
                 </form>
             </div>
@@ -3236,6 +3300,159 @@
                 }
             }
 
+            // Lógica de Evoluções (Dual-Source + Deduplicação)
+            async function loadEvolucoes(prontuarioId) {
+                const tbody = document.getElementById('evolucaotabelabody');
+                if (!tbody) return;
+                tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando histórico...</td></tr>';
+                
+                try {
+                    // 1. Buscar do Endpoint Legado (POST)
+                    const legacyPromise = fetch(WEBHOOKS.EVOLUCOES, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prontuario: prontuarioId })
+                    }).then(r => r.json()).catch(e => { console.error('Erro legado:', e); return []; });
+
+                    // 2. Buscar do BigQuery (GET)
+                    const bqUrl = new URL(`${API_BASE}/api/evolucoes`, window.location.origin);
+                    bqUrl.searchParams.set('prontuario', prontuarioId);
+                    const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(e => { console.error('Erro BQ:', e); return []; });
+
+                    const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
+                    
+                    // Normalizar dados
+                    const legacyList = Array.isArray(legacyData) ? legacyData : (legacyData.data || []);
+                    const bqList = Array.isArray(bqData) ? bqData : (bqData.data || []);
+
+                    // Unificar e Deduplicar
+                    const combined = [...bqList, ...legacyList];
+                    const seen = new Set();
+                    const uniqueList = [];
+
+                    combined.forEach(item => {
+                        // Criar hash único por data e descrição (limpa)
+                        const desc = (item.evolucaodescricao || item.descricao || '').trim().substring(0, 100);
+                        const dataRaw = item.evolucaodata || item.data || '';
+                        let dataStr = '';
+                        if (dataRaw) {
+                            const d = dayjs(dataRaw.value || dataRaw);
+                            dataStr = d.isValid() ? d.format('YYYY-MM-DD') : '';
+                        }
+                        
+                        const hash = `${dataStr}|${desc}`;
+                        if (!seen.has(hash) && desc.length > 0) {
+                            seen.add(hash);
+                            uniqueList.push(item);
+                        }
+                    });
+
+                    // Ordenar por data decrescente
+                    uniqueList.sort((a, b) => {
+                        const da = dayjs((a.evolucaodata && a.evolucaodata.value) || a.evolucaodata || a.data);
+                        const db = dayjs((b.evolucaodata && b.evolucaodata.value) || b.evolucaodata || b.data);
+                        return db.unix() - da.unix();
+                    });
+
+                    tbody.innerHTML = '';
+                    if (uniqueList.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted opacity-50">Nenhuma evolução registrada</td></tr>';
+                        return;
+                    }
+
+                    uniqueList.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-bottom-0 evolution-card mb-2 d-table-row';
+                        
+                        let rawDate = item.evolucaodata || item.data;
+                        if (rawDate && rawDate.value) rawDate = rawDate.value;
+                        const djs = dayjs.tz(rawDate).tz("America/Recife");
+                        
+                        const tecnica = item.tecnica || 'Sistema';
+                        const funcao = item.funcao || 'Atendimento';
+
+                        tr.innerHTML = `
+                            <td class="ps-3 py-3" style="width: 140px;">
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold text-main small">${djs.format('DD/MM/YYYY')}</span>
+                                    <span class="text-muted x-small">${djs.format('HH:mm')}</span>
+                                    <span class="badge bg-light text-muted border mt-2 x-small text-truncate" title="${tecnica}">${tecnica.split(' ')[0]}</span>
+                                </div>
+                            </td>
+                            <td class="pe-3 py-3">
+                                <div class="text-main small mb-1" style="white-space: pre-wrap; line-height: 1.5; font-size: 0.85rem;">${item.evolucaodescricao || item.descricao}</div>
+                                <div class="text-muted x-small opacity-50 italic">— ${funcao}</div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } catch (error) {
+                    console.error('Error loading evolucoes:', error);
+                    tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-danger">Erro ao carregar histórico</td></tr>';
+                }
+            }
+
+            // Modal Maximize Logic
+            document.querySelectorAll('.modal-maximize-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    const icon = this.querySelector('i');
+                    modal.classList.toggle('maximized');
+                    
+                    if (modal.classList.contains('maximized')) {
+                        icon.classList.replace('bi-arrows-fullscreen', 'bi-fullscreen-exit');
+                        this.title = "Restaurar";
+                    } else {
+                        icon.classList.replace('bi-fullscreen-exit', 'bi-arrows-fullscreen');
+                        this.title = "Maximizar";
+                    }
+                });
+            });
+
+            // Form Evolução Handler
+            const formEvolucao = document.getElementById('form_evolucao');
+            if (formEvolucao) {
+                formEvolucao.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const prontuarioId = document.getElementById('evolucao_prontuario_id')?.value || currentProntuarioId;
+                    if (!prontuarioId) return;
+
+                    const formData = new FormData(formEvolucao);
+                    const payload = {
+                        numeroprontuario: prontuarioId,
+                        evolucaodescricao: formData.get('evolucaodescricao'),
+                        tecnica: document.getElementById('evolucao_tecnica_auto').textContent,
+                        funcao: document.getElementById('evolucao_funcao_auto').textContent,
+                        evolucaodata: dayjs().format('YYYY-MM-DD') // BigQuery DATE format
+                    };
+
+                    try {
+                        Swal.fire({ title: 'Salvando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                        
+                        const response = await fetch(`${API_BASE}/api/evolucoes`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) throw new Error('Erro ao salvar no BigQuery');
+
+                        Swal.fire({ icon: 'success', title: 'Sucesso!', text: 'Evolução registrada com sucesso.', timer: 2000, showConfirmButton: false });
+                        bootstrap.Modal.getInstance(document.getElementById('evolucaomodal')).hide();
+                        formEvolucao.reset();
+                        loadEvolucoes(prontuarioId);
+                    } catch (error) {
+                        console.error('Error saving evolution:', error);
+                        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível salvar a evolução.' });
+                    }
+                });
+            }
+
+            // Iniciar data no modal
+            document.getElementById('evolucaomodal').addEventListener('show.bs.modal', function() {
+                document.getElementById('evolucao_data_auto').textContent = dayjs().format('DD/MM/YYYY');
+            });
+
             // Risco Iminente Badge Listener
             document.querySelectorAll('input[name="avaliacaoinicial"]').forEach(radio => {
                 radio.addEventListener('change', (e) => {
@@ -3246,49 +3463,6 @@
                 });
             });
 
-            async function loadEvolucoes(prontuarioId) {
-                const tbody = document.getElementById('evolucaotabelabody');
-                if (!tbody) return;
-                tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Carregando...</td></tr>';
-                
-                try {
-                    const response = await fetch(WEBHOOKS.EVOLUCOES, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ prontuario: prontuarioId })
-                    });
-                    const data = await response.json();
-                    const list = Array.isArray(data) ? data : [];
-                    
-                    tbody.innerHTML = '';
-                    if (list.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-muted">Nenhuma evolução registrada</td></tr>';
-                        return;
-                    }
-                    
-                    list.forEach(item => {
-                        const tr = document.createElement('tr');
-                        tr.style.cursor = 'pointer';
-                        tr.className = 'hover-row';
-                        const dateStr = item.data ? dayjs(item.data).format('DD/MM/YYYY') : '—';
-                        const fullText = item.registro || item.descricao || '—';
-                        const shortText = fullText.length > 100 ? fullText.substring(0, 100) + '...' : fullText;
-
-                        tr.innerHTML = `
-                            <td style="white-space: nowrap;">${dateStr}</td>
-                            <td class="text-muted small">${shortText}</td>
-                        `;
-
-                        tr.addEventListener('click', () => {
-                            window.expandTextValue(fullText, `Evolução - ${dateStr}`);
-                        });
-                        tbody.appendChild(tr);
-                    });
-                } catch (error) {
-                    console.error('Error loading evolucoes:', error);
-                    tbody.innerHTML = '<tr><td colspan="2" class="text-center py-2 text-danger">Erro ao carregar</td></tr>';
-                }
-            }
 
             async function loadAnexos(prontuarioId) {
                 const tbody = document.getElementById('anexotabelabody');
