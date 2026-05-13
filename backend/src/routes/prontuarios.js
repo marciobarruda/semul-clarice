@@ -263,6 +263,75 @@ router.post('/salvar', async (req, res) => {
     
     await dml(mergeSql, params, types);
 
+    // ── Processamento de Composição Familiar ─────────────────────────────────
+    if (req.body.familia_json) {
+      try {
+        const familia = JSON.parse(req.body.familia_json);
+        if (Array.isArray(familia)) {
+          console.log(`[Familia] Processando ${familia.length} membros para ${body.numeroprontuario}`);
+          // Limpar membros atuais para evitar duplicados em edição
+          await dml(`DELETE FROM ${tbl('familia')} WHERE numeroprontuario = @p`, { p: body.numeroprontuario }, { p: 'STRING' });
+          
+          for (const m of familia) {
+            const mSql = `INSERT INTO ${tbl('familia')} (id, numeroprontuario, familianome, familiaparentesco, familiaidade, createdat, updatedat)
+                          VALUES (@id, @p, @nome, @paren, @idade, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())`;
+            await dml(mSql, {
+              id: Math.floor(Date.now() % 1000000000) + Math.floor(Math.random() * 1000),
+              p: body.numeroprontuario,
+              nome: m.familianome || m.nome || '',
+              paren: m.familiaparentesco || m.parentesco || '',
+              idade: parseInt(m.familiaidade || m.idade || 0)
+            }, { id: 'INT64', p: 'STRING', nome: 'STRING', paren: 'STRING', idade: 'INT64' });
+          }
+        }
+      } catch (err) {
+        console.error('[Familia Save] Erro:', err.message);
+      }
+    }
+
+    // ── Processamento de Autores da Violência ────────────────────────────────
+    if (req.body.autores_json) {
+      try {
+        const autores = JSON.parse(req.body.autores_json);
+        if (Array.isArray(autores)) {
+          console.log(`[Autores] Processando ${autores.length} autores para ${body.numeroprontuario}`);
+          // Limpar autores atuais
+          await dml(`DELETE FROM ${tbl('autores')} WHERE numeroprontuario = @p`, { p: body.numeroprontuario }, { p: 'STRING' });
+          
+          for (const a of autores) {
+            const aSql = `INSERT INTO ${tbl('autores')} (id, numeroprontuario, nome, cpf, parentesco, dddcel, celular, dddtel, telefone, estadocivil, genero, orientacaosexual, corraca, religiao, profissao, datanascimento, idade, createdat, updatedat)
+                          VALUES (@id, @p, @nome, @cpf, @paren, @dddcel, @cel, @dddtel, @tel, @ec, @gen, @ori, @cor, @rel, @prof, @dn, @idade, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())`;
+            await dml(aSql, {
+              id: Math.floor(Date.now() % 1000000000) + Math.floor(Math.random() * 1000),
+              p: body.numeroprontuario,
+              nome: a.nome || '',
+              cpf: a.cpf || '',
+              paren: a.parentesco || '',
+              dddcel: a.dddcel || '',
+              cel: a.celular || '',
+              dddtel: a.dddtel || '',
+              tel: a.telefone || '',
+              ec: a.estadocivil || '',
+              gen: a.genero || '',
+              ori: a.orientacaosexual || '',
+              cor: a.corraca || '',
+              rel: a.religiao || '',
+              prof: a.profissao || '',
+              dn: a.datanascimento || null,
+              idade: parseInt(a.idade || 0)
+            }, { 
+              id: 'INT64', p: 'STRING', nome: 'STRING', cpf: 'STRING', paren: 'STRING', 
+              dddcel: 'STRING', cel: 'STRING', dddtel: 'STRING', tel: 'STRING', 
+              ec: 'STRING', gen: 'STRING', ori: 'STRING', cor: 'STRING', 
+              rel: 'STRING', prof: 'STRING', dn: 'DATE', idade: 'INT64' 
+            });
+          }
+        }
+      } catch (err) {
+        console.error('[Autores Save] Erro:', err.message);
+      }
+    }
+
     // ── Processamento de Anexos ──────────────────────────────────────────────
     const totalAnexos = parseInt(req.body.totalanexos || 0);
     if (totalAnexos > 0) {
