@@ -14,6 +14,7 @@ const { requireAuth, requireApiAuth } = require('./auth');
 const prontuariosRouter = require('./routes/prontuarios');
 const evolucoesRouter   = require('./routes/evolucoes');
 const anexosRouter      = require('./routes/anexos');
+const familiaRouter     = require('./routes/familia');
 const auxiliarRouter    = require('./routes/auxiliar');
 
 // ── App ───────────────────────────────────────────────────────────────────────
@@ -49,6 +50,7 @@ app.get('/logout', (req, res) => {
 app.use('/api', requireApiAuth);
 app.use('/api/prontuarios', prontuariosRouter);
 app.use('/api/evolucoes',   evolucoesRouter);
+app.use('/api/familia',     familiaRouter);
 app.use('/api/anexos',      anexosRouter);
 app.use('/api',             auxiliarRouter);   // nacionalidades, naturalidades, rpa
 

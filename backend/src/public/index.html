@@ -2109,52 +2109,57 @@
 
     <!-- Modais legados removidos -->
 
-    <div class="modal fade" id="familiamodal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="familia_modal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Adicionar Membro Familiar</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); overflow: hidden;">
+                <div class="modal-header border-0 px-4 py-3 modal-header-premium" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-people text-white me-3 fs-4"></i>
+                        <h5 class="modal-title text-white fw-bold" id="familiamodaltitle">Adicionar Membro Familiar</h5>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="familiamodalform">
-                    <div class="modal-body">
+                    <input type="hidden" id="familia_index" value="-1">
+                    <div class="modal-body p-4 bg-light">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label for="familianome" class="form-label">Nome Completo</label>
-                                <input type="text" class="form-control" id="familianome" name="familianome" required>
+                                <label for="familianome" class="form-label fw-bold text-main small">Nome Completo</label>
+                                <input type="text" class="form-control" id="familianome" name="familianome" placeholder="Ex: MARIA DA SILVA" required style="text-transform: uppercase;">
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="familiaparentesco" class="form-label">Grau de Parentesco</label>
+                                <label for="familiaparentesco" class="form-label fw-bold text-main small">Grau de Parentesco</label>
                                 <select id="familiaparentesco" name="familiaparentesco" class="form-select" required>
                                     <option value="">Selecione</option>
                                     <option>Filho(a)</option>
-                                    <option>Ex-namorado(a)</option>
-                                    <option>Primo(a)</option>
-                                    <option>Namorado(a)</option>
-                                    <option>Irmão/Irmã</option>
-                                    <option>Sobrinho(a)</option>
-                                    <option>Sogro(a)</option>
-                                    <option>Enteado(a)</option>
-                                    <option>Pai/Padastro</option>
-                                    <option>Ex-Mulher/Ex-Companheira</option>
-                                    <option>Marido/Companheiro</option>
-                                    <option>Ex-Marido/Ex-Companheiro</option>
-                                    <option>Tio(a)</option>
-                                    <option>Mulher/Companheira</option>
-                                    <option>Amigo(a)</option>
                                     <option>Mãe/Madrasta</option>
+                                    <option>Pai/Padastro</option>
+                                    <option>Irmão/Irmã</option>
+                                    <option>Cônjuge/Companheiro(a)</option>
+                                    <option>Neto(a)</option>
+                                    <option>Sogro(a)</option>
+                                    <option>Genro/Nora</option>
+                                    <option>Primo(a)</option>
+                                    <option>Tio(a)</option>
+                                    <option>Sobrinho(a)</option>
                                     <option>Outro(a)</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <label for="familiaidade" class="form-label">Idade (Anos)</label>
-                                <input type="number" class="form-control" id="familiaidade" name="familiaidade" required>
+                            <div class="col-12 col-md-4">
+                                <label for="familia_datanascimento" class="form-label fw-bold text-main small">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="familia_datanascimento" name="datanascimento">
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <label for="familiaidade" class="form-label fw-bold text-main small">Idade</label>
+                                <input type="number" class="form-control bg-white" id="familiaidade" name="familiaidade" required readonly title="Idade calculada automaticamente">
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                    <div class="modal-footer border-0 bg-white px-4 py-3">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary px-5 shadow-sm" id="familiamodalsubmit">
+                            <i class="bi bi-check2-circle me-2"></i>Salvar Membro
+                        </button>
                     </div>
                 </form>
             </div>
@@ -2452,6 +2457,7 @@
                 loadingTasks: 0,
                 isDashboardRendered: false,
                 pendingFiles: [], // Arquivos selecionados mas não salvos
+                currentFamilia: [], // Lista unificada de membros da família
                 masks: {} // Armazenar instâncias do IMask
             };
 
@@ -2479,6 +2485,8 @@
                 SAVE:          `${API_BASE}/api/prontuarios/salvar`,
                 EVOLUCOES:     `https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/evolucoes`,
                 ANEXOS:        `${API_BASE}/api/anexos`,
+                FAMILIA:       `${API_BASE}/api/familia`,
+                FAMILIA_LEGACY:`${API_BASE}/api/familia/legacy`,
                 GET_NEW:       `${API_BASE}/api/prontuarios/novo`,
                 NACIONALIDADES:`${API_BASE}/api/nacionalidades`,
                 NATURALIDADES: `${API_BASE}/api/naturalidades`,
@@ -3235,6 +3243,7 @@
                         // Load extra data
                         loadEvolucoes(id);
                         loadAnexos(id);
+                        loadFamilia(id);
                         
                         Swal.close();
                     } else {
@@ -3892,6 +3901,9 @@
                         data.totalanexos = state.pendingFiles.length;
                     }
 
+                    // 5. Incluir Composição Familiar (Lista em Memória)
+                    data.familia_json = JSON.stringify(state.currentFamilia || []);
+
                     Swal.fire({
                         title: 'Salvando...',
                         text: 'Por favor, aguarde enquanto processamos os dados e arquivos.',
@@ -4078,44 +4090,6 @@
 
 
 
-            // Family Modal Logic
-            const familia_modal = new bootstrap.Modal(document.getElementById('familia_modal'));
-            document.getElementById('btnAddFamilia').addEventListener('click', () => {
-                familia_modal.show();
-            });
-
-            document.getElementById('familia_modal_form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const nome = document.getElementById('familia_nome').value;
-                const parentesco = document.getElementById('familia_parentesco').value;
-                const idade = document.getElementById('familia_idade').value;
-                
-                addFamilyMember(nome, parentesco, idade);
-                
-                document.getElementById('familia_modal_form').reset();
-                familia_modal.hide();
-            });
-
-            function addFamilyMember(nome, parentesco, idade) {
-                const tbody = document.getElementById('familia_tabela_body');
-                if (tbody.querySelector('.text-muted')) tbody.innerHTML = '';
-                
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${nome}</td>
-                    <td>${parentesco}</td>
-                    <td>${idade}</td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-member"><i class="bi bi-trash"></i></button>
-                        <input type="hidden" name="familia_nome[]" value="${nome}">
-                        <input type="hidden" name="familia_parentesco[]" value="${parentesco}">
-                        <input type="hidden" name="familia_idade[]" value="${idade}">
-                    </td>
-                `;
-                tbody.appendChild(tr);
-                
-                tr.querySelector('.btn-remove-member').addEventListener('click', () => tr.remove());
-            }
 
             // CEP Search Logic
             document.getElementById('cep').addEventListener('blur', async (e) => {
@@ -4519,3 +4493,132 @@
     </script>
   </body>
 </html>
+            // ── Composição Familiar ──────────────────────────────────────────────────
+            async function loadFamilia(prontuarioId) {
+                const tbody = document.getElementById('familiatabelabody');
+                if (!tbody) return;
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando composição...</td></tr>';
+                
+                try {
+                    // 1. Buscar do Legado via PROXY
+                    const legacyPromise = fetch(`${WEBHOOKS.FAMILIA_LEGACY}/${prontuarioId}`).then(r => r.json()).catch(() => []);
+                    // 2. Buscar do BigQuery
+                    const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.origin);
+                    bqUrl.searchParams.set('prontuario', prontuarioId);
+                    const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
+
+                    const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
+                    
+                    // Unificar e normalizar (Deduplicação por Nome)
+                    const rawList = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
+                    const seen = new Set();
+                    state.currentFamilia = [];
+
+                    rawList.forEach(item => {
+                        const nome = (item.familianome || item.nome || '').trim().toUpperCase();
+                        if (!seen.has(nome) && nome.length > 0) {
+                            seen.add(nome);
+                            state.currentFamilia.push({
+                                nome: nome,
+                                parentesco: item.familiaparentesco || item.parentesco || '',
+                                idade: item.familiaidade || item.idade || 0,
+                                datanascimento: item.datanascimento || ''
+                            });
+                        }
+                    });
+
+                    renderFamiliaTable();
+                } catch (error) {
+                    console.error('Error loading familia:', error);
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-3">Erro ao carregar família</td></tr>';
+                }
+            }
+
+            function renderFamiliaTable() {
+                const tbody = document.getElementById('familiatabelabody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+
+                if (!state.currentFamilia || state.currentFamilia.length === 0) {
+                    tbody.innerHTML = '<tr id="familiavazia"><td colspan="4" class="text-center text-muted py-3">Nenhum membro informado.</td></tr>';
+                    return;
+                }
+
+                state.currentFamilia.forEach((m, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="fw-medium">${m.nome}</td>
+                        <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
+                        <td>${m.idade} anos</td>
+                        <td class="text-end px-3">
+                            <button type="button" class="btn btn-sm btn-light border" onclick="editFamilia(${idx})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Cálculo Automático de Idade no Modal
+            const birthDateInput = document.getElementById('familia_datanascimento');
+            if (birthDateInput) {
+                birthDateInput.addEventListener('change', function() {
+                    const birthDate = this.value;
+                    if (birthDate) {
+                        const age = dayjs().diff(dayjs(birthDate), 'year');
+                        document.getElementById('familiaidade').value = age;
+                    }
+                });
+            }
+
+            // Handler do Modal de Família
+            const familiaForm = document.getElementById('familiamodalform');
+            if (familiaForm) {
+                familiaForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(familiaForm);
+                    const idx = parseInt(document.getElementById('familia_index').value);
+                    
+                    const membro = {
+                        nome: formData.get('familianome').toUpperCase(),
+                        parentesco: formData.get('familiaparentesco'),
+                        idade: parseInt(formData.get('familiaidade')),
+                        datanascimento: formData.get('datanascimento')
+                    };
+
+                    if (idx === -1) {
+                        state.currentFamilia.push(membro);
+                    } else {
+                        state.currentFamilia[idx] = membro;
+                    }
+
+                    renderFamiliaTable();
+                    bootstrap.Modal.getInstance(document.getElementById('familia_modal')).hide();
+                });
+            }
+
+            window.editFamilia = function(idx) {
+                const m = state.currentFamilia[idx];
+                if (!m) return;
+
+                document.getElementById('familia_index').value = idx;
+                document.getElementById('familianome').value = m.nome;
+                document.getElementById('familiaparentesco').value = m.parentesco;
+                document.getElementById('familia_datanascimento').value = m.datanascimento || '';
+                document.getElementById('familiaidade').value = m.idade;
+                document.getElementById('familiamodaltitle').textContent = 'Editar Membro Familiar';
+
+                const modal = new bootstrap.Modal(document.getElementById('familia_modal'));
+                modal.show();
+            }
+
+            // Garantir Reset ao fechar modal
+            const familiaModalEl = document.getElementById('familia_modal');
+            if (familiaModalEl) {
+                familiaModalEl.addEventListener('hidden.bs.modal', () => {
+                    document.getElementById('familiamodalform').reset();
+                    document.getElementById('familia_index').value = -1;
+                    document.getElementById('familiamodaltitle').textContent = 'Adicionar Membro Familiar';
+                });
+            }

@@ -310,6 +310,38 @@ router.post('/salvar', async (req, res) => {
       }
     }
 
+    // ── Processamento de Composição Familiar ─────────────────────────────────
+    if (req.body.familia_json) {
+      try {
+        const familiaList = JSON.parse(req.body.familia_json);
+        if (Array.isArray(familiaList)) {
+          console.log(`[Família] Sincronizando ${familiaList.length} membros para ${body.numeroprontuario}`);
+          
+          // Limpar registros anteriores do BigQuery para este prontuário
+          await dml(`DELETE FROM ${tbl('composicaofamiliar')} WHERE numeroprontuario = @num`, { num: body.numeroprontuario }, { num: 'STRING' });
+
+          for (const m of familiaList) {
+            const sqlFam = `
+              INSERT INTO ${tbl('composicaofamiliar')} 
+              (numeroprontuario, familianome, familiaparentesco, familiaidade, datanascimento, createdat, updatedat)
+              VALUES (@num, @nome, @paren, @idade, @nasc, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())
+            `;
+            await dml(sqlFam, {
+              num: body.numeroprontuario,
+              nome: String(m.nome || m.familianome || '').trim().toUpperCase(),
+              paren: String(m.parentesco || m.familiaparentesco || ''),
+              idade: parseInt(m.idade || m.familiaidade || 0),
+              nasc: m.datanascimento || null
+            }, {
+              num: 'STRING', nome: 'STRING', paren: 'STRING', idade: 'INT64', nasc: 'DATE'
+            });
+          }
+        }
+      } catch (errFam) {
+        console.error('[Família] Erro ao sincronizar:', errFam);
+      }
+    }
+
     res.json({ message: 'Salvo com sucesso!', numeroprontuario: body.numeroprontuario });
   } catch (err) {
     console.error('[BQ Salvar] Erro detalhado:', err);
