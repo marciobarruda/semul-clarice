@@ -3271,7 +3271,8 @@
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary me-2"></div><span class="text-muted">Carregando repositório...</span></td></tr>';
                 
                 try {
-                    const url = new URL(WEBHOOKS.ANEXOS);
+                    // Fix: Adicionado window.location.origin para suportar caminhos relativos
+                    const url = new URL(WEBHOOKS.ANEXOS, window.location.origin);
                     url.searchParams.set('prontuario', prontuarioId);
                     
                     const response = await fetch(url.toString());
@@ -3297,9 +3298,10 @@
                         
                         let thumbnail = '';
                         if (isImage) {
+                            // Fix: Corrigido aspas no innerHTML do onerror
                             thumbnail = `<div class="file-thumb-container rounded shadow-sm border overflow-hidden bg-light" style="width: 42px; height: 42px;">
                                             <img src="${secureUrl}" class="w-100 h-100 object-fit-cover" loading="lazy" 
-                                                 onerror="this.src='https://placehold.co/42x42?text=?'; this.parentElement.innerHTML='<i class=\'bi bi-file-earmark-image text-muted\'></i>';">
+                                                 onerror="this.src='https://placehold.co/42x42?text=?'; this.parentElement.innerHTML='<i class=&#34;bi bi-file-earmark-image text-muted&#34;></i>';">
                                          </div>`;
                         } else {
                             const iconMap = {
