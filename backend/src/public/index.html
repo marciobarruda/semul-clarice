@@ -21,10 +21,14 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
     <script>
-      dayjs.extend(window.dayjs_plugin_utc);
-      dayjs.extend(window.dayjs_plugin_timezone);
-      dayjs.extend(window.dayjs_plugin_customParseFormat);
-      dayjs.tz.setDefault("America/Recife");
+      try {
+        if (window.dayjs_plugin_utc) dayjs.extend(window.dayjs_plugin_utc);
+        if (window.dayjs_plugin_timezone) {
+            dayjs.extend(window.dayjs_plugin_timezone);
+            dayjs.tz.setDefault("America/Recife");
+        }
+        if (window.dayjs_plugin_customParseFormat) dayjs.extend(window.dayjs_plugin_customParseFormat);
+      } catch (e) { console.error("DayJS Setup Error:", e); }
     </script>
     <style>
       :root {
@@ -3385,31 +3389,55 @@
                     }
 
                     uniqueList.forEach((item, index) => {
-                        const div = document.createElement('div');
-                        div.className = 'timeline-item';
-                        
-                        let rawDate = item.evolucaodata;
-                        if (rawDate && rawDate.value) rawDate = rawDate.value;
-                        const djs = dayjs.tz(rawDate).tz("America/Recife");
-                        
-                        // Dados em base64/JSON para o clique
-                        const itemData = btoa(unescape(encodeURIComponent(JSON.stringify(item))));
+                        try {
+                            const div = document.createElement('div');
+                            div.className = 'timeline-item';
+                            
+                            // Parsing de data robusto
+                            let rawDate = item.evolucaodata;
+                            if (rawDate && rawDate.value) rawDate = rawDate.value;
+                            
+                            let formattedDate = 'Data ignorada';
+                            let formattedTime = '--:--';
+                            
+                            if (rawDate) {
+                                // Usar dayjs puro para evitar erros de plugin não carregado
+                                const djs = dayjs(rawDate);
+                                if (djs.isValid()) {
+                                    formattedDate = djs.format('DD/MM/YYYY');
+                                    formattedTime = djs.format('HH:mm');
+                                }
+                            }
+                            
+                            const desc = item.evolucaodescricao || '';
+                            const shortDesc = desc.length > 150 ? desc.substring(0, 150) + '...' : desc;
 
-                        div.innerHTML = `
-                            <div class="timeline-point" onclick="window.viewEvolution('${itemData}')" title="Clique para ver detalhes">
-                                <i class="bi ${index === 0 ? 'bi-star-fill text-warning' : 'bi-check-lg text-primary'}"></i>
-                            </div>
-                            <div class="timeline-content" onclick="window.viewEvolution('${itemData}')">
-                                <span class="timeline-date">${djs.format('DD/MM/YYYY')} às ${djs.format('HH:mm')}</span>
-                                <h6 class="fw-bold text-main mb-1">${item.tecnica}</h6>
-                                <p class="text-muted small mb-0 line-clamp-3">${item.evolucaodescricao.length > 150 ? item.evolucaodescricao.substring(0, 150) + '...' : item.evolucaodescricao}</p>
-                            </div>
-                        `;
-                        container.appendChild(div);
+                            // Dados para o modal (usando serialização mais segura)
+                            const safeItem = JSON.stringify(item).replace(/'/g, "\\'");
+                            const itemData = btoa(unescape(encodeURIComponent(JSON.stringify(item))));
+
+                            div.innerHTML = `
+                                <div class="timeline-point" onclick="window.viewEvolution('${itemData}')" title="Clique para ver detalhes">
+                                    <i class="bi ${index === 0 ? 'bi-star-fill text-warning' : 'bi-check-lg text-primary'}"></i>
+                                </div>
+                                <div class="timeline-content" onclick="window.viewEvolution('${itemData}')">
+                                    <span class="timeline-date">${formattedDate} às ${formattedTime}</span>
+                                    <h6 class="fw-bold text-main mb-1">${item.tecnica || 'Profissional'}</h6>
+                                    <p class="text-muted small mb-0 line-clamp-3">${shortDesc}</p>
+                                </div>
+                            `;
+                            container.appendChild(div);
+                        } catch (errItem) {
+                            console.warn('Erro ao renderizar item da timeline:', errItem, item);
+                        }
                     });
                 } catch (error) {
-                    console.error('Error loading evolucoes:', error);
-                    container.innerHTML = '<div class="text-center py-5 text-danger small">Erro ao carregar histórico unificado</div>';
+                    console.error('CRITICAL: Error in loadEvolucoes:', error);
+                    container.innerHTML = `<div class="text-center py-5 text-danger small">
+                        <i class="bi bi-exclamation-triangle d-block fs-2 mb-2"></i>
+                        Erro ao carregar histórico unificado.<br>
+                        <span class="x-small opacity-50">${error.message}</span>
+                    </div>`;
                 }
             }
 
