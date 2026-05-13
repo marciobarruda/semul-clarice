@@ -2473,7 +2473,7 @@
                 LIST:          `${API_BASE}/api/prontuarios/buscar`,
                 GET:           `${API_BASE}/api/prontuarios/get`,
                 SAVE:          `${API_BASE}/api/prontuarios/salvar`,
-                EVOLUCOES:     `${API_BASE}/api/evolucoes`,
+                EVOLUCOES:     `https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/evolucoes`,
                 ANEXOS:        `${API_BASE}/api/anexos`,
                 GET_NEW:       `${API_BASE}/api/prontuarios/novo`,
                 NACIONALIDADES:`${API_BASE}/api/nacionalidades`,
@@ -3330,37 +3330,55 @@
             async function loadEvolucoes(prontuarioId) {
                 const container = document.getElementById('evolution_timeline_container');
                 if (!container) return;
-                container.innerHTML = '<div class="text-center py-5 text-muted opacity-50"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando histórico...</div>';
+                container.innerHTML = '<div class="text-center py-5 text-muted opacity-50"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando histórico unificado...</div>';
                 
                 try {
+                    // 1. Buscar do n8n Legado (POST)
                     const legacyPromise = fetch(WEBHOOKS.EVOLUCOES, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ prontuario: prontuarioId })
+                        body: JSON.stringify({ numeroprontuario: prontuarioId })
                     }).then(r => r.json()).catch(() => []);
 
+                    // 2. Buscar do BigQuery (GET)
                     const bqUrl = new URL(`${API_BASE}/api/evolucoes`, window.location.origin);
                     bqUrl.searchParams.set('prontuario', prontuarioId);
                     const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
 
                     const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
-                    const combined = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
+                    
+                    // Unificar e normalizar mapeamentos
+                    const rawList = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
                     
                     const seen = new Set();
                     const uniqueList = [];
-                    combined.forEach(item => {
-                        const desc = (item.evolucaodescricao || item.descricao || '').trim();
+                    
+                    rawList.forEach(item => {
+                        // Mapeamento Legado -> Novo
+                        const desc = (item.evolucaodescricao || item.registro || item.descricao || '').trim();
                         const dataRaw = item.evolucaodata || item.data || '';
-                        const hash = `${dataRaw}|${desc.substring(0, 50)}`;
+                        const tecnica = item.tecnica || item.profissional || 'Sistema';
+                        const funcao = item.funcao || item.setor || 'Atendimento';
+
+                        // Normalizar item para o padrão da UI
+                        const normalized = {
+                            ...item,
+                            evolucaodescricao: desc,
+                            tecnica: tecnica,
+                            funcao: funcao,
+                            evolucaodata: dataRaw
+                        };
+
+                        const hash = `${String(dataRaw).substring(0,10)}|${desc.substring(0, 50)}`;
                         if (!seen.has(hash) && desc.length > 0) {
                             seen.add(hash);
-                            uniqueList.push(item);
+                            uniqueList.push(normalized);
                         }
                     });
 
                     uniqueList.sort((a, b) => {
-                        const da = dayjs((a.evolucaodata && a.evolucaodata.value) || a.evolucaodata || a.data);
-                        const db = dayjs((b.evolucaodata && b.evolucaodata.value) || b.evolucaodata || b.data);
+                        const da = dayjs((a.evolucaodata && a.evolucaodata.value) || a.evolucaodata);
+                        const db = dayjs((b.evolucaodata && b.evolucaodata.value) || b.evolucaodata);
                         return db.unix() - da.unix();
                     });
 
@@ -3374,14 +3392,10 @@
                         const div = document.createElement('div');
                         div.className = 'timeline-item';
                         
-                        let rawDate = item.evolucaodata || item.data;
+                        let rawDate = item.evolucaodata;
                         if (rawDate && rawDate.value) rawDate = rawDate.value;
                         const djs = dayjs.tz(rawDate).tz("America/Recife");
                         
-                        const desc = item.evolucaodescricao || item.descricao;
-                        const shortDesc = desc.length > 150 ? desc.substring(0, 150) + '...' : desc;
-                        const tecnica = item.tecnica || 'Sistema';
-
                         // Dados em base64/JSON para o clique
                         const itemData = btoa(unescape(encodeURIComponent(JSON.stringify(item))));
 
@@ -3391,15 +3405,15 @@
                             </div>
                             <div class="timeline-content" onclick="window.viewEvolution('${itemData}')">
                                 <span class="timeline-date">${djs.format('DD/MM/YYYY')} às ${djs.format('HH:mm')}</span>
-                                <h6 class="fw-bold text-main mb-1">${tecnica}</h6>
-                                <p class="text-muted small mb-0 line-clamp-3">${shortDesc}</p>
+                                <h6 class="fw-bold text-main mb-1">${item.tecnica}</h6>
+                                <p class="text-muted small mb-0 line-clamp-3">${item.evolucaodescricao.length > 150 ? item.evolucaodescricao.substring(0, 150) + '...' : item.evolucaodescricao}</p>
                             </div>
                         `;
                         container.appendChild(div);
                     });
                 } catch (error) {
                     console.error('Error loading evolucoes:', error);
-                    container.innerHTML = '<div class="text-center py-5 text-danger small">Erro ao carregar histórico</div>';
+                    container.innerHTML = '<div class="text-center py-5 text-danger small">Erro ao carregar histórico unificado</div>';
                 }
             }
 
