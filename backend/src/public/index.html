@@ -2790,6 +2790,16 @@
                 state.currentProntuario = null;
                 state.isEditing = false;
                 state.pendingFiles = [];
+                state.currentFamilia = [];
+                if (typeof renderFamiliaTable === 'function') renderFamiliaTable();
+
+                // Limpar UI de Evoluções e Anexos
+                const evolutionContainer = document.getElementById('evolution_timeline_container');
+                if (evolutionContainer) evolutionContainer.innerHTML = '<div class="text-center py-5 text-muted opacity-50">Aguardando preenchimento...</div>';
+                
+                const annexContainer = document.getElementById('annex_list_container');
+                if (annexContainer) annexContainer.innerHTML = '<div class="text-center py-5 text-muted opacity-50">Aguardando preenchimento...</div>';
+
                 renderPendingFiles();
             }
 
