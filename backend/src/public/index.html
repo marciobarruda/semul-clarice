@@ -625,56 +625,90 @@
         border: none;
         transition: var(--transition);
       }
-      /* Evoluções Timeline */
-      .evolution-card {
-        border-left: 4px solid var(--primary);
-        transition: var(--transition);
+      /* Evolution Timeline Refined */
+      .evolution-timeline {
+        position: relative;
+        padding: 1rem 0;
+      }
+      .evolution-timeline::before {
+        content: '';
+        position: absolute;
+        left: 31px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e9ecef;
+      }
+      .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: flex-start;
+        padding-left: 15px;
+      }
+      .timeline-point {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
         background: #fff;
-      }
-      .evolution-card:hover {
-        transform: translateX(5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05) !important;
-      }
-      
-      /* Maximizable Modal */
-      .modal-fullscreen-toggle {
+        border: 2px solid var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        margin-right: 25px;
+        flex-shrink: 0;
         cursor: pointer;
-        padding: 0.5rem;
-        color: rgba(255,255,255,0.7);
         transition: var(--transition);
+        box-shadow: 0 0 0 4px #fff;
       }
-      .modal-fullscreen-toggle:hover {
-        color: #fff;
+      .timeline-point:hover {
+        transform: scale(1.2);
+        background: var(--primary);
+        color: #fff !important;
+        box-shadow: 0 0 0 4px var(--primary-light);
+      }
+      .timeline-content {
+        background: #fff;
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        border: 1px solid #edf2f7;
+        flex-grow: 1;
+        transition: var(--transition);
+        position: relative;
+        cursor: pointer;
+      }
+      .timeline-content:hover {
+        border-color: var(--primary-light);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+      }
+      .timeline-content::before {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 12px;
+        width: 15px;
+        height: 15px;
+        background: #fff;
+        border-left: 1px solid #edf2f7;
+        border-bottom: 1px solid #edf2f7;
+        transform: rotate(45deg);
       }
       
-      .modal.maximized .modal-dialog {
-        max-width: 100vw !important;
-        margin: 0 !important;
-        height: 100vh !important;
-      }
-      .modal.maximized .modal-content {
-        height: 100vh !important;
-        border-radius: 0 !important;
-      }
-      .modal.maximized .modal-body {
-        overflow-y: auto;
+      .timeline-date {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+        display: block;
       }
 
-      .evolution-textarea {
-        border: 1px solid #eee;
-        border-radius: 12px;
-        padding: 1.5rem;
-        font-size: 1rem;
-        line-height: 1.6;
-        resize: none;
-        transition: var(--transition);
-        background-color: #fcfcfc;
-      }
-      .evolution-textarea:focus {
-        background-color: #fff;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px var(--primary-light);
-        outline: none;
+      /* Modal Maximized fix */
+      .modal.maximized .modal-dialog {
+        margin: 0 !important;
+        max-width: 100vw !important;
+        height: 100vh !important;
       }
     </style>
   </head>
@@ -1912,22 +1946,15 @@
                             <h2 class="form-section-title"><i class="bi bi-journal-text"></i>Evolução</h2>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <p class="text-muted mb-0">Histórico de atendimentos</p>
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#evolucao_modal">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#evolucaomodal">
                                     <i class="bi bi-plus-lg me-1"></i> Nova Evolução
                                 </button>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-sm table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Data</th>
-                                            <th>Descrição</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="evolucaotabelabody">
-                                        <tr><td colspan="2" class="text-center text-muted">Nenhuma evolução registrada</td></tr>
-                                    </tbody>
-                                </table>
+                            <div id="evolution_timeline_container" class="evolution-timeline">
+                                <!-- Timeline items injected here -->
+                                <div class="text-center py-5 text-muted opacity-50">
+                                    Nenhuma evolução registrada.
+                                </div>
                             </div>
                         </section>
 
@@ -3300,97 +3327,137 @@
                 }
             }
 
-            // Lógica de Evoluções (Dual-Source + Deduplicação)
+            // Lógica de Evoluções (Timeline + Modo Leitura)
             async function loadEvolucoes(prontuarioId) {
-                const tbody = document.getElementById('evolucaotabelabody');
-                if (!tbody) return;
-                tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando histórico...</td></tr>';
+                const container = document.getElementById('evolution_timeline_container');
+                if (!container) return;
+                container.innerHTML = '<div class="text-center py-5 text-muted opacity-50"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando histórico...</div>';
                 
                 try {
-                    // 1. Buscar do Endpoint Legado (POST)
                     const legacyPromise = fetch(WEBHOOKS.EVOLUCOES, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ prontuario: prontuarioId })
-                    }).then(r => r.json()).catch(e => { console.error('Erro legado:', e); return []; });
+                    }).then(r => r.json()).catch(() => []);
 
-                    // 2. Buscar do BigQuery (GET)
                     const bqUrl = new URL(`${API_BASE}/api/evolucoes`, window.location.origin);
                     bqUrl.searchParams.set('prontuario', prontuarioId);
-                    const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(e => { console.error('Erro BQ:', e); return []; });
+                    const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
 
                     const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
+                    const combined = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
                     
-                    // Normalizar dados
-                    const legacyList = Array.isArray(legacyData) ? legacyData : (legacyData.data || []);
-                    const bqList = Array.isArray(bqData) ? bqData : (bqData.data || []);
-
-                    // Unificar e Deduplicar
-                    const combined = [...bqList, ...legacyList];
                     const seen = new Set();
                     const uniqueList = [];
-
                     combined.forEach(item => {
-                        // Criar hash único por data e descrição (limpa)
-                        const desc = (item.evolucaodescricao || item.descricao || '').trim().substring(0, 100);
+                        const desc = (item.evolucaodescricao || item.descricao || '').trim();
                         const dataRaw = item.evolucaodata || item.data || '';
-                        let dataStr = '';
-                        if (dataRaw) {
-                            const d = dayjs(dataRaw.value || dataRaw);
-                            dataStr = d.isValid() ? d.format('YYYY-MM-DD') : '';
-                        }
-                        
-                        const hash = `${dataStr}|${desc}`;
+                        const hash = `${dataRaw}|${desc.substring(0, 50)}`;
                         if (!seen.has(hash) && desc.length > 0) {
                             seen.add(hash);
                             uniqueList.push(item);
                         }
                     });
 
-                    // Ordenar por data decrescente
                     uniqueList.sort((a, b) => {
                         const da = dayjs((a.evolucaodata && a.evolucaodata.value) || a.evolucaodata || a.data);
                         const db = dayjs((b.evolucaodata && b.evolucaodata.value) || b.evolucaodata || b.data);
                         return db.unix() - da.unix();
                     });
 
-                    tbody.innerHTML = '';
+                    container.innerHTML = '';
                     if (uniqueList.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted opacity-50">Nenhuma evolução registrada</td></tr>';
+                        container.innerHTML = '<div class="text-center py-5 text-muted opacity-50"><i class="bi bi-calendar-x d-block fs-2 mb-2"></i>Nenhuma evolução registrada</div>';
                         return;
                     }
 
-                    uniqueList.forEach(item => {
-                        const tr = document.createElement('tr');
-                        tr.className = 'border-bottom-0 evolution-card mb-2 d-table-row';
+                    uniqueList.forEach((item, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'timeline-item';
                         
                         let rawDate = item.evolucaodata || item.data;
                         if (rawDate && rawDate.value) rawDate = rawDate.value;
                         const djs = dayjs.tz(rawDate).tz("America/Recife");
                         
+                        const desc = item.evolucaodescricao || item.descricao;
+                        const shortDesc = desc.length > 150 ? desc.substring(0, 150) + '...' : desc;
                         const tecnica = item.tecnica || 'Sistema';
-                        const funcao = item.funcao || 'Atendimento';
 
-                        tr.innerHTML = `
-                            <td class="ps-3 py-3" style="width: 140px;">
-                                <div class="d-flex flex-column">
-                                    <span class="fw-bold text-main small">${djs.format('DD/MM/YYYY')}</span>
-                                    <span class="text-muted x-small">${djs.format('HH:mm')}</span>
-                                    <span class="badge bg-light text-muted border mt-2 x-small text-truncate" title="${tecnica}">${tecnica.split(' ')[0]}</span>
-                                </div>
-                            </td>
-                            <td class="pe-3 py-3">
-                                <div class="text-main small mb-1" style="white-space: pre-wrap; line-height: 1.5; font-size: 0.85rem;">${item.evolucaodescricao || item.descricao}</div>
-                                <div class="text-muted x-small opacity-50 italic">— ${funcao}</div>
-                            </td>
+                        // Dados em base64/JSON para o clique
+                        const itemData = btoa(unescape(encodeURIComponent(JSON.stringify(item))));
+
+                        div.innerHTML = `
+                            <div class="timeline-point" onclick="window.viewEvolution('${itemData}')" title="Clique para ver detalhes">
+                                <i class="bi ${index === 0 ? 'bi-star-fill text-warning' : 'bi-check-lg text-primary'}"></i>
+                            </div>
+                            <div class="timeline-content" onclick="window.viewEvolution('${itemData}')">
+                                <span class="timeline-date">${djs.format('DD/MM/YYYY')} às ${djs.format('HH:mm')}</span>
+                                <h6 class="fw-bold text-main mb-1">${tecnica}</h6>
+                                <p class="text-muted small mb-0 line-clamp-3">${shortDesc}</p>
+                            </div>
                         `;
-                        tbody.appendChild(tr);
+                        container.appendChild(div);
                     });
                 } catch (error) {
                     console.error('Error loading evolucoes:', error);
-                    tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-danger">Erro ao carregar histórico</td></tr>';
+                    container.innerHTML = '<div class="text-center py-5 text-danger small">Erro ao carregar histórico</div>';
                 }
             }
+
+            // Função para Visualizar Evolução (Modo Leitura)
+            window.viewEvolution = function(encodedData) {
+                try {
+                    const item = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+                    const modal = document.getElementById('evolucaomodal');
+                    const form = document.getElementById('form_evolucao');
+                    const descArea = document.getElementById('evolucao_descricao');
+                    const saveBtn = form.querySelector('button[type="submit"]');
+                    const title = modal.querySelector('.modal-title');
+                    
+                    // Preencher campos
+                    descArea.value = item.evolucaodescricao || item.descricao;
+                    document.getElementById('evolucao_tecnica_auto').textContent = item.tecnica || 'Sistema';
+                    document.getElementById('evolucao_funcao_auto').textContent = item.funcao || 'Atendimento';
+                    
+                    let rawDate = item.evolucaodata || item.data;
+                    if (rawDate && rawDate.value) rawDate = rawDate.value;
+                    document.getElementById('evolucao_data_auto').textContent = dayjs(rawDate).format('DD/MM/YYYY');
+
+                    // Modo Leitura
+                    descArea.readOnly = true;
+                    descArea.style.backgroundColor = '#f8f9fa';
+                    saveBtn.classList.add('d-none');
+                    title.textContent = "Visualização da Evolução";
+                    title.parentElement.querySelector('i').className = "bi bi-eye text-white me-3 fs-4";
+
+                    new bootstrap.Modal(modal).show();
+                } catch (e) {
+                    console.error('Erro ao abrir evolução:', e);
+                }
+            };
+
+            // Resetar modal para Nova Evolução
+            document.getElementById('evolucaomodal').addEventListener('show.bs.modal', function(e) {
+                // Se o trigger foi o botão "Nova Evolução", resetar para modo edição
+                const trigger = e.relatedTarget;
+                if (trigger && trigger.innerText.includes('Nova Evolução')) {
+                    const form = document.getElementById('form_evolucao');
+                    const descArea = document.getElementById('evolucao_descricao');
+                    const saveBtn = form.querySelector('button[type="submit"]');
+                    const title = this.querySelector('.modal-title');
+                    
+                    form.reset();
+                    descArea.readOnly = false;
+                    descArea.style.backgroundColor = '';
+                    saveBtn.classList.remove('d-none');
+                    title.textContent = "Nova Evolução do Caso";
+                    title.parentElement.querySelector('i').className = "bi bi-journal-plus text-white me-3 fs-4";
+                    
+                    document.getElementById('evolucao_tecnica_auto').textContent = 'Ana Paula';
+                    document.getElementById('evolucao_funcao_auto').textContent = 'Psicóloga Sênior';
+                    document.getElementById('evolucao_data_auto').textContent = dayjs().format('DD/MM/YYYY');
+                }
+            });
 
             // Modal Maximize Logic
             document.querySelectorAll('.modal-maximize-btn').forEach(btn => {
@@ -3398,7 +3465,6 @@
                     const modal = this.closest('.modal');
                     const icon = this.querySelector('i');
                     modal.classList.toggle('maximized');
-                    
                     if (modal.classList.contains('maximized')) {
                         icon.classList.replace('bi-arrows-fullscreen', 'bi-fullscreen-exit');
                         this.title = "Restaurar";
@@ -3423,35 +3489,27 @@
                         evolucaodescricao: formData.get('evolucaodescricao'),
                         tecnica: document.getElementById('evolucao_tecnica_auto').textContent,
                         funcao: document.getElementById('evolucao_funcao_auto').textContent,
-                        evolucaodata: dayjs().format('YYYY-MM-DD') // BigQuery DATE format
+                        evolucaodata: dayjs().format('YYYY-MM-DD')
                     };
 
                     try {
                         Swal.fire({ title: 'Salvando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                        
                         const response = await fetch(`${API_BASE}/api/evolucoes`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         });
-
-                        if (!response.ok) throw new Error('Erro ao salvar no BigQuery');
-
-                        Swal.fire({ icon: 'success', title: 'Sucesso!', text: 'Evolução registrada com sucesso.', timer: 2000, showConfirmButton: false });
+                        if (!response.ok) throw new Error('Erro ao salvar');
+                        Swal.fire({ icon: 'success', title: 'Sucesso!', text: 'Evolução registrada.', timer: 2000, showConfirmButton: false });
                         bootstrap.Modal.getInstance(document.getElementById('evolucaomodal')).hide();
                         formEvolucao.reset();
                         loadEvolucoes(prontuarioId);
                     } catch (error) {
-                        console.error('Error saving evolution:', error);
-                        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível salvar a evolução.' });
+                        console.error('Error saving:', error);
+                        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível salvar.' });
                     }
                 });
             }
-
-            // Iniciar data no modal
-            document.getElementById('evolucaomodal').addEventListener('show.bs.modal', function() {
-                document.getElementById('evolucao_data_auto').textContent = dayjs().format('DD/MM/YYYY');
-            });
 
             // Risco Iminente Badge Listener
             document.querySelectorAll('input[name="avaliacaoinicial"]').forEach(radio => {
