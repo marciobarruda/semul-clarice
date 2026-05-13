@@ -2459,9 +2459,10 @@
                 sortDirection: 'desc',
                 loadingTasks: 0,
                 isDashboardRendered: false,
-                pendingFiles: [], // Arquivos selecionados mas não salvos
-                currentFamilia: [], // Lista unificada de membros da família
-                masks: {} // Armazenar instâncias do IMask
+                pendingFiles: [],
+                currentFamilia: [],
+                currentAutores: [],
+                masks: {}
             };
 
             function showGlobalLoader() {
@@ -2490,6 +2491,8 @@
                 ANEXOS:        `${API_BASE}/api/anexos`,
                 FAMILIA:       `${API_BASE}/api/familia`,
                 FAMILIA_LEGACY:`${API_BASE}/api/familia/legacy`,
+                AUTORES:       `${API_BASE}/api/autores`,
+                AUTORES_LEGACY:`${API_BASE}/api/autores/legacy`,
                 GET_NEW:       `${API_BASE}/api/prontuarios/novo`,
                 NACIONALIDADES:`${API_BASE}/api/nacionalidades`,
                 NATURALIDADES: `${API_BASE}/api/naturalidades`,
@@ -2791,7 +2794,9 @@
                 state.isEditing = false;
                 state.pendingFiles = [];
                 state.currentFamilia = [];
+                state.currentAutores = [];
                 if (typeof renderFamiliaTable === 'function') renderFamiliaTable();
+                if (typeof renderAutoresTable === 'function') renderAutoresTable();
 
                 // Limpar UI de Evoluções e Anexos
                 const evolutionContainer = document.getElementById('evolution_timeline_container');
@@ -3265,6 +3270,7 @@
                         loadEvolucoes(id);
                         loadAnexos(id);
                         loadFamilia(id);
+                        loadAutores(id);
                         
                         Swal.close();
                     } else {
@@ -3922,8 +3928,9 @@
                         data.totalanexos = state.pendingFiles.length;
                     }
 
-                    // 5. Incluir Composição Familiar (Lista em Memória)
+                    // 5. Incluir Composição Familiar e Autores (Lista em Memória)
                     data.familia_json = JSON.stringify(state.currentFamilia || []);
+                    data.autores_json = JSON.stringify(state.currentAutores || []);
 
                     Swal.fire({
                         title: 'Salvando...',
@@ -4663,13 +4670,135 @@
             modal.show();
         }
 
-        // Garantir Reset ao fechar modal
-        const familiaModalEl = document.getElementById('familia_modal');
-        if (familiaModalEl) {
-            familiaModalEl.addEventListener('hidden.bs.modal', () => {
-                document.getElementById('familiamodalform').reset();
-                document.getElementById('familia_index').value = -1;
-                document.getElementById('familiamodaltitle').textContent = 'Adicionar Membro Familiar';
+        // ── Autores da Violência ──────────────────────────────────────────────────
+        async function loadAutores(prontuarioId) {
+            const tbody = document.getElementById('autortabelabody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-3 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando autores...</td></tr>';
+            
+            try {
+                const legacyUrl = `${WEBHOOKS.AUTORES_LEGACY}/${prontuarioId}`;
+                
+                // 1. Buscar do Legado via PROXY
+                const legacyPromise = fetch(legacyUrl).then(r => r.json()).catch(() => []);
+                // 2. Buscar do BigQuery
+                const bqUrl = new URL(WEBHOOKS.AUTORES, window.location.origin);
+                bqUrl.searchParams.set('prontuario', prontuarioId);
+                const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
+
+                const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
+                
+                // Unificar e normalizar (Deduplicação por Nome)
+                const rawList = [...(Array.isArray(bqData) ? bqData : []), ...(Array.isArray(legacyData) ? legacyData : [])];
+                const seen = new Set();
+                state.currentAutores = [];
+
+                rawList.forEach(item => {
+                    const nome = (item.nome || item.autornome || '').trim().toUpperCase();
+                    if (!seen.has(nome) && nome.length > 0) {
+                        seen.add(nome);
+                        state.currentAutores.push({
+                            nome: nome,
+                            cpf: item.cpf || item.autorcpf || '',
+                            parentesco: item.parentesco || item.autorvinculo || '',
+                            profissao: item.profissao || item.autorprofissao || '',
+                            idade: item.idade || 0,
+                            datanascimento: item.datanascimento || ''
+                        });
+                    }
+                });
+
+                renderAutoresTable();
+            } catch (error) {
+                console.error('Error loading autores:', error);
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-3">Erro ao carregar autores</td></tr>';
+            }
+        }
+
+        function renderAutoresTable() {
+            const tbody = document.getElementById('autortabelabody');
+            const thead = tbody.parentElement.querySelector('thead tr');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            // Ajustar Header (Ocultar coluna de Ações)
+            if (thead) {
+                const actionHeader = thead.querySelector('th:last-child');
+                if (actionHeader) actionHeader.style.display = state.isReadOnly ? 'none' : '';
+            }
+
+            if (!state.currentAutores || state.currentAutores.length === 0) {
+                tbody.innerHTML = '<tr id="autorvazio"><td colspan="3" class="text-center text-muted py-3">Nenhum autor informado.</td></tr>';
+                return;
+            }
+
+            state.currentAutores.forEach((m, idx) => {
+                const tr = document.createElement('tr');
+                const actionsHtml = state.isReadOnly ? '' : `
+                    <td class="text-end px-3">
+                        <button type="button" class="btn btn-sm btn-light border" onclick="editAutor(${idx})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tr.innerHTML = `
+                    <td class="fw-medium">${m.nome}</td>
+                    <td><span class="badge bg-light text-dark border">${m.parentesco}</span></td>
+                    ${actionsHtml}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.editAutor = function(idx) {
+            const m = state.currentAutores[idx];
+            if (!m) return;
+
+            document.getElementById('autor_index').value = idx;
+            document.getElementById('autornome').value = m.nome;
+            document.getElementById('autorcpf').value = m.cpf || '';
+            document.getElementById('autorvinculo').value = m.parentesco;
+            document.getElementById('autorprofissao').value = m.profissao || '';
+            document.getElementById('autormodaltitle').textContent = 'Editar Autor da Violência';
+
+            const modal = new bootstrap.Modal(document.getElementById('autormodal'));
+            modal.show();
+        };
+
+        // Handler do Modal de Autores
+        const autorForm = document.getElementById('autormodalform');
+        if (autorForm) {
+            autorForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(autorForm);
+                const idx = parseInt(document.getElementById('autor_index').value);
+                
+                const autor = {
+                    nome: formData.get('autornome').toUpperCase(),
+                    cpf: formData.get('autorcpf'),
+                    parentesco: formData.get('autorvinculo'),
+                    profissao: formData.get('autorprofissao')
+                };
+
+                if (idx === -1) {
+                    state.currentAutores.push(autor);
+                } else {
+                    state.currentAutores[idx] = autor;
+                }
+
+                renderAutoresTable();
+                bootstrap.Modal.getInstance(document.getElementById('autormodal')).hide();
+            });
+        }
+
+        // Reset do Modal de Autores
+        const autorModalEl = document.getElementById('autormodal');
+        if (autorModalEl) {
+            autorModalEl.addEventListener('hidden.bs.modal', () => {
+                document.getElementById('autormodalform').reset();
+                document.getElementById('autor_index').value = -1;
+                document.getElementById('autormodaltitle').textContent = 'Adicionar Autor da Violência';
             });
         }
     </script>
