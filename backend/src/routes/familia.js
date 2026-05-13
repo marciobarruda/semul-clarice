@@ -10,16 +10,25 @@ router.get('/legacy/:prontuario', async (req, res) => {
   const { prontuario } = req.params;
   const N8N_URL = 'https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/composicaofamiliar';
 
+  console.log(`[Legacy Familia Proxy] Solicitando prontuário: ${prontuario}`);
+  
   try {
     const response = await fetch(N8N_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ numeroprontuario: prontuario })
     });
+    
+    if (!response.ok) {
+        console.error(`[Legacy Familia Proxy] Erro n8n: ${response.status}`);
+        return res.json([]);
+    }
+
     const data = await response.json();
+    console.log(`[Legacy Familia Proxy] Recebidos ${Array.isArray(data) ? data.length : 0} membros`);
     res.json(data);
   } catch (err) {
-    console.error('[Legacy Familia Proxy] Erro:', err.message);
+    console.error('[Legacy Familia Proxy] Erro fatal:', err.message);
     res.json([]);
   }
 });

@@ -4498,8 +4498,14 @@
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando composição...</td></tr>';
             
             try {
+                const legacyUrl = `${WEBHOOKS.FAMILIA_LEGACY}/${prontuarioId}`;
+                console.log('[DEBUG] Carregando família legada de:', legacyUrl);
+                
                 // 1. Buscar do Legado via PROXY
-                const legacyPromise = fetch(`${WEBHOOKS.FAMILIA_LEGACY}/${prontuarioId}`).then(r => r.json()).catch(() => []);
+                const legacyPromise = fetch(legacyUrl).then(r => r.json()).catch((err) => {
+                    console.error('[DEBUG] Erro ao carregar família legada:', err);
+                    return [];
+                });
                 // 2. Buscar do BigQuery
                 const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.origin);
                 bqUrl.searchParams.set('prontuario', prontuarioId);
