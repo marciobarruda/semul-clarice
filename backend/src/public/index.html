@@ -2180,28 +2180,108 @@
                     <input type="hidden" id="autor_index" value="-1">
                     <div class="modal-body">
                         <div class="row g-3">
-                            <div class="col-12 col-md-8">
+                            <div class="col-12 col-md-6">
                                 <label for="autornome" class="form-label">Nome Completo</label>
                                 <input type="text" class="form-control" id="autornome" name="autornome" required>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <label for="autorcpf" class="form-label">CPF (se souber)</label>
+                            <div class="col-12 col-md-3">
+                                <label for="autorcpf" class="form-label">CPF</label>
                                 <input type="text" class="form-control" id="autorcpf" name="autorcpf">
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-3">
+                                <label for="autor_datanascimento" class="form-label">Data Nasc.</label>
+                                <input type="date" class="form-control" id="autor_datanascimento" name="datanascimento">
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <label for="autoridade" class="form-label">Idade</label>
+                                <input type="number" class="form-control bg-light" id="autoridade" name="idade" readonly>
+                            </div>
+                            <div class="col-12 col-md-5">
                                 <label for="autorvinculo" class="form-label">Vínculo com a usuária</label>
-                                <select id="autorvinculo" name="autorvinculo" class="form-select" required>
+                                <select id="autorvinculo" name="parentesco" class="form-select" required>
                                     <option value="">Selecione</option>
                                     <option>Ex-companheiro(a)</option>
                                     <option>Companheiro(a) atual</option>
-                                    <option>Familiar</option>
-                                    <option>Conhecido</option>
+                                    <option>Pai/Mãe</option>
+                                    <option>Filho(a)</option>
+                                    <option>Irmão/Irmã</option>
+                                    <option>Outro familiar</option>
+                                    <option>Conhecido/Vizinho</option>
                                     <option>Desconhecido</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-5">
                                 <label for="autorprofissao" class="form-label">Ocupação/Profissão</label>
-                                <input type="text" class="form-control" id="autorprofissao" name="autorprofissao">
+                                <input type="text" class="form-control" id="autorprofissao" name="profissao">
+                            </div>
+
+                            <!-- Contato -->
+                            <div class="col-6 col-md-2">
+                                <label for="autordddcel" class="form-label">DDD Cel</label>
+                                <input type="text" class="form-control" id="autordddcel" name="dddcel" maxlength="2">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="autorcelular" class="form-label">Celular</label>
+                                <input type="text" class="form-control" id="autorcelular" name="celular">
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <label for="autordddtel" class="form-label">DDD Tel</label>
+                                <input type="text" class="form-control" id="autordddtel" name="dddtel" maxlength="2">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="autortelefone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" id="autortelefone" name="telefone">
+                            </div>
+
+                            <!-- Perfil Sociodemográfico -->
+                            <div class="col-12 col-md-4">
+                                <label for="autorestadocivil" class="form-label">Estado Civil</label>
+                                <select id="autorestadocivil" name="estadocivil" class="form-select">
+                                    <option value="">Selecione</option>
+                                    <option>Solteiro(a)</option>
+                                    <option>Casado(a)</option>
+                                    <option>Divorciado(a)</option>
+                                    <option>Viúvo(a)</option>
+                                    <option>União Estável</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="autorgenero" class="form-label">Gênero</label>
+                                <select id="autorgenero" name="genero" class="form-select">
+                                    <option value="">Selecione</option>
+                                    <option>Homem Cisgênero</option>
+                                    <option>Homem Transgênero</option>
+                                    <option>Mulher Cisgênero</option>
+                                    <option>Mulher Transgênero</option>
+                                    <option>Não-binário</option>
+                                    <option>Outro</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="autororientacao" class="form-label">Orientação Sexual</label>
+                                <select id="autororientacao" name="orientacaosexual" class="form-select">
+                                    <option value="">Selecione</option>
+                                    <option>Heterossexual</option>
+                                    <option>Homossexual</option>
+                                    <option>Bissexual</option>
+                                    <option>Pansexual</option>
+                                    <option>Outra</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="autorcorraca" class="form-label">Cor/Raça</label>
+                                <select id="autorcorraca" name="corraca" class="form-select">
+                                    <option value="">Selecione</option>
+                                    <option>Branca</option>
+                                    <option>Preta</option>
+                                    <option>Parda</option>
+                                    <option>Amarela</option>
+                                    <option>Indígena</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="autorreligiao" class="form-label">Religião</label>
+                                <input type="text" class="form-control" id="autorreligiao" name="religiao">
                             </div>
                         </div>
                     </div>
@@ -4752,6 +4832,20 @@
             });
         }
 
+        // Cálculo Automático de Idade no Modal de Autores
+        const autorBirthInput = document.getElementById('autor_datanascimento');
+        if (autorBirthInput) {
+            const updateAutorAge = function() {
+                const birthDate = autorBirthInput.value;
+                if (birthDate) {
+                    const age = dayjs().diff(dayjs(birthDate), 'year');
+                    document.getElementById('autoridade').value = age;
+                }
+            };
+            autorBirthInput.addEventListener('change', updateAutorAge);
+            autorBirthInput.addEventListener('input', updateAutorAge);
+        }
+
         window.editAutor = function(idx) {
             const m = state.currentAutores[idx];
             if (!m) return;
@@ -4761,6 +4855,18 @@
             document.getElementById('autorcpf').value = m.cpf || '';
             document.getElementById('autorvinculo').value = m.parentesco;
             document.getElementById('autorprofissao').value = m.profissao || '';
+            document.getElementById('autor_datanascimento').value = m.datanascimento || '';
+            document.getElementById('autoridade').value = m.idade || '';
+            document.getElementById('autordddcel').value = m.dddcel || '';
+            document.getElementById('autorcelular').value = m.celular || '';
+            document.getElementById('autordddtel').value = m.dddtel || '';
+            document.getElementById('autortelefone').value = m.telefone || '';
+            document.getElementById('autorestadocivil').value = m.estadocivil || '';
+            document.getElementById('autorgenero').value = m.genero || '';
+            document.getElementById('autororientacao').value = m.orientacaosexual || '';
+            document.getElementById('autorcorraca').value = m.corraca || '';
+            document.getElementById('autorreligiao').value = m.religiao || '';
+
             document.getElementById('autormodaltitle').textContent = 'Editar Autor da Violência';
 
             const modal = new bootstrap.Modal(document.getElementById('autormodal'));
@@ -4778,8 +4884,19 @@
                 const autor = {
                     nome: formData.get('autornome').toUpperCase(),
                     cpf: formData.get('autorcpf'),
-                    parentesco: formData.get('autorvinculo'),
-                    profissao: formData.get('autorprofissao')
+                    parentesco: formData.get('parentesco'),
+                    profissao: formData.get('profissao'),
+                    datanascimento: formData.get('datanascimento'),
+                    idade: parseInt(formData.get('idade')) || 0,
+                    dddcel: formData.get('dddcel'),
+                    celular: formData.get('celular'),
+                    dddtel: formData.get('dddtel'),
+                    telefone: formData.get('telefone'),
+                    estadocivil: formData.get('estadocivil'),
+                    genero: formData.get('genero'),
+                    orientacaosexual: formData.get('orientacaosexual'),
+                    corraca: formData.get('corraca'),
+                    religiao: formData.get('religiao')
                 };
 
                 if (idx === -1) {
