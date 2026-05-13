@@ -2446,7 +2446,7 @@
         // Global State
         let charts = {};
         // State Management
-        const state = {
+        const state = window.state = {
                 currentView: 'prontuarios',
                 currentProntuario: null,
                 isEditing: false,
@@ -2477,7 +2477,7 @@
             // API endpoints (Cloud Run - mesmo origin)
             // Naturalidades e RPA são proxiados pelo backend para o n8n
             const API_BASE = '';
-            const WEBHOOKS = {
+            const WEBHOOKS = window.WEBHOOKS = {
                 ALL_DATA:      `${API_BASE}/api/prontuarios`,
                 STATS:         `${API_BASE}/api/prontuarios/stats`,
                 LIST:          `${API_BASE}/api/prontuarios/buscar`,
