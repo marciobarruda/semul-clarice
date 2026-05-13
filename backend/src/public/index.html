@@ -3244,10 +3244,11 @@
                         const dataFormatada = item.dataupload || item.data || '';
                         const ext = (item.formatoarquivo || '').toLowerCase();
                         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+                        const secureUrl = `${WEBHOOKS.ANEXOS}/view?file=${item.idarquivoexterno}`;
                         
                         let thumbnail = '';
                         if (isImage) {
-                            thumbnail = `<img src="${item.medialink}" class="rounded shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">`;
+                            thumbnail = `<img src="${secureUrl}" class="rounded shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">`;
                         } else {
                             const iconMap = {
                                 '.pdf': 'bi-file-earmark-pdf text-danger',
@@ -3270,7 +3271,7 @@
                                 </div>
                             </td>
                             <td class="text-end">
-                                <a href="${item.medialink || '#'}" target="_blank" class="btn btn-sm btn-outline-primary" title="Visualizar"><i class="bi bi-eye"></i></a>
+                                <a href="${secureUrl}" target="_blank" class="btn btn-sm btn-outline-primary" title="Visualizar"><i class="bi bi-eye"></i></a>
                             </td>
                         `;
                         tbody.appendChild(tr);

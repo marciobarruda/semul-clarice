@@ -33,10 +33,10 @@ async function uploadFile(content, destination, contentType) {
 }
 
 /**
- * Gera uma URL assinada para download privado (opcional)
+ * Gera uma URL assinada para download privado (válida por 15 minutos)
  */
-async function getSignedUrl(filename) {
-  const file = bucket.file(filename);
+async function getSignedUrl(destination) {
+  const file = bucket.file(destination);
   const [url] = await file.getSignedUrl({
     version: 'v4',
     action: 'read',
