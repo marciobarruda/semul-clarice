@@ -18,12 +18,12 @@ const { v4: uuidv4 } = require('uuid');
 
 // ── Configuração do Keycloak ─────────────────────────────────────────────────
 const KC = {
-  authUrl:      process.env.KC_AUTH_URL,
-  tokenUrl:     process.env.KC_TOKEN_URL,
-  userinfoUrl:  process.env.KC_USERINFO_URL,
-  clientId:     process.env.KC_CLIENT_ID,
-  clientSecret: process.env.KC_CLIENT_SECRET,
-  redirectUri:  process.env.KC_REDIRECT_URI,
+  authUrl:      process.env.KC_AUTH_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/auth',
+  tokenUrl:     process.env.KC_TOKEN_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/token',
+  userinfoUrl:  process.env.KC_USERINFO_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/userinfo',
+  clientId:     process.env.KC_CLIENT_ID || 'portal-crcl',
+  clientSecret: process.env.KC_CLIENT_SECRET || 'c6b83877-54cd-4b57-8df5-aa78d2c40e79',
+  redirectUri:  process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario',
 };
 
 // Lista de usuários autorizados (preferred_username, minúsculas)
@@ -31,6 +31,13 @@ const ALLOWED_USERS = (process.env.ALLOWED_USERS || '')
   .split(',')
   .map(u => u.trim().toLowerCase())
   .filter(Boolean);
+
+// Cache para a lista de usuários do SESUITE
+let sesuiteCache = {
+  users: [],
+  lastFetch: 0,
+  ttl: 5 * 60 * 1000 // 5 minutos
+};
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -107,6 +114,65 @@ function buildLoginUrl() {
   return `${KC.authUrl}?${params.toString()}`;
 }
 
+/** Verifica se o usuário tem acesso via API do SESUITE */
+async function checkSesuiteAccess(username) {
+  // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto
+  if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(username.toLowerCase())) {
+    return true;
+  }
+
+  // 2. Tenta carregar do cache se for recente
+  const now = Date.now();
+  if (sesuiteCache.users.length > 0 && (now - sesuiteCache.lastFetch < sesuiteCache.ttl)) {
+    return sesuiteCache.users.includes(username.toLowerCase());
+  }
+
+  // 3. Consulta a API do SESUITE
+  try {
+    const url = process.env.SESUITE_API_URL || 'https://sesuite.recife.pe.gov.br/apigateway/v1/dataset-integration/equiperedeclarice';
+    const token = process.env.SESUITE_API_TOKEN;
+
+    console.log(`[Auth] Consultando SESUITE para autorização do usuário: ${username}`);
+    
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token // O usuário forneceu o token completo para o header Authorization
+      },
+      body: JSON.stringify({}),
+      timeout: 10000
+    });
+
+    if (!res.ok) {
+      console.error(`[Auth] Erro na API do SESUITE (${res.status})`);
+      // Em caso de erro na API, se tivermos cache antigo, usamos ele como fallback
+      if (sesuiteCache.users.length > 0) return sesuiteCache.users.includes(username.toLowerCase());
+      return false;
+    }
+
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data.data || []);
+    
+    // Extrai os logins e atualiza o cache
+    const authorizedLogins = list.map(u => String(u.login || '').toLowerCase()).filter(Boolean);
+    
+    sesuiteCache = {
+      users: authorizedLogins,
+      lastFetch: now,
+      ttl: 5 * 60 * 1000
+    };
+
+    console.log(`[Auth] Cache do SESUITE atualizado com ${authorizedLogins.length} usuários.`);
+    return authorizedLogins.includes(username.toLowerCase());
+
+  } catch (err) {
+    console.error('[Auth] Falha crítica ao consultar SESUITE:', err.message);
+    if (sesuiteCache.users.length > 0) return sesuiteCache.users.includes(username.toLowerCase());
+    return false;
+  }
+}
+
 /** Página de acesso negado */
 function deniedPage(username) {
   return `<!DOCTYPE html>
@@ -169,8 +235,9 @@ async function requireAuth(req, res, next) {
 
   const username = (userInfo.preferred_username || '').toLowerCase();
 
-  // Valida lista de usuários autorizados (se configurada)
-  if (ALLOWED_USERS.length > 0 && !ALLOWED_USERS.includes(username)) {
+  // Valida acesso dinâmico (SESUITE) ou estático (ALLOWED_USERS)
+  const isAuthorized = await checkSesuiteAccess(username);
+  if (!isAuthorized) {
     return res.status(403).send(deniedPage(username));
   }
 
@@ -198,7 +265,8 @@ async function requireApiAuth(req, res, next) {
   }
 
   const username = (userInfo.preferred_username || '').toLowerCase();
-  if (ALLOWED_USERS.length > 0 && !ALLOWED_USERS.includes(username)) {
+  const isAuthorized = await checkSesuiteAccess(username);
+  if (!isAuthorized) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
