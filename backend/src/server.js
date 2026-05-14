@@ -25,9 +25,14 @@ const PORT = process.env.PORT || 8080;
 app.set('trust proxy', true);
 
 // ── Middlewares globais ───────────────────────────────────────────────────────
-app.use(helmet({
-  contentSecurityPolicy: false, // index.html usa CDNs externos (Bootstrap, etc.)
-}));
+// app.use(helmet({
+//   contentSecurityPolicy: false, // index.html usa CDNs externos (Bootstrap, etc.)
+// }));
+
+app.use((req, res, next) => {
+  console.log(`[Request] ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
+  next();
+});
 
 app.use(cors({
   origin:      process.env.CORS_ORIGIN || true,
