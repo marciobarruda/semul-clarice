@@ -2617,7 +2617,7 @@
 
             // API endpoints (Cloud Run - mesmo origin)
             // Naturalidades e RPA são proxiados pelo backend para o n8n
-            const API_BASE = '';
+            const API_BASE = '.';
             const WEBHOOKS = window.WEBHOOKS = {
                 ALL_DATA:      `${API_BASE}/api/prontuarios`,
                 STATS:         `${API_BASE}/api/prontuarios/stats`,
@@ -3164,7 +3164,7 @@
                 if (tbodyFull) tbodyFull.innerHTML = loadingHtml;
                 
                 try {
-                    const url = new URL(`${API_BASE}/api/prontuarios`, window.location.origin);
+                    const url = new URL(`${API_BASE}/api/prontuarios`, window.location.href);
                     if (searchTerm) url.searchParams.set('q', searchTerm);
                     
                     const response = await fetch(url.toString(), {
@@ -3515,7 +3515,7 @@
                     const legacyPromise = fetch(`${API_BASE}/api/evolucoes/legacy/${prontuarioId}`).then(r => r.json()).catch(() => []);
 
                     // 2. Buscar do BigQuery (GET)
-                    const bqUrl = new URL(`${API_BASE}/api/evolucoes`, window.location.origin);
+                    const bqUrl = new URL(`${API_BASE}/api/evolucoes`, window.location.href);
                     bqUrl.searchParams.set('prontuario', prontuarioId);
                     const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
 
@@ -3739,8 +3739,8 @@
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary me-2"></div><span class="text-muted">Carregando repositório...</span></td></tr>';
                 
                 try {
-                    // Fix: Adicionado window.location.origin para suportar caminhos relativos
-                    const url = new URL(WEBHOOKS.ANEXOS, window.location.origin);
+                    // Fix: Adicionado window.location.href para suportar caminhos relativos
+                    const url = new URL(WEBHOOKS.ANEXOS, window.location.href);
                     url.searchParams.set('prontuario', prontuarioId);
                     
                     const response = await fetch(url.toString());
@@ -3901,7 +3901,7 @@
 
             async function loadUserData() {
                 try {
-                    const res = await fetch('/api/me');
+                    const res = await fetch('./api/me');
                     if (res.ok) {
                         const user = await res.json();
                         state.user = user;
@@ -4695,7 +4695,7 @@
                     return [];
                 });
                 // 2. Buscar do BigQuery
-                const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.origin);
+                const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.href);
                 bqUrl.searchParams.set('prontuario', prontuarioId);
                 const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
 
@@ -4842,7 +4842,7 @@
                 // 1. Buscar do Legado via PROXY
                 const legacyPromise = fetch(legacyUrl).then(r => r.json()).catch(() => []);
                 // 2. Buscar do BigQuery
-                const bqUrl = new URL(WEBHOOKS.AUTORES, window.location.origin);
+                const bqUrl = new URL(WEBHOOKS.AUTORES, window.location.href);
                 bqUrl.searchParams.set('prontuario', prontuarioId);
                 const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
 
