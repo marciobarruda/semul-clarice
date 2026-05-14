@@ -41,6 +41,11 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'clarice-portal', ts: new Date().toISOString() });
 });
 
+// ── Dados do Usuário ──────────────────────────────────────────────────────────
+app.get('/api/me', requireApiAuth, (req, res) => {
+  res.json(req.user);
+});
+
 // ── Logout ────────────────────────────────────────────────────────────────────
 app.get('/logout', (req, res) => {
   res.clearCookie('token');

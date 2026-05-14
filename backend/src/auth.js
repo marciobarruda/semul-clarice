@@ -34,7 +34,7 @@ const ALLOWED_USERS = (process.env.ALLOWED_USERS || '')
 
 // Cache para a lista de usuários do SESUITE
 let sesuiteCache = {
-  users: [],
+  users: [], // Armazenará objetos completos { login, nome, funcao }
   lastFetch: 0,
   ttl: 5 * 60 * 1000 // 5 minutos
 };
@@ -114,17 +114,17 @@ function buildLoginUrl() {
   return `${KC.authUrl}?${params.toString()}`;
 }
 
-/** Verifica se o usuário tem acesso via API do SESUITE */
+/** Verifica se o usuário tem acesso via API do SESUITE e retorna seus dados */
 async function checkSesuiteAccess(username) {
-  // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto
+  // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto (sem dados extras de função)
   if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(username.toLowerCase())) {
-    return true;
+    return { login: username, nome: username, funcao: 'Administrador' };
   }
 
   // 2. Tenta carregar do cache se for recente
   const now = Date.now();
   if (sesuiteCache.users.length > 0 && (now - sesuiteCache.lastFetch < sesuiteCache.ttl)) {
-    return sesuiteCache.users.includes(username.toLowerCase());
+    return sesuiteCache.users.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
   }
 
   // 3. Consulta a API do SESUITE
@@ -132,13 +132,13 @@ async function checkSesuiteAccess(username) {
     const url = process.env.SESUITE_API_URL || 'https://sesuite.recife.pe.gov.br/apigateway/v1/dataset-integration/equiperedeclarice';
     const token = process.env.SESUITE_API_TOKEN;
 
-    console.log(`[Auth] Consultando SESUITE para autorização do usuário: ${username}`);
+    console.log(`[Auth] Consultando SESUITE para autorização e dados do usuário: ${username}`);
     
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token // O usuário forneceu o token completo para o header Authorization
+        'Authorization': token
       },
       body: JSON.stringify({}),
       timeout: 10000
@@ -146,30 +146,30 @@ async function checkSesuiteAccess(username) {
 
     if (!res.ok) {
       console.error(`[Auth] Erro na API do SESUITE (${res.status})`);
-      // Em caso de erro na API, se tivermos cache antigo, usamos ele como fallback
-      if (sesuiteCache.users.length > 0) return sesuiteCache.users.includes(username.toLowerCase());
-      return false;
+      if (sesuiteCache.users.length > 0) {
+        return sesuiteCache.users.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
+      }
+      return null;
     }
 
     const data = await res.json();
     const list = Array.isArray(data) ? data : (data.data || []);
     
-    // Extrai os logins e atualiza o cache
-    const authorizedLogins = list.map(u => String(u.login || '').toLowerCase()).filter(Boolean);
-    
     sesuiteCache = {
-      users: authorizedLogins,
+      users: list,
       lastFetch: now,
       ttl: 5 * 60 * 1000
     };
 
-    console.log(`[Auth] Cache do SESUITE atualizado com ${authorizedLogins.length} usuários.`);
-    return authorizedLogins.includes(username.toLowerCase());
+    console.log(`[Auth] Cache do SESUITE atualizado com ${list.length} usuários.`);
+    return list.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
 
   } catch (err) {
     console.error('[Auth] Falha crítica ao consultar SESUITE:', err.message);
-    if (sesuiteCache.users.length > 0) return sesuiteCache.users.includes(username.toLowerCase());
-    return false;
+    if (sesuiteCache.users.length > 0) {
+      return sesuiteCache.users.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
+    }
+    return null;
   }
 }
 
@@ -236,12 +236,17 @@ async function requireAuth(req, res, next) {
   const username = (userInfo.preferred_username || '').toLowerCase();
 
   // Valida acesso dinâmico (SESUITE) ou estático (ALLOWED_USERS)
-  const isAuthorized = await checkSesuiteAccess(username);
-  if (!isAuthorized) {
+  const sesuiteUser = await checkSesuiteAccess(username);
+  if (!sesuiteUser) {
     return res.status(403).send(deniedPage(username));
   }
 
-  req.user = userInfo;
+  // Mescla informações do Keycloak e SESUITE
+  req.user = { 
+    ...userInfo, 
+    nome: sesuiteUser.nome || userInfo.name || username,
+    funcao: sesuiteUser.funcao || 'Técnica'
+  };
   next();
 }
 
@@ -265,12 +270,16 @@ async function requireApiAuth(req, res, next) {
   }
 
   const username = (userInfo.preferred_username || '').toLowerCase();
-  const isAuthorized = await checkSesuiteAccess(username);
-  if (!isAuthorized) {
+  const sesuiteUser = await checkSesuiteAccess(username);
+  if (!sesuiteUser) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
-  req.user = userInfo;
+  req.user = { 
+    ...userInfo, 
+    nome: sesuiteUser.nome || userInfo.name || username,
+    funcao: sesuiteUser.funcao || 'Técnica'
+  };
   next();
 }
 

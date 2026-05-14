@@ -804,10 +804,10 @@
           </div>
         </nav>
         <div class="sidebar-user-info">
-          <img src="https://ui-avatars.com/api/?name=Ana+Paula&background=b366a6&color=fff" alt="Avatar" class="rounded-circle border border-2 border-primary-light shadow-sm" width="38">
+          <img id="user-avatar-sidebar" src="https://ui-avatars.com/api/?name=Usuario&background=b366a6&color=fff" alt="Avatar" class="rounded-circle border border-2 border-primary-light shadow-sm" width="38">
           <div class="user-details overflow-hidden">
-            <p class="mb-0 fw-bold text-main small text-truncate">Ana Paula</p>
-            <small class="text-muted" style="font-size: 0.65rem; color: #7f8c8d !important;">Psicóloga Sênior</small>
+            <p id="user-name-sidebar" class="mb-0 fw-bold text-main small text-truncate">Carregando...</p>
+            <small id="user-role-sidebar" class="text-muted" style="font-size: 0.65rem; color: #7f8c8d !important;">Técnica</small>
           </div>
         </div>
         <!-- ── Indicador de Versão Removido ─────────────────────────────── -->
@@ -2140,8 +2140,8 @@
                         <div class="d-flex gap-3 mb-4 flex-wrap">
                             <div class="p-3 bg-white rounded shadow-sm border-start border-primary border-4 flex-grow-1" style="min-width: 250px;">
                                 <label class="text-muted x-small text-uppercase fw-bold mb-1 d-block">Técnica Responsável</label>
-                                <span id="evolucao_tecnica_auto" class="fw-bold text-main">Ana Paula</span>
-                                <span id="evolucao_funcao_auto" class="badge bg-primary-subtle text-primary ms-2 x-small">Psicóloga Sênior</span>
+                                <span id="evolucao_tecnica_auto" class="fw-bold text-main">Técnica</span>
+                                <span id="evolucao_funcao_auto" class="badge bg-primary-subtle text-primary ms-2 x-small">Função</span>
                             </div>
                             <div class="p-3 bg-white rounded shadow-sm border-start border-secondary border-4" style="min-width: 150px;">
                                 <label class="text-muted x-small text-uppercase fw-bold mb-1 d-block">Data do Registro</label>
@@ -2598,7 +2598,8 @@
                 pendingFiles: [],
                 currentFamilia: [],
                 currentAutores: [],
-                masks: {}
+                masks: {},
+                user: { nome: 'Técnica', funcao: 'Atendimento' }
             };
 
             function showGlobalLoader() {
@@ -2651,6 +2652,7 @@
 
             // Carregamento Imediato: Disparar fetch o mais cedo possível
             switchView('prontuarios');
+            loadUserData();
             loadProntuariosData('', true);
             loadNationalities();
 
@@ -3662,8 +3664,8 @@
                     title.textContent = "Nova Evolução do Caso";
                     title.parentElement.querySelector('i').className = "bi bi-journal-plus text-white me-3 fs-4";
                     
-                    document.getElementById('evolucao_tecnica_auto').textContent = 'Ana Paula';
-                    document.getElementById('evolucao_funcao_auto').textContent = 'Psicóloga Sênior';
+                    document.getElementById('evolucao_tecnica_auto').textContent = state.user.nome;
+                    document.getElementById('evolucao_funcao_auto').textContent = state.user.funcao;
                     document.getElementById('evolucao_data_auto').textContent = dayjs().format('DD/MM/YYYY');
                 }
             });
@@ -3896,6 +3898,29 @@
                     `;
                 }
             };
+
+            async function loadUserData() {
+                try {
+                    const res = await fetch('/api/me');
+                    if (res.ok) {
+                        const user = await res.json();
+                        state.user = user;
+                        
+                        // Atualiza Sidebar
+                        const nameEl = document.getElementById('user-name-sidebar');
+                        const roleEl = document.getElementById('user-role-sidebar');
+                        const avatarEl = document.getElementById('user-avatar-sidebar');
+                        
+                        if (nameEl) nameEl.textContent = user.nome;
+                        if (roleEl) roleEl.textContent = user.funcao;
+                        if (avatarEl) {
+                            avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nome)}&background=b366a6&color=fff`;
+                        }
+                    }
+                } catch (err) {
+                    console.error('Erro ao carregar dados do usuário:', err);
+                }
+            }
 
             async function loadNationalities() {
                 const select = document.getElementById('nacionalidade');
