@@ -225,16 +225,21 @@ async function requireAuth(req, res, next) {
   if (req.query.code) {
     try {
       const tokenData = await exchangeCode(req.query.code);
-      // Configuração de cookie com nome único
-      res.cookie('portal_clarice_token', tokenData.access_token, {
+      
+      // Configuração com domínio explícito para garantir persistência no Proxy
+      const cookieOptions = {
         path: '/',
         httpOnly: true,
         secure: true,
-        sameSite: 'Lax',
+        sameSite: 'None',
+        domain: '.recife.pe.gov.br', // Força o cookie para todo o domínio da prefeitura
         maxAge: (tokenData.expires_in || 3600) * 1000
-      });
+      };
 
-      console.log(`[Auth] Sucesso! Token salvo. Redirecionando de volta para o portal: ${KC.redirectUri}`);
+      console.log(`[Auth] Gravando cookie portal_clarice_token para o domínio .recife.pe.gov.br`);
+      res.cookie('portal_clarice_token', tokenData.access_token, cookieOptions);
+
+      console.log(`[Auth] Sucesso! Redirecionando para: ${KC.redirectUri}`);
       return res.redirect(KC.redirectUri);
     } catch (err) {
       console.error('[Auth] Falha ao trocar código Keycloak:', err.message);
