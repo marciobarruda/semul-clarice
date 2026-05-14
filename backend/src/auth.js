@@ -174,18 +174,43 @@ async function checkSesuiteAccess(username) {
 }
 
 /** Página de acesso negado */
-function deniedPage(username) {
+function deniedPage(username, fullName = '') {
+  const nameToDisplay = fullName || username;
   return `<!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><title>Acesso Negado</title>
-<style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f4f7f6;}
-.box{text-align:center;padding:2rem;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);}
-h2{color:#e74c3c;}a{color:#9b59b6;}</style></head>
-<body><div class="box">
-<h2>⛔ Acesso Negado</h2>
-<p>O usuário <strong>${username}</strong> não tem permissão para acessar este portal.</p>
-<p><a href="/logout">Sair e tentar com outro usuário</a></p>
-</div></body></html>`;
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acesso Restrito - Clarice Lispector</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    body { background: #f8f9fa; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .card { border: none; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 480px; width: 90%; }
+    .icon-box { width: 80px; height: 80px; background: #fff5f5; color: #dc3545; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px; }
+    .btn-primary { background-color: #b366a6; border-color: #b366a6; border-radius: 10px; padding: 12px; font-weight: 600; transition: all 0.3s; }
+    .btn-primary:hover { background-color: #9b59b6; border-color: #9b59b6; transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="card p-4 p-md-5 text-center">
+    <div class="icon-box">
+      <i class="bi bi-shield-lock"></i>
+    </div>
+    <h2 class="fw-bold mb-3">Acesso Não Autorizado</h2>
+    <p class="text-muted mb-4">
+      Olá <strong>${nameToDisplay}</strong>, seu usuário está autenticado, mas você ainda não possui permissão para acessar este portal.
+    </p>
+    <div class="alert alert-warning border-0 small mb-4 py-3">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      Por favor, procure um <strong>usuário habilitado (gestor)</strong> para solicitar a liberação do seu acesso no SESUITE.
+    </div>
+    <a href="/logout" class="btn btn-primary w-100 shadow-sm">
+      <i class="bi bi-box-arrow-left me-2"></i>Sair e trocar de usuário
+    </a>
+  </div>
+</body>
+</html>`;
 }
 
 // ── Middleware para páginas HTML (redireciona para Keycloak) ─────────────────
@@ -240,7 +265,7 @@ async function requireAuth(req, res, next) {
   // Valida acesso dinâmico (SESUITE) ou estático (ALLOWED_USERS)
   const sesuiteUser = await checkSesuiteAccess(username);
   if (!sesuiteUser) {
-    return res.status(403).send(deniedPage(username));
+    return res.status(403).send(deniedPage(username, userInfo.name));
   }
 
   // Mescla informações do Keycloak e SESUITE
