@@ -149,7 +149,7 @@ async function checkSesuiteAccess(username) {
     if (!res.ok) {
       console.error(`[Auth] Erro na API do SESUITE (${res.status})`);
       if (sesuiteCache.users.length > 0) {
-        return sesuiteCache.users.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
+        return sesuiteCache.users.find(u => String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase() === username.toLowerCase());
       }
       return null;
     }
@@ -203,7 +203,7 @@ async function checkSesuiteAccess(username) {
   } catch (err) {
     console.error('[Auth] Falha crítica ao consultar SESUITE:', err.message);
     if (sesuiteCache.users.length > 0) {
-      return sesuiteCache.users.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
+      return sesuiteCache.users.find(u => String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase() === username.toLowerCase());
     }
     return null;
   }
