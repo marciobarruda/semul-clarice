@@ -99,16 +99,12 @@ async function exchangeCode(code) {
   return await res.json();
 }
 
-/** Monta a URL de login do Keycloak com nonce + state */
+/** Monta a URL de login do Keycloak */
 function buildLoginUrl() {
-  const nonce = uuidv4();
-  const state = uuidv4();
   const params = new URLSearchParams({
     response_type: 'code',
     client_id:     KC.clientId,
     redirect_uri:  KC.redirectUri,
-    nonce,
-    state,
     scope: 'openid',
   });
   return `${KC.authUrl}?${params.toString()}`;
