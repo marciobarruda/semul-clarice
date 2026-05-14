@@ -1009,14 +1009,14 @@
             <div class="table-responsive">
               <table class="table table-premium align-middle mb-0">
                 <thead>
-                  <tr>
-                    <th>Prontuário</th>
-                    <th>Nome da Usuária</th>
-                    <th>CPF</th>
-                    <th>Data</th>
-                    <th>Status</th>
-                    <th class="text-end">Ações</th>
-                  </tr>
+                    <tr>
+                      <th class="text-nowrap">Prontuário</th>
+                      <th class="text-nowrap">Nome da Usuária</th>
+                      <th class="text-nowrap">CPF</th>
+                      <th class="text-nowrap">Data</th>
+                      <th class="text-nowrap">Status</th>
+                      <th class="text-end text-nowrap">Ações</th>
+                    </tr>
                 </thead>
                 <tbody id="tbody-prontuarios-dash">
                   <!-- Carregado via JS -->
@@ -1059,12 +1059,12 @@
                         <table class="table table-premium align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="sortable" data-sort="prontuario" onclick="handleSort('prontuario')">Prontuário <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="sortable" data-sort="nome" onclick="handleSort('nome')">Nome da Usuária <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="sortable" data-sort="cpf" onclick="handleSort('cpf')">CPF <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="sortable" data-sort="data_pri_atendimento" onclick="handleSort('data_pri_atendimento')">Data de Registro <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="sortable" data-sort="unidade_atendimento" onclick="handleSort('unidade_atendimento')">Unidade <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
-                                    <th class="text-end">Ações</th>
+                                    <th class="sortable text-nowrap" data-sort="prontuario" onclick="handleSort('prontuario')">Prontuário <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="sortable text-nowrap" data-sort="nome" onclick="handleSort('nome')">Nome da Usuária <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="sortable text-nowrap" data-sort="cpf" onclick="handleSort('cpf')">CPF <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="sortable text-nowrap" data-sort="data_pri_atendimento" onclick="handleSort('data_pri_atendimento')">Data de Registro <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="sortable text-nowrap" data-sort="unidade_atendimento" onclick="handleSort('unidade_atendimento')">Unidade <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                    <th class="text-end text-nowrap">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-prontuarios-full">
@@ -1091,14 +1091,14 @@
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
-                                <th>Profissional</th>
-                                <th>Cargo/Função</th>
-                                <th>E-mail</th>
-                                <th>Último Acesso</th>
-                                <th>Status</th>
-                                <th class="text-end">Ações</th>
+                                <th class="text-nowrap">Profissional</th>
+                                <th class="text-nowrap">Cargo/Função</th>
+                                <th class="text-nowrap">E-mail</th>
+                                <th class="text-nowrap">Último Acesso</th>
+                                <th class="text-nowrap">Status</th>
+                                <th class="text-end text-nowrap">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1715,10 +1715,10 @@
                                             <table class="table table-sm align-middle mb-0">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Nome completo</th>
-                                                        <th>Parentesco</th>
-                                                        <th>Idade</th>
-                                                        <th class="text-end px-3">Ações</th>
+                                                        <th class="text-nowrap">Nome completo</th>
+                                                        <th class="text-nowrap">Parentesco</th>
+                                                        <th class="text-nowrap">Idade</th>
+                                                        <th class="text-end px-3 text-nowrap">Ações</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="familiatabelabody">
@@ -1948,9 +1948,9 @@
                                             <table class="table table-sm align-middle mb-0">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Nome</th>
-                                                        <th>Vínculo</th>
-                                                        <th class="text-end px-3">Ações</th>
+                                                        <th class="text-nowrap">Nome</th>
+                                                        <th class="text-nowrap">Vínculo</th>
+                                                        <th class="text-end px-3 text-nowrap">Ações</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="autortabelabody">
@@ -2053,10 +2053,10 @@
                                 <table class="table table-sm table-hover mb-0 align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th class="ps-3">Data</th>
-                                            <th>Descrição</th>
-                                            <th>Arquivo</th>
-                                            <th class="text-end pe-3">Ações</th>
+                                            <th class="ps-3 text-nowrap">Data</th>
+                                            <th class="text-nowrap">Descrição</th>
+                                            <th class="text-nowrap">Arquivo</th>
+                                            <th class="text-end pe-3 text-nowrap">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="anexotabelabody">
@@ -2568,11 +2568,7 @@
 
     <script src="/js/auth-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/pt-br.js"></script>
     <script>
-        dayjs.extend(dayjs_plugin_customParseFormat);
         dayjs.locale('pt-br');
     </script>
     <script src="https://cdn.jsdelivr.net/npm/imask"></script>
