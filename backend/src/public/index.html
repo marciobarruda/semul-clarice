@@ -2659,6 +2659,12 @@
                 Object.keys(views).forEach(v => {
                     if (views[v]) views[v].classList.toggle('d-none', v !== viewName);
                 });
+
+                // Toggle user badge visibility (header name and prontuario)
+                const userBadge = document.getElementById('header-user-badge');
+                if (userBadge) {
+                    userBadge.style.display = (viewName === 'form') ? 'flex' : 'none';
+                }
                 
                 // Animate view entrance
                 if (views[viewName] && window.Motion) {
@@ -2893,14 +2899,10 @@
             });
             
             function resetForm() {
-                const headerBadge = document.getElementById('header-user-badge');
-                if (headerBadge) {
-                    headerBadge.style.display = 'flex';
-                    const nameDisplay = document.getElementById('display-nome-usuaria');
-                    if (nameDisplay) nameDisplay.textContent = 'USUÁRIA EM PREENCHIMENTO';
-                    const prontDisplay = document.getElementById('display-numero-prontuario');
-                    if (prontDisplay) prontDisplay.textContent = 'NOVO';
-                }
+                const nameDisplay = document.getElementById('display-nome-usuaria');
+                if (nameDisplay) nameDisplay.textContent = 'USUÁRIA EM PREENCHIMENTO';
+                const prontDisplay = document.getElementById('display-numero-prontuario');
+                if (prontDisplay) prontDisplay.textContent = 'NOVO';
 
                 registroform.reset();
                 toggleFormReadOnly(false);
@@ -3437,11 +3439,9 @@
                 // 1. Cabeçalho
                 const displayName = document.getElementById('display-nome-usuaria');
                 const displayProntuario = document.getElementById('display-numero-prontuario');
-                const headerBadge = document.getElementById('header-user-badge');
                 
                 if (displayName) displayName.textContent = data.nomeusuaria || data.nome_usuaria || '';
                 if (displayProntuario) displayProntuario.textContent = id;
-                if (headerBadge) headerBadge.style.display = 'flex';
 
                 // 2. Preenchimento Genérico e Inteligente
                 Object.keys(data).forEach(key => {
