@@ -29,6 +29,15 @@ app.set('trust proxy', true);
 //   contentSecurityPolicy: false, // index.html usa CDNs externos (Bootstrap, etc.)
 // }));
 
+app.use(cors({
+  origin:      process.env.CORS_ORIGIN || true,
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 app.use((req, res, next) => {
   // Caso o Nginx não remova o subcaminho, o backend faz isso para não quebrar as rotas do Express
   if (req.url.startsWith('/redeclaricelispector-prontuario')) {
@@ -37,19 +46,9 @@ app.use((req, res, next) => {
   }
 
   const hasToken = !!(req.cookies?.portal_clarice_token);
-  console.log(`[Request] ${req.method} ${req.originalUrl} - HasToken: ${hasToken}`);
-  console.log(`[Headers] ${JSON.stringify(req.headers)}`);
+  console.log(`[Request] ${req.method} ${req.originalUrl} - HasToken: ${hasToken} | Cookies: ${Object.keys(req.cookies || {}).join(', ')}`);
   next();
 });
-
-app.use(cors({
-  origin:      process.env.CORS_ORIGIN || true,
-  credentials: true,
-}));
-
-app.use(express.json({ limit: '20mb' }));          // anexos em base64 podem ser grandes
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // ── Health check (obrigatório pelo Cloud Run) ─────────────────────────────────
 app.get('/health', (req, res) => {

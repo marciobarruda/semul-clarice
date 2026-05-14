@@ -271,7 +271,6 @@ async function requireAuth(req, res, next) {
         httpOnly: true,
         secure: true,
         sameSite: 'Lax',
-        domain: '.recife.pe.gov.br',
         maxAge: (tokenData.expires_in || 3600) * 1000
       });
 

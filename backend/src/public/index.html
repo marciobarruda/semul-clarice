@@ -3109,6 +3109,7 @@
                     try {
                         const response = await fetch(WEBHOOKS.NATURALIDADES, {
                             method: 'POST',
+                            credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ uf: uf })
                         });
@@ -3169,6 +3170,7 @@
                     
                     const response = await fetch(url.toString(), {
                         method: 'GET',
+                        credentials: 'include',
                         headers: { 'Content-Type': 'application/json' }
                     });
                     
@@ -3707,6 +3709,7 @@
                         Swal.fire({ title: 'Salvando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                         const response = await fetch(`${API_BASE}/api/evolucoes`, {
                             method: 'POST',
+                            credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         });
@@ -3901,7 +3904,7 @@
 
             async function loadUserData() {
                 try {
-                    const res = await fetch('./api/me');
+                    const res = await fetch('./api/me', { credentials: 'include' });
                     if (res.ok) {
                         const user = await res.json();
                         state.user = user;
@@ -4106,6 +4109,7 @@
                         console.log('[DEBUG] Enviando Payload para o Backend:', data);
                         const response = await fetch(WEBHOOKS.SAVE, {
                             method: 'POST',
+                            credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(data)
                         });
@@ -4567,6 +4571,8 @@
                     } else {
                         const response = await fetch(WEBHOOKS.ALL_DATA, {
                             method: 'POST',
+                            credentials: 'include',
+                            credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({})
                         });
