@@ -186,12 +186,12 @@ async function checkSesuiteAccess(username) {
     });
 
     if (userFound) {
-      console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE!`);
-      // Normaliza as chaves para uso posterior
+      console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao || 'Técnica'})`);
+      // Normaliza as chaves para uso posterior (SESUITE usa "tecnica" para o nome)
       return {
         login: username,
-        nome: userFound.nome || userFound.NOME || userFound.name || userFound.NAME || username,
-        funcao: userFound.funcao || userFound.FUNCAO || userFound.role || userFound.ROLE || 'Técnica'
+        nome: userFound.tecnica || userFound.nome || userFound.NOME || userFound.name || username,
+        funcao: userFound.funcao || userFound.FUNCAO || userFound.role || 'Técnica'
       };
     } else {
       console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
@@ -299,6 +299,7 @@ async function requireAuth(req, res, next) {
   }
 
   const username = (userInfo.preferred_username || '').toLowerCase();
+  console.log(`[Auth] Validando usuário no SESUITE. Keycloak devolveu preferred_username: "${username}"`);
 
   // Valida acesso dinâmico (SESUITE) ou estático (ALLOWED_USERS)
   const sesuiteUser = await checkSesuiteAccess(username);
