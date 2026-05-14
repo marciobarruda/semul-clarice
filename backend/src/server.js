@@ -30,8 +30,9 @@ app.set('trust proxy', true);
 // }));
 
 app.use((req, res, next) => {
-  const hasToken = !!(req.cookies?.token);
+  const hasToken = !!(req.cookies?.portal_clarice_token);
   console.log(`[Request] ${req.method} ${req.originalUrl} - HasToken: ${hasToken}`);
+  console.log(`[Headers] ${JSON.stringify(req.headers)}`);
   next();
 });
 
@@ -56,7 +57,7 @@ app.get('/api/me', requireApiAuth, (req, res) => {
 
 // ── Logout ────────────────────────────────────────────────────────────────────
 app.get('/logout', (req, res) => {
-  res.clearCookie('token');
+  res.clearCookie('portal_clarice_token');
   res.redirect('/');
 });
 

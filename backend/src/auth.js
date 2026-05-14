@@ -43,9 +43,9 @@ let sesuiteCache = {
 
 /** Extrai o token do cookie (mesma lógica do nó "Code in JavaScript" do n8n) */
 function extractToken(req) {
-  // 1. Cookie "token"
-  if (req.cookies?.token) {
-    return req.cookies.token;
+  // 1. Cookie "portal_clarice_token"
+  if (req.cookies?.portal_clarice_token) {
+    return req.cookies.portal_clarice_token;
   }
 
   // 2. Query ?authorization=
@@ -225,11 +225,11 @@ async function requireAuth(req, res, next) {
   if (req.query.code) {
     try {
       const tokenData = await exchangeCode(req.query.code);
-      // Configuração minimalista de cookie
-      res.cookie('token', tokenData.access_token, {
+      // Configuração de cookie com nome único
+      res.cookie('portal_clarice_token', tokenData.access_token, {
         path: '/',
         httpOnly: true,
-        secure: true, // Forçar true pois o proxy é HTTPS
+        secure: true,
         sameSite: 'Lax',
         maxAge: (tokenData.expires_in || 3600) * 1000
       });
