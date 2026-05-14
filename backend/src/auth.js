@@ -18,12 +18,14 @@ const { v4: uuidv4 } = require('uuid');
 
 // ── Configuração do Keycloak ─────────────────────────────────────────────────
 const KC = {
+  // Configurações padrão conforme seus dados
   authUrl:      process.env.KC_AUTH_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/auth',
   tokenUrl:     process.env.KC_TOKEN_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/token',
   userinfoUrl:  process.env.KC_USERINFO_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/userinfo',
-  clientId:     process.env.KC_CLIENT_ID,
-  clientSecret: process.env.KC_CLIENT_SECRET,
-  redirectUri:  process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario',
+  clientId:     process.env.KC_CLIENT_ID || 'portal-crcl',
+  clientSecret: process.env.KC_CLIENT_SECRET || '7b2f103c-09ef-4315-89e3-323fcf503f93',
+  // APP_URL deve ser https://semul.recife.pe.gov.br/redeclaricelispector-prontuario
+  redirectUri:  process.env.APP_URL || process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario',
 };
 
 // Lista de usuários autorizados (preferred_username, minúsculas)
@@ -224,23 +226,24 @@ async function requireAuth(req, res, next) {
   // Callback OAuth2: ?code=...
   if (req.query.code) {
     try {
+      // O redirect_uri na troca do token deve ser IDÊNTICO ao usado no login (Passo 6 do guia)
       const tokenData = await exchangeCode(req.query.code);
       
-      // Configuração com domínio explícito para garantir persistência no Proxy
-      const cookieOptions = {
+      // Grava o cookie na raiz do domínio da prefeitura
+      res.cookie('portal_clarice_token', tokenData.access_token, {
         path: '/',
         httpOnly: true,
         secure: true,
-        sameSite: 'None',
-        domain: '.recife.pe.gov.br', // Força o cookie para todo o domínio da prefeitura
+        sameSite: 'Lax',
+        domain: '.recife.pe.gov.br',
         maxAge: (tokenData.expires_in || 3600) * 1000
-      };
+      });
 
-      console.log(`[Auth] Gravando cookie portal_clarice_token para o domínio .recife.pe.gov.br`);
-      res.cookie('portal_clarice_token', tokenData.access_token, cookieOptions);
-
-      console.log(`[Auth] Sucesso! Redirecionando para: ${KC.redirectUri}`);
-      return res.redirect(KC.redirectUri);
+      console.log(`[Auth] Código trocado por token. Redirecionando para a URL pública.`);
+      
+      // Redireciona para a URL com barra final para satisfazer o redirecionamento 301 do Nginx (Passo 4 do guia)
+      const finalRedirect = KC.redirectUri.endsWith('/') ? KC.redirectUri : `${KC.redirectUri}/`;
+      return res.redirect(finalRedirect);
     } catch (err) {
       console.error('[Auth] Falha ao trocar código Keycloak:', err.message);
       return res.status(401).send(
