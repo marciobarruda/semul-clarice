@@ -30,6 +30,12 @@ app.set('trust proxy', true);
 // }));
 
 app.use((req, res, next) => {
+  // Caso o Nginx não remova o subcaminho, o backend faz isso para não quebrar as rotas do Express
+  if (req.url.startsWith('/redeclaricelispector-prontuario')) {
+    req.url = req.url.replace('/redeclaricelispector-prontuario', '');
+    if (req.url === '') req.url = '/';
+  }
+
   const hasToken = !!(req.cookies?.portal_clarice_token);
   console.log(`[Request] ${req.method} ${req.originalUrl} - HasToken: ${hasToken}`);
   console.log(`[Headers] ${JSON.stringify(req.headers)}`);
