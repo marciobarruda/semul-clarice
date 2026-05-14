@@ -3252,7 +3252,7 @@
                 const unidade = record.unidadeatendimento || record.unidade_atendimento || '—';
 
                 tr.innerHTML = `
-                    <td><span class="fw-bold">#${prontuarioId}</span></td>
+                    <td><span class="fw-bold">${prontuarioId}</span></td>
                     <td class="fw-medium">${nome}</td>
                     <td class="text-muted">${cpf}</td>
                     <td>${safeFormatDate(dataAtend)}</td>
@@ -4109,7 +4109,7 @@
                                         // Recarregar anexos recém-salvos
                                         loadAnexos(newId);
                                         
-                                        Swal.fire('Sucesso', `Prontuário #${newId} criado com sucesso!`, 'success');
+                                        Swal.fire('Sucesso', `Prontuário ${newId} criado com sucesso!`, 'success');
                                     } else {
                                         throw new Error("Não foi possível localizar o novo ID");
                                     }
