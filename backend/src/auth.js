@@ -43,8 +43,10 @@ let sesuiteCache = {
 
 /** Extrai o token do cookie (mesma lógica do nó "Code in JavaScript" do n8n) */
 function extractToken(req) {
-  // 1. Cookie "token" (prioridade máxima – é como o n8n salvava)
-  if (req.cookies?.token) return req.cookies.token;
+  // 1. Cookie "token"
+  if (req.cookies?.token) {
+    return req.cookies.token;
+  }
 
   // 2. Query ?authorization=
   if (req.query?.authorization) {
@@ -223,17 +225,16 @@ async function requireAuth(req, res, next) {
   if (req.query.code) {
     try {
       const tokenData = await exchangeCode(req.query.code);
-      const isProd = process.env.NODE_ENV === 'production';
-
+      // Configuração robusta de cookie para Proxy Reverso
       res.cookie('token', tokenData.access_token, {
         httpOnly: true,
-        secure:   isProd,
+        secure:   true, // Forçar true pois o portal é HTTPS (via proxy)
         sameSite: 'Lax',
-        maxAge:   (tokenData.expires_in || 300) * 1000,
+        path:     '/',  // Garantir que o cookie valha para todo o domínio/subcaminho
+        maxAge:   (tokenData.expires_in || 3600) * 1000,
       });
 
-      console.log('[Auth] Código trocado por token com sucesso.');
-      // Redireciona de volta para a URL base do portal (absoluta)
+      console.log(`[Auth] Token gerado e salvo no cookie para o usuário. Redirecionando para ${KC.redirectUri}`);
       return res.redirect(KC.redirectUri);
     } catch (err) {
       console.error('[Auth] Falha ao trocar código Keycloak:', err.message);
