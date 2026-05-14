@@ -225,17 +225,14 @@ async function requireAuth(req, res, next) {
   if (req.query.code) {
     try {
       const tokenData = await exchangeCode(req.query.code);
-      // Configuração ultra-resiliente de cookie para Proxy Reverso
+      // Configuração idêntica ao n8n (mais simples possível)
       res.cookie('token', tokenData.access_token, {
-        httpOnly: true,
-        secure:   true,
-        sameSite: 'None', // Mais permissivo para garantir que o cookie sobreviva ao redirecionamento
-        path:     '/',
-        maxAge:   (tokenData.expires_in || 3600) * 1000,
+        path: '/',
+        maxAge: (tokenData.expires_in || 3600) * 1000
       });
 
-      console.log(`[Auth] Sucesso! Token salvo no cookie. Redirecionando de volta para o portal.`);
-      return res.redirect(KC.redirectUri);
+      console.log(`[Auth] Token trocado. Redirecionando para o caminho original: ${req.path}`);
+      return res.redirect(req.path);
     } catch (err) {
       console.error('[Auth] Falha ao trocar código Keycloak:', err.message);
       return res.status(401).send(
