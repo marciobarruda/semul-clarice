@@ -30,7 +30,8 @@ app.set('trust proxy', true);
 // }));
 
 app.use((req, res, next) => {
-  console.log(`[Request] ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
+  const hasToken = !!(req.cookies?.token);
+  console.log(`[Request] ${req.method} ${req.originalUrl} - HasToken: ${hasToken}`);
   next();
 });
 

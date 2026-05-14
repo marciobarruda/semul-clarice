@@ -225,16 +225,16 @@ async function requireAuth(req, res, next) {
   if (req.query.code) {
     try {
       const tokenData = await exchangeCode(req.query.code);
-      // Configuração robusta de cookie para Proxy Reverso
+      // Configuração ultra-resiliente de cookie para Proxy Reverso
       res.cookie('token', tokenData.access_token, {
         httpOnly: true,
-        secure:   true, // Forçar true pois o portal é HTTPS (via proxy)
-        sameSite: 'Lax',
-        path:     '/',  // Garantir que o cookie valha para todo o domínio/subcaminho
+        secure:   true,
+        sameSite: 'None', // Mais permissivo para garantir que o cookie sobreviva ao redirecionamento
+        path:     '/',
         maxAge:   (tokenData.expires_in || 3600) * 1000,
       });
 
-      console.log(`[Auth] Token gerado e salvo no cookie para o usuário. Redirecionando para ${KC.redirectUri}`);
+      console.log(`[Auth] Sucesso! Token salvo no cookie. Redirecionando de volta para o portal.`);
       return res.redirect(KC.redirectUri);
     } catch (err) {
       console.error('[Auth] Falha ao trocar código Keycloak:', err.message);
@@ -275,6 +275,7 @@ async function requireAuth(req, res, next) {
 
 // ── Middleware para rotas /api/* (retorna JSON) ───────────────────────────────
 
+
 async function requireApiAuth(req, res, next) {
   // Modo dev: sem Keycloak configurado
   if (!KC.clientId || !KC.clientSecret) {
@@ -283,6 +284,7 @@ async function requireApiAuth(req, res, next) {
   }
 
   const token = extractToken(req);
+  console.log(`[ApiAuth] Extração de token: ${token ? 'Token encontrado' : 'Token ausente'}`);
   if (!token) {
     return res.status(401).json({ error: 'Não autenticado' });
   }
