@@ -13,19 +13,20 @@
  * 5. Verifica se preferred_username está em ALLOWED_USERS
  */
 
-const fetch   = require('node-fetch');
+const fetch = require('node-fetch');
+const https = require('https');
 const { v4: uuidv4 } = require('uuid');
 
 // ── Configuração do Keycloak ─────────────────────────────────────────────────
 const KC = {
   // Configurações padrão conforme seus dados
-  authUrl:      process.env.KC_AUTH_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/auth',
-  tokenUrl:     process.env.KC_TOKEN_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/token',
-  userinfoUrl:  process.env.KC_USERINFO_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/userinfo',
-  clientId:     process.env.KC_CLIENT_ID || 'portal-crcl',
+  authUrl: process.env.KC_AUTH_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/auth',
+  tokenUrl: process.env.KC_TOKEN_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/token',
+  userinfoUrl: process.env.KC_USERINFO_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/userinfo',
+  clientId: process.env.KC_CLIENT_ID || 'portal-crcl',
   clientSecret: process.env.KC_CLIENT_SECRET || '7b2f103c-09ef-4315-89e3-323fcf503f93',
   // APP_URL deve ser https://semul.recife.pe.gov.br/redeclaricelispector-prontuario
-  redirectUri:  process.env.APP_URL || process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario',
+  redirectUri: process.env.APP_URL || process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario',
 };
 
 // Lista de usuários autorizados (preferred_username, minúsculas)
@@ -84,12 +85,12 @@ async function exchangeCode(code) {
   const res = await fetch(KC.tokenUrl, {
     method: 'POST',
     headers: {
-      'Content-Type':  'application/x-www-form-urlencoded',
+      'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Basic ${credentials}`,
-      'Cookie':        'KEYCLOAK_LOCALE=pt-BR',
+      'Cookie': 'KEYCLOAK_LOCALE=pt-BR',
     },
     body: new URLSearchParams({
-      grant_type:   'authorization_code',
+      grant_type: 'authorization_code',
       code,
       redirect_uri: KC.redirectUri,
     }),
@@ -107,8 +108,8 @@ async function exchangeCode(code) {
 function buildLoginUrl() {
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id:     KC.clientId,
-    redirect_uri:  KC.redirectUri,
+    client_id: KC.clientId,
+    redirect_uri: KC.redirectUri,
     scope: 'openid',
   });
   return `${KC.authUrl}?${params.toString()}`;
@@ -133,7 +134,7 @@ async function checkSesuiteAccess(username) {
     const token = process.env.SESUITE_API_TOKEN;
 
     console.log(`[Auth] Consultando SESUITE para autorização e dados do usuário: ${username}`);
-    
+
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -141,7 +142,8 @@ async function checkSesuiteAccess(username) {
         'Authorization': token
       },
       body: JSON.stringify({}),
-      timeout: 10000
+      timeout: 10000,
+      agent: new https.Agent({ rejectUnauthorized: false })
     });
 
     if (!res.ok) {
@@ -153,7 +155,7 @@ async function checkSesuiteAccess(username) {
     }
 
     const data = await res.json();
-    
+
     // Tenta encontrar o array na resposta
     let list = [];
     if (Array.isArray(data)) list = data;
@@ -165,13 +167,13 @@ async function checkSesuiteAccess(username) {
       const arrayKey = Object.keys(data).find(key => Array.isArray(data[key]));
       if (arrayKey) list = data[arrayKey];
     }
-    
+
     if (list.length > 0) {
       console.log(`[Auth] SESUITE retornou array. Exemplo de item: ${JSON.stringify(list[0]).substring(0, 150)}`);
     } else {
       console.log(`[Auth] SESUITE não retornou um array válido. Estrutura: ${JSON.stringify(data).substring(0, 150)}`);
     }
-    
+
     sesuiteCache = {
       users: list,
       lastFetch: now,
@@ -179,7 +181,7 @@ async function checkSesuiteAccess(username) {
     };
 
     console.log(`[Auth] Cache do SESUITE atualizado com ${list.length} usuários. Procurando por: ${username}`);
-    
+
     const userFound = list.find(u => {
       const loginCandidate = String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase();
       return loginCandidate === username.toLowerCase();
@@ -262,7 +264,7 @@ async function requireAuth(req, res, next) {
     try {
       // O redirect_uri na troca do token deve ser IDÊNTICO ao usado no login (Passo 6 do guia)
       const tokenData = await exchangeCode(req.query.code);
-      
+
       // Grava o cookie na raiz do domínio da prefeitura
       res.cookie('portal_clarice_token', tokenData.access_token, {
         path: '/',
@@ -274,7 +276,7 @@ async function requireAuth(req, res, next) {
       });
 
       console.log(`[Auth] Código trocado por token. Redirecionando para a URL pública.`);
-      
+
       // Redireciona para a URL com barra final para satisfazer o redirecionamento 301 do Nginx (Passo 4 do guia)
       const finalRedirect = KC.redirectUri.endsWith('/') ? KC.redirectUri : `${KC.redirectUri}/`;
       return res.redirect(finalRedirect);
@@ -308,8 +310,8 @@ async function requireAuth(req, res, next) {
   }
 
   // Mescla informações do Keycloak e SESUITE
-  req.user = { 
-    ...userInfo, 
+  req.user = {
+    ...userInfo,
     nome: sesuiteUser.nome || userInfo.name || username,
     funcao: sesuiteUser.funcao || 'Técnica'
   };
@@ -343,8 +345,8 @@ async function requireApiAuth(req, res, next) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
-  req.user = { 
-    ...userInfo, 
+  req.user = {
+    ...userInfo,
     nome: sesuiteUser.nome || userInfo.name || username,
     funcao: sesuiteUser.funcao || 'Técnica'
   };
