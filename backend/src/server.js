@@ -22,6 +22,8 @@ const auxiliarRouter    = require('./routes/auxiliar');
 const app  = express();
 const PORT = process.env.PORT || 8080;
 
+app.set('trust proxy', true);
+
 // ── Middlewares globais ───────────────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: false, // index.html usa CDNs externos (Bootstrap, etc.)

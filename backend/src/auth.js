@@ -23,7 +23,7 @@ const KC = {
   userinfoUrl:  process.env.KC_USERINFO_URL || 'https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/userinfo',
   clientId:     process.env.KC_CLIENT_ID || 'portal-crcl',
   clientSecret: process.env.KC_CLIENT_SECRET || 'c6b83877-54cd-4b57-8df5-aa78d2c40e79',
-  redirectUri:  process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario',
+  redirectUri:  process.env.KC_REDIRECT_URI || 'https://semul.recife.pe.gov.br/redeclaricelispector-prontuario/',
 };
 
 // Lista de usuários autorizados (preferred_username, minúsculas)
