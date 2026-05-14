@@ -212,7 +212,9 @@ async function requireAuth(req, res, next) {
       });
 
       console.log('[Auth] Código trocado por token com sucesso.');
-      return res.redirect('/');
+      // Redireciona de volta para a mesma página, mas sem os parâmetros ?code e ?state
+      const target = req.originalUrl.split('?')[0];
+      return res.redirect(target);
     } catch (err) {
       console.error('[Auth] Falha ao trocar código Keycloak:', err.message);
       return res.status(401).send(
