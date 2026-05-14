@@ -30,10 +30,10 @@ const KC = {
 };
 
 // Lista de usuários autorizados (preferred_username, minúsculas)
-const ALLOWED_USERS = (process.env.ALLOWED_USERS || '')
-  .split(',')
-  .map(u => u.trim().toLowerCase())
-  .filter(Boolean);
+const ALLOWED_USERS = [
+  'marcio.arruda',
+  ...(process.env.ALLOWED_USERS || '').split(',').map(u => u.trim().toLowerCase()).filter(Boolean)
+];
 
 // Cache para a lista de usuários do SESUITE
 let sesuiteCache = {
