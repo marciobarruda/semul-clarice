@@ -153,7 +153,24 @@ async function checkSesuiteAccess(username) {
     }
 
     const data = await res.json();
-    const list = Array.isArray(data) ? data : (data.data || []);
+    
+    // Tenta encontrar o array na resposta
+    let list = [];
+    if (Array.isArray(data)) list = data;
+    else if (data && Array.isArray(data.data)) list = data.data;
+    else if (data && Array.isArray(data.records)) list = data.records;
+    else if (data && Array.isArray(data.items)) list = data.items;
+    else if (data && typeof data === 'object') {
+      // Pega a primeira propriedade que seja um array
+      const arrayKey = Object.keys(data).find(key => Array.isArray(data[key]));
+      if (arrayKey) list = data[arrayKey];
+    }
+    
+    if (list.length > 0) {
+      console.log(`[Auth] SESUITE retornou array. Exemplo de item: ${JSON.stringify(list[0]).substring(0, 150)}`);
+    } else {
+      console.log(`[Auth] SESUITE não retornou um array válido. Estrutura: ${JSON.stringify(data).substring(0, 150)}`);
+    }
     
     sesuiteCache = {
       users: list,
@@ -161,8 +178,25 @@ async function checkSesuiteAccess(username) {
       ttl: 5 * 60 * 1000
     };
 
-    console.log(`[Auth] Cache do SESUITE atualizado com ${list.length} usuários.`);
-    return list.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
+    console.log(`[Auth] Cache do SESUITE atualizado com ${list.length} usuários. Procurando por: ${username}`);
+    
+    const userFound = list.find(u => {
+      const loginCandidate = String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase();
+      return loginCandidate === username.toLowerCase();
+    });
+
+    if (userFound) {
+      console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE!`);
+      // Normaliza as chaves para uso posterior
+      return {
+        login: username,
+        nome: userFound.nome || userFound.NOME || userFound.name || userFound.NAME || username,
+        funcao: userFound.funcao || userFound.FUNCAO || userFound.role || userFound.ROLE || 'Técnica'
+      };
+    } else {
+      console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
+      return null;
+    }
 
   } catch (err) {
     console.error('[Auth] Falha crítica ao consultar SESUITE:', err.message);
