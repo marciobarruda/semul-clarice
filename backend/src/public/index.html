@@ -182,7 +182,7 @@
         backdrop-filter: blur(12px);
         display: flex;
         align-items: center;
-        justify-content: center; /* Centralizar contedo */
+        justify-content: space-between;
         padding: 0 2.5rem;
         position: sticky;
         top: 0;
@@ -197,12 +197,10 @@
 
       .header-user-info {
         display: none;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
         align-items: center;
-        gap: 20px;
+        gap: 15px;
         animation: fadeInDown 0.4s ease-out;
+        overflow: hidden;
       }
 
       .sidebar-user-info {
@@ -215,24 +213,29 @@
       }
 
       .header-user-name {
-        font-size: 1.6rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: var(--primary);
         letter-spacing: -0.5px;
         margin: 0;
         text-transform: uppercase;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 45vw;
       }
 
       .header-user-prontuario {
-        font-size: 1.2rem;
+        font-size: 1rem;
         font-weight: 700;
         color: var(--secondary);
         background: var(--primary-light);
-        padding: 6px 16px;
+        padding: 4px 12px;
         border-radius: 50px;
         margin: 0;
         box-shadow: var(--shadow-sm);
         border: 1px solid rgba(155, 89, 182, 0.2);
+        white-space: nowrap;
       }
 
       @keyframes fadeInDown {
