@@ -4791,21 +4791,37 @@
                     })
                 });
                 
-                const resultText = await res.text();
+                let resultText = await res.text();
+                let displayMessage = resultText;
                 
-                if (resultText.toUpperCase().includes('SUCCESS')) {
-                    Swal.fire('Sucesso!', 'Acesso removido com sucesso.', 'success');
+                // Tenta extrair mensagem limpa se for JSON ou XML
+                try {
+                    const json = JSON.parse(resultText);
+                    const rawData = Array.isArray(json) ? (json[0]?.data || json[0]?.message) : (json.data || json.message);
+                    if (rawData) displayMessage = rawData;
+                } catch(e) {}
+                
+                // Extrair <Detail> de XML se presente
+                if (displayMessage.includes('<Detail>')) {
+                    const match = displayMessage.match(/<Detail>(.*?)<\/Detail>/);
+                    if (match) displayMessage = match[1];
+                }
+
+                const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
+                
+                if (checkText.includes('SUCCESS')) {
+                    Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
                     loadAllUsers();
-                } else if (resultText.toUpperCase().includes('FAILURE')) {
-                    Swal.fire('Falha no SESUITE', resultText, 'error');
+                } else if (checkText.includes('FAILURE') || checkText.includes('ERROR') || checkText.includes('ERRO')) {
+                    Swal.fire('Falha no SESUITE', displayMessage, 'error');
                 } else if (res.ok) {
                     Swal.fire('Sucesso!', 'Operação concluída.', 'success');
                     loadAllUsers();
                 } else {
-                    throw new Error(resultText || 'Erro desconhecido');
+                    throw new Error(displayMessage || 'Erro desconhecido');
                 }
             } catch (err) {
-                Swal.fire('Erro', 'Não foi possível completar a remoção: ' + err.message, 'error');
+                Swal.fire('Erro', 'Não foi possível completar a operação: ' + err.message, 'error');
             }
         };
 
@@ -4867,22 +4883,36 @@
                             })
                         });
 
-                        const resultText = await res.text();
+                        let resultText = await res.text();
+                        let displayMessage = resultText;
+                        
+                        try {
+                            const json = JSON.parse(resultText);
+                            const rawData = Array.isArray(json) ? (json[0]?.data || json[0]?.message) : (json.data || json.message);
+                            if (rawData) displayMessage = rawData;
+                        } catch(e) {}
+                        
+                        if (displayMessage.includes('<Detail>')) {
+                            const match = displayMessage.match(/<Detail>(.*?)<\/Detail>/);
+                            if (match) displayMessage = match[1];
+                        }
 
-                        if (resultText.toUpperCase().includes('SUCCESS')) {
+                        const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
+
+                        if (checkText.includes('SUCCESS')) {
                             Swal.fire('Sucesso!', 'Profissional cadastrada com sucesso.', 'success');
                             bootstrap.Modal.getInstance(document.getElementById('useraddmodal')).hide();
                             formAdd.reset();
                             loadAllUsers();
-                        } else if (resultText.toUpperCase().includes('FAILURE')) {
-                            Swal.fire('Falha no SESUITE', resultText, 'error');
+                        } else if (checkText.includes('FAILURE') || checkText.includes('ERROR') || checkText.includes('ERRO')) {
+                            Swal.fire('Falha no SESUITE', displayMessage, 'error');
                         } else if (res.ok) {
                             Swal.fire('Sucesso!', 'Cadastro realizado.', 'success');
                             bootstrap.Modal.getInstance(document.getElementById('useraddmodal')).hide();
                             formAdd.reset();
                             loadAllUsers();
                         } else {
-                            throw new Error(resultText || 'Erro desconhecido');
+                            throw new Error(displayMessage || 'Erro desconhecido');
                         }
                     } catch (err) {
                         Swal.fire('Erro', 'Não foi possível cadastrar a profissional: ' + err.message, 'error');
