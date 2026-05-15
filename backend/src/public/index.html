@@ -4782,10 +4782,10 @@
                         <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
                         ${state.user?.canManageUsers ? `
                         <td class="text-end">
-                            <button class="btn btn-sm btn-danger rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="deleteUserSesuite('${u.login}', '${u.idarea || ''}', '${u.funcao || ''}')">
+                            <button class="btn btn-sm btn-danger rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="deleteUserSesuite('${u.login}', '${u.idarea || ''}', '${u.funcao || ''}', '${u.idposition || ''}')">
                                 <i class="bi bi-trash3-fill me-1"></i> EXCLUIR
                             </button>
-                        </td>
+                        </td>` : ''}
                     </tr>
                 `).join('');
         }
@@ -4827,6 +4827,14 @@
                 unitSelect.appendChild(newOpt);
             });
             
+            // Funções distintas e seus IDs (idposition)
+            const roleToId = {};
+            state.allUsers.forEach(u => {
+                if (u.funcao && !roleToId[u.funcao]) {
+                    roleToId[u.funcao] = u.idposition || '';
+                }
+            });
+
             // Funções distintas (mantém baseadas no que já existe no sistema)
             const roles = [...new Set(state.allUsers.map(u => u.funcao))].sort();
             roleSelect.innerHTML = '<option value="">Selecione um cargo...</option>';
@@ -4835,6 +4843,7 @@
                 const opt = document.createElement('option');
                 opt.value = r;
                 opt.textContent = r;
+                opt.dataset.idposition = roleToId[r] || '';
                 roleSelect.appendChild(opt);
             });
 
@@ -4842,7 +4851,7 @@
             modal.show();
         };
 
-        window.deleteUserSesuite = async function (login, idarea, funcao) {
+        window.deleteUserSesuite = async function (login, idarea, funcao, idposition) {
             const confirm = await Swal.fire({
                 title: 'Excluir Profissional?',
                 text: `Deseja realmente remover o acesso de ${login}?`,
@@ -4865,7 +4874,8 @@
                     body: JSON.stringify({
                         idlogin: login,
                         idarea: idarea,
-                        funcao: String(funcao || '').toLowerCase()
+                        funcao: String(funcao || '').toLowerCase(),
+                        idposition: idposition || ''
                     })
                 });
 
@@ -4952,11 +4962,13 @@
                     e.preventDefault();
                     const idlogin = document.getElementById('add_user_login').value;
                     const unitSelect = document.getElementById('add_user_unidade');
-                    const funcao = document.getElementById('add_user_funcao').value;
+                    const roleSelect = document.getElementById('add_user_funcao');
+                    const funcao = roleSelect.value;
                     const idarea = unitSelect.options[unitSelect.selectedIndex].dataset.idarea;
+                    const idposition = roleSelect.options[roleSelect.selectedIndex].dataset.idposition;
 
-                    if (!idarea) {
-                        Swal.fire('Aviso', 'Não foi possível localizar o código da área (idarea) para esta unidade. O cadastro pode falhar no SESUITE.', 'warning');
+                    if (!idarea || !idposition) {
+                        Swal.fire('Aviso', 'Não foi possível localizar todos os códigos (idarea/idposition). O cadastro pode falhar no SESUITE.', 'warning');
                     }
 
                     Swal.fire({ title: 'Cadastrando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -4968,7 +4980,8 @@
                             body: JSON.stringify({
                                 idlogin: idlogin,
                                 idarea: idarea,
-                                funcao: funcao.toLowerCase()
+                                funcao: String(funcao || '').toLowerCase(),
+                                idposition: idposition || ''
                             })
                         });
 

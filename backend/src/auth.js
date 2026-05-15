@@ -167,7 +167,8 @@ async function fetchSesuiteList() {
           nome: u.tecnica || u.nome || u.NOME || u.name || login,
           funcao: u.funcao || u.FUNCAO || u.role || 'Técnica',
           unidade: u.unidade || u.UNIDADE || u.unit || '',
-          idarea: u.idarea || u.IDAREA || u.cdarea || u.CDAREA || u.idposition || ''
+          idarea: u.idarea || u.IDAREA || u.cdarea || u.CDAREA || '',
+          idposition: u.idposition || u.IDPOSITION || u.cdposition || u.CDPOSITION || ''
         });
       }
     }
@@ -221,6 +222,7 @@ async function checkSesuiteAccess(username) {
       funcao: found ? found.funcao : (ALLOWED_USERS.includes(login) ? 'Administrador' : 'Técnica'), 
       unidade: found ? found.unidade : 'Sede',
       idarea: found ? found.idarea : '',
+      idposition: found ? found.idposition : '',
       canEdit: canEdit,
       canManageUsers: canManageUsers
     };
