@@ -172,6 +172,35 @@
         box-shadow: 0 8px 15px rgba(155, 89, 182, 0.2);
       }
 
+      /* Logout Button Premium */
+      .btn-logout-premium {
+        background: linear-gradient(135deg, #ff4d4d 0%, #cc0000 100%);
+        color: white !important;
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 0.8rem 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        transition: var(--transition);
+        box-shadow: 0 4px 12px rgba(204, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        width: 100%;
+      }
+      .btn-logout-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(204, 0, 0, 0.4);
+        filter: brightness(1.1);
+      }
+      .btn-logout-premium i {
+        font-size: 1.1rem;
+      }
+
       /* Main Content Layout */
       .main-content {
         margin-left: var(--sidebar-width);
@@ -809,8 +838,8 @@
             </a>
           </div>
         </nav>
-        <div class="sidebar-user-info d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-2 overflow-hidden">
+        <div class="sidebar-user-info flex-column gap-3">
+          <div class="d-flex align-items-center gap-2 w-100 overflow-hidden">
             <img id="user-avatar-sidebar" src="https://ui-avatars.com/api/?name=Usuario&background=b366a6&color=fff" alt="Avatar" class="rounded-circle border border-2 border-primary-light shadow-sm" width="38">
             <div class="user-details overflow-hidden">
               <p id="user-name-sidebar" class="mb-0 fw-bold text-main small text-truncate">Carregando...</p>
@@ -818,8 +847,9 @@
             </div>
           </div>
           <a href="https://login.recife.pe.gov.br/auth/realms/prefeitura/protocol/openid-connect/logout?redirect_uri=https://semul.recife.pe.gov.br/redeclaricelispector-prontuario" 
-             class="btn btn-link p-0 text-muted hover-primary" title="Sair do Sistema">
-            <i class="bi bi-box-arrow-right fs-5"></i>
+             class="btn-logout-premium" title="Clique para sair do sistema com segurança">
+            <i class="bi bi-power"></i>
+            <span>SAIR DO SISTEMA</span>
           </a>
         </div>
         <!-- ── Indicador de Versão Removido ─────────────────────────────── -->
@@ -1096,18 +1126,27 @@
                         <h2 class="h4 mb-1">Gestão de Usuárias e Acessos</h2>
                         <p class="text-muted small mb-0">Administre as profissionais com acesso ao sistema Clarice.</p>
                     </div>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary d-none">
                         <i class="bi bi-person-plus me-1"></i> Nova Profissional
                     </button>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <div class="premium-search-box">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" class="form-control" id="search-users" placeholder="Buscar profissional por nome, login, função ou unidade...">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th class="text-nowrap">Profissional</th>
-                                <th class="text-nowrap">Cargo/Função</th>
-                                <th class="text-nowrap">E-mail</th>
+                                <th class="text-nowrap sortable-user" data-sort="nome" style="cursor:pointer">Profissional <i class="bi bi-arrow-down-up ms-1 small opacity-50"></i></th>
+                                <th class="text-nowrap sortable-user" data-sort="funcao" style="cursor:pointer">Cargo/Função <i class="bi bi-arrow-down-up ms-1 small opacity-50"></i></th>
+                                <th class="text-nowrap sortable-user" data-sort="unidade" style="cursor:pointer">Unidade <i class="bi bi-arrow-down-up ms-1 small opacity-50"></i></th>
                                 <th class="text-nowrap">Último Acesso</th>
                                 <th class="text-nowrap">Status</th>
                                 <th class="text-end text-nowrap">Ações</th>
@@ -2148,6 +2187,7 @@
                     </div>
                 </div>
                 <form id="form_evolucao">
+                    <input type="hidden" id="evolucao_prontuario_id" name="numeroprontuario">
                     <div class="modal-body p-4 bg-light">
                         <div class="d-flex gap-3 mb-4 flex-wrap">
                             <div class="p-3 bg-white rounded shadow-sm border-start border-primary border-4 flex-grow-1" style="min-width: 250px;">
@@ -2633,8 +2673,23 @@
                 currentFamilia: [],
                 currentAutores: [],
                 masks: {},
-                user: { nome: 'Técnica', funcao: 'Atendimento' }
+                user: { nome: 'Técnica', funcao: 'Atendimento' },
+                allUsers: [], // Cache para busca/filtro de usuários
+                userSort: { key: 'nome', asc: true }
             };
+
+            // Helper: Padronizar capitalização de nomes (Title Case)
+            function formatName(str) {
+                if (!str || typeof str !== 'string') return str || '';
+                const lower = str.toLowerCase().trim();
+                // Ignorar preposições comuns em nomes PT-BR
+                const preps = ['da', 'de', 'do', 'das', 'dos', 'e'];
+                return lower.split(' ').map((word, index) => {
+                    if (word.length === 0) return '';
+                    if (index > 0 && preps.includes(word)) return word;
+                    return word.charAt(0).toUpperCase() + word.slice(1);
+                }).join(' ');
+            }
 
             function showGlobalLoader() {
                 state.loadingTasks++;
@@ -3292,7 +3347,7 @@
 
                 tr.innerHTML = `
                     <td><span class="fw-bold">${prontuarioId}</span></td>
-                    <td class="fw-medium">${nome}</td>
+                    <td class="fw-medium">${formatName(nome)}</td>
                     <td class="text-muted">${cpf}</td>
                     <td>${safeFormatDate(dataAtend)}</td>
                     ${isFull ? `<td><span class="badge-soft badge-soft-primary">${unidade}</span></td>` : `<td><span class="badge-soft badge-soft-success">Ativa</span></td>`}
@@ -3424,6 +3479,7 @@
                 try {
                     const response = await fetch(WEBHOOKS.GET, {
                         method: 'POST',
+                        credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ prontuario: id })
                     });
@@ -3442,8 +3498,15 @@
                     
                     if (record) {
                         populateForm(record);
+                        const evolucaoIdInput = document.getElementById('evolucao_prontuario_id');
+                        if (evolucaoIdInput) evolucaoIdInput.value = id;
+                        
                         toggleFormReadOnly(isReadOnly);
                         switchView('form');
+                        
+                        // Atualizar nome no header se disponível
+                        const displayNome = document.getElementById('display-nome-usuaria');
+                        if (displayNome) displayNome.textContent = formatName(record.nomeusuaria || record.nome || '');
                         
                         // Load extra data
                         loadEvolucoes(id);
@@ -3551,12 +3614,12 @@
                 
                 try {
                     // 1. Buscar do Legado via PROXY do nosso Backend (Evita CORS)
-                    const legacyPromise = fetch(`${API_BASE}/api/evolucoes/legacy/${prontuarioId}`).then(r => r.json()).catch(() => []);
+                    const legacyPromise = fetch(`${API_BASE}/api/evolucoes/legacy/${prontuarioId}`, { credentials: 'include' }).then(r => r.json()).catch(() => []);
 
                     // 2. Buscar do BigQuery (GET)
                     const bqUrl = new URL(`${API_BASE}/api/evolucoes`, window.location.href);
                     bqUrl.searchParams.set('prontuario', prontuarioId);
-                    const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
+                    const bqPromise = fetch(bqUrl.toString(), { credentials: 'include' }).then(r => r.json()).catch(() => []);
 
                     const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
                     
@@ -3730,7 +3793,7 @@
             if (formEvolucao) {
                 formEvolucao.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    const prontuarioId = document.getElementById('evolucao_prontuario_id')?.value || currentProntuarioId;
+                    const prontuarioId = document.getElementById('evolucao_prontuario_id')?.value || state.currentProntuario;
                     if (!prontuarioId) return;
 
                     const formData = new FormData(formEvolucao);
@@ -3783,7 +3846,7 @@
                     const url = new URL(WEBHOOKS.ANEXOS, window.location.href);
                     url.searchParams.set('prontuario', prontuarioId);
                     
-                    const response = await fetch(url.toString());
+                    const response = await fetch(url.toString(), { credentials: 'include' });
                     const data = await response.json();
                     
                     let list = Array.isArray(data) ? data : (data.data || data.arquivos || []);
@@ -3951,7 +4014,7 @@
                         const roleEl = document.getElementById('user-role-sidebar');
                         const avatarEl = document.getElementById('user-avatar-sidebar');
                         
-                        if (nameEl) nameEl.textContent = user.nome;
+                        if (nameEl) nameEl.textContent = formatName(user.nome);
                         if (roleEl) {
                             // Se tiver unidade, mostra junto com a função
                             roleEl.textContent = user.unidade ? `${user.funcao} • ${user.unidade}` : user.funcao;
@@ -3971,6 +4034,7 @@
                     const res = await fetch(WEBHOOKS.USERS, { credentials: 'include' });
                     if (res.ok) {
                         const users = await res.json();
+                        state.allUsers = users;
                         renderUsersTable(users);
                     }
                 } catch (err) {
@@ -3985,11 +4049,18 @@
                 if (!tbody) return;
 
                 if (!users || users.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma profissional encontrada no SESUITE.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma profissional encontrada.</td></tr>';
                     return;
                 }
 
-                tbody.innerHTML = users.map(u => `
+                // Aplicar ordenação do estado
+                const sorted = [...users].sort((a, b) => {
+                    const valA = String(a[state.userSort.key] || '').toLowerCase();
+                    const valB = String(b[state.userSort.key] || '').toLowerCase();
+                    return state.userSort.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                });
+
+                tbody.innerHTML = sorted.map(u => `
                     <tr class="hover-row">
                         <td>
                             <div class="d-flex align-items-center gap-3">
@@ -3997,7 +4068,7 @@
                                     <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.nome)}&background=b366a6&color=fff" class="rounded-circle" width="32">
                                 </div>
                                 <div>
-                                    <div class="fw-bold text-main">${u.nome}</div>
+                                    <div class="fw-bold text-main">${formatName(u.nome)}</div>
                                     <div class="text-muted x-small">${u.login}</div>
                                 </div>
                             </div>
@@ -4012,6 +4083,42 @@
                     </tr>
                 `).join('');
             }
+
+            // Listeners para Busca e Ordenação de Usuários
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('search-users');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        const term = e.target.value.toLowerCase();
+                        const filtered = state.allUsers.filter(u => 
+                            u.nome.toLowerCase().includes(term) || 
+                            u.login.toLowerCase().includes(term) || 
+                            u.funcao.toLowerCase().includes(term) || 
+                            (u.unidade && u.unidade.toLowerCase().includes(term))
+                        );
+                        renderUsersTable(filtered);
+                    });
+                }
+
+                document.querySelectorAll('.sortable-user').forEach(th => {
+                    th.addEventListener('click', () => {
+                        const key = th.getAttribute('data-sort');
+                        if (state.userSort.key === key) {
+                            state.userSort.asc = !state.userSort.asc;
+                        } else {
+                            state.userSort.key = key;
+                            state.userSort.asc = true;
+                        }
+                        
+                        // Update UI icons
+                        document.querySelectorAll('.sortable-user i').forEach(i => i.className = 'bi bi-arrow-down-up ms-1 small opacity-50');
+                        const icon = th.querySelector('i');
+                        if (icon) icon.className = `bi bi-sort-alpha-${state.userSort.asc ? 'down' : 'up-alt'} ms-1 small text-primary`;
+                        
+                        renderUsersTable(state.allUsers);
+                    });
+                });
+            });
 
             async function loadNationalities() {
                 const select = document.getElementById('nacionalidade');
@@ -4206,7 +4313,7 @@
                             if (isNew) {
                                 try {
                                     const urlGetNew = `${WEBHOOKS.GET_NEW}?cpf=${data.cpfusuaria?.replace(/\D/g, '') || ''}`;
-                                    const respNew = await fetch(urlGetNew);
+                                    const respNew = await fetch(urlGetNew, { credentials: 'include' });
                                     const dataNew = await respNew.json();
                                     const newId = dataNew.numeroprontuario || dataNew.prontuario || dataNew.id;
                                     
@@ -4784,14 +4891,14 @@
                 console.log('[DEBUG] Carregando família legada de:', legacyUrl);
                 
                 // 1. Buscar do Legado via PROXY
-                const legacyPromise = fetch(legacyUrl).then(r => r.json()).catch((err) => {
+                const legacyPromise = fetch(legacyUrl, { credentials: 'include' }).then(r => r.json()).catch((err) => {
                     console.error('[DEBUG] Erro ao carregar família legada:', err);
                     return [];
                 });
                 // 2. Buscar do BigQuery
                 const bqUrl = new URL(WEBHOOKS.FAMILIA, window.location.href);
                 bqUrl.searchParams.set('prontuario', prontuarioId);
-                const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
+                const bqPromise = fetch(bqUrl.toString(), { credentials: 'include' }).then(r => r.json()).catch(() => []);
 
                 const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
                 
@@ -4934,11 +5041,11 @@
                 const legacyUrl = `${WEBHOOKS.AUTORES_LEGACY}/${prontuarioId}`;
                 
                 // 1. Buscar do Legado via PROXY
-                const legacyPromise = fetch(legacyUrl).then(r => r.json()).catch(() => []);
+                const legacyPromise = fetch(legacyUrl, { credentials: 'include' }).then(r => r.json()).catch(() => []);
                 // 2. Buscar do BigQuery
                 const bqUrl = new URL(WEBHOOKS.AUTORES, window.location.href);
                 bqUrl.searchParams.set('prontuario', prontuarioId);
-                const bqPromise = fetch(bqUrl.toString()).then(r => r.json()).catch(() => []);
+                const bqPromise = fetch(bqUrl.toString(), { credentials: 'include' }).then(r => r.json()).catch(() => []);
 
                 const [legacyData, bqData] = await Promise.all([legacyPromise, bqPromise]);
                 
@@ -5091,6 +5198,8 @@
                 document.getElementById('autor_index').value = -1;
                 document.getElementById('autormodaltitle').textContent = 'Adicionar Autor da Violência';
             });
+        }
+        
         // ── Evolução do Caso ──────────────────────────────────────────────────────
         const evolucaoModalEl = document.getElementById('evolucaomodal');
         if (evolucaoModalEl) {
