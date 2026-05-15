@@ -263,32 +263,6 @@ router.post('/salvar', async (req, res) => {
     
     await dml(mergeSql, params, types);
 
-    // ── Processamento de Composição Familiar ─────────────────────────────────
-    if (req.body.familia_json) {
-      try {
-        const familia = JSON.parse(req.body.familia_json);
-        if (Array.isArray(familia)) {
-          console.log(`[Familia] Processando ${familia.length} membros para ${body.numeroprontuario}`);
-          // Limpar membros atuais para evitar duplicados em edição
-          await dml(`DELETE FROM ${tbl('familia')} WHERE numeroprontuario = @p`, { p: body.numeroprontuario }, { p: 'STRING' });
-          
-          for (const m of familia) {
-            const mSql = `INSERT INTO ${tbl('familia')} (id, numeroprontuario, familianome, familiaparentesco, familiaidade, createdat, updatedat)
-                          VALUES (@id, @p, @nome, @paren, @idade, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())`;
-            await dml(mSql, {
-              id: Math.floor(Date.now() % 1000000000) + Math.floor(Math.random() * 1000),
-              p: body.numeroprontuario,
-              nome: m.familianome || m.nome || '',
-              paren: m.familiaparentesco || m.parentesco || '',
-              idade: parseInt(m.familiaidade || m.idade || 0)
-            }, { id: 'INT64', p: 'STRING', nome: 'STRING', paren: 'STRING', idade: 'INT64' });
-          }
-        }
-      } catch (err) {
-        console.error('[Familia Save] Erro:', err.message);
-      }
-    }
-
     // ── Processamento de Autores da Violência ────────────────────────────────
     if (req.body.autores_json) {
       try {
@@ -413,8 +387,12 @@ router.post('/salvar', async (req, res) => {
 
     res.json({ message: 'Salvo com sucesso!', numeroprontuario: body.numeroprontuario });
   } catch (err) {
-    console.error('[BQ Salvar] Erro detalhado:', err);
-    res.status(500).json({ error: 'Erro ao salvar: ' + (err.message || err) });
+    console.error('[BQ Salvar] ERRO CRÍTICO:', err);
+    res.status(500).json({ 
+      error: 'Erro ao salvar dados no BigQuery', 
+      details: err.message,
+      code: err.code
+    });
   }
 });
 

@@ -5218,7 +5218,6 @@
 
                 console.log('[DEBUG] Payload Final Sincronizado:', data);
 
-                // Adicionar arquivos pendentes se houver
                 if (state.pendingFiles.length > 0) {
                     state.pendingFiles.forEach((item, index) => {
                         data[`arquivo_${index}`] = item.base64;
@@ -5288,11 +5287,18 @@
                             Swal.fire('Sucesso', 'Alterações salvas com sucesso!', 'success');
                         }
                     } else {
-                        throw new Error('Erro ao salvar');
+                        const errorData = await response.json().catch(() => ({}));
+                        const errMsg = errorData.details || errorData.error || 'Erro interno no servidor';
+                        throw new Error(errMsg);
                     }
                 } catch (error) {
                     console.error('Error saving:', error);
-                    Swal.fire('Erro', 'Houve um problema ao salvar os dados: ' + error.message, 'error');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Falha ao Salvar',
+                        text: 'Houve um problema ao salvar os dados: ' + error.message,
+                        footer: 'Tente preencher todos os campos obrigatórios e verifique se há anexos grandes demais.'
+                    });
                 }
             });
         }
