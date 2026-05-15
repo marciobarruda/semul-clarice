@@ -1246,7 +1246,8 @@
                                         <th class="sortable text-nowrap" data-sort="nome" onclick="handleSort('nome')">
                                             Nome da Usuária <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
                                         <th class="sortable text-nowrap" data-sort="cpf" onclick="handleSort('cpf')">CPF
-                                            <i class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
+                                            <i class="bi bi-arrow-down-up ms-1 text-muted"></i>
+                                        </th>
                                         <th class="sortable text-nowrap" data-sort="data_pri_atendimento"
                                             onclick="handleSort('data_pri_atendimento')">Data de Registro <i
                                                 class="bi bi-arrow-down-up ms-1 text-muted"></i></th>
@@ -1271,7 +1272,8 @@
                     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                         <div>
                             <h2 class="h4 mb-1 fw-bold text-main">Gestão de Usuárias e Acessos</h2>
-                            <p class="text-muted small mb-0">Administre as profissionais com acesso ao sistema Clarice.</p>
+                            <p class="text-muted small mb-0">Administre as profissionais com acesso ao sistema Clarice.
+                            </p>
                         </div>
                         <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" onclick="openAddUserModal()">
                             <i class="bi bi-person-plus-fill me-2"></i>Nova Profissional
@@ -3256,40 +3258,52 @@
                             <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i>
                             Adicionar Nova Profissional
                         </h5>
-                        <p class="mb-0 opacity-75 small text-white">Cadastre o acesso de novas profissionais ao sistema</p>
+                        <p class="mb-0 opacity-75 small text-white">Cadastre o acesso de novas profissionais ao sistema
+                        </p>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form id="form_add_user">
                     <div class="modal-body p-4 bg-light">
                         <div class="mb-4">
-                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Login de Rede (idlogin)</label>
+                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Login de
+                                Rede (login do SEI)</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-text border-0 bg-white shadow-sm"><i class="bi bi-person text-primary"></i></span>
-                                <input type="text" class="form-control border-0 shadow-sm" name="idlogin" id="add_user_login" placeholder="ex: jose.silva" required>
+                                <span class="input-group-text border-0 bg-white shadow-sm"><i
+                                        class="bi bi-person text-primary"></i></span>
+                                <input type="text" class="form-control border-0 shadow-sm" name="idlogin"
+                                    id="add_user_login" placeholder="ex: ana.silva" required>
                             </div>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Unidade de Lotação</label>
+                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Unidade
+                                de Lotação</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-text border-0 bg-white shadow-sm"><i class="bi bi-building text-primary"></i></span>
-                                <select class="form-select border-0 shadow-sm" name="unidade" id="add_user_unidade" required>
+                                <span class="input-group-text border-0 bg-white shadow-sm"><i
+                                        class="bi bi-building text-primary"></i></span>
+                                <select class="form-select border-0 shadow-sm" name="unidade" id="add_user_unidade"
+                                    required>
                                     <option value="">Selecione uma unidade...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Cargo / Função</label>
+                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Cargo /
+                                Função</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-text border-0 bg-white shadow-sm"><i class="bi bi-person-badge text-primary"></i></span>
-                                <select class="form-select border-0 shadow-sm" name="funcao" id="add_user_funcao" required>
+                                <span class="input-group-text border-0 bg-white shadow-sm"><i
+                                        class="bi bi-person-badge text-primary"></i></span>
+                                <select class="form-select border-0 shadow-sm" name="funcao" id="add_user_funcao"
+                                    required>
                                     <option value="">Selecione um cargo...</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
-                        <button type="button" class="btn btn-link text-muted fw-bold text-decoration-none" data-bs-dismiss="modal">CANCELAR</button>
+                        <button type="button" class="btn btn-link text-muted fw-bold text-decoration-none"
+                            data-bs-dismiss="modal">CANCELAR</button>
                         <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-lg">
                             <i class="bi bi-check2-circle me-2"></i>CADASTRAR ACESSO
                         </button>
@@ -4750,45 +4764,59 @@
                 `).join('');
         }
 
-        window.openAddUserModal = function() {
+        window.openAddUserModal = function () {
             const modalEl = document.getElementById('useraddmodal');
             const unitSelect = document.getElementById('add_user_unidade');
             const roleSelect = document.getElementById('add_user_funcao');
+            const sourceSelect = document.getElementById('unidadeatendimento');
             
-            if (!unitSelect || !roleSelect) return;
+            if (!unitSelect || !roleSelect || !sourceSelect) return;
 
-            // Unidades distintas e suas áreas (idarea)
-            const units = {};
+            // Mapeamento de unidades existentes para pegar o idarea (Normalizado para UPPERCASE)
+            const unitToArea = {};
             state.allUsers.forEach(u => {
-                if (u.unidade && !units[u.unidade]) {
-                    units[u.unidade] = u.idarea || '';
+                if (u.unidade) {
+                    unitToArea[u.unidade.toUpperCase().trim()] = u.idarea || '';
                 }
             });
             
+            // Popula unidades baseadas no select de atendimento padrão do sistema
             unitSelect.innerHTML = '<option value="">Selecione uma unidade...</option>';
-            Object.keys(units).sort().forEach(u => {
-                const opt = document.createElement('option');
-                opt.value = u;
-                opt.dataset.idarea = units[u];
-                opt.textContent = u;
-                unitSelect.appendChild(opt);
+            Array.from(sourceSelect.options).forEach(opt => {
+                if (!opt.value) return;
+                const newOpt = document.createElement('option');
+                newOpt.value = opt.value;
+                newOpt.textContent = opt.textContent;
+                
+                // Tenta encontrar o idarea correspondente
+                const key = opt.value.toUpperCase().trim();
+                if (unitToArea[key]) {
+                    newOpt.dataset.idarea = unitToArea[key];
+                } else {
+                    // Tenta uma busca por "contém" caso os nomes variem levemente
+                    const foundKey = Object.keys(unitToArea).find(k => k.includes(key) || key.includes(k));
+                    if (foundKey) newOpt.dataset.idarea = unitToArea[foundKey];
+                }
+                
+                unitSelect.appendChild(newOpt);
             });
             
-            // Funções distintas
+            // Funções distintas (mantém baseadas no que já existe no sistema)
             const roles = [...new Set(state.allUsers.map(u => u.funcao))].sort();
             roleSelect.innerHTML = '<option value="">Selecione um cargo...</option>';
             roles.forEach(r => {
+                if (!r) return;
                 const opt = document.createElement('option');
                 opt.value = r;
                 opt.textContent = r;
                 roleSelect.appendChild(opt);
             });
-            
+
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
         };
 
-        window.deleteUserSesuite = async function(login, idarea, funcao) {
+        window.deleteUserSesuite = async function (login, idarea, funcao) {
             const confirm = await Swal.fire({
                 title: 'Excluir Profissional?',
                 text: `Deseja realmente remover o acesso de ${login}?`,
@@ -4799,32 +4827,32 @@
                 cancelButtonText: 'CANCELAR',
                 customClass: { confirmButton: 'rounded-pill px-4', cancelButton: 'rounded-pill px-4' }
             });
-            
+
             if (!confirm.isConfirmed) return;
-            
+
             Swal.fire({ title: 'Removendo...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            
+
             try {
                 const res = await fetch(WEBHOOKS.USERS_REMOVE, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        idlogin: login, 
+                    body: JSON.stringify({
+                        idlogin: login,
                         idarea: idarea,
                         funcao: String(funcao || '').toLowerCase()
                     })
                 });
-                
+
                 let resultText = await res.text();
                 let displayMessage = resultText;
-                
+
                 // Tenta extrair mensagem limpa se for JSON ou XML
                 try {
                     const json = JSON.parse(resultText);
                     const rawData = Array.isArray(json) ? (json[0]?.data || json[0]?.message) : (json.data || json.message);
                     if (rawData) displayMessage = rawData;
-                } catch(e) {}
-                
+                } catch (e) { }
+
                 // Extrair <Detail> de XML se presente
                 if (displayMessage.includes('<Detail>')) {
                     const match = displayMessage.match(/<Detail>(.*?)<\/Detail>/);
@@ -4832,7 +4860,7 @@
                 }
 
                 const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
-                
+
                 if (checkText.includes('SUCCESS')) {
                     Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
                     loadAllUsers();
@@ -4894,6 +4922,10 @@
                     const funcao = document.getElementById('add_user_funcao').value;
                     const idarea = unitSelect.options[unitSelect.selectedIndex].dataset.idarea;
 
+                    if (!idarea) {
+                        Swal.fire('Aviso', 'Não foi possível localizar o código da área (idarea) para esta unidade. O cadastro pode falhar no SESUITE.', 'warning');
+                    }
+
                     Swal.fire({ title: 'Cadastrando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
                     try {
@@ -4909,13 +4941,13 @@
 
                         let resultText = await res.text();
                         let displayMessage = resultText;
-                        
+
                         try {
                             const json = JSON.parse(resultText);
                             const rawData = Array.isArray(json) ? (json[0]?.data || json[0]?.message) : (json.data || json.message);
                             if (rawData) displayMessage = rawData;
-                        } catch(e) {}
-                        
+                        } catch (e) { }
+
                         if (displayMessage.includes('<Detail>')) {
                             const match = displayMessage.match(/<Detail>(.*?)<\/Detail>/);
                             if (match) displayMessage = match[1];
