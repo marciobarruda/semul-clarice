@@ -4862,8 +4862,15 @@
                 const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
 
                 if (checkText.includes('SUCCESS')) {
-                    Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
-                    loadAllUsers();
+                    loadAllUsers(); // Atualiza a tabela silenciosamente em segundo plano
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: 'Operação realizada com sucesso.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        customClass: { popup: 'rounded-lg' }
+                    });
                 } else if (checkText.includes('FAILURE') || checkText.includes('ERROR') || checkText.includes('ERRO')) {
                     Swal.fire('Falha no SESUITE', displayMessage, 'error');
                 } else if (res.ok) {
@@ -4956,10 +4963,17 @@
                         const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
 
                         if (checkText.includes('SUCCESS')) {
-                            Swal.fire('Sucesso!', 'Profissional cadastrada com sucesso.', 'success');
+                            loadAllUsers(); // Atualiza a tabela silenciosamente em segundo plano
+                            Swal.fire({
+                                title: 'Sucesso!',
+                                text: 'Profissional cadastrada com sucesso.',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false,
+                                customClass: { popup: 'rounded-lg' }
+                            });
                             bootstrap.Modal.getInstance(document.getElementById('useraddmodal')).hide();
                             formAdd.reset();
-                            loadAllUsers();
                         } else if (checkText.includes('FAILURE') || checkText.includes('ERROR') || checkText.includes('ERRO')) {
                             Swal.fire('Falha no SESUITE', displayMessage, 'error');
                         } else if (res.ok) {
