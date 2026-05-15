@@ -457,6 +457,19 @@
             color: var(--warning);
         }
 
+        .badge-unidade {
+            font-size: 0.85rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            background: rgba(179, 102, 166, 0.08);
+            color: var(--primary);
+            font-weight: 700;
+            border: 1px solid rgba(179, 102, 166, 0.15);
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.3px;
+        }
+
         /* Glassmorphism elements */
         .glass-panel {
             background: rgba(255, 255, 255, 0.6);
@@ -981,6 +994,12 @@
 
             <!-- Dashboard View -->
             <div class="content-body d-none" id="dashboard-view">
+                <div class="mb-4 animate__animated animate__fadeIn">
+                    <h1 class="h3 fw-bold text-main mb-2">Sistema de Prontuário Eletrônico Clarice Lispector</h1>
+                    <div class="badge-unidade">
+                        <i class="bi bi-geo-alt-fill me-2"></i> Unidade: <span class="user-unidade-text">---</span>
+                    </div>
+                </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h4 class="mb-0 fw-bold">Painel de Indicadores</h4>
@@ -1207,6 +1226,12 @@
 
             <!-- Prontuários View -->
             <div class="content-body" id="prontuarios-view">
+                <div class="mb-4 animate__animated animate__fadeIn">
+                    <h1 class="h3 fw-bold text-main mb-2">Sistema de Prontuário Eletrônico Clarice Lispector</h1>
+                    <div class="badge-unidade">
+                        <i class="bi bi-geo-alt-fill me-2"></i> Unidade: <span class="user-unidade-text">---</span>
+                    </div>
+                </div>
                 <div class="card-premium animate__animated animate__fadeIn">
                     <div class="card-premium-header">
                         <div>
@@ -4713,6 +4738,11 @@
                     if (avatarEl) {
                         avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nome)}&background=b366a6&color=fff`;
                     }
+
+                    // Atualizar unidade nos novos cabeçalhos
+                    document.querySelectorAll('.user-unidade-text').forEach(el => {
+                        el.textContent = user.unidade || 'Não informada';
+                    });
 
                     // Gestão de Profissionais (Adicionar/Remover)
                     const btnNewUser = document.querySelector('[onclick="openAddUserModal()"]');
