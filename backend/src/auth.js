@@ -187,9 +187,9 @@ async function fetchSesuiteList() {
 }
 
 /** Retorna a lista completa de usuários do SESUITE (com cache) */
-async function getSesuiteUsers() {
+async function getSesuiteUsers(force = false) {
   const now = Date.now();
-  if (sesuiteCache.users.length === 0 || (now - sesuiteCache.lastFetch > sesuiteCache.ttl)) {
+  if (force || sesuiteCache.users.length === 0 || (now - sesuiteCache.lastFetch > sesuiteCache.ttl)) {
     await fetchSesuiteList();
   }
   return sesuiteCache.users;

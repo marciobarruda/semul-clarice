@@ -62,7 +62,8 @@ app.get('/api/me', requireApiAuth, (req, res) => {
 
 app.get('/api/users', requireApiAuth, async (req, res) => {
   try {
-    const users = await getSesuiteUsers();
+    const force = req.query.force === 'true';
+    const users = await getSesuiteUsers(force);
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: 'Falha ao buscar usuários' });

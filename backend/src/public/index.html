@@ -4706,10 +4706,11 @@
             }
         }
 
-        async function loadAllUsers() {
+        async function loadAllUsers(force = false) {
             try {
                 showGlobalLoader();
-                const res = await fetch(WEBHOOKS.USERS, { credentials: 'include' });
+                const url = force ? `${WEBHOOKS.USERS}?force=true` : WEBHOOKS.USERS;
+                const res = await fetch(url, { credentials: 'include' });
                 if (res.ok) {
                     const users = await res.json();
                     state.allUsers = users;
@@ -4862,7 +4863,7 @@
                 const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
 
                 if (checkText.includes('SUCCESS')) {
-                    loadAllUsers(); // Atualiza a tabela silenciosamente em segundo plano
+                    loadAllUsers(true); // Força a atualização da lista ignorando o cache do backend
                     Swal.fire({
                         title: 'Sucesso!',
                         text: 'Operação realizada com sucesso.',
@@ -4963,7 +4964,7 @@
                         const checkText = displayMessage.toUpperCase() + resultText.toUpperCase();
 
                         if (checkText.includes('SUCCESS')) {
-                            loadAllUsers(); // Atualiza a tabela silenciosamente em segundo plano
+                            loadAllUsers(true); // Força a atualização da lista ignorando o cache do backend
                             Swal.fire({
                                 title: 'Sucesso!',
                                 text: 'Profissional cadastrada com sucesso.',
