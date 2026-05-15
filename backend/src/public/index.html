@@ -4704,6 +4704,13 @@
                         btn.classList.toggle('d-none', !user.canEdit);
                     });
 
+                    // Gestão de Profissionais (Adicionar/Remover)
+                    const btnNewUser = document.querySelector('[onclick="openAddUserModal()"]');
+                    if (btnNewUser) btnNewUser.classList.toggle('d-none', !user.canManageUsers);
+                    
+                    const thActions = document.querySelector('#config-view th.text-end');
+                    if (thActions) thActions.classList.toggle('d-none', !user.canManageUsers);
+
                     // Atualiza Sidebar
                     const nameEl = document.getElementById('user-name-sidebar');
                     const roleEl = document.getElementById('user-role-sidebar');
@@ -4773,6 +4780,7 @@
                         <td><div class="text-muted small">${u.unidade || 'Não informada'}</div></td>
                         <td><div class="text-muted small">---</div></td>
                         <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
+                        ${state.user?.canManageUsers ? `
                         <td class="text-end">
                             <button class="btn btn-sm btn-danger rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="deleteUserSesuite('${u.login}', '${u.idarea || ''}', '${u.funcao || ''}')">
                                 <i class="bi bi-trash3-fill me-1"></i> EXCLUIR

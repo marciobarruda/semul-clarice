@@ -211,13 +211,18 @@ async function checkSesuiteAccess(username) {
     const login = username.toLowerCase();
     const canEdit = fullRoles.some(r => role.includes(r)) || fullLogins.includes(login);
 
+    // Permissão para gerir profissionais (Adicionar/Remover)
+    const manageRoles = ['gerente', 'gestor', 'administrativo'];
+    const canManageUsers = manageRoles.some(r => role.includes(r)) || fullLogins.includes(login);
+
     return { 
       login: username, 
       nome: found ? found.nome : username, 
       funcao: found ? found.funcao : (ALLOWED_USERS.includes(login) ? 'Administrador' : 'Técnica'), 
       unidade: found ? found.unidade : 'Sede',
       idarea: found ? found.idarea : '',
-      canEdit: canEdit
+      canEdit: canEdit,
+      canManageUsers: canManageUsers
     };
   }
 
@@ -234,7 +239,10 @@ async function checkSesuiteAccess(username) {
     const login = username.toLowerCase();
     const canEdit = fullRoles.some(r => role.includes(r)) || fullLogins.includes(login);
 
-    return { ...userFound, canEdit: canEdit };
+    const manageRoles = ['gerente', 'gestor', 'administrativo'];
+    const canManageUsers = manageRoles.some(r => role.includes(r)) || fullLogins.includes(login);
+
+    return { ...userFound, canEdit: canEdit, canManageUsers: canManageUsers };
   } else {
     console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
     return null;
