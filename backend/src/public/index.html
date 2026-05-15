@@ -4796,14 +4796,21 @@
                     })
                 });
                 
-                if (res.ok) {
+                const resultText = await res.text();
+                
+                if (resultText.toUpperCase().includes('SUCCESS')) {
                     Swal.fire('Sucesso!', 'Acesso removido com sucesso.', 'success');
                     loadAllUsers();
+                } else if (resultText.toUpperCase().includes('FAILURE')) {
+                    Swal.fire('Falha no SESUITE', resultText, 'error');
+                } else if (res.ok) {
+                    Swal.fire('Sucesso!', 'Operação concluída.', 'success');
+                    loadAllUsers();
                 } else {
-                    throw new Error('Falha no webhook');
+                    throw new Error(resultText || 'Erro desconhecido');
                 }
             } catch (err) {
-                Swal.fire('Erro', 'Não foi possível remover o acesso no SESUITE.', 'error');
+                Swal.fire('Erro', 'Não foi possível completar a remoção: ' + err.message, 'error');
             }
         };
 
@@ -4865,16 +4872,25 @@
                             })
                         });
 
-                        if (res.ok) {
+                        const resultText = await res.text();
+
+                        if (resultText.toUpperCase().includes('SUCCESS')) {
                             Swal.fire('Sucesso!', 'Profissional cadastrada com sucesso.', 'success');
                             bootstrap.Modal.getInstance(document.getElementById('useraddmodal')).hide();
                             formAdd.reset();
                             loadAllUsers();
+                        } else if (resultText.toUpperCase().includes('FAILURE')) {
+                            Swal.fire('Falha no SESUITE', resultText, 'error');
+                        } else if (res.ok) {
+                            Swal.fire('Sucesso!', 'Cadastro realizado.', 'success');
+                            bootstrap.Modal.getInstance(document.getElementById('useraddmodal')).hide();
+                            formAdd.reset();
+                            loadAllUsers();
                         } else {
-                            throw new Error('Falha no webhook');
+                            throw new Error(resultText || 'Erro desconhecido');
                         }
                     } catch (err) {
-                        Swal.fire('Erro', 'Não foi possível cadastrar a profissional no SESUITE.', 'error');
+                        Swal.fire('Erro', 'Não foi possível cadastrar a profissional: ' + err.message, 'error');
                     }
                 });
             }
