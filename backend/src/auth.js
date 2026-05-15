@@ -176,7 +176,7 @@ async function fetchSesuiteList() {
     sesuiteCache = {
       users: normalizedUsers,
       lastFetch: now,
-      ttl: 5 * 60 * 1000
+      ttl: 60 * 1000 // Reduzido para 1 minuto para maior reatividade
     };
 
     console.log(`[Auth] Cache do SESUITE atualizado com ${normalizedUsers.length} usuários.`);
@@ -203,6 +203,12 @@ async function checkSesuiteAccess(username) {
     // Tenta encontrar o nome real na lista do SESUITE mesmo sendo admin estático
     const users = await getSesuiteUsers();
     const found = users.find(u => u.login === username.toLowerCase());
+    
+    if (found) {
+      console.log(`[Auth] Admin ${username} encontrado no SESUITE. Função: ${found.funcao}`);
+    } else {
+      console.warn(`[Auth] Admin ${username} não encontrado no SESUITE. Usando fallback.`);
+    }
     
     const role = (found ? found.funcao : '').toLowerCase();
     const login = username.toLowerCase();
