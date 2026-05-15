@@ -1470,14 +1470,14 @@
                                                 <div class="col-12 col-md-2">
                                                     <label for="dataatendimento"
                                                         class="form-label required">Data</label>
-                                                    <input type="text" class="form-control bg-light"
-                                                        id="dataatendimento" name="dataatendimento" readonly required />
+                                                    <input type="text" class="form-control"
+                                                        id="dataatendimento" name="dataatendimento" required />
                                                 </div>
                                                 <div class="col-12 col-md-2">
                                                     <label for="horaatendimento"
                                                         class="form-label required">Hora</label>
-                                                    <input type="text" class="form-control bg-light"
-                                                        id="horaatendimento" name="horaatendimento" readonly required />
+                                                    <input type="text" class="form-control"
+                                                        id="horaatendimento" name="horaatendimento" required />
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="demandante" class="form-label">Demandante</label>
@@ -3712,21 +3712,15 @@
             const badgeRisco = document.getElementById('badge-risco-iminente');
             if (badgeRisco) badgeRisco.classList.add('d-none');
 
-            // Preenchimento automático de data e hora
-            const now = dayjs();
-            const dataAtend = document.getElementById('dataatendimento');
-            const horaAtend = document.getElementById('horaatendimento');
-
-            if (dataAtend) {
-                dataAtend.value = now.format('DD/MM/YYYY');
-                // Não precisa de máscara explícita aqui pois não tem mask instanciada para dataatendimento (é readonly)
-            }
-            if (horaAtend) horaAtend.value = now.format('HH:mm');
-
             // Limpar máscaras
             Object.keys(state.masks).forEach(k => {
                 state.masks[k].value = '';
             });
+
+            // Preenchimento automático de data e hora (Novo Prontuário)
+            const now = dayjs();
+            if (state.masks.dataatendimento) state.masks.dataatendimento.value = now.format('DD/MM/YYYY');
+            if (state.masks.horaatendimento) state.masks.horaatendimento.value = now.format('HH:mm');
 
             state.currentProntuario = null;
             state.isEditing = false;
@@ -3749,13 +3743,15 @@
         function toggleFormReadOnly(isReadOnly) {
             state.isReadOnly = isReadOnly;
             const elements = registroform.querySelectorAll('input, select, textarea');
-            const autoFields = ['numeroprontuario', 'dataatendimento', 'horaatendimento'];
+            const autoFields = ['numeroprontuario'];
             elements.forEach(el => {
                 if (autoFields.includes(el.id)) {
                     el.readOnly = true;
+                    el.classList.add('bg-light');
                 } else {
                     el.disabled = isReadOnly;
                     if (!isReadOnly) el.readOnly = false;
+                    el.classList.toggle('bg-light', isReadOnly);
                 }
             });
 
@@ -3764,10 +3760,11 @@
 
             // Ocultar todos os botões de ação (Adicionar, Selecionar, Nova Evolução)
             const actionBtns = [
-                '[data-bs-target="#evolucao_modal"]',
+                '[data-bs-target="#evolucaomodal"]',
                 '#btn_selecionar_anexos',
                 '#btnAddFamilia',
-                '[data-bs-target="#familia_modal"]'
+                '[data-bs-target="#familia_modal"]',
+                '[data-bs-target="#autormodal"]'
             ];
             document.querySelectorAll(actionBtns.join(', ')).forEach(btn => {
                 btn.classList.toggle('d-none', isReadOnly);
@@ -3930,10 +3927,13 @@
         }
 
         const dataAtendEl = document.getElementById('dataatendimento');
-        if (dataAtendEl) IMask(dataAtendEl, maskOptions.date);
+        if (dataAtendEl) state.masks.dataatendimento = IMask(dataAtendEl, maskOptions.date);
+
+        const horaAtendEl = document.getElementById('horaatendimento');
+        if (horaAtendEl) state.masks.horaatendimento = IMask(horaAtendEl, { mask: '00:00' });
 
         const dataNascEl = document.getElementById('datanascimento');
-        if (dataNascEl) IMask(dataNascEl, maskOptions.date);
+        if (dataNascEl) state.masks.datanascimento = IMask(dataNascEl, maskOptions.date);
 
         // Data Loading
         async function loadDashboardStats() {
