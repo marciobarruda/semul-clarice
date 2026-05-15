@@ -57,6 +57,15 @@
             --transition: all 0.25s ease-out;
         }
 
+        .modal-header-premium {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .letter-spacing-1 {
+            letter-spacing: 1px;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-main);
@@ -3240,33 +3249,48 @@
     <!-- Modal: Adicionar Nova Profissional -->
     <div class="modal fade" id="useraddmodal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-primary text-white p-4">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-person-plus-fill me-2"></i>Adicionar Nova Profissional</h5>
+            <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: var(--radius-lg);">
+                <div class="modal-header p-4 border-0 modal-header-premium">
+                    <div>
+                        <h5 class="modal-title d-flex align-items-center gap-2 fw-bold">
+                            <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i>
+                            Adicionar Nova Profissional
+                        </h5>
+                        <p class="mb-0 opacity-75 small text-white">Cadastre o acesso de novas profissionais ao sistema</p>
+                    </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="form_add_user">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted text-uppercase">Login de Rede (idlogin)</label>
-                            <input type="text" class="form-control form-control-lg bg-light border-0" name="idlogin" id="add_user_login" placeholder="ex: jose.silva" required>
+                    <div class="modal-body p-4 bg-light">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Login de Rede (idlogin)</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text border-0 bg-white shadow-sm"><i class="bi bi-person text-primary"></i></span>
+                                <input type="text" class="form-control border-0 shadow-sm" name="idlogin" id="add_user_login" placeholder="ex: jose.silva" required>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted text-uppercase">Unidade de Lotação</label>
-                            <select class="form-select form-select-lg bg-light border-0" name="unidade" id="add_user_unidade" required>
-                                <option value="">Selecione uma unidade...</option>
-                            </select>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Unidade de Lotação</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text border-0 bg-white shadow-sm"><i class="bi bi-building text-primary"></i></span>
+                                <select class="form-select border-0 shadow-sm" name="unidade" id="add_user_unidade" required>
+                                    <option value="">Selecione uma unidade...</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted text-uppercase">Cargo / Função</label>
-                            <select class="form-select form-select-lg bg-light border-0" name="funcao" id="add_user_funcao" required>
-                                <option value="">Selecione um cargo...</option>
-                            </select>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase letter-spacing-1">Cargo / Função</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text border-0 bg-white shadow-sm"><i class="bi bi-person-badge text-primary"></i></span>
+                                <select class="form-select border-0 shadow-sm" name="funcao" id="add_user_funcao" required>
+                                    <option value="">Selecione um cargo...</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer border-0 p-4 bg-light">
+                    <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
                         <button type="button" class="btn btn-link text-muted fw-bold text-decoration-none" data-bs-dismiss="modal">CANCELAR</button>
-                        <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow-sm">
+                        <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill fw-bold shadow-lg">
                             <i class="bi bi-check2-circle me-2"></i>CADASTRAR ACESSO
                         </button>
                     </div>
