@@ -176,7 +176,7 @@ async function fetchSesuiteList() {
     sesuiteCache = {
       users: normalizedUsers,
       lastFetch: now,
-      ttl: 60 * 1000 // Reduzido para 1 minuto para maior reatividade
+      ttl: 5 * 60 * 1000 // Voltar para 5 minutos para estabilidade
     };
 
     console.log(`[Auth] Cache do SESUITE atualizado com ${normalizedUsers.length} usuários.`);
@@ -198,6 +198,7 @@ async function getSesuiteUsers(force = false) {
 
 /** Verifica se o usuário tem acesso via API do SESUITE e retorna seus dados */
 async function checkSesuiteAccess(username) {
+try {
   // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto (sem dados extras de função)
   const login = username.toLowerCase().trim();
   if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(login)) {
@@ -206,9 +207,9 @@ async function checkSesuiteAccess(username) {
     const found = users.find(u => u.login === login);
     
     if (found) {
-      console.log(`[Auth] Admin ${username} encontrado no SESUITE. Função: ${found.funcao}`);
+      console.log(`[Auth] Admin ${username} identificado no SESUITE. Função: ${found.funcao}`);
     } else {
-      console.warn(`[Auth] Admin ${username} não encontrado no SESUITE. Usando fallback.`);
+      console.warn(`[Auth] Admin ${username} NÃO encontrado no SESUITE. Usando dados básicos.`);
     }
     
     const role = (found ? found.funcao : '').toLowerCase();
@@ -256,9 +257,18 @@ async function checkSesuiteAccess(username) {
 
     return { ...userFound, canEdit: canEdit, canManageUsers: canManageUsers };
   } else {
-    console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
+    console.warn(`[Auth] Usuário ${username} NÃO encontrado no SESUITE e NÃO é Admin.`);
     return null;
   }
+} catch (err) {
+  console.error('[Auth] Erro inesperado em checkSesuiteAccess:', err);
+  // Se for admin, libera com erro mesmo assim
+  const login = username.toLowerCase().trim();
+  if (ALLOWED_USERS.includes(login)) {
+    return { login: username, nome: username, funcao: 'Administrador (Fallback Erro)', canEdit: true, canManageUsers: true };
+  }
+  return null;
+}
 }
 
 /** Página de acesso negado */

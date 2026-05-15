@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Painel Administrativo • CRCL</title>
+    <title>Prontuário Eletrônico • Rede Clarice Lispector</title>
     <link rel="icon" href="https://storage.googleapis.com/clarice-lispector/Logo%20Clarice.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -4696,7 +4696,7 @@
                 if (res.ok) {
                     const user = await res.json();
                     state.user = user;
-                    
+
                     // Ajustes de UI baseados em permissão
                     document.querySelectorAll('.btn-new-record').forEach(btn => {
                         btn.classList.toggle('d-none', !user.canEdit);
@@ -4717,7 +4717,7 @@
                     // Gestão de Profissionais (Adicionar/Remover)
                     const btnNewUser = document.querySelector('[onclick="openAddUserModal()"]');
                     if (btnNewUser) btnNewUser.classList.toggle('d-none', !user.canManageUsers);
-                    
+
                     const thActions = document.querySelector('#config-view th.text-end');
                     if (thActions) thActions.classList.toggle('d-none', !user.canManageUsers);
 
@@ -4797,7 +4797,7 @@
             const unitSelect = document.getElementById('add_user_unidade');
             const roleSelect = document.getElementById('add_user_funcao');
             const sourceSelect = document.getElementById('unidadeatendimento');
-            
+
             if (!unitSelect || !roleSelect || !sourceSelect) return;
 
             // Mapeamento de unidades existentes para pegar o idarea (Normalizado para UPPERCASE)
@@ -4807,7 +4807,7 @@
                     unitToArea[u.unidade.toUpperCase().trim()] = u.idarea || '';
                 }
             });
-            
+
             // Popula unidades baseadas no select de atendimento padrão do sistema
             unitSelect.innerHTML = '<option value="">Selecione uma unidade...</option>';
             Array.from(sourceSelect.options).forEach(opt => {
@@ -4815,7 +4815,7 @@
                 const newOpt = document.createElement('option');
                 newOpt.value = opt.value;
                 newOpt.textContent = opt.textContent;
-                
+
                 // Tenta encontrar o idarea correspondente
                 const key = opt.value.toUpperCase().trim();
                 if (unitToArea[key]) {
@@ -4825,10 +4825,10 @@
                     const foundKey = Object.keys(unitToArea).find(k => k.includes(key) || key.includes(k));
                     if (foundKey) newOpt.dataset.idarea = unitToArea[foundKey];
                 }
-                
+
                 unitSelect.appendChild(newOpt);
             });
-            
+
             // Funções distintas e seus IDs (idposition)
             const roleToId = {};
             state.allUsers.forEach(u => {
