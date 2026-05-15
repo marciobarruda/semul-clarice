@@ -154,13 +154,22 @@ async function fetchSesuiteList() {
       if (arrayKey) list = data[arrayKey];
     }
 
-    // Normaliza a lista para o formato interno
-    const normalizedUsers = list.map(u => ({
-      login: String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase(),
-      nome: u.tecnica || u.nome || u.NOME || u.name || '',
-      funcao: u.funcao || u.FUNCAO || u.role || 'Técnica',
-      unidade: u.unidade || u.UNIDADE || u.unit || ''
-    })).filter(u => u.login);
+    // Normaliza e DEDUPLICA a lista (mantém o primeiro registro de cada login)
+    const seen = new Set();
+    const normalizedUsers = [];
+
+    for (const u of list) {
+      const login = String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase();
+      if (login && !seen.has(login)) {
+        seen.add(login);
+        normalizedUsers.push({
+          login: login,
+          nome: u.tecnica || u.nome || u.NOME || u.name || login,
+          funcao: u.funcao || u.FUNCAO || u.role || 'Técnica',
+          unidade: u.unidade || u.UNIDADE || u.unit || ''
+        });
+      }
+    }
 
     sesuiteCache = {
       users: normalizedUsers,
@@ -189,7 +198,16 @@ async function getSesuiteUsers() {
 async function checkSesuiteAccess(username) {
   // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto (sem dados extras de função)
   if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(username.toLowerCase())) {
-    return { login: username, nome: username, funcao: 'Administrador', unidade: 'Sede' };
+    // Tenta encontrar o nome real na lista do SESUITE mesmo sendo admin estático
+    const users = await getSesuiteUsers();
+    const found = users.find(u => u.login === username.toLowerCase());
+    
+    return { 
+      login: username, 
+      nome: found ? found.nome : username, 
+      funcao: found ? found.funcao : 'Administrador', 
+      unidade: found ? found.unidade : 'Sede' 
+    };
   }
 
   // 2. Tenta carregar do cache ou atualiza
