@@ -212,7 +212,6 @@ async function checkSesuiteAccess(username) {
     }
     
     const role = (found ? found.funcao : '').toLowerCase();
-    const login = username.toLowerCase().trim();
     
     // Lista de papéis e logins com permissão total de edição (Normalizado)
     const fullRoles = ['advogada', 'assistente social', 'psicologa', 'psicóloga'];
@@ -245,7 +244,6 @@ async function checkSesuiteAccess(username) {
     console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao}, Unidade: ${userFound.unidade})`);
     
     const role = (userFound.funcao || '').toLowerCase();
-    const login = username.toLowerCase().trim();
 
     // Lista de papéis e logins com permissão total de edição (Normalizado)
     const fullRoles = ['advogada', 'assistente social', 'psicologa', 'psicóloga'];
