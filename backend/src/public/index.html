@@ -4723,7 +4723,7 @@
                         <td><div class="text-muted small">---</div></td>
                         <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
                         <td class="text-end">
-                            <button class="btn btn-sm btn-danger rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="deleteUserSesuite('${u.login}', '${u.idarea || ''}')">
+                            <button class="btn btn-sm btn-danger rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="deleteUserSesuite('${u.login}', '${u.idarea || ''}', '${u.funcao || ''}')">
                                 <i class="bi bi-trash3-fill me-1"></i> EXCLUIR
                             </button>
                         </td>
@@ -4769,7 +4769,7 @@
             modal.show();
         };
 
-        window.deleteUserSesuite = async function(login, idarea) {
+        window.deleteUserSesuite = async function(login, idarea, funcao) {
             const confirm = await Swal.fire({
                 title: 'Excluir Profissional?',
                 text: `Deseja realmente remover o acesso de ${login}?`,
@@ -4789,7 +4789,11 @@
                 const res = await fetch(WEBHOOKS.USERS_REMOVE, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ idlogin: login, idarea: idarea })
+                    body: JSON.stringify({ 
+                        idlogin: login, 
+                        idarea: idarea,
+                        funcao: String(funcao || '').toLowerCase()
+                    })
                 });
                 
                 if (res.ok) {
