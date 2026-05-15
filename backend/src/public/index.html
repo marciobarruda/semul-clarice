@@ -2149,6 +2149,28 @@
                             </div>
                         </div>
 
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <div class="subsection-card bg-white h-100 mb-0">
+                                    <label for="evolucao_unidade" class="text-muted x-small text-uppercase fw-bold mb-2 d-block">Unidade de Atendimento</label>
+                                    <select id="evolucao_unidade" name="unidadeatendimento" class="form-select border-0 bg-light fw-bold" required>
+                                        <option value="">Selecione</option>
+                                        <option value="COMPAZ DOM HELDER CÂMARA">COMPAZ DOM HELDER CÂMARA</option>
+                                        <option value="UNIDADE DESCENTRALIZADA">UNIDADE DESCENTRALIZADA</option>
+                                        <option value="COMPAZ EDUARDO CAMPOS">COMPAZ EDUARDO CAMPOS</option>
+                                        <option value="COMPAZ LEDA ALVES">COMPAZ LEDA ALVES</option>
+                                        <option value="COMPAZ ARIANO SUASSUNA">COMPAZ ARIANO SUASSUNA</option>
+                                        <option value="VOLANTE">VOLANTE</option>
+                                        <option value="COMPAZ PAULO FREIRE">COMPAZ PAULO FREIRE</option>
+                                        <option value="UNIDADE MÓVEL">UNIDADE MÓVEL</option>
+                                        <option value="SER CLARICE">SER CLARICE</option>
+                                        <option value="SER CLARICE LISPECTOR">SER CLARICE LISPECTOR</option>
+                                        <option value="CENTRO DE REFERÊNCIA CLARICE LISPECTOR">CENTRO DE REFERÊNCIA CLARICE LISPECTOR</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group position-relative">
                             <label for="evolucao_descricao" class="form-label fw-bold text-main small">Descrição Detalhada do Atendimento</label>
                             <textarea class="form-control evolution-textarea" id="evolucao_descricao" name="evolucaodescricao" 
@@ -2634,6 +2656,7 @@
                 NACIONALIDADES:`${API_BASE}/api/nacionalidades`,
                 NATURALIDADES: `${API_BASE}/api/naturalidades`,
                 RPA:           `${API_BASE}/api/rpa`,
+                USERS:         `${API_BASE}/api/users`,
             };
 
             // UI Elements
@@ -2686,6 +2709,8 @@
                 if (viewName === 'dashboard') {
                     loadDashboardStats();
                     loadProntuariosData('', false); // Carrega os dados em background para os gráficos
+                } else if (viewName === 'config') {
+                    loadAllUsers();
                 }
 
                 // Toggle header save button visibility
@@ -3915,7 +3940,10 @@
                         const avatarEl = document.getElementById('user-avatar-sidebar');
                         
                         if (nameEl) nameEl.textContent = user.nome;
-                        if (roleEl) roleEl.textContent = user.funcao;
+                        if (roleEl) {
+                            // Se tiver unidade, mostra junto com a função
+                            roleEl.textContent = user.unidade ? `${user.funcao} • ${user.unidade}` : user.funcao;
+                        }
                         if (avatarEl) {
                             avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nome)}&background=b366a6&color=fff`;
                         }
@@ -3923,6 +3951,54 @@
                 } catch (err) {
                     console.error('Erro ao carregar dados do usuário:', err);
                 }
+            }
+
+            async function loadAllUsers() {
+                try {
+                    showGlobalLoader();
+                    const res = await fetch(WEBHOOKS.USERS, { credentials: 'include' });
+                    if (res.ok) {
+                        const users = await res.json();
+                        renderUsersTable(users);
+                    }
+                } catch (err) {
+                    console.error('Erro ao carregar lista de usuários:', err);
+                } finally {
+                    hideGlobalLoader();
+                }
+            }
+
+            function renderUsersTable(users) {
+                const tbody = document.querySelector('#config-view tbody');
+                if (!tbody) return;
+
+                if (!users || users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma profissional encontrada no SESUITE.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = users.map(u => `
+                    <tr class="hover-row">
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-sm">
+                                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.nome)}&background=b366a6&color=fff" class="rounded-circle" width="32">
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-main">${u.nome}</div>
+                                    <div class="text-muted x-small">${u.login}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary-subtle text-primary px-2 py-1">${u.funcao}</span></td>
+                        <td><div class="text-muted small">${u.unidade || 'Não informada'}</div></td>
+                        <td><div class="text-muted small">---</div></td>
+                        <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-link text-muted opacity-50" disabled><i class="bi bi-three-dots-vertical"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
             }
 
             async function loadNationalities() {
@@ -5002,6 +5078,36 @@
                 document.getElementById('autormodalform').reset();
                 document.getElementById('autor_index').value = -1;
                 document.getElementById('autormodaltitle').textContent = 'Adicionar Autor da Violência';
+            });
+        // ── Evolução do Caso ──────────────────────────────────────────────────────
+        const evolucaoModalEl = document.getElementById('evolucaomodal');
+        if (evolucaoModalEl) {
+            evolucaoModalEl.addEventListener('show.bs.modal', () => {
+                const tecnicaEl = document.getElementById('evolucao_tecnica_auto');
+                const funcaoEl = document.getElementById('evolucao_funcao_auto');
+                const dataEl = document.getElementById('evolucao_data_auto');
+                const unidadeSelect = document.getElementById('evolucao_unidade');
+
+                if (tecnicaEl) tecnicaEl.textContent = state.user?.nome || 'Técnica';
+                if (funcaoEl) funcaoEl.textContent = state.user?.funcao || 'Técnica';
+                if (dataEl) dataEl.textContent = dayjs().format('DD/MM/YYYY');
+                
+                // Pré-seleciona a unidade do usuário logado
+                if (unidadeSelect && state.user?.unidade) {
+                    const userUnit = state.user.unidade.toUpperCase();
+                    // Tenta encontrar uma opção que contenha o nome da unidade do usuário
+                    for (let i = 0; i < unidadeSelect.options.length; i++) {
+                        const opt = unidadeSelect.options[i];
+                        if (opt.value.toUpperCase() === userUnit || userUnit.includes(opt.value.toUpperCase()) || opt.value.toUpperCase().includes(userUnit)) {
+                            unidadeSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            });
+
+            evolucaoModalEl.addEventListener('hidden.bs.modal', () => {
+                document.getElementById('form_evolucao').reset();
             });
         }
     </script>

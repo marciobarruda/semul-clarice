@@ -8,7 +8,7 @@ const helmet       = require('helmet');
 const cors         = require('cors');
 const path         = require('path');
 
-const { requireAuth, requireApiAuth } = require('./auth');
+const { requireAuth, requireApiAuth, getSesuiteUsers } = require('./auth');
 
 // ── Rotas da API ──────────────────────────────────────────────────────────────
 const prontuariosRouter = require('./routes/prontuarios');
@@ -58,6 +58,15 @@ app.get('/health', (req, res) => {
 // ── Dados do Usuário ──────────────────────────────────────────────────────────
 app.get('/api/me', requireApiAuth, (req, res) => {
   res.json(req.user);
+});
+
+app.get('/api/users', requireApiAuth, async (req, res) => {
+  try {
+    const users = await getSesuiteUsers();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Falha ao buscar usuários' });
+  }
 });
 
 // ── Logout ────────────────────────────────────────────────────────────────────

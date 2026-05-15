@@ -115,25 +115,15 @@ function buildLoginUrl() {
   return `${KC.authUrl}?${params.toString()}`;
 }
 
-/** Verifica se o usuário tem acesso via API do SESUITE e retorna seus dados */
-async function checkSesuiteAccess(username) {
-  // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto (sem dados extras de função)
-  if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(username.toLowerCase())) {
-    return { login: username, nome: username, funcao: 'Administrador' };
-  }
-
-  // 2. Tenta carregar do cache se for recente
+/** Busca a lista de usuários do SESUITE e atualiza o cache */
+async function fetchSesuiteList() {
   const now = Date.now();
-  if (sesuiteCache.users.length > 0 && (now - sesuiteCache.lastFetch < sesuiteCache.ttl)) {
-    return sesuiteCache.users.find(u => String(u.login || '').toLowerCase() === username.toLowerCase());
-  }
-
-  // 3. Consulta a API do SESUITE
+  // Consulta a API do SESUITE
   try {
     const url = process.env.SESUITE_API_URL || 'https://sesuite.recife.pe.gov.br/apigateway/v1/dataset-integration/equiperedeclarice';
     const token = process.env.SESUITE_API_TOKEN;
 
-    console.log(`[Auth] Consultando SESUITE para autorização e dados do usuário: ${username}`);
+    console.log(`[Auth] Consultando lista completa do SESUITE...`);
 
     const res = await fetch(url, {
       method: 'POST',
@@ -148,10 +138,7 @@ async function checkSesuiteAccess(username) {
 
     if (!res.ok) {
       console.error(`[Auth] Erro na API do SESUITE (${res.status})`);
-      if (sesuiteCache.users.length > 0) {
-        return sesuiteCache.users.find(u => String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase() === username.toLowerCase());
-      }
-      return null;
+      return sesuiteCache.users;
     }
 
     const data = await res.json();
@@ -163,48 +150,57 @@ async function checkSesuiteAccess(username) {
     else if (data && Array.isArray(data.records)) list = data.records;
     else if (data && Array.isArray(data.items)) list = data.items;
     else if (data && typeof data === 'object') {
-      // Pega a primeira propriedade que seja um array
       const arrayKey = Object.keys(data).find(key => Array.isArray(data[key]));
       if (arrayKey) list = data[arrayKey];
     }
 
-    if (list.length > 0) {
-      console.log(`[Auth] SESUITE retornou array. Exemplo de item: ${JSON.stringify(list[0]).substring(0, 150)}`);
-    } else {
-      console.log(`[Auth] SESUITE não retornou um array válido. Estrutura: ${JSON.stringify(data).substring(0, 150)}`);
-    }
+    // Normaliza a lista para o formato interno
+    const normalizedUsers = list.map(u => ({
+      login: String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase(),
+      nome: u.tecnica || u.nome || u.NOME || u.name || '',
+      funcao: u.funcao || u.FUNCAO || u.role || 'Técnica',
+      unidade: u.unidade || u.UNIDADE || u.unit || ''
+    })).filter(u => u.login);
 
     sesuiteCache = {
-      users: list,
+      users: normalizedUsers,
       lastFetch: now,
       ttl: 5 * 60 * 1000
     };
 
-    console.log(`[Auth] Cache do SESUITE atualizado com ${list.length} usuários. Procurando por: ${username}`);
-
-    const userFound = list.find(u => {
-      const loginCandidate = String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase();
-      return loginCandidate === username.toLowerCase();
-    });
-
-    if (userFound) {
-      console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao || 'Técnica'})`);
-      // Normaliza as chaves para uso posterior (SESUITE usa "tecnica" para o nome)
-      return {
-        login: username,
-        nome: userFound.tecnica || userFound.nome || userFound.NOME || userFound.name || username,
-        funcao: userFound.funcao || userFound.FUNCAO || userFound.role || 'Técnica'
-      };
-    } else {
-      console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
-      return null;
-    }
-
+    console.log(`[Auth] Cache do SESUITE atualizado com ${normalizedUsers.length} usuários.`);
+    return normalizedUsers;
   } catch (err) {
     console.error('[Auth] Falha crítica ao consultar SESUITE:', err.message);
-    if (sesuiteCache.users.length > 0) {
-      return sesuiteCache.users.find(u => String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase() === username.toLowerCase());
-    }
+    return sesuiteCache.users;
+  }
+}
+
+/** Retorna a lista completa de usuários do SESUITE (com cache) */
+async function getSesuiteUsers() {
+  const now = Date.now();
+  if (sesuiteCache.users.length === 0 || (now - sesuiteCache.lastFetch > sesuiteCache.ttl)) {
+    await fetchSesuiteList();
+  }
+  return sesuiteCache.users;
+}
+
+/** Verifica se o usuário tem acesso via API do SESUITE e retorna seus dados */
+async function checkSesuiteAccess(username) {
+  // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto (sem dados extras de função)
+  if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(username.toLowerCase())) {
+    return { login: username, nome: username, funcao: 'Administrador', unidade: 'Sede' };
+  }
+
+  // 2. Tenta carregar do cache ou atualiza
+  const users = await getSesuiteUsers();
+  const userFound = users.find(u => u.login === username.toLowerCase());
+
+  if (userFound) {
+    console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao}, Unidade: ${userFound.unidade})`);
+    return userFound;
+  } else {
+    console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
     return null;
   }
 }
@@ -312,7 +308,8 @@ async function requireAuth(req, res, next) {
   req.user = {
     ...userInfo,
     nome: sesuiteUser.nome || userInfo.name || username,
-    funcao: sesuiteUser.funcao || 'Técnica'
+    funcao: sesuiteUser.funcao || 'Técnica',
+    unidade: sesuiteUser.unidade || ''
   };
   next();
 }
@@ -347,9 +344,10 @@ async function requireApiAuth(req, res, next) {
   req.user = {
     ...userInfo,
     nome: sesuiteUser.nome || userInfo.name || username,
-    funcao: sesuiteUser.funcao || 'Técnica'
+    funcao: sesuiteUser.funcao || 'Técnica',
+    unidade: sesuiteUser.unidade || ''
   };
   next();
 }
 
-module.exports = { requireAuth, requireApiAuth };
+module.exports = { requireAuth, requireApiAuth, getSesuiteUsers };
