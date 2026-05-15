@@ -203,12 +203,21 @@ async function checkSesuiteAccess(username) {
     const users = await getSesuiteUsers();
     const found = users.find(u => u.login === username.toLowerCase());
     
+    // Lista de papéis e logins com permissão total de edição
+    const fullRoles = ['advogada', 'assistente social', 'psicóloga', 'psicologa'];
+    const fullLogins = ['marcio.arruda', 'gabriel.barbosa', 'tercio.santos', 'ruan.santos', 'diego.c.martins', 'thiago.cavalcanti'];
+    
+    const role = (found ? found.funcao : '').toLowerCase();
+    const login = username.toLowerCase();
+    const canEdit = fullRoles.some(r => role.includes(r)) || fullLogins.includes(login);
+
     return { 
       login: username, 
       nome: found ? found.nome : username, 
-      funcao: found ? found.funcao : 'Administrador', 
+      funcao: found ? found.funcao : (ALLOWED_USERS.includes(login) ? 'Administrador' : 'Técnica'), 
       unidade: found ? found.unidade : 'Sede',
-      idarea: found ? found.idarea : ''
+      idarea: found ? found.idarea : '',
+      canEdit: canEdit
     };
   }
 
@@ -218,7 +227,14 @@ async function checkSesuiteAccess(username) {
 
   if (userFound) {
     console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao}, Unidade: ${userFound.unidade})`);
-    return userFound;
+    
+    const fullRoles = ['advogada', 'assistente social', 'psicóloga', 'psicologa'];
+    const fullLogins = ['marcio.arruda', 'gabriel.barbosa', 'tercio.santos', 'ruan.santos', 'diego.c.martins', 'thiago.cavalcanti'];
+    const role = (userFound.funcao || '').toLowerCase();
+    const login = username.toLowerCase();
+    const canEdit = fullRoles.some(r => role.includes(r)) || fullLogins.includes(login);
+
+    return { ...userFound, canEdit: canEdit };
   } else {
     console.warn(`[Auth] Usuário ${username} NÃO encontrado na lista do SESUITE.`);
     return null;

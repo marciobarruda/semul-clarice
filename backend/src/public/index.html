@@ -3351,6 +3351,11 @@
             userSort: { key: 'nome', asc: true }
         };
 
+        // Helper: Verificar se o usuário atual tem permissão total (Edição)
+        function hasFullAccess() {
+            return state.user && state.user.canEdit === true;
+        }
+
         // Helper: Padronizar capitalização de nomes (Title Case)
         function formatName(str) {
             if (!str || typeof str !== 'string') return str || '';
@@ -4032,7 +4037,7 @@
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-2">
                             <button class="btn btn-sm btn-light border btn-view" data-id="${prontuarioId}" title="Visualizar"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-light border text-primary btn-edit" data-id="${prontuarioId}" title="Editar"><i class="bi bi-pencil"></i></button>
+                            ${hasFullAccess() ? `<button class="btn btn-sm btn-light border text-primary btn-edit" data-id="${prontuarioId}" title="Editar"><i class="bi bi-pencil"></i></button>` : ''}
                         </div>
                     </td>
                 `;
@@ -4040,6 +4045,10 @@
         }
 
         function renderProntuariosTable() {
+            // Controle de visibilidade do botão "Novo Prontuário"
+            const btnNew = document.querySelector('.btn-new-record');
+            if (btnNew) btnNew.classList.toggle('d-none', !hasFullAccess());
+
             const tbodyFull = document.getElementById('tbody-prontuarios-full');
             if (!tbodyFull) return;
 
@@ -4148,6 +4157,9 @@
         };
 
         async function loadProntuario(id, isReadOnly = false, isRetry = false) {
+            // Força modo leitura se o usuário não tiver permissão de edição
+            if (!hasFullAccess()) isReadOnly = true;
+
             Swal.fire({
                 title: 'Carregando...',
                 allowOutsideClick: false,
@@ -4686,6 +4698,11 @@
                 if (res.ok) {
                     const user = await res.json();
                     state.user = user;
+                    
+                    // Ajustes de UI baseados em permissão
+                    document.querySelectorAll('.btn-new-record').forEach(btn => {
+                        btn.classList.toggle('d-none', !user.canEdit);
+                    });
 
                     // Atualiza Sidebar
                     const nameEl = document.getElementById('user-name-sidebar');
