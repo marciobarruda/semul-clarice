@@ -358,10 +358,7 @@ async function requireAuth(req, res, next) {
   // Mescla informações do Keycloak e SESUITE
   req.user = {
     ...userInfo,
-    nome: sesuiteUser.nome || userInfo.name || username,
-    funcao: sesuiteUser.funcao || 'Técnica',
-    unidade: sesuiteUser.unidade || '',
-    idarea: sesuiteUser.idarea || ''
+    ...sesuiteUser
   };
   next();
 }
@@ -395,10 +392,7 @@ async function requireApiAuth(req, res, next) {
 
   req.user = {
     ...userInfo,
-    nome: sesuiteUser.nome || userInfo.name || username,
-    funcao: sesuiteUser.funcao || 'Técnica',
-    unidade: sesuiteUser.unidade || '',
-    idarea: sesuiteUser.idarea || ''
+    ...sesuiteUser
   };
   next();
 }
