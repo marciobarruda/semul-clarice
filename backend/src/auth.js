@@ -166,7 +166,8 @@ async function fetchSesuiteList() {
           login: login,
           nome: u.tecnica || u.nome || u.NOME || u.name || login,
           funcao: u.funcao || u.FUNCAO || u.role || 'Técnica',
-          unidade: u.unidade || u.UNIDADE || u.unit || ''
+          unidade: u.unidade || u.UNIDADE || u.unit || '',
+          idarea: u.idarea || u.IDAREA || u.cdarea || u.CDAREA || u.idposition || ''
         });
       }
     }
@@ -206,7 +207,8 @@ async function checkSesuiteAccess(username) {
       login: username, 
       nome: found ? found.nome : username, 
       funcao: found ? found.funcao : 'Administrador', 
-      unidade: found ? found.unidade : 'Sede' 
+      unidade: found ? found.unidade : 'Sede',
+      idarea: found ? found.idarea : ''
     };
   }
 
@@ -327,7 +329,8 @@ async function requireAuth(req, res, next) {
     ...userInfo,
     nome: sesuiteUser.nome || userInfo.name || username,
     funcao: sesuiteUser.funcao || 'Técnica',
-    unidade: sesuiteUser.unidade || ''
+    unidade: sesuiteUser.unidade || '',
+    idarea: sesuiteUser.idarea || ''
   };
   next();
 }
@@ -363,7 +366,8 @@ async function requireApiAuth(req, res, next) {
     ...userInfo,
     nome: sesuiteUser.nome || userInfo.name || username,
     funcao: sesuiteUser.funcao || 'Técnica',
-    unidade: sesuiteUser.unidade || ''
+    unidade: sesuiteUser.unidade || '',
+    idarea: sesuiteUser.idarea || ''
   };
   next();
 }
