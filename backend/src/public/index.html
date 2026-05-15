@@ -3350,7 +3350,6 @@
             allUsers: [], // Cache para busca/filtro de usuários
             userSort: { key: 'nome', asc: true }
         };
-
         // Helper: Verificar se o usuário atual tem permissão total (Edição)
         function hasFullAccess() {
             return state.user && state.user.canEdit === true;
@@ -3404,7 +3403,6 @@
             NACIONALIDADES: `${API_BASE}/api/nacionalidades`,
             NATURALIDADES: `${API_BASE}/api/naturalidades`,
             RPA: `${API_BASE}/api/rpa`,
-            USERS: `${API_BASE}/api/users`,
         };
 
         // UI Elements
@@ -4704,6 +4702,18 @@
                         btn.classList.toggle('d-none', !user.canEdit);
                     });
 
+                    const nameEl = document.getElementById('user-name-sidebar');
+                    const roleEl = document.getElementById('user-role-sidebar');
+                    const avatarEl = document.getElementById('user-avatar-sidebar');
+
+                    if (nameEl) nameEl.textContent = formatName(user.nome);
+                    if (roleEl) {
+                        roleEl.textContent = user.unidade ? `${user.funcao} • ${user.unidade}` : user.funcao;
+                    }
+                    if (avatarEl) {
+                        avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nome)}&background=b366a6&color=fff`;
+                    }
+
                     // Gestão de Profissionais (Adicionar/Remover)
                     const btnNewUser = document.querySelector('[onclick="openAddUserModal()"]');
                     if (btnNewUser) btnNewUser.classList.toggle('d-none', !user.canManageUsers);
@@ -4711,18 +4721,10 @@
                     const thActions = document.querySelector('#config-view th.text-end');
                     if (thActions) thActions.classList.toggle('d-none', !user.canManageUsers);
 
-                    // Atualiza Sidebar
-                    const nameEl = document.getElementById('user-name-sidebar');
-                    const roleEl = document.getElementById('user-role-sidebar');
-                    const avatarEl = document.getElementById('user-avatar-sidebar');
-
-                    if (nameEl) nameEl.textContent = formatName(user.nome);
-                    if (roleEl) {
-                        // Se tiver unidade, mostra junto com a função
-                        roleEl.textContent = user.unidade ? `${user.funcao} • ${user.unidade}` : user.funcao;
-                    }
-                    if (avatarEl) {
-                        avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nome)}&background=b366a6&color=fff`;
+                    // Força re-renderização das tabelas para aplicar permissões de edição
+                    renderProntuariosTable();
+                    if (typeof renderUsersTable === 'function' && state.allUsers.length > 0) {
+                        renderUsersTable(state.allUsers);
                     }
                 }
             } catch (err) {

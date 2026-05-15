@@ -204,12 +204,14 @@ async function checkSesuiteAccess(username) {
     const users = await getSesuiteUsers();
     const found = users.find(u => u.login === username.toLowerCase());
     
-    // Lista de papéis e logins com permissão total de edição
-    const fullRoles = ['advogada', 'assistente social', 'psicóloga', 'psicologa'];
-    const fullLogins = ['marcio.arruda', 'gabriel.barbosa', 'tercio.santos', 'ruan.santos', 'diego.c.martins', 'thiago.cavalcanti'];
-    
     const role = (found ? found.funcao : '').toLowerCase();
     const login = username.toLowerCase();
+    
+    // Lista de papéis e logins com permissão total de edição (Normalizado)
+    const fullRoles = ['advogada', 'assistente social', 'psicologa', 'psicóloga'];
+    const fullLogins = ['marcio.arruda', 'gabriel.barbosa', 'tercio.santos', 'ruan.santos', 'diego.c.martins', 'thiago.cavalcanti'];
+    
+    // Busca flexível: verifica se qualquer um dos termos está contido na string da função
     const canEdit = fullRoles.some(r => role.includes(r)) || fullLogins.includes(login);
 
     // Permissão para gerir profissionais (Adicionar/Remover)
@@ -235,10 +237,13 @@ async function checkSesuiteAccess(username) {
   if (userFound) {
     console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao}, Unidade: ${userFound.unidade})`);
     
-    const fullRoles = ['advogada', 'assistente social', 'psicóloga', 'psicologa'];
-    const fullLogins = ['marcio.arruda', 'gabriel.barbosa', 'tercio.santos', 'ruan.santos', 'diego.c.martins', 'thiago.cavalcanti'];
     const role = (userFound.funcao || '').toLowerCase();
     const login = username.toLowerCase();
+
+    // Lista de papéis e logins com permissão total de edição (Normalizado)
+    const fullRoles = ['advogada', 'assistente social', 'psicologa', 'psicóloga'];
+    const fullLogins = ['marcio.arruda', 'gabriel.barbosa', 'tercio.santos', 'ruan.santos', 'diego.c.martins', 'thiago.cavalcanti'];
+    
     const canEdit = fullRoles.some(r => role.includes(r)) || fullLogins.includes(login);
 
     const manageRoles = ['gerente', 'gestor', 'administrativo'];
