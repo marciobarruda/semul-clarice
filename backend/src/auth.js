@@ -159,7 +159,7 @@ async function fetchSesuiteList() {
     const normalizedUsers = [];
 
     for (const u of list) {
-      const login = String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase();
+      const login = String(u.login || u.LOGIN || u.idlogin || u.IDLOGIN || u.username || u.USERNAME || '').toLowerCase().trim();
       if (login && !seen.has(login)) {
         seen.add(login);
         normalizedUsers.push({
@@ -199,10 +199,11 @@ async function getSesuiteUsers(force = false) {
 /** Verifica se o usuário tem acesso via API do SESUITE e retorna seus dados */
 async function checkSesuiteAccess(username) {
   // 1. Se o usuário estiver na lista estática ALLOWED_USERS, libera direto (sem dados extras de função)
-  if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(username.toLowerCase())) {
+  const login = username.toLowerCase().trim();
+  if (ALLOWED_USERS.length > 0 && ALLOWED_USERS.includes(login)) {
     // Tenta encontrar o nome real na lista do SESUITE mesmo sendo admin estático
     const users = await getSesuiteUsers();
-    const found = users.find(u => u.login === username.toLowerCase());
+    const found = users.find(u => u.login === login);
     
     if (found) {
       console.log(`[Auth] Admin ${username} encontrado no SESUITE. Função: ${found.funcao}`);
@@ -211,7 +212,7 @@ async function checkSesuiteAccess(username) {
     }
     
     const role = (found ? found.funcao : '').toLowerCase();
-    const login = username.toLowerCase();
+    const login = username.toLowerCase().trim();
     
     // Lista de papéis e logins com permissão total de edição (Normalizado)
     const fullRoles = ['advogada', 'assistente social', 'psicologa', 'psicóloga'];
@@ -238,13 +239,13 @@ async function checkSesuiteAccess(username) {
 
   // 2. Tenta carregar do cache ou atualiza
   const users = await getSesuiteUsers();
-  const userFound = users.find(u => u.login === username.toLowerCase());
+  const userFound = users.find(u => u.login === login);
 
   if (userFound) {
     console.log(`[Auth] Usuário ${username} autorizado pelo SESUITE! (Função: ${userFound.funcao}, Unidade: ${userFound.unidade})`);
     
     const role = (userFound.funcao || '').toLowerCase();
-    const login = username.toLowerCase();
+    const login = username.toLowerCase().trim();
 
     // Lista de papéis e logins com permissão total de edição (Normalizado)
     const fullRoles = ['advogada', 'assistente social', 'psicologa', 'psicóloga'];
