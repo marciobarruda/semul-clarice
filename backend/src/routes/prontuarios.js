@@ -195,10 +195,10 @@ router.post('/buscar', async (req, res) => {
   try {
     const sql = `
       SELECT * FROM ${tbl('prontuario')} 
-      WHERE nomeusuaria LIKE @termo_nome 
+      WHERE LOWER(nomeusuaria) LIKE LOWER(@termo_nome) 
          OR cpfusuaria LIKE @termo_cpf 
          OR numeroprontuario LIKE @termo_prontuario 
-         OR nomemae LIKE @termo_mae 
+         OR LOWER(nomemae) LIKE LOWER(@termo_mae) 
       ORDER BY createdat DESC 
       LIMIT 500
     `;
