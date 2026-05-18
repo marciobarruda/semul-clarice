@@ -849,15 +849,19 @@
                 padding: 1.25rem;
                 gap: 1rem;
             }
+
             .kpi-icon-box {
                 width: 50px;
                 height: 50px;
                 font-size: 1.5rem;
             }
+
             .kpi-data .value {
                 font-size: 1.5rem;
             }
-            .card-premium-header, .card-premium-body {
+
+            .card-premium-header,
+            .card-premium-body {
                 padding: 1.5rem;
             }
         }
@@ -888,7 +892,7 @@
                 margin-right: 0 !important;
                 font-size: 1.25rem;
             }
-            
+
             .header-content {
                 flex-direction: column;
                 align-items: flex-start !important;
@@ -923,8 +927,9 @@
             .sidebar .nav-link {
                 margin-bottom: 0;
             }
-            
-            .sidebar-brand, .sidebar-user-info {
+
+            .sidebar-brand,
+            .sidebar-user-info {
                 display: none !important;
             }
 
@@ -935,7 +940,7 @@
                 gap: 1rem;
                 min-height: auto;
             }
-            
+
             .header-user-info {
                 margin-left: 0;
                 margin-top: 2rem;
@@ -943,11 +948,11 @@
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-            
+
             .header-user-name {
                 font-size: 1.1rem !important;
             }
-            
+
             #registro_modal_salvar_btn {
                 width: 100%;
             }
@@ -963,11 +968,12 @@
             .card-section {
                 padding: 1.25rem;
             }
-            
-            .card-premium-header, .card-premium-body {
+
+            .card-premium-header,
+            .card-premium-body {
                 padding: 1.25rem;
             }
-            
+
             .kpi-card {
                 padding: 1rem;
                 gap: 0.75rem;
@@ -975,28 +981,28 @@
                 text-align: center;
                 align-items: center;
             }
-            
+
             .kpi-icon-box {
                 width: 44px;
                 height: 44px;
                 font-size: 1.25rem;
             }
-            
+
             .kpi-data .value {
                 font-size: 1.35rem;
             }
-            
+
             .kpi-data .label {
                 font-size: 0.7rem !important;
             }
         }
-        
+
         @media (max-width: 575.98px) {
             .col-6 {
                 width: 100%;
             }
-            
-            #dashboard-view .header-content + .d-flex {
+
+            #dashboard-view .header-content+.d-flex {
                 flex-direction: column;
                 align-items: stretch !important;
             }
@@ -1007,7 +1013,7 @@
                 align-items: flex-start !important;
                 gap: 1rem;
             }
-            
+
             #btnrecarregardash {
                 width: 100%;
             }
@@ -1092,16 +1098,19 @@
 
             <!-- Dashboard View -->
             <div class="content-body d-none" id="dashboard-view">
-                <div class="header-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 animate__animated animate__fadeIn">
+                <div
+                    class="header-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 animate__animated animate__fadeIn">
                     <div class="d-flex flex-column gap-1">
                         <h1 class="h3 fw-bold text-main mb-0">Sistema de Prontuário Eletrônico Clarice Lispector</h1>
-                        <p class="text-muted small mb-0 opacity-75">Gestão centralizada de atendimentos e indicadores</p>
+                        <p class="text-muted small mb-0 opacity-75">Gestão centralizada de atendimentos e indicadores
+                        </p>
                     </div>
                     <div class="badge-unidade shadow-sm">
                         <i class="bi bi-geo-alt-fill me-2"></i> <span class="user-unidade-text">---</span>
                     </div>
                 </div>
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+                <div
+                    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                     <div>
                         <h4 class="mb-0 fw-bold">Painel de Indicadores</h4>
                         <p class="text-muted small mb-0">Visão geral analítica do sistema.</p>
@@ -1327,17 +1336,20 @@
 
             <!-- Prontuários View -->
             <div class="content-body" id="prontuarios-view">
-                <div class="header-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 animate__animated animate__fadeIn">
+                <div
+                    class="header-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 animate__animated animate__fadeIn">
                     <div class="d-flex flex-column gap-1">
                         <h1 class="h3 fw-bold text-main mb-0">Sistema de Prontuário Eletrônico Clarice Lispector</h1>
-                        <p class="text-muted small mb-0 opacity-75">Gestão centralizada de atendimentos e indicadores</p>
+                        <p class="text-muted small mb-0 opacity-75">Gestão centralizada de atendimentos e indicadores
+                        </p>
                     </div>
                     <div class="badge-unidade shadow-sm">
                         <i class="bi bi-geo-alt-fill me-2"></i> <span class="user-unidade-text">---</span>
                     </div>
                 </div>
                 <div class="card-premium animate__animated animate__fadeIn">
-                    <div class="card-premium-header flex-column flex-md-row align-items-start align-items-md-center gap-3">
+                    <div
+                        class="card-premium-header flex-column flex-md-row align-items-start align-items-md-center gap-3">
                         <div>
                             <h5 class="mb-1">Consulta de Prontuários</h5>
                             <p class="text-muted small mb-0">Gerencie e busque por todos os prontuários registrados.</p>
@@ -1473,10 +1485,12 @@
 
             <!-- Form View (Hidden by default) -->
             <div class="content-body d-none" id="form-view">
-                <div class="header-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 animate__animated animate__fadeIn">
+                <div
+                    class="header-content d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 animate__animated animate__fadeIn">
                     <div class="d-flex flex-column gap-1">
                         <h1 class="h3 fw-bold text-main mb-0">Sistema de Prontuário Eletrônico Clarice Lispector</h1>
-                        <p class="text-muted small mb-0 opacity-75">Gestão centralizada de atendimentos e indicadores</p>
+                        <p class="text-muted small mb-0 opacity-75">Gestão centralizada de atendimentos e indicadores
+                        </p>
                     </div>
                     <div class="badge-unidade shadow-sm">
                         <i class="bi bi-geo-alt-fill me-2"></i> <span class="user-unidade-text">---</span>
@@ -1583,19 +1597,35 @@
                                                 <div class="col-12 col-md-2">
                                                     <label for="dataatendimento"
                                                         class="form-label required">Data</label>
-                                                    <input type="text" class="form-control"
-                                                        id="dataatendimento" name="dataatendimento" required />
+                                                    <input type="text" class="form-control" id="dataatendimento"
+                                                        name="dataatendimento" required />
                                                 </div>
                                                 <div class="col-12 col-md-2">
                                                     <label for="horaatendimento"
                                                         class="form-label required">Hora</label>
-                                                    <input type="text" class="form-control"
-                                                        id="horaatendimento" name="horaatendimento" required />
+                                                    <input type="text" class="form-control" id="horaatendimento"
+                                                        name="horaatendimento" required />
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="demandante" class="form-label">Demandante</label>
-                                                    <input type="text" class="form-control" id="demandante"
-                                                        name="demandante" placeholder="Quem solicitou o atendimento?" />
+                                                    <select class="form-select" id="demandante" name="demandante">
+                                                        <option value="">Selecione...</option>
+                                                        <option>COMPAZ</option>
+                                                        <option>CONSELHO TUTELAR</option>
+                                                        <option>CRAS</option>
+                                                        <option>CREAS / CADÚNCO</option>
+                                                        <option>DEAM / DELEGACIA DA MULHER</option>
+                                                        <option>DEMANDA ESPONTÂNEA / VOLUNTÁRIA</option>
+                                                        <option>MEDIAÇÃO DE CONFLITOS</option>
+                                                        <option>PATRULHA MARIA DA PENHA</option>
+                                                        <option>POLÍCIA MILITAR (190)</option>
+                                                        <option>REDE DE SAÚDE (HOSPITAL / UPA / POLICLÍNICA)</option>
+                                                        <option>REDE DE SAÚDE MENTAL (CAPS)</option>
+                                                        <option>SECRETARIA / CENTRO DE REFERÊNCIA DA MULHER</option>
+                                                        <option>VARA DE FAMÍLIA</option>
+                                                        <option>VARA DE VIOLÊNCIA DOMÉSTICA</option>
+                                                        <option>OUTROS / OUTRAS ENTIDADES</option>
+                                                    </select>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label class="form-label required d-block">Avaliação inicial</label>
@@ -2368,17 +2398,53 @@
                                 <h2 class="form-section-title"><i class="bi bi-exclamation-triangle"></i>Tipificação da
                                     violência</h2>
                                 <div class="row g-4">
-                                    <div class="col-12 col-md-4">
-                                        <label for="tipoviolencia" class="form-label required">Tipo de violência
-                                            principal</label>
-                                        <select id="tipoviolencia" name="tipoviolencia" class="form-select" required>
-                                            <option value="">Selecione</option>
-                                            <option>Violência física</option>
-                                            <option>Violência psicológica</option>
-                                            <option>Violência sexual</option>
-                                            <option>Violência moral</option>
-                                            <option>Violência patrimonial</option>
-                                        </select>
+                                    <div class="col-12">
+                                        <div class="subsection-card">
+                                            <h3 class="subsection-title"><i class="bi bi-shield-exclamation"></i>Tipo de violência principal</h3>
+                                            <p class="text-muted small mb-3">Selecione todos os tipos que se aplicam ao caso.</p>
+                                            <div class="row g-2">
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="tipoviolencia[]" value="Violência física"
+                                                            id="tvfisica">
+                                                        <label class="form-check-label" for="tvfisica">Violência física</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="tipoviolencia[]" value="Violência psicológica"
+                                                            id="tvpsicologica">
+                                                        <label class="form-check-label" for="tvpsicologica">Violência psicológica</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="tipoviolencia[]" value="Violência sexual"
+                                                            id="tvsexual">
+                                                        <label class="form-check-label" for="tvsexual">Violência sexual</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="tipoviolencia[]" value="Violência moral"
+                                                            id="tvmoral">
+                                                        <label class="form-check-label" for="tvmoral">Violência moral</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="tipoviolencia[]" value="Violência patrimonial"
+                                                            id="tvpatrimonial">
+                                                        <label class="form-check-label" for="tvpatrimonial">Violência patrimonial</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label for="localviolencia" class="form-label required">Local principal</label>
@@ -2805,7 +2871,6 @@
                                         Atendimento</label>
                                     <select id="evolucao_unidade" name="unidadeatendimento"
                                         class="form-select border-0 bg-light fw-bold" required>
-                                        <option value="">Selecione</option>
                                         <option value="">Selecione</option>
                                         <option value="CENTRO DE REFERÊNCIA CLARICE LISPECTOR">CENTRO DE REFERÊNCIA
                                             CLARICE LISPECTOR</option>
@@ -3485,6 +3550,7 @@
             currentAutores: [],
             masks: {},
             user: { nome: 'Técnica', funcao: 'Atendimento' },
+            viewingEvolution: false,
             allUsers: [], // Cache para busca/filtro de usuários
             userSort: { key: 'nome', asc: true }
         };
@@ -4430,6 +4496,13 @@
             if (dnEl && dnEl.value) {
                 calculateAge(dnEl.value);
             }
+
+            // 6. Auto-preencher RPA se bairro estiver preenchido e RPA vazio
+            const bairroEl = document.getElementById('bairro');
+            const rpaEl = document.getElementById('rpa');
+            if (bairroEl && bairroEl.value && rpaEl && !rpaEl.value) {
+                fetchRPA(bairroEl.value);
+            }
         }
 
         // Lógica de Evoluções (Timeline + Modo Leitura)
@@ -4569,6 +4642,8 @@
                 title.textContent = "Visualização da Evolução";
                 title.parentElement.querySelector('i').className = "bi bi-eye text-white me-3 fs-4";
 
+                // Marcar que estamos em modo visualização (evita sobrescrita pelo listener show.bs.modal)
+                state.viewingEvolution = true;
                 new bootstrap.Modal(modal).show();
             } catch (e) {
                 console.error('Erro ao abrir evolução:', e);
@@ -4577,6 +4652,12 @@
 
         // Resetar modal para Nova Evolução
         document.getElementById('evolucaomodal').addEventListener('show.bs.modal', function (e) {
+            // Se estamos em modo de visualização (viewEvolution()), não sobrescrever os dados
+            if (state.viewingEvolution) {
+                state.viewingEvolution = false; // reset para próximo uso
+                return;
+            }
+
             // Se o trigger foi o botão "Nova Evolução", resetar para modo edição
             const trigger = e.relatedTarget;
             if (trigger && trigger.innerText.includes('Nova Evolução')) {
@@ -4595,6 +4676,16 @@
                 document.getElementById('evolucao_tecnica_auto').textContent = state.user.nome;
                 document.getElementById('evolucao_funcao_auto').textContent = state.user.funcao;
                 document.getElementById('evolucao_data_auto').textContent = dayjs().format('DD/MM/YYYY');
+
+                // Auto-selecionar unidade da técnica logada
+                const evolUnidade = document.getElementById('evolucao_unidade');
+                if (evolUnidade && state.user.unidade) {
+                    const userUnit = state.user.unidade.toUpperCase().trim();
+                    const opt = Array.from(evolUnidade.options).find(
+                        o => o.value.toUpperCase().trim() === userUnit
+                    );
+                    if (opt) evolUnidade.value = opt.value;
+                }
             }
         });
 
@@ -5248,7 +5339,7 @@
                 });
 
                 // 2. Garantir envio de Switches (Booleanos ou Arrays)
-                const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
+                const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados', 'tipoviolencia'];
 
                 // Inicializar arrays vazios para campos obrigatórios de schema REPEATED
                 arrayFields.forEach(f => {
@@ -5264,6 +5355,14 @@
 
                 // 3. Garantir IDs e Campos Readonly
                 data.numeroprontuario = state.currentProntuario || 'NOVO';
+
+                // Registrar técnica responsável
+                if (isNew) {
+                    data.iniciador = state.user.nome || null;
+                    data.atualizador = null;
+                } else {
+                    data.atualizador = state.user.nome || null;
+                }
 
                 // Forçar captura de campos que podem estar vazios no formData se readonly
                 const forceFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'dataatendimento', 'horaatendimento', 'datanascimento'];
@@ -5614,8 +5713,17 @@
                 const esc = getVal(r.escolaridade);
                 byEscolaridade[esc] = (byEscolaridade[esc] || 0) + 1;
 
-                const vio = getVal(r.tipoviolencia || r.tipo_violencia);
-                byViolencia[vio] = (byViolencia[vio] || 0) + 1;
+                // tipoviolencia agora é ARRAY<STRING> — contabilizar cada tipo individualmente
+                const vioRaw = r.tipoviolencia || r.tipo_violencia;
+                const vioList = Array.isArray(vioRaw) ? vioRaw
+                    : (typeof vioRaw === 'string' && vioRaw)
+                        ? vioRaw.replace(/[{}"]/g, '').split(',').map(s => s.trim()).filter(Boolean)
+                        : [];
+                if (vioList.length > 0) {
+                    vioList.forEach(v => { byViolencia[v] = (byViolencia[v] || 0) + 1; });
+                } else {
+                    byViolencia['Não informado'] = (byViolencia['Não informado'] || 0) + 1;
+                }
 
                 let dem = getVal(r.demandante);
                 const demUpper = dem.toUpperCase();

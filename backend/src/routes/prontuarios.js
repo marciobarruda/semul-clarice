@@ -33,14 +33,15 @@ const BQ_TYPES = {
   situacaohabitacionaloutro: 'STRING', numerosus: 'STRING',
   deficienciasindrome: 'BOOL', deficienciaqual: 'STRING', atendimentopsicologo: 'BOOL',
   atendimentopsiquiatra: 'BOOL', usomedicamento: 'BOOL', medquais: 'STRING', gestante: 'BOOL',
-  examehiv: 'BOOL', tipoviolencia: 'STRING', localviolencia: 'STRING', frequencia: 'STRING',
+  examehiv: 'BOOL', localviolencia: 'STRING', frequencia: 'STRING',
   relatocaso: 'STRING', createdat: 'TIMESTAMP', updatedat: 'TIMESTAMP',
   oidsesuite: 'STRING', wfid: 'STRING', outras_viol_fisicas: 'STRING', outras_viol_psicologicas: 'STRING',
-  relato_ciods: 'STRING', outro_local_agressao: 'STRING', totalfilhos: 'STRING'
+  relato_ciods: 'STRING', outro_local_agressao: 'STRING', totalfilhos: 'STRING',
+  iniciador: 'STRING', atualizador: 'STRING'
 };
 
 // Campos array (text[]) — tratados separadamente no SQL
-const ARRAY_FIELDS = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados'];
+const ARRAY_FIELDS = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados', 'tipoviolencia'];
 
 async function gerarProximoNumero() {
   const prefix = dayjs().format('YYYYMM');
