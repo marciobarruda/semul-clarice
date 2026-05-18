@@ -7009,6 +7009,14 @@
                         });
                     }
                     container.classList.remove('d-none');
+                } else {
+                    const errData = await res.json().catch(() => ({}));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro na Busca',
+                        text: errData.error || 'Erro ao buscar prontuários no servidor.',
+                        confirmButtonColor: '#9b59b6'
+                    });
                 }
             } catch (err) {
                 console.error('[Search Usuarias Agenda Error]', err);

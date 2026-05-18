@@ -193,8 +193,28 @@ router.post('/buscar', async (req, res) => {
   const { termo } = req.body;
   if (!termo) return res.status(400).json({ error: 'Termo obrigatório' });
   try {
-    const sql = `SELECT * FROM ${tbl('prontuario')} WHERE nomeusuaria LIKE @termo OR cpfusuaria LIKE @termo OR numeroprontuario LIKE @termo OR nomemae LIKE @termo ORDER BY createdat DESC LIMIT 500`;
-    const rows = await query(sql, { termo: `%${termo}%` }, { termo: 'STRING' });
+    const sql = `
+      SELECT * FROM ${tbl('prontuario')} 
+      WHERE nomeusuaria LIKE @termo_nome 
+         OR cpfusuaria LIKE @termo_cpf 
+         OR numeroprontuario LIKE @termo_prontuario 
+         OR nomemae LIKE @termo_mae 
+      ORDER BY createdat DESC 
+      LIMIT 500
+    `;
+    const params = {
+      termo_nome: `%${termo}%`,
+      termo_cpf: `%${termo}%`,
+      termo_prontuario: `%${termo}%`,
+      termo_mae: `%${termo}%`
+    };
+    const types = {
+      termo_nome: 'STRING',
+      termo_cpf: 'STRING',
+      termo_prontuario: 'STRING',
+      termo_mae: 'STRING'
+    };
+    const rows = await query(sql, params, types);
     res.json(flattenRows(rows));
   } catch (err) {
     console.error('[BQ Buscar] Erro:', err);
