@@ -357,7 +357,7 @@ async function requireAuth(req, res, next) {
 
   const userInfo = await getUserInfo(token);
   if (!userInfo) {
-    res.clearCookie('token');
+    res.clearCookie('portal_clarice_token');
     return res.redirect(buildLoginUrl());
   }
 
