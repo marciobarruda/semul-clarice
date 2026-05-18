@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const { query, dml, tbl } = require('../db');
 const { v4: uuidv4 } = require('uuid');
+const fetch = require('node-fetch');
 
 // ── AGENDAMENTOS ─────────────────────────────────────────────────────────────
 
@@ -200,6 +201,28 @@ router.post('/users/toggle-agenda', async (req, res) => {
       by: updatedBy
     };
     await dml(sql, params);
+
+    // Enviar dados para o webhook do n8n (para persistência no BigQuery via n8n)
+    try {
+      fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/agenda_config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          login: String(login).toLowerCase().trim(),
+          nome: String(nome || ''),
+          funcao: String(funcao || ''),
+          agenda_aberta: Boolean(agenda_aberta),
+          updatedat: new Date().toISOString(),
+          updatedby: updatedBy
+        }),
+        timeout: 5000
+      }).catch(err => {
+        console.error('[Webhook Agenda Config Alert] Falha no envio para n8n:', err.message);
+      });
+    } catch (e) {
+      console.error('[Webhook Agenda Config Error] Erro ao disparar webhook:', e.message);
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error('[BQ Toggle Agenda Config] Erro:', err);

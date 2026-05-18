@@ -3876,6 +3876,40 @@
             RPA: `${API_BASE}/api/rpa`,
         };
 
+        function validarCPF(cpf) {
+            cpf = String(cpf).replace(/[^\d]+/g,'');
+            if (cpf == '') return false;
+            if (cpf.length !== 11 || 
+                cpf === "00000000000" || 
+                cpf === "11111111111" || 
+                cpf === "22222222222" || 
+                cpf === "33333333333" || 
+                cpf === "44444444444" || 
+                cpf === "55555555555" || 
+                cpf === "66666666666" || 
+                cpf === "77777777777" || 
+                cpf === "88888888888" || 
+                cpf === "99999999999")
+                    return false;
+            let add = 0;
+            for (let i=0; i < 9; i++)
+                add += parseInt(cpf.charAt(i)) * (10 - i);
+            let rev = 11 - (add % 11);
+            if (rev === 10 || rev === 11)
+                rev = 0;
+            if (rev !== parseInt(cpf.charAt(9)))
+                return false;
+            add = 0;
+            for (let i = 0; i < 10; i++)
+                add += parseInt(cpf.charAt(i)) * (11 - i);
+            rev = 11 - (add % 11);
+            if (rev === 10 || rev === 11)
+                rev = 0;
+            if (rev !== parseInt(cpf.charAt(10)))
+                return false;
+            return true;
+        }
+
         // UI Elements
         const views = {
             dashboard: document.getElementById('dashboard-view'),
@@ -4254,7 +4288,25 @@
         };
 
         const cpfEl = document.getElementById('cpfusuaria');
-        if (cpfEl) state.masks.cpfusuaria = IMask(cpfEl, maskOptions.cpf);
+        if (cpfEl) {
+            state.masks.cpfusuaria = IMask(cpfEl, maskOptions.cpf);
+            cpfEl.addEventListener('blur', () => {
+                const val = cpfEl.value.replace(/\D/g, '');
+                if (val && val.length === 11) {
+                    if (!validarCPF(val)) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'warning',
+                            title: 'CPF matematicamente inválido (não impede o salvamento).',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            timerProgressBar: true
+                        });
+                    }
+                }
+            });
+        }
 
         const cepEl = document.getElementById('cep');
         if (cepEl) {
@@ -5304,7 +5356,8 @@
                 // Mapear status das agendas
                 const agendaMap = {};
                 agendas.forEach(a => {
-                    agendaMap[String(a.login).toLowerCase().trim()] = a.agenda_aberta;
+                    const isOpen = (String(a.agenda_aberta) === 'true' || a.agenda_aberta === true || a.agenda_aberta === 1);
+                    agendaMap[String(a.login).toLowerCase().trim()] = isOpen;
                 });
                 
                 // Mesclar informações no array de usuários
@@ -5314,6 +5367,23 @@
                 }));
                 
                 state.allUsers = users;
+
+                // Sincronizar reativamente as profissionais no webhook n8n do BigQuery
+                users.forEach(u => {
+                    fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/agenda_config', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            login: String(u.login).toLowerCase().trim(),
+                            nome: String(u.nome || ''),
+                            funcao: String(u.funcao || ''),
+                            agenda_aberta: u.agenda_aberta === true,
+                            updatedat: new Date().toISOString(),
+                            updatedby: state.user?.login || 'sistema'
+                        })
+                    }).catch(e => console.warn('[n8n Sync Warning] Falha ao sincronizar profissional:', e));
+                });
+
                 renderUsersTable(users);
             } catch (err) {
                 console.error('Erro ao carregar lista de usuários:', err);
@@ -5710,6 +5780,24 @@
         if (btnSalvar) {
             btnSalvar.addEventListener('click', async () => {
                 const isNew = !state.currentProntuario || state.currentProntuario === 'NOVO';
+
+                // Validação de CPF (não bloqueante)
+                const cpfInputVal = document.getElementById('cpfusuaria') ? document.getElementById('cpfusuaria').value.replace(/\D/g, '') : '';
+                if (cpfInputVal && !validarCPF(cpfInputVal)) {
+                    const confirmSave = await Swal.fire({
+                        icon: 'warning',
+                        title: 'CPF Inválido',
+                        text: 'O CPF digitado é matematicamente inválido. Tem certeza de que deseja salvar o prontuário mesmo assim?',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sim, Salvar',
+                        cancelButtonText: 'Não, Corrigir',
+                        confirmButtonColor: '#9b59b6',
+                        cancelButtonColor: '#aaa'
+                    });
+                    if (!confirmSave.isConfirmed) {
+                        return;
+                    }
+                }
 
                 const formEl = document.getElementById('registroform');
                 if (!formEl) return;
@@ -6794,13 +6882,58 @@
         // Buscar usuárias
         async function searchUsuariasForAgenda() {
             const input = document.getElementById('search-usuaria-agenda');
-            const termo = input.value.trim();
+            let termo = input.value.trim();
             const container = document.getElementById('search-agenda-results-container');
             const tbody = document.getElementById('table-usuarias-agenda-results');
             
             if (!termo) {
                 container.classList.add('d-none');
                 return;
+            }
+
+            // Análise inteligente do termo de busca
+            const digitsOnly = termo.replace(/\D/g, '');
+            
+            // Caso A: Se tiver exatamente 11 dígitos, tratamos como CPF
+            if (digitsOnly.length === 11) {
+                if (!validarCPF(digitsOnly)) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'warning',
+                        title: 'Atenção: O CPF digitado é matematicamente inválido, mas a busca prosseguirá.',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        timerProgressBar: true
+                    });
+                }
+            }
+            // Caso B: Se for padrão de Prontuário (tem hífen OU tem exatamente 10 dígitos puros)
+            else if (termo.includes('-') || digitsOnly.length === 10) {
+                let formattedPront = termo;
+                if (digitsOnly.length === 10 && !termo.includes('-')) {
+                    formattedPront = digitsOnly.substring(0, 6) + '-' + digitsOnly.substring(6);
+                    input.value = formattedPront;
+                    termo = formattedPront;
+                }
+
+                // Validar se os 6 primeiros dígitos representam Ano/Mês válidos
+                const cleanPront = formattedPront.replace(/\D/g, '');
+                if (cleanPront.length >= 6) {
+                    const ym = cleanPront.substring(0, 6);
+                    const year = parseInt(ym.substring(0, 4), 10);
+                    const month = parseInt(ym.substring(4, 6), 10);
+                    
+                    if (isNaN(year) || isNaN(month) || year < 2000 || year > 2100 || month < 1 || month > 12) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Número de Prontuário Inválido',
+                            text: 'Os 6 primeiros dígitos do prontuário devem representar um Ano e Mês válidos (formato YYYYMM). Exemplo: 202605-0001.',
+                            confirmButtonColor: '#9b59b6'
+                        });
+                        return; // BLOCKS search!
+                    }
+                }
             }
             
             try {
@@ -6912,9 +7045,9 @@
                 if (!tipo) return;
                 
                 const matchRoles = {
-                    'Serviço Social': ['assistente social', 'social'],
-                    'Psicológico': ['psicóloga', 'psicologo', 'psicologia', 'psicológico'],
-                    'Jurídico': ['advogada', 'jurídico', 'juridico', 'advogado']
+                    'Serviço Social': ['assistente social'],
+                    'Psicológico': ['psicóloga', 'psicologa'],
+                    'Jurídico': ['advogada']
                 };
                 
                 const keywords = matchRoles[tipo] || [];
