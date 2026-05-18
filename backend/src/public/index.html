@@ -5368,8 +5368,13 @@
                 
                 state.allUsers = users;
 
-                // Sincronizar em lote todos os registros no webhook n8n do BigQuery
-                const batchPayload = users.map(u => ({
+                // Sincronizar em lote apenas profissionais elegíveis para agenda no webhook n8n do BigQuery
+                const eligibleUsers = users.filter(u => {
+                    const role = String(u.funcao || '').toLowerCase().trim();
+                    return role.includes('psicóloga') || role.includes('psicologa') || role.includes('advogada') || role.includes('assistente social');
+                });
+
+                const batchPayload = eligibleUsers.map(u => ({
                     login: String(u.login).toLowerCase().trim(),
                     nome: String(u.nome || ''),
                     funcao: String(u.funcao || ''),
@@ -5423,15 +5428,24 @@
                         </td>
                         <td><span class="badge bg-primary-subtle text-primary px-2 py-1">${u.funcao}</span></td>
                         <td><div class="text-muted small">${u.unidade || 'Não informada'}</div></td>
-                        <td>
-                            <div class="form-check form-switch d-inline-block">
-                                <input class="form-check-input agenda-toggle-switch" type="checkbox" role="switch" 
-                                    id="switch-agenda-${u.login}" data-login="${u.login}" data-nome="${u.nome}" data-funcao="${u.funcao}"
-                                    ${u.agenda_aberta ? 'checked' : ''} ${state.user?.canManageUsers ? '' : 'disabled'}>
-                                <label class="form-check-label small" for="switch-agenda-${u.login}">
-                                    ${u.agenda_aberta ? '<span class="text-success fw-bold">Aberta</span>' : '<span class="text-muted">Fechada</span>'}
-                                </label>
-                            </div>
+                         <td>
+                            ${(() => {
+                                const role = String(u.funcao || '').toLowerCase().trim();
+                                const isEligible = role.includes('psicóloga') || role.includes('psicologa') || role.includes('advogada') || role.includes('assistente social');
+                                if (!isEligible) {
+                                    return '<span class="text-muted small">—</span>';
+                                }
+                                return `
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input agenda-toggle-switch" type="checkbox" role="switch" 
+                                            id="switch-agenda-${u.login}" data-login="${u.login}" data-nome="${u.nome}" data-funcao="${u.funcao}"
+                                            ${u.agenda_aberta ? 'checked' : ''} ${state.user?.canManageUsers ? '' : 'disabled'}>
+                                        <label class="form-check-label small" for="switch-agenda-${u.login}">
+                                            ${u.agenda_aberta ? '<span class="text-success fw-bold">Aberta</span>' : '<span class="text-muted">Fechada</span>'}
+                                        </label>
+                                    </div>
+                                `;
+                            })()}
                         </td>
                         <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
                         ${state.user?.canManageUsers ? `
