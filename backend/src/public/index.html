@@ -5513,7 +5513,9 @@
                     body: JSON.stringify(batchPayload)
                 }).catch(e => console.warn('[n8n Batch Sync Warning] Falha ao sincronizar lote de profissionais:', e));
 
-                renderUsersTable(users);
+                if (state.currentView === 'config') {
+                    renderUsersTable(users);
+                }
             } catch (err) {
                 console.error('Erro ao carregar lista de usuários:', err);
             } finally {
