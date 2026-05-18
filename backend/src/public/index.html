@@ -57,6 +57,16 @@
             --transition: all 0.25s ease-out;
         }
 
+        /* Custom Switches and Checkboxes Theme Color */
+        .form-check-input:checked {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+        .form-check-input:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 0.25rem rgba(155, 89, 182, 0.25) !important;
+        }
+
         .modal-header-premium {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
