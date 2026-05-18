@@ -6882,13 +6882,24 @@
         state.selectedUsuaria = null;
         state.calendarInstance = null;
 
-        // Listener do campo de busca de usuária
+        // Listener do campo de busca de usuária com Debounce (comportamento idêntico ao Prontuário)
+        let searchAgendaTimeout;
         const searchUsuariaInput = document.getElementById('search-usuaria-agenda');
         console.warn('[Agenda Debug] searchUsuariaInput:', searchUsuariaInput);
         if (searchUsuariaInput) {
+            searchUsuariaInput.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                clearTimeout(searchAgendaTimeout);
+                searchAgendaTimeout = setTimeout(() => {
+                    console.warn('[Agenda Debug] Debounced input search triggered:', val);
+                    searchUsuariasForAgenda();
+                }, val.length > 0 ? 500 : 0);
+            });
+
             searchUsuariaInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
+                    clearTimeout(searchAgendaTimeout);
                     console.warn('[Agenda Debug] Enter key pressed on input');
                     searchUsuariasForAgenda();
                 }
@@ -6899,6 +6910,7 @@
         console.warn('[Agenda Debug] searchUsuariaBtn:', searchUsuariaBtn);
         if (searchUsuariaBtn) {
             searchUsuariaBtn.addEventListener('click', () => {
+                clearTimeout(searchAgendaTimeout);
                 console.warn('[Agenda Debug] Click event on search button');
                 searchUsuariasForAgenda();
             });
