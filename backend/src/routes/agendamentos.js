@@ -185,10 +185,22 @@ router.post('/users/toggle-agenda', async (req, res) => {
   try {
     const sql = `
       MERGE ${tbl('agenda_config')} T
-      USING (SELECT @login AS login, @nome AS nome, @funcao AS funcao, @aberta AS agenda_aberta, CURRENT_TIMESTAMP() AS updatedat, @by AS updatedby) S
+      USING (SELECT 
+        CAST(@login AS STRING) AS login, 
+        CAST(@nome AS STRING) AS nome, 
+        CAST(@funcao AS STRING) AS funcao, 
+        CAST(@aberta AS BOOL) AS agenda_aberta, 
+        CURRENT_TIMESTAMP() AS updatedat, 
+        CAST(@by AS STRING) AS updatedby
+      ) S
       ON T.login = S.login
       WHEN MATCHED THEN
-        UPDATE SET T.agenda_aberta = S.agenda_aberta, T.nome = S.nome, T.funcao = S.funcao, T.updatedat = S.updatedat, T.updatedby = S.updatedby
+        UPDATE SET 
+          T.agenda_aberta = S.agenda_aberta, 
+          T.nome = S.nome, 
+          T.funcao = S.funcao, 
+          T.updatedat = S.updatedat, 
+          T.updatedby = S.updatedby
       WHEN NOT MATCHED THEN
         INSERT (login, nome, funcao, agenda_aberta, updatedat, updatedby)
         VALUES (S.login, S.nome, S.funcao, S.agenda_aberta, S.updatedat, S.updatedby)
@@ -200,7 +212,14 @@ router.post('/users/toggle-agenda', async (req, res) => {
       aberta: Boolean(agenda_aberta),
       by: updatedBy
     };
-    await dml(sql, params);
+    const types = {
+      login: 'STRING',
+      nome: 'STRING',
+      funcao: 'STRING',
+      aberta: 'BOOL',
+      by: 'STRING'
+    };
+    await dml(sql, params, types);
 
     // Enviar dados para o webhook do n8n (para persistência no BigQuery via n8n)
     try {
