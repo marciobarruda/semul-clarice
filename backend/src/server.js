@@ -87,8 +87,8 @@ app.use('/api/anexos',      anexosRouter);
 app.use('/api/agendamentos', agendamentosRouter);
 app.use('/api',             auxiliarRouter);   // nacionalidades, naturalidades, rpa
 
-// Servir arquivos estáticos do diretório public (como js/auth-config.js)
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir arquivos estáticos do diretório public (como js/auth-config.js), mas sem servir index.html diretamente sem autenticação
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 // ── Servir index.html (protegido por autenticação Keycloak) ───────────────────
 // Qualquer GET que não seja /api ou /health serve o portal
