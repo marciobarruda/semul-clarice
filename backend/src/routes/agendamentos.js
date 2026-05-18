@@ -207,14 +207,14 @@ router.post('/users/toggle-agenda', async (req, res) => {
       fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/agenda_config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify([{
           login: String(login).toLowerCase().trim(),
           nome: String(nome || ''),
           funcao: String(funcao || ''),
           agenda_aberta: Boolean(agenda_aberta),
           updatedat: new Date().toISOString(),
           updatedby: updatedBy
-        }),
+        }]),
         timeout: 5000
       }).catch(err => {
         console.error('[Webhook Agenda Config Alert] Falha no envio para n8n:', err.message);

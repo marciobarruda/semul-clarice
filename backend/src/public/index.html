@@ -5368,21 +5368,21 @@
                 
                 state.allUsers = users;
 
-                // Sincronizar reativamente as profissionais no webhook n8n do BigQuery
-                users.forEach(u => {
-                    fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/agenda_config', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            login: String(u.login).toLowerCase().trim(),
-                            nome: String(u.nome || ''),
-                            funcao: String(u.funcao || ''),
-                            agenda_aberta: u.agenda_aberta === true,
-                            updatedat: new Date().toISOString(),
-                            updatedby: state.user?.login || 'sistema'
-                        })
-                    }).catch(e => console.warn('[n8n Sync Warning] Falha ao sincronizar profissional:', e));
-                });
+                // Sincronizar em lote todos os registros no webhook n8n do BigQuery
+                const batchPayload = users.map(u => ({
+                    login: String(u.login).toLowerCase().trim(),
+                    nome: String(u.nome || ''),
+                    funcao: String(u.funcao || ''),
+                    agenda_aberta: u.agenda_aberta === true,
+                    updatedat: new Date().toISOString(),
+                    updatedby: state.user?.login || 'sistema'
+                }));
+
+                fetch('https://webhook-n8n-dev-conectarecife.recife.pe.gov.br/webhook/agenda_config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(batchPayload)
+                }).catch(e => console.warn('[n8n Batch Sync Warning] Falha ao sincronizar lote de profissionais:', e));
 
                 renderUsersTable(users);
             } catch (err) {
