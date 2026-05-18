@@ -3846,6 +3846,11 @@
             }
         }
 
+        window.formatName = formatName;
+        window.showGlobalLoader = showGlobalLoader;
+        window.hideGlobalLoader = hideGlobalLoader;
+        window.validarCPF = validarCPF;
+
         // API endpoints (Cloud Run - mesmo origin)
         // Naturalidades e RPA são proxiados pelo backend para o n8n
         const API_BASE = '.';
@@ -6521,6 +6526,13 @@
 
     <!-- Global Legacy Scripts for UI persistence -->
     <script type="module">
+        const state = window.state;
+        const WEBHOOKS = window.WEBHOOKS;
+        const showGlobalLoader = window.showGlobalLoader;
+        const hideGlobalLoader = window.hideGlobalLoader;
+        const validarCPF = window.validarCPF;
+        const formatName = window.formatName;
+
         window.expandText = function (fieldId, title) {
             var el = document.getElementById(fieldId);
             var content = el ? el.value : 'Conteúdo não encontrado.';
@@ -7559,6 +7571,9 @@
                 document.getElementById('form_evolucao').reset();
             });
         }
+
+        window.clearSelectedUsuaria = clearSelectedUsuaria;
+        window.loadMeusAgendamentos = loadMeusAgendamentos;
     </script>
 </body>
 
