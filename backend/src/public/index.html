@@ -5378,6 +5378,7 @@
                     login: String(u.login).toLowerCase().trim(),
                     nome: String(u.nome || ''),
                     funcao: String(u.funcao || ''),
+                    unidade: String(u.unidade || ''),
                     agenda_aberta: u.agenda_aberta === true,
                     updatedat: new Date().toISOString(),
                     updatedby: state.user?.login || 'sistema'
@@ -5438,7 +5439,7 @@
                                 return `
                                     <div class="form-check form-switch d-inline-block">
                                         <input class="form-check-input agenda-toggle-switch" type="checkbox" role="switch" 
-                                            id="switch-agenda-${u.login}" data-login="${u.login}" data-nome="${u.nome}" data-funcao="${u.funcao}"
+                                            id="switch-agenda-${u.login}" data-login="${u.login}" data-nome="${u.nome}" data-funcao="${u.funcao}" data-unidade="${u.unidade || ''}"
                                             ${u.agenda_aberta ? 'checked' : ''} ${state.user?.canManageUsers ? '' : 'disabled'}>
                                         <label class="form-check-label small" for="switch-agenda-${u.login}">
                                             ${u.agenda_aberta ? '<span class="text-success fw-bold">Aberta</span>' : '<span class="text-muted">Fechada</span>'}
@@ -5463,13 +5464,14 @@
                     const login = sw.getAttribute('data-login');
                     const nome = sw.getAttribute('data-nome');
                     const funcao = sw.getAttribute('data-funcao');
+                    const unidade = sw.getAttribute('data-unidade') || '';
                     const agenda_aberta = sw.checked;
                     
                     try {
                         const res = await fetch(WEBHOOKS.AGENDAMENTOS_TOGGLE_AGENDA, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ login, nome, funcao, agenda_aberta }),
+                            body: JSON.stringify({ login, nome, funcao, unidade, agenda_aberta }),
                             credentials: 'include'
                         });
                         

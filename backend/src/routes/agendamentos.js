@@ -174,7 +174,7 @@ router.get('/users/agenda-status', async (req, res) => {
 
 // Alternar status de abertura da agenda (POST /api/agendamentos/users/toggle-agenda)
 router.post('/users/toggle-agenda', async (req, res) => {
-  const { login, nome, funcao, agenda_aberta } = req.body;
+  const { login, nome, funcao, agenda_aberta, unidade } = req.body;
 
   if (!login) {
     return res.status(400).json({ error: 'Login da técnica é obrigatório' });
@@ -230,6 +230,7 @@ router.post('/users/toggle-agenda', async (req, res) => {
           login: String(login).toLowerCase().trim(),
           nome: String(nome || ''),
           funcao: String(funcao || ''),
+          unidade: String(unidade || ''),
           agenda_aberta: Boolean(agenda_aberta),
           updatedat: new Date().toISOString(),
           updatedby: updatedBy
