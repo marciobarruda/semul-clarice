@@ -4635,6 +4635,24 @@
                 if (rawDate && rawDate.value) rawDate = rawDate.value;
                 document.getElementById('evolucao_data_auto').textContent = dayjs(rawDate).format('DD/MM/YYYY');
 
+                // Preencher e desabilitar a Unidade de Atendimento da evolução salva
+                const evolUnidade = document.getElementById('evolucao_unidade');
+                if (evolUnidade) {
+                    const savedUnit = (item.unidadeatendimento || item.unidade_atendimento || item.unidade || item.setor || '').trim().toUpperCase();
+                    const opt = Array.from(evolUnidade.options).find(
+                        o => {
+                            const val = o.value.toUpperCase().trim();
+                            return val === savedUnit || savedUnit.includes(val) || val.includes(savedUnit);
+                        }
+                    );
+                    if (opt) {
+                        evolUnidade.value = opt.value;
+                    } else {
+                        evolUnidade.value = "";
+                    }
+                    evolUnidade.disabled = true; // Totalmente desabilitado em modo leitura
+                }
+
                 // Modo Leitura
                 descArea.readOnly = true;
                 descArea.style.backgroundColor = '#f8f9fa';
@@ -4677,14 +4695,20 @@
                 document.getElementById('evolucao_funcao_auto').textContent = state.user.funcao;
                 document.getElementById('evolucao_data_auto').textContent = dayjs().format('DD/MM/YYYY');
 
-                // Auto-selecionar unidade da técnica logada
+                // Auto-selecionar unidade da técnica logada e habilitar
                 const evolUnidade = document.getElementById('evolucao_unidade');
-                if (evolUnidade && state.user.unidade) {
-                    const userUnit = state.user.unidade.toUpperCase().trim();
-                    const opt = Array.from(evolUnidade.options).find(
-                        o => o.value.toUpperCase().trim() === userUnit
-                    );
-                    if (opt) evolUnidade.value = opt.value;
+                if (evolUnidade) {
+                    evolUnidade.disabled = false; // Habilitado para edição
+                    if (state.user.unidade) {
+                        const userUnit = state.user.unidade.toUpperCase().trim();
+                        const opt = Array.from(evolUnidade.options).find(
+                            o => {
+                                const val = o.value.toUpperCase().trim();
+                                return val === userUnit || userUnit.includes(val) || val.includes(userUnit);
+                            }
+                        );
+                        if (opt) evolUnidade.value = opt.value;
+                    }
                 }
             }
         });
@@ -6372,30 +6396,6 @@
         // ── Evolução do Caso ──────────────────────────────────────────────────────
         const evolucaoModalEl = document.getElementById('evolucaomodal');
         if (evolucaoModalEl) {
-            evolucaoModalEl.addEventListener('show.bs.modal', () => {
-                const tecnicaEl = document.getElementById('evolucao_tecnica_auto');
-                const funcaoEl = document.getElementById('evolucao_funcao_auto');
-                const dataEl = document.getElementById('evolucao_data_auto');
-                const unidadeSelect = document.getElementById('evolucao_unidade');
-
-                if (tecnicaEl) tecnicaEl.textContent = state.user?.nome || 'Técnica';
-                if (funcaoEl) funcaoEl.textContent = state.user?.funcao || 'Técnica';
-                if (dataEl) dataEl.textContent = dayjs().format('DD/MM/YYYY');
-
-                // Pré-seleciona a unidade do usuário logado
-                if (unidadeSelect && state.user?.unidade) {
-                    const userUnit = state.user.unidade.toUpperCase();
-                    // Tenta encontrar uma opção que contenha o nome da unidade do usuário
-                    for (let i = 0; i < unidadeSelect.options.length; i++) {
-                        const opt = unidadeSelect.options[i];
-                        if (opt.value.toUpperCase() === userUnit || userUnit.includes(opt.value.toUpperCase()) || opt.value.toUpperCase().includes(userUnit)) {
-                            unidadeSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-            });
-
             evolucaoModalEl.addEventListener('hidden.bs.modal', () => {
                 document.getElementById('form_evolucao').reset();
             });
