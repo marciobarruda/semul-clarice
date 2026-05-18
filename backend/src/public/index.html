@@ -6872,18 +6872,22 @@
 
         // Listener do campo de busca de usuária
         const searchUsuariaInput = document.getElementById('search-usuaria-agenda');
+        console.log('[Agenda Debug] searchUsuariaInput:', searchUsuariaInput);
         if (searchUsuariaInput) {
             searchUsuariaInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
+                    console.log('[Agenda Debug] Enter key pressed on input');
                     searchUsuariasForAgenda();
                 }
             });
         }
 
         const searchUsuariaBtn = document.getElementById('btn-search-usuaria-agenda');
+        console.log('[Agenda Debug] searchUsuariaBtn:', searchUsuariaBtn);
         if (searchUsuariaBtn) {
             searchUsuariaBtn.addEventListener('click', () => {
+                console.log('[Agenda Debug] Click event on search button');
                 searchUsuariasForAgenda();
             });
         }
@@ -6897,6 +6901,7 @@
 
         // Buscar usuárias
         async function searchUsuariasForAgenda() {
+            console.log('[Agenda Debug] searchUsuariasForAgenda executada!');
             const input = document.getElementById('search-usuaria-agenda');
             let termo = input.value.trim();
             const container = document.getElementById('search-agenda-results-container');
