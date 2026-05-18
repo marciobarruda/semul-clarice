@@ -57,6 +57,22 @@
             --transition: all 0.25s ease-out;
         }
 
+        /* Estilos personalizados para o Acordeão de Agressão */
+        .aggression-toggle {
+            font-size: 1.1rem;
+            color: var(--text-main) !important;
+            box-shadow: none !important;
+        }
+        .aggression-toggle.collapsed .bi-chevron-down {
+            transform: rotate(-90deg);
+        }
+        .transition-transform {
+            transition: transform 0.2s ease-in-out;
+        }
+        .aggression-section {
+            border-color: rgba(0, 0, 0, 0.05) !important;
+        }
+
         .modal-header-premium {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
@@ -2468,104 +2484,168 @@
 
                                     <div class="col-12">
                                         <div class="subsection-card">
-                                            <h3 class="subsection-title"><i class="bi bi-shield-exclamation"></i>Formas
-                                                de Agressão Detectadas</h3>
-                                            <div class="row g-4">
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <label class="form-label fw-bold">Física</label>
-                                                    <div class="row g-2">
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="violenciafisica[]" value="Tapa"
-                                                                    id="vftapa"><label class="form-check-label"
-                                                                    for="vftapa">Tapa/Empurrão</label></div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="violenciafisica[]" value="Soco"
-                                                                    id="vfsoco"><label class="form-check-label"
-                                                                    for="vfsoco">Soco/Pontapé</label></div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="violenciafisica[]" value="Espancamento"
-                                                                    id="vfesp"><label class="form-check-label"
-                                                                    for="vfesp">Espancamento</label></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <label class="form-label fw-bold">Psicológica</label>
-                                                    <div class="row g-2">
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="violenciapsicologica[]" value="Ameaça"
-                                                                    id="vpame"><label class="form-check-label"
-                                                                    for="vpame">Ameaça</label></div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="violenciapsicologica[]" value="Humilhação"
-                                                                    id="vphum"><label class="form-check-label"
-                                                                    for="vphum">Humilhação</label></div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="violenciapsicologica[]" value="Chantagem"
-                                                                    id="vpcha"><label class="form-check-label"
-                                                                    for="vpcha">Chantagem</label></div>
+                                            <h3 class="subsection-title"><i class="bi bi-shield-exclamation"></i>Formas de Agressão Detectadas</h3>
+                                            
+                                            <!-- Accordion / Collapsible Group of Aggression Forms -->
+                                            <div class="aggression-accordion mb-4">
+                                                
+                                                <!-- Física -->
+                                                <div class="aggression-section border-bottom py-3">
+                                                    <button class="btn btn-link text-decoration-none fw-bold text-dark p-0 d-flex align-items-center aggression-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFisica" aria-expanded="true">
+                                                        <i class="bi bi-chevron-down me-2 text-muted transition-transform"></i>Física
+                                                    </button>
+                                                    <div id="collapseFisica" class="collapse show mt-3 ps-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-6 col-md-4 col-lg-2">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Uso de objetos" id="vf_uso_objetos"><label class="form-check-label text-muted small" for="vf_uso_objetos">Uso de objetos</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Mordidas" id="vf_mordidas"><label class="form-check-label text-muted small" for="vf_mordidas">Mordidas</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Puxão de Cabelo" id="vf_puxao_cabelo"><label class="form-check-label text-muted small" for="vf_puxao_cabelo">Puxão de Cabelo</label></div>
+                                                            </div>
+                                                            <div class="col-6 col-md-4 col-lg-2">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Sufocamento" id="vf_sufocamento"><label class="form-check-label text-muted small" for="vf_sufocamento">Sufocamento</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Empurrão" id="vf_empurrao"><label class="form-check-label text-muted small" for="vf_empurrao">Empurrão</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Tortura" id="vf_tortura"><label class="form-check-label text-muted small" for="vf_tortura">Tortura</label></div>
+                                                            </div>
+                                                            <div class="col-6 col-md-4 col-lg-2">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Fraturas" id="vf_fraturas"><label class="form-check-label text-muted small" for="vf_fraturas">Fraturas</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Rasteira" id="vf_rasteira"><label class="form-check-label text-muted small" for="vf_rasteira">Rasteira</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Envenenamento" id="vf_envenenamento"><label class="form-check-label text-muted small" for="vf_envenenamento">Envenenamento</label></div>
+                                                            </div>
+                                                            <div class="col-6 col-md-4 col-lg-2">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Pontapés" id="vf_pontapes"><label class="form-check-label text-muted small" for="vf_pontapes">Pontapés</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Tapa" id="vf_tapa"><label class="form-check-label text-muted small" for="vf_tapa">Tapa</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Sequestro" id="vf_sequestro"><label class="form-check-label text-muted small" for="vf_sequestro">Sequestro</label></div>
+                                                            </div>
+                                                            <div class="col-6 col-md-4 col-lg-2">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Espancamento" id="vf_espancamento"><label class="form-check-label text-muted small" for="vf_espancamento">Espancamento</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Soco" id="vf_soco"><label class="form-check-label text-muted small" for="vf_soco">Soco</label></div>
+                                                            </div>
+                                                            <div class="col-6 col-md-4 col-lg-2">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Queimaduras" id="vf_queimaduras"><label class="form-check-label text-muted small" for="vf_queimaduras">Queimaduras</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Torção" id="vf_torcao"><label class="form-check-label text-muted small" for="vf_torcao">Torção</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciafisica[]" value="Outras" id="vf_outras"><label class="form-check-label text-muted small" for="vf_outras">Outras</label></div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <label class="form-label fw-bold">Fatores Relacionados</label>
-                                                    <div class="row g-2">
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="fatoresrelacionados[]" value="Ciúmes"
-                                                                    id="frciu"><label class="form-check-label"
-                                                                    for="frciu">Ciúmes</label></div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="form-check form-switch"><input
-                                                                    class="form-check-input" type="checkbox"
-                                                                    name="fatoresrelacionados[]" value="Drogas"
-                                                                    id="frdro"><label class="form-check-label"
-                                                                    for="frdro">Uso de drogas</label></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="row g-3 mt-1">
-                                                        <div class="col-12 col-md-4">
-                                                            <label for="outrasviolfisicas" class="form-label">Outras
-                                                                viol. físicas</label>
-                                                            <input type="text" class="form-control"
-                                                                id="outrasviolfisicas" name="outrasviolfisicas">
-                                                        </div>
-                                                        <div class="col-12 col-md-4">
-                                                            <label for="outrasviolpsicologicas"
-                                                                class="form-label">Outras viol. psicodigitais</label>
-                                                            <input type="text" class="form-control"
-                                                                id="outrasviolpsicologicas"
-                                                                name="outrasviolpsicologicas">
-                                                        </div>
-                                                        <div class="col-12 col-md-4">
-                                                            <label for="outrasviolsexuais" class="form-label">Outras
-                                                                viol. sexuais</label>
-                                                            <input type="text" class="form-control"
-                                                                id="outrasviolsexuais" name="outrasviolsexuais">
+
+                                                <!-- Psicológica -->
+                                                <div class="aggression-section border-bottom py-3">
+                                                    <button class="btn btn-link text-decoration-none fw-bold text-dark p-0 d-flex align-items-center aggression-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePsicologica" aria-expanded="true">
+                                                        <i class="bi bi-chevron-down me-2 text-muted transition-transform"></i>Psicológica
+                                                    </button>
+                                                    <div id="collapsePsicologica" class="collapse show mt-3 ps-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Ameaças" id="vp_ameacas"><label class="form-check-label text-muted small" for="vp_ameacas">Ameaças</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Assédio moral" id="vp_assedio_moral"><label class="form-check-label text-muted small" for="vp_assedio_moral">Assédio moral</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Chantagem" id="vp_chantagem"><label class="form-check-label text-muted small" for="vp_chantagem">Chantagem</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Desprezo/humilhação" id="vp_desprezo_humilhacao"><label class="form-check-label text-muted small" for="vp_desprezo_humilhacao">Desprezo/humilhação</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Gritos" id="vp_gritos"><label class="form-check-label text-muted small" for="vp_gritos">Gritos</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Xingamento" id="vp_xingamento"><label class="form-check-label text-muted small" for="vp_xingamento">Xingamento</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Privação de liberdade" id="vp_privacao_liberdade"><label class="form-check-label text-muted small" for="vp_privacao_liberdade">Privação de liberdade</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Perseguição" id="vp_perseguicao"><label class="form-check-label text-muted small" for="vp_perseguicao">Perseguição</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciapsicologica[]" value="Outras" id="vp_outras"><label class="form-check-label text-muted small" for="vp_outras">Outras</label></div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <!-- Sexual -->
+                                                <div class="aggression-section border-bottom py-3">
+                                                    <button class="btn btn-link text-decoration-none fw-bold text-dark p-0 d-flex align-items-center aggression-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSexual" aria-expanded="true">
+                                                        <i class="bi bi-chevron-down me-2 text-muted transition-transform"></i>Sexual
+                                                    </button>
+                                                    <div id="collapseSexual" class="collapse show mt-3 ps-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciasexual[]" value="Estupro" id="vs_estupro"><label class="form-check-label text-muted small" for="vs_estupro">Estupro</label></div>
+                                                                <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="violenciasexual[]" value="Outras" id="vs_outras"><label class="form-check-label text-muted small" for="vs_outras">Outras</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciasexual[]" value="Assédio sexual" id="vs_assedio_sexual"><label class="form-check-label text-muted small" for="vs_assedio_sexual">Assédio sexual</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciasexual[]" value="Importunação sexual" id="vs_importunacao_sexual"><label class="form-check-label text-muted small" for="vs_importunacao_sexual">Importunação sexual</label></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Patrimonial -->
+                                                <div class="aggression-section border-bottom py-3">
+                                                    <button class="btn btn-link text-decoration-none fw-bold text-dark p-0 d-flex align-items-center aggression-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePatrimonial" aria-expanded="true">
+                                                        <i class="bi bi-chevron-down me-2 text-muted transition-transform"></i>Patrimonial
+                                                    </button>
+                                                    <div id="collapsePatrimonial" class="collapse show mt-3 ps-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciapatrimonial[]" value="Retenção" id="vpat_retencao"><label class="form-check-label text-muted small" for="vpat_retencao">Retenção</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciapatrimonial[]" value="Subtração" id="vpat_subtracao"><label class="form-check-label text-muted small" for="vpat_subtracao">Subtração</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciapatrimonial[]" value="Destruição parcial ou total" id="vpat_destruicao"><label class="form-check-label text-muted small" for="vpat_destruicao">Destruição parcial ou total</label></div>
+                                                            </div>
+                                                            <div class="col-12 mt-3">
+                                                                <label for="discriminarbens" class="form-label text-muted x-small text-uppercase fw-bold mb-2 d-block">Discriminar bens</label>
+                                                                <textarea class="form-control bg-light border-0 rounded-3 shadow-none fw-bold" id="discriminarbens" name="discriminarbens" rows="3"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Moral -->
+                                                <div class="aggression-section border-bottom py-3">
+                                                    <button class="btn btn-link text-decoration-none fw-bold text-dark p-0 d-flex align-items-center aggression-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMoral" aria-expanded="true">
+                                                        <i class="bi bi-chevron-down me-2 text-muted transition-transform"></i>Moral
+                                                    </button>
+                                                    <div id="collapseMoral" class="collapse show mt-3 ps-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciamoral[]" value="Difamação" id="vm_difamacao"><label class="form-check-label text-muted small" for="vm_difamacao">Difamação</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciamoral[]" value="Injúria" id="vm_injuria"><label class="form-check-label text-muted small" for="vm_injuria">Injúria</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="violenciamoral[]" value="Calúnia" id="vm_calunia"><label class="form-check-label text-muted small" for="vm_calunia">Calúnia</label></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Tráfico de seres humanos -->
+                                                <div class="aggression-section border-bottom py-3">
+                                                    <button class="btn btn-link text-decoration-none fw-bold text-dark p-0 d-flex align-items-center aggression-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTrafico" aria-expanded="true">
+                                                        <i class="bi bi-chevron-down me-2 text-muted transition-transform"></i>Tráfico de seres humanos
+                                                    </button>
+                                                    <div id="collapseTrafico" class="collapse show mt-3 ps-3">
+                                                        <div class="row g-3">
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="traficosereshumanos[]" value="Fins Sexuais" id="tsh_fins_sexuais"><label class="form-check-label text-muted small" for="tsh_fins_sexuais">Fins Sexuais</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="traficosereshumanos[]" value="Fins Trabalho Forçado" id="tsh_trabalho_forcado"><label class="form-check-label text-muted small" for="tsh_trabalho_forcado">Fins Trabalho Forçado</label></div>
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="traficosereshumanos[]" value="Fins Retirada de Orgãos" id="tsh_retirada_orgaos"><label class="form-check-label text-muted small" for="tsh_retirada_orgaos">Fins Retirada de Orgãos</label></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
+
+                                            <!-- Fatores Relacionados -->
+                                            <div class="row g-4 mb-4">
+                                                <div class="col-12">
+                                                    <label class="form-label fw-bold">Fatores Relacionados</label>
                                         </div>
                                     </div>
                                 </div>
@@ -5350,6 +5430,8 @@
                 const data = {};
 
                 // 1. Capturar todos os campos do formulário (normalizados)
+                const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados', 'tipoviolencia', 'violenciasexual', 'violenciapatrimonial', 'violenciamoral', 'traficosereshumanos'];
+
                 formData.forEach((value, key) => {
                     const cleanKey = key.replace(/_/g, '').replace('[]', '').toLowerCase();
 
@@ -5363,8 +5445,6 @@
                 });
 
                 // 2. Garantir envio de Switches (Booleanos ou Arrays)
-                const arrayFields = ['atendimento', 'origemservico', 'violenciafisica', 'violenciapsicologica', 'fatoresrelacionados', 'tipoviolencia'];
-
                 // Inicializar arrays vazios para campos obrigatórios de schema REPEATED
                 arrayFields.forEach(f => {
                     if (!data[f]) data[f] = [];

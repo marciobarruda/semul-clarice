@@ -131,7 +131,7 @@ async function setup() {
       { name: 'medquais', type: 'STRING' },
       { name: 'gestante', type: 'BOOL' },
       { name: 'examehiv', type: 'BOOL' },
-      { name: 'tipoviolencia', type: 'STRING' },
+      { name: 'tipoviolencia', type: 'STRING', mode: 'REPEATED' },
       { name: 'localviolencia', type: 'STRING' },
       { name: 'frequencia', type: 'STRING' },
       { name: 'violenciafisica', type: 'STRING', mode: 'REPEATED' },
@@ -146,6 +146,13 @@ async function setup() {
       { name: 'outras_viol_psicologicas', type: 'STRING' },
       { name: 'relato_ciods', type: 'STRING' },
       { name: 'outro_local_agressao', type: 'STRING' },
+      { name: 'iniciador', type: 'STRING' },
+      { name: 'atualizador', type: 'STRING' },
+      { name: 'violenciasexual', type: 'STRING', mode: 'REPEATED' },
+      { name: 'violenciapatrimonial', type: 'STRING', mode: 'REPEATED' },
+      { name: 'violenciamoral', type: 'STRING', mode: 'REPEATED' },
+      { name: 'traficosereshumanos', type: 'STRING', mode: 'REPEATED' },
+      { name: 'discriminarbens', type: 'STRING' },
     ],
   };
 
