@@ -16,6 +16,7 @@ const evolucoesRouter   = require('./routes/evolucoes');
 const anexosRouter      = require('./routes/anexos');
 const familiaRouter     = require('./routes/familia');
 const autoresRouter     = require('./routes/autores');
+const agendamentosRouter = require('./routes/agendamentos');
 const auxiliarRouter    = require('./routes/auxiliar');
 
 // ── App ───────────────────────────────────────────────────────────────────────
@@ -83,6 +84,7 @@ app.use('/api/evolucoes',   evolucoesRouter);
 app.use('/api/familia',     familiaRouter);
 app.use('/api/autores',     autoresRouter);
 app.use('/api/anexos',      anexosRouter);
+app.use('/api/agendamentos', agendamentosRouter);
 app.use('/api',             auxiliarRouter);   // nacionalidades, naturalidades, rpa
 
 // ── Servir index.html (protegido por autenticação Keycloak) ───────────────────

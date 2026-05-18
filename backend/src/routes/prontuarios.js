@@ -193,7 +193,7 @@ router.post('/buscar', async (req, res) => {
   const { termo } = req.body;
   if (!termo) return res.status(400).json({ error: 'Termo obrigatório' });
   try {
-    const sql = `SELECT * FROM ${tbl('prontuario')} WHERE nomeusuaria LIKE @termo OR cpfusuaria LIKE @termo OR numeroprontuario LIKE @termo ORDER BY createdat DESC LIMIT 500`;
+    const sql = `SELECT * FROM ${tbl('prontuario')} WHERE nomeusuaria LIKE @termo OR cpfusuaria LIKE @termo OR numeroprontuario LIKE @termo OR nomemae LIKE @termo ORDER BY createdat DESC LIMIT 500`;
     const rows = await query(sql, { termo: `%${termo}%` }, { termo: 'STRING' });
     res.json(flattenRows(rows));
   } catch (err) {

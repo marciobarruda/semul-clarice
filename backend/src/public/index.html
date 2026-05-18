@@ -15,6 +15,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+    <!-- FullCalendar CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/pt-br.global.min.js"></script>
     <!-- DayJS and Plugins -->
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
@@ -1054,6 +1058,18 @@
                 </div>
                 <hr class="mx-3 opacity-10">
                 <div class="nav-item">
+                    <a href="#" class="nav-link" id="nav-agendamentos">
+                        <i class="bi bi-calendar-check-fill"></i>
+                        <span>Agendamentos</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" id="nav-meus-agendamentos">
+                        <i class="bi bi-calendar2-week-fill"></i>
+                        <span>Meus agendamentos</span>
+                    </a>
+                </div>
+                <div class="nav-item">
                     <a href="#" class="nav-link" id="nav-config">
                         <i class="bi bi-gear-fill"></i>
                         <span>Configurações</span>
@@ -1447,7 +1463,7 @@
                                         Cargo/Função <i class="bi bi-arrow-down-up ms-1 small opacity-50"></i></th>
                                     <th class="text-nowrap sortable-user" data-sort="unidade" style="cursor:pointer">
                                         Unidade <i class="bi bi-arrow-down-up ms-1 small opacity-50"></i></th>
-                                    <th class="text-nowrap">Último Acesso</th>
+                                    <th class="text-nowrap">Agenda Aberta</th>
                                     <th class="text-nowrap">Status</th>
                                     <th class="text-end text-nowrap">Ações</th>
                                 </tr>
@@ -1491,6 +1507,141 @@
                         </table>
                     </div>
                 </section>
+            </div>
+
+            <!-- Agendamentos View (Hidden by default) -->
+            <div class="content-body d-none" id="agendamentos-view">
+                <div class="header-content mb-5 animate__animated animate__fadeIn">
+                    <h1 class="h3 fw-bold text-main mb-1">Agendamentos Administrativos</h1>
+                    <p class="text-muted small mb-0 opacity-75">Pesquise por uma usuária e selecione a técnica para agendar no calendário.</p>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <!-- Coluna de Configuração do Agendamento -->
+                    <div class="col-xl-4">
+                        <div class="card-section p-4 h-100 flex-column d-flex gap-4">
+                            <h4 class="h5 fw-bold text-main mb-0 d-flex align-items-center gap-2">
+                                <i class="bi bi-person-search"></i>
+                                <span>1. Selecionar Usuária</span>
+                            </h4>
+                            
+                            <!-- Search Bar -->
+                            <div class="d-flex gap-2">
+                                <input type="text" id="search-usuaria-agenda" class="form-control" placeholder="Buscar por Nome, CPF, Prontuário ou Mãe...">
+                                <button type="button" id="btn-search-usuaria-agenda" class="btn btn-primary px-3">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+
+                            <!-- Resultados da Busca -->
+                            <div id="search-agenda-results-container" class="d-none border rounded-3 overflow-hidden bg-white shadow-sm" style="max-height: 250px; overflow-y: auto;">
+                                <table class="table table-hover table-striped mb-0 small">
+                                    <thead class="table-light sticky-top">
+                                        <tr>
+                                            <th style="width: 40px;"></th>
+                                            <th>Usuária</th>
+                                            <th>CPF</th>
+                                            <th>Prontuário</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-usuarias-agenda-results">
+                                        <!-- Dinâmico -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Usuária Selecionada Info -->
+                            <div id="usuaria-selecionada-badge" class="alert alert-info border-0 d-none d-flex align-items-center justify-content-between p-3 mb-0">
+                                <div>
+                                    <small class="text-muted d-block" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700;">Usuária Selecionada</small>
+                                    <strong id="selected-usuaria-name" class="text-dark">Nenhuma</strong>
+                                    <span id="selected-usuaria-doc" class="d-block small text-muted"></span>
+                                </div>
+                                <button type="button" class="btn-close" id="btn-clear-usuaria-selected" aria-label="Close"></button>
+                            </div>
+
+                            <hr class="my-2 opacity-10">
+
+                            <h4 class="h5 fw-bold text-main mb-0 d-flex align-items-center gap-2">
+                                <i class="bi bi-briefcase"></i>
+                                <span>2. Tipo e Profissional</span>
+                            </h4>
+
+                            <!-- Tipo de Atendimento -->
+                            <div>
+                                <label class="form-label fw-semibold small text-muted">Tipo de Atendimento</label>
+                                <select id="select-tipo-atendimento" class="form-select">
+                                    <option value="" disabled selected>Escolha o serviço...</option>
+                                    <option value="Serviço Social">Serviço Social</option>
+                                    <option value="Psicológico">Psicológico</option>
+                                    <option value="Jurídico">Jurídico</option>
+                                </select>
+                            </div>
+
+                            <!-- Técnica -->
+                            <div>
+                                <label class="form-label fw-semibold small text-muted">Técnica (Com Agenda Aberta)</label>
+                                <select id="select-tecnica-agenda" class="form-select" disabled>
+                                    <option value="" disabled selected>Selecione o serviço primeiro...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna do Calendário -->
+                    <div class="col-xl-8">
+                        <div class="card-section p-4 h-100">
+                            <h4 class="h5 fw-bold text-main mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar3"></i>
+                                <span>3. Escolher Data/Horário</span>
+                            </h4>
+                            
+                            <!-- Placeholder ou Instrução -->
+                            <div id="calendar-instruction" class="alert alert-warning border-0 d-flex align-items-center gap-2 mb-3">
+                                <i class="bi bi-info-circle-fill"></i>
+                                <span>Selecione a **Usuária**, **Tipo de Atendimento** e **Técnica** ao lado para carregar e interagir com o calendário.</span>
+                            </div>
+
+                            <!-- O Calendário propriamente dito -->
+                            <div id="agenda-calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meus Agendamentos View (Hidden by default) -->
+            <div class="content-body d-none" id="meusagendamentos-view">
+                <div class="header-content d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeIn">
+                    <div>
+                        <h1 class="h3 fw-bold text-main mb-1">Meus Agendamentos</h1>
+                        <p class="text-muted small mb-0 opacity-75">Veja seus próximos atendimentos agendados e gerencie o status de cada um.</p>
+                    </div>
+                </div>
+
+                <div class="card-section p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuária</th>
+                                    <th>Prontuário</th>
+                                    <th>Tipo de Atendimento</th>
+                                    <th>Data e Hora</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-meus-agendamentos">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="bi bi-calendar-x d-block fs-3 mb-2 opacity-50"></i>
+                                        Carregando agendamentos...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- Form View (Hidden by default) -->
@@ -3716,6 +3867,12 @@
             GET_NEW: `${API_BASE}/api/prontuarios/novo`,
             NACIONALIDADES: `${API_BASE}/api/nacionalidades`,
             NATURALIDADES: `${API_BASE}/api/naturalidades`,
+            AGENDAMENTOS: `${API_BASE}/api/agendamentos`,
+            AGENDAMENTOS_SALVAR: `${API_BASE}/api/agendamentos/salvar`,
+            AGENDAMENTOS_CANCELAR: `${API_BASE}/api/agendamentos/cancelar`,
+            AGENDAMENTOS_CONCLUIR: `${API_BASE}/api/agendamentos/concluir`,
+            AGENDAMENTOS_AGENDA_STATUS: `${API_BASE}/api/agendamentos/users/agenda-status`,
+            AGENDAMENTOS_TOGGLE_AGENDA: `${API_BASE}/api/agendamentos/users/toggle-agenda`,
             RPA: `${API_BASE}/api/rpa`,
         };
 
@@ -3724,13 +3881,17 @@
             dashboard: document.getElementById('dashboard-view'),
             prontuarios: document.getElementById('prontuarios-view'),
             config: document.getElementById('config-view'),
-            form: document.getElementById('form-view')
+            form: document.getElementById('form-view'),
+            agendamentos: document.getElementById('agendamentos-view'),
+            meusagendamentos: document.getElementById('meusagendamentos-view')
         };
 
         const navLinks = {
             dashboard: document.getElementById('nav-dashboard'),
             prontuarios: document.getElementById('nav-prontuarios'),
-            config: document.getElementById('nav-config')
+            config: document.getElementById('nav-config'),
+            agendamentos: document.getElementById('nav-agendamentos'),
+            meusagendamentos: document.getElementById('nav-meus-agendamentos')
         };
 
         // Carregamento Imediato: Disparar fetch o mais cedo possível
@@ -3771,6 +3932,11 @@
                 loadProntuariosData('', false); // Carrega os dados em background para os gráficos
             } else if (viewName === 'config') {
                 loadAllUsers();
+            } else if (viewName === 'agendamentos') {
+                loadAllUsers();
+                clearSelectedUsuaria();
+            } else if (viewName === 'meusagendamentos') {
+                loadMeusAgendamentos();
             }
 
             // Toggle header save button visibility
@@ -3903,6 +4069,20 @@
             navLinks.config.addEventListener('click', (e) => {
                 e.preventDefault();
                 switchView('config');
+            });
+        }
+
+        if (navLinks.agendamentos) {
+            navLinks.agendamentos.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView('agendamentos');
+            });
+        }
+
+        if (navLinks.meusagendamentos) {
+            navLinks.meusagendamentos.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView('meusagendamentos');
             });
         }
 
@@ -5104,12 +5284,37 @@
             try {
                 showGlobalLoader();
                 const url = force ? `${WEBHOOKS.USERS}?force=true` : WEBHOOKS.USERS;
-                const res = await fetch(url, { credentials: 'include' });
-                if (res.ok) {
-                    const users = await res.json();
-                    state.allUsers = users;
-                    renderUsersTable(users);
+                
+                // Buscar usuários e status das agendas em paralelo
+                const [resUsers, resAgendas] = await Promise.all([
+                    fetch(url, { credentials: 'include' }),
+                    fetch(WEBHOOKS.AGENDAMENTOS_AGENDA_STATUS, { credentials: 'include' })
+                ]);
+                
+                let users = [];
+                let agendas = [];
+                
+                if (resUsers.ok) {
+                    users = await resUsers.json();
                 }
+                if (resAgendas.ok) {
+                    agendas = await resAgendas.json();
+                }
+                
+                // Mapear status das agendas
+                const agendaMap = {};
+                agendas.forEach(a => {
+                    agendaMap[String(a.login).toLowerCase().trim()] = a.agenda_aberta;
+                });
+                
+                // Mesclar informações no array de usuários
+                users = users.map(u => ({
+                    ...u,
+                    agenda_aberta: agendaMap[String(u.login).toLowerCase().trim()] === true
+                }));
+                
+                state.allUsers = users;
+                renderUsersTable(users);
             } catch (err) {
                 console.error('Erro ao carregar lista de usuários:', err);
             } finally {
@@ -5148,7 +5353,16 @@
                         </td>
                         <td><span class="badge bg-primary-subtle text-primary px-2 py-1">${u.funcao}</span></td>
                         <td><div class="text-muted small">${u.unidade || 'Não informada'}</div></td>
-                        <td><div class="text-muted small">---</div></td>
+                        <td>
+                            <div class="form-check form-switch d-inline-block">
+                                <input class="form-check-input agenda-toggle-switch" type="checkbox" role="switch" 
+                                    id="switch-agenda-${u.login}" data-login="${u.login}" data-nome="${u.nome}" data-funcao="${u.funcao}"
+                                    ${u.agenda_aberta ? 'checked' : ''} ${state.user?.canManageUsers ? '' : 'disabled'}>
+                                <label class="form-check-label small" for="switch-agenda-${u.login}">
+                                    ${u.agenda_aberta ? '<span class="text-success fw-bold">Aberta</span>' : '<span class="text-muted">Fechada</span>'}
+                                </label>
+                            </div>
+                        </td>
                         <td><span class="badge bg-success-subtle text-success">Ativa</span></td>
                         ${state.user?.canManageUsers ? `
                         <td class="text-end">
@@ -5158,6 +5372,50 @@
                         </td>` : ''}
                     </tr>
                 `).join('');
+
+            // Registrar os event listeners para alternar a agenda
+            document.querySelectorAll('.agenda-toggle-switch').forEach(sw => {
+                sw.addEventListener('change', async (e) => {
+                    const login = sw.getAttribute('data-login');
+                    const nome = sw.getAttribute('data-nome');
+                    const funcao = sw.getAttribute('data-funcao');
+                    const agenda_aberta = sw.checked;
+                    
+                    try {
+                        const res = await fetch(WEBHOOKS.AGENDAMENTOS_TOGGLE_AGENDA, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ login, nome, funcao, agenda_aberta }),
+                            credentials: 'include'
+                        });
+                        
+                        if (res.ok) {
+                            const label = sw.nextElementSibling;
+                            if (label) {
+                                label.innerHTML = agenda_aberta ? '<span class="text-success fw-bold">Aberta</span>' : '<span class="text-muted">Fechada</span>';
+                            }
+                            
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: `Agenda de ${formatName(nome)} ${agenda_aberta ? 'aberta' : 'fechada'}.`
+                            });
+                        } else {
+                            sw.checked = !agenda_aberta;
+                            Swal.fire('Erro', 'Falha ao atualizar disponibilidade da agenda.', 'error');
+                        }
+                    } catch (err) {
+                        sw.checked = !agenda_aberta;
+                        Swal.fire('Erro', 'Falha ao atualizar disponibilidade da agenda.', 'error');
+                    }
+                });
+            });
         }
 
         window.openAddUserModal = function () {
@@ -6501,6 +6759,635 @@
                 document.getElementById('autor_index').value = -1;
                 document.getElementById('autormodaltitle').textContent = 'Adicionar Autor da Violência';
             });
+        }
+
+        // ── Sistema de Agendamento (Módulo Administrativo) ──────────────────────────
+
+        state.selectedUsuaria = null;
+        state.calendarInstance = null;
+
+        // Listener do campo de busca de usuária
+        const searchUsuariaInput = document.getElementById('search-usuaria-agenda');
+        if (searchUsuariaInput) {
+            searchUsuariaInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchUsuariasForAgenda();
+                }
+            });
+        }
+
+        const searchUsuariaBtn = document.getElementById('btn-search-usuaria-agenda');
+        if (searchUsuariaBtn) {
+            searchUsuariaBtn.addEventListener('click', () => {
+                searchUsuariasForAgenda();
+            });
+        }
+
+        const clearSelectedUsuariaBtn = document.getElementById('btn-clear-usuaria-selected');
+        if (clearSelectedUsuariaBtn) {
+            clearSelectedUsuariaBtn.addEventListener('click', () => {
+                clearSelectedUsuaria();
+            });
+        }
+
+        // Buscar usuárias
+        async function searchUsuariasForAgenda() {
+            const input = document.getElementById('search-usuaria-agenda');
+            const termo = input.value.trim();
+            const container = document.getElementById('search-agenda-results-container');
+            const tbody = document.getElementById('table-usuarias-agenda-results');
+            
+            if (!termo) {
+                container.classList.add('d-none');
+                return;
+            }
+            
+            try {
+                showGlobalLoader();
+                const res = await fetch(WEBHOOKS.LIST, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ termo }),
+                    credentials: 'include'
+                });
+                
+                if (res.ok) {
+                    const matched = await res.json();
+                    tbody.innerHTML = '';
+                    
+                    if (!matched || matched.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted">Nenhum prontuário encontrado.</td></tr>';
+                    } else {
+                        matched.forEach(u => {
+                            const tr = document.createElement('tr');
+                            tr.style.cursor = 'pointer';
+                            tr.className = 'hover-row';
+                            tr.innerHTML = `
+                                <td>
+                                    <input type="radio" name="usuaria-agenda-radio" class="form-check-input select-usuaria-radio" 
+                                        data-prontuario="${u.numeroprontuario}" data-nome="${u.nomeusuaria}" data-cpf="${u.cpfusuaria || ''}"
+                                        data-nascimento="${u.datanascimento || ''}" data-mae="${u.nomemae || ''}">
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-main">${u.nomeusuaria}</div>
+                                    <div class="text-muted small">Mãe: ${u.nomemae || 'Não informada'} • DN: ${u.datanascimento ? dayjs(u.datanascimento).format('DD/MM/YYYY') : 'Não informada'}</div>
+                                </td>
+                                <td><span class="text-muted small">${u.cpfusuaria || '---'}</span></td>
+                                <td><span class="badge bg-secondary-subtle text-secondary">${u.numeroprontuario}</span></td>
+                            `;
+                            
+                            tr.addEventListener('click', (e) => {
+                                if (e.target.tagName !== 'INPUT') {
+                                    const rad = tr.querySelector('.select-usuaria-radio');
+                                    if (rad) {
+                                        rad.checked = true;
+                                        rad.dispatchEvent(new Event('change'));
+                                    }
+                                }
+                            });
+                            tbody.appendChild(tr);
+                        });
+                        
+                        tbody.querySelectorAll('.select-usuaria-radio').forEach(r => {
+                            r.addEventListener('change', () => {
+                                selectUsuariaForAgenda({
+                                    numeroprontuario: r.getAttribute('data-prontuario'),
+                                    nome: r.getAttribute('data-nome'),
+                                    cpf: r.getAttribute('data-cpf'),
+                                    datanascimento: r.getAttribute('data-nascimento'),
+                                    nomemae: r.getAttribute('data-mae')
+                                });
+                            });
+                        });
+                    }
+                    container.classList.remove('d-none');
+                }
+            } catch (err) {
+                console.error('[Search Usuarias Agenda Error]', err);
+                Swal.fire('Erro', 'Não foi possível buscar as usuárias.', 'error');
+            } finally {
+                hideGlobalLoader();
+            }
+        }
+
+        // Selecionar usuária
+        function selectUsuariaForAgenda(usuaria) {
+            state.selectedUsuaria = usuaria;
+            
+            const badge = document.getElementById('usuaria-selecionada-badge');
+            const nameEl = document.getElementById('selected-usuaria-name');
+            const docEl = document.getElementById('selected-usuaria-doc');
+            const container = document.getElementById('search-agenda-results-container');
+            
+            nameEl.textContent = usuaria.nome;
+            docEl.textContent = `Prontuário: ${usuaria.numeroprontuario} ${usuaria.cpf ? '• CPF: ' + usuaria.cpf : ''}`;
+            
+            badge.classList.remove('d-none');
+            container.classList.add('d-none');
+            
+            updateCalendarState();
+        }
+
+        // Limpar usuária selecionada
+        function clearSelectedUsuaria() {
+            state.selectedUsuaria = null;
+            const badge = document.getElementById('usuaria-selecionada-badge');
+            if (badge) badge.classList.add('d-none');
+            const searchInput = document.getElementById('search-usuaria-agenda');
+            if (searchInput) searchInput.value = '';
+            updateCalendarState();
+        }
+
+        // Listener de Tipo de Atendimento
+        const selectTipoAtendimento = document.getElementById('select-tipo-atendimento');
+        if (selectTipoAtendimento) {
+            selectTipoAtendimento.addEventListener('change', () => {
+                const tipo = selectTipoAtendimento.value;
+                const selectTecnica = document.getElementById('select-tecnica-agenda');
+                
+                selectTecnica.innerHTML = '<option value="" disabled selected>Selecione a técnica...</option>';
+                selectTecnica.disabled = true;
+                
+                if (!tipo) return;
+                
+                const matchRoles = {
+                    'Serviço Social': ['assistente social', 'social'],
+                    'Psicológico': ['psicóloga', 'psicologo', 'psicologia', 'psicológico'],
+                    'Jurídico': ['advogada', 'jurídico', 'juridico', 'advogado']
+                };
+                
+                const keywords = matchRoles[tipo] || [];
+                
+                const filtered = (state.allUsers || []).filter(u => {
+                    const role = String(u.funcao || '').toLowerCase();
+                    const matchesRole = keywords.some(k => role.includes(k));
+                    return matchesRole && u.agenda_aberta === true;
+                });
+                
+                if (filtered.length === 0) {
+                    selectTecnica.innerHTML = '<option value="" disabled selected>Nenhuma técnica com agenda aberta para este tipo...</option>';
+                } else {
+                    filtered.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.login;
+                        opt.textContent = formatName(t.nome);
+                        opt.setAttribute('data-nome', t.nome);
+                        selectTecnica.appendChild(opt);
+                    });
+                    selectTecnica.disabled = false;
+                }
+                
+                updateCalendarState();
+            });
+        }
+
+        // Listener de Técnica
+        const selectTecnicaAgenda = document.getElementById('select-tecnica-agenda');
+        if (selectTecnicaAgenda) {
+            selectTecnicaAgenda.addEventListener('change', () => {
+                updateCalendarState();
+            });
+        }
+
+        // Atualizar estado do Calendário
+        function updateCalendarState() {
+            const selectTipo = document.getElementById('select-tipo-atendimento');
+            const selectTecnica = document.getElementById('select-tecnica-agenda');
+            const instruction = document.getElementById('calendar-instruction');
+            const calendarDiv = document.getElementById('agenda-calendar');
+            
+            if (!selectTipo || !selectTecnica) return;
+            
+            const tipo = selectTipo.value;
+            const tecnicaLogin = selectTecnica.value;
+            
+            if (!tipo || !tecnicaLogin) {
+                if (instruction) instruction.classList.remove('d-none');
+                if (calendarDiv) calendarDiv.innerHTML = '';
+                if (state.calendarInstance) {
+                    state.calendarInstance.destroy();
+                    state.calendarInstance = null;
+                }
+                return;
+            }
+            
+            if (instruction) instruction.classList.add('d-none');
+            const opt = selectTecnica.options[selectTecnica.selectedIndex];
+            const tecnicaNome = opt.getAttribute('data-nome');
+            
+            initCalendar(tecnicaLogin, tecnicaNome, tipo);
+        }
+
+        // Inicializar Calendário (FullCalendar)
+        async function initCalendar(tecnicaLogin, tecnicaNome, tipo) {
+            const calendarEl = document.getElementById('agenda-calendar');
+            if (!calendarEl) return;
+            calendarEl.innerHTML = '';
+            
+            let appointments = [];
+            try {
+                const res = await fetch(`${WEBHOOKS.AGENDAMENTOS}?tecnica=${encodeURIComponent(tecnicaLogin)}`, { credentials: 'include' });
+                if (res.ok) {
+                    appointments = await res.json();
+                }
+            } catch (err) {
+                console.error('[Fetch Appointments Error]', err);
+            }
+            
+            const events = appointments.map(a => {
+                let color = '#9b59b6'; // Purple for Pendente
+                if (a.status === 'Concluído') color = '#2ecc71'; // Green
+                if (a.status === 'Cancelado') color = '#e74c3c'; // Red
+                
+                return {
+                    id: a.id,
+                    title: `${a.nomeusuaria} (${a.tipoatendimento})`,
+                    start: a.datahorario,
+                    color: color,
+                    extendedProps: { ...a }
+                };
+            });
+            
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'pt-br',
+                allDaySlot: false,
+                slotMinTime: '08:00:00',
+                slotMaxTime: '18:00:00',
+                slotDuration: '00:30:00',
+                selectable: true,
+                events: events,
+                select: async function(info) {
+                    calendar.unselect();
+                    
+                    if (!state.selectedUsuaria) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atenção',
+                            text: 'Por favor, selecione a usuária (no Passo 1) antes de escolher o horário no calendário.',
+                            confirmButtonColor: '#9b59b6'
+                        });
+                        return;
+                    }
+                    
+                    const start = dayjs(info.startStr);
+                    if (start.isBefore(dayjs())) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Horário Inválido',
+                            text: 'Não é possível agendar em datas ou horários retroativos.',
+                            confirmButtonColor: '#9b59b6'
+                        });
+                        return;
+                    }
+                    
+                    const formattedDate = start.format('DD/MM/YYYY [às] HH:mm');
+                    
+                    const { value: confirm } = await Swal.fire({
+                        title: 'Confirmar Agendamento',
+                        html: `Deseja agendar o atendimento para:<br><br>
+                               <strong>Usuária:</strong> ${state.selectedUsuaria.nome}<br>
+                               <strong>Técnica:</strong> ${formatName(tecnicaNome)}<br>
+                               <strong>Tipo:</strong> ${tipo}<br>
+                               <strong>Data/Hora:</strong> ${formattedDate}`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirmar',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#9b59b6',
+                        cancelButtonColor: '#aaa'
+                    });
+                    
+                    if (confirm) {
+                        try {
+                            showGlobalLoader();
+                            const payload = {
+                                numeroprontuario: state.selectedUsuaria.numeroprontuario,
+                                nomeusuaria: state.selectedUsuaria.nome,
+                                cpfusuaria: state.selectedUsuaria.cpf,
+                                datanascimento: state.selectedUsuaria.datanascimento,
+                                nomemae: state.selectedUsuaria.nomemae,
+                                tipoatendimento: tipo,
+                                tecnica_login: tecnicaLogin,
+                                tecnica_nome: tecnicaNome,
+                                datahorario: info.startStr
+                            };
+                            
+                            const res = await fetch(WEBHOOKS.AGENDAMENTOS_SALVAR, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload),
+                                credentials: 'include'
+                            });
+                            
+                            if (res.ok) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Agendado!',
+                                    text: 'O atendimento foi agendado com sucesso.',
+                                    confirmButtonColor: '#9b59b6'
+                                });
+                                clearSelectedUsuaria();
+                                initCalendar(tecnicaLogin, tecnicaNome, tipo);
+                            } else {
+                                const errData = await res.json();
+                                Swal.fire('Erro', errData.error || 'Falha ao realizar agendamento.', 'error');
+                            }
+                        } catch (err) {
+                            console.error('[Save Appointment Error]', err);
+                            Swal.fire('Erro', 'Falha ao salvar agendamento.', 'error');
+                        } finally {
+                            hideGlobalLoader();
+                        }
+                    }
+                },
+                eventClick: function(info) {
+                    const eventProps = info.event.extendedProps;
+                    const formattedDate = dayjs(eventProps.datahorario).format('DD/MM/YYYY [às] HH:mm');
+                    
+                    let statusBadge = '';
+                    if (eventProps.status === 'Pendente') statusBadge = '<span class="badge bg-warning text-dark">Pendente</span>';
+                    else if (eventProps.status === 'Concluído') statusBadge = '<span class="badge bg-success">Concluído</span>';
+                    else statusBadge = '<span class="badge bg-danger">Cancelado</span>';
+                    
+                    Swal.fire({
+                        title: 'Detalhes do Agendamento',
+                        html: `<div class="text-start">
+                                   <strong>Usuária:</strong> ${eventProps.nomeusuaria}<br>
+                                   <strong>Prontuário:</strong> ${eventProps.numeroprontuario}<br>
+                                   <strong>Técnica:</strong> ${formatName(eventProps.tecnica_nome)}<br>
+                                   <strong>Serviço:</strong> ${eventProps.tipoatendimento}<br>
+                                   <strong>Data/Hora:</strong> ${formattedDate}<br>
+                                   <strong>Status:</strong> ${statusBadge}<br>
+                                   <strong>Observações:</strong> ${eventProps.observacao || 'Nenhuma'}<br>
+                                   <hr class="my-2">
+                                   <small class="text-muted">Agendado por: ${eventProps.agendadopor_nome || eventProps.agendadopor || 'Desconhecido'}</small>
+                               </div>`,
+                        icon: 'info',
+                        confirmButtonColor: '#9b59b6'
+                    });
+                }
+            });
+            
+            calendar.render();
+            state.calendarInstance = calendar;
+        }
+
+        // Carregar Meus Agendamentos
+        async function loadMeusAgendamentos() {
+            const tbody = document.getElementById('table-meus-agendamentos');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Carregando seus agendamentos...</td></tr>';
+            
+            if (!state.user || !state.user.login) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Usuário não autenticado.</td></tr>';
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${WEBHOOKS.AGENDAMENTOS}?tecnica=${encodeURIComponent(state.user.login.toLowerCase().trim())}`, { credentials: 'include' });
+                if (res.ok) {
+                    const list = await res.json();
+                    tbody.innerHTML = '';
+                    
+                    if (!list || list.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-calendar-x d-block fs-3 mb-2 opacity-50"></i>Nenhum agendamento encontrado para você.</td></tr>';
+                        return;
+                    }
+                    
+                    list.forEach(a => {
+                        let statusBadge = '';
+                        if (a.status === 'Pendente') statusBadge = '<span class="badge bg-warning-subtle text-warning border px-2 py-1">Pendente</span>';
+                        else if (a.status === 'Concluído') statusBadge = '<span class="badge bg-success-subtle text-success border px-2 py-1">Concluído</span>';
+                        else statusBadge = '<span class="badge bg-danger-subtle text-danger border px-2 py-1">Cancelado</span>';
+                        
+                        const isPendente = a.status === 'Pendente';
+                        const formattedDate = dayjs(a.datahorario).format('DD/MM/YYYY [às] HH:mm');
+                        
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover-row';
+                        tr.innerHTML = `
+                            <td>
+                                <div class="fw-bold text-main">${a.nomeusuaria}</div>
+                                <div class="text-muted x-small">Mãe: ${a.nomemae || '---'}</div>
+                            </td>
+                            <td><span class="badge bg-light text-dark border">${a.numeroprontuario}</span></td>
+                            <td><span class="text-muted small">${a.tipoatendimento}</span></td>
+                            <td><span class="fw-semibold text-dark">${formattedDate}</span></td>
+                            <td>${statusBadge}</td>
+                            <td class="text-end">
+                                ${isPendente ? `
+                                    <button class="btn btn-sm btn-outline-success px-2 py-1 me-1 shadow-sm" onclick="concluirAgendamento('${a.id}')">
+                                        <i class="bi bi-check-lg"></i> Concluir
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning px-2 py-1 me-1 shadow-sm" onclick="editarAgendamento('${a.id}', '${a.datahorario}')">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger px-2 py-1 shadow-sm" onclick="cancelarAgendamento('${a.id}')">
+                                        <i class="bi bi-x-circle"></i> Cancelar
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-sm btn-outline-secondary px-2 py-1 shadow-sm" onclick="visualizarAgendamento('${a.id}')">
+                                        <i class="bi bi-eye"></i> Detalhes
+                                    </button>
+                                `}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error('[Load Meus Agendamentos Error]', err);
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Erro ao carregar agendamentos.</td></tr>';
+            }
+        }
+
+        // Global functions for appointments management
+        window.concluirAgendamento = async function(id) {
+            const { value: confirm } = await Swal.fire({
+                title: 'Concluir Atendimento',
+                text: 'Tem certeza que deseja marcar este atendimento como concluído?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2ecc71',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Sim, Concluir',
+                cancelButtonText: 'Voltar'
+            });
+            
+            if (confirm) {
+                try {
+                    showGlobalLoader();
+                    const res = await fetch(WEBHOOKS.AGENDAMENTOS_CONCLUIR, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id }),
+                        credentials: 'include'
+                    });
+                    if (res.ok) {
+                        Swal.fire('Concluído!', 'Atendimento finalizado com sucesso.', 'success');
+                        loadMeusAgendamentos();
+                    } else {
+                        Swal.fire('Erro', 'Falha ao concluir agendamento.', 'error');
+                    }
+                } catch (err) {
+                    Swal.fire('Erro', 'Falha ao concluir agendamento.', 'error');
+                } finally {
+                    hideGlobalLoader();
+                }
+            }
+        }
+
+        window.cancelarAgendamento = async function(id) {
+            const { value: confirm } = await Swal.fire({
+                title: 'Cancelar Agendamento',
+                text: 'Tem certeza que deseja cancelar este atendimento?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Sim, Cancelar',
+                cancelButtonText: 'Voltar'
+            });
+            
+            if (confirm) {
+                try {
+                    showGlobalLoader();
+                    const res = await fetch(WEBHOOKS.AGENDAMENTOS_CANCELAR, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id }),
+                        credentials: 'include'
+                    });
+                    if (res.ok) {
+                        Swal.fire('Cancelado!', 'Atendimento cancelado com sucesso.', 'success');
+                        loadMeusAgendamentos();
+                    } else {
+                        Swal.fire('Erro', 'Falha ao cancelar agendamento.', 'error');
+                    }
+                } catch (err) {
+                    Swal.fire('Erro', 'Falha ao cancelar agendamento.', 'error');
+                } finally {
+                    hideGlobalLoader();
+                }
+            }
+        }
+
+        window.editarAgendamento = async function(id, currentDateTime) {
+            const formattedCurrent = dayjs(currentDateTime).format('YYYY-MM-DDTHH:mm');
+            
+            const { value: formValues } = await Swal.fire({
+                title: 'Editar Data e Horário',
+                html: `<div class="text-start">
+                           <label class="form-label fw-bold text-muted small">Nova Data e Hora:</label>
+                           <input type="datetime-local" id="edit-agendamento-datetime" class="form-control" value="${formattedCurrent}">
+                       </div>`,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonColor: '#9b59b6',
+                confirmButtonText: 'Salvar Alteração',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    const dt = document.getElementById('edit-agendamento-datetime').value;
+                    if (!dt) {
+                        Swal.showValidationMessage('Selecione uma data e hora válida');
+                        return false;
+                    }
+                    if (dayjs(dt).isBefore(dayjs())) {
+                        Swal.showValidationMessage('A nova data não pode ser anterior ao momento atual');
+                        return false;
+                    }
+                    return dt;
+                }
+            });
+            
+            if (formValues) {
+                try {
+                    showGlobalLoader();
+                    const resList = await fetch(`${WEBHOOKS.AGENDAMENTOS}?tecnica=${encodeURIComponent(state.user.login.toLowerCase().trim())}`, { credentials: 'include' });
+                    if (resList.ok) {
+                        const list = await resList.json();
+                        const item = list.find(x => x.id === id);
+                        if (item) {
+                            const payload = {
+                                id: id,
+                                numeroprontuario: item.numeroprontuario,
+                                nomeusuaria: item.nomeusuaria,
+                                tipoatendimento: item.tipoatendimento,
+                                tecnica_login: item.tecnica_login,
+                                tecnica_nome: item.tecnica_nome,
+                                datahorario: formValues,
+                                observacao: item.observacao
+                            };
+                            
+                            const resSave = await fetch(WEBHOOKS.AGENDAMENTOS_SALVAR, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload),
+                                credentials: 'include'
+                            });
+                            
+                            if (resSave.ok) {
+                                Swal.fire('Sucesso', 'Data/Horário do agendamento atualizado com sucesso.', 'success');
+                                loadMeusAgendamentos();
+                            } else {
+                                Swal.fire('Erro', 'Falha ao atualizar agendamento.', 'error');
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('[Edit Appointment Error]', err);
+                    Swal.fire('Erro', 'Falha ao atualizar agendamento.', 'error');
+                } finally {
+                    hideGlobalLoader();
+                }
+            }
+        }
+
+        window.visualizarAgendamento = async function(id) {
+            try {
+                showGlobalLoader();
+                const resList = await fetch(`${WEBHOOKS.AGENDAMENTOS}?tecnica=${encodeURIComponent(state.user.login.toLowerCase().trim())}`, { credentials: 'include' });
+                if (resList.ok) {
+                    const list = await resList.json();
+                    const item = list.find(x => x.id === id);
+                    if (item) {
+                        const formattedDate = dayjs(item.datahorario).format('DD/MM/YYYY [às] HH:mm');
+                        let statusBadge = '';
+                        if (item.status === 'Pendente') statusBadge = '<span class="badge bg-warning text-dark">Pendente</span>';
+                        else if (item.status === 'Concluído') statusBadge = '<span class="badge bg-success">Concluído</span>';
+                        else statusBadge = '<span class="badge bg-danger">Cancelado</span>';
+                        
+                        Swal.fire({
+                            title: 'Detalhes do Agendamento',
+                            html: `<div class="text-start">
+                                       <strong>Usuária:</strong> ${item.nomeusuaria}<br>
+                                       <strong>Prontuário:</strong> ${item.numeroprontuario}<br>
+                                       <strong>Técnica:</strong> ${formatName(item.tecnica_nome)}<br>
+                                       <strong>Serviço:</strong> ${item.tipoatendimento}<br>
+                                       <strong>Data/Hora:</strong> ${formattedDate}<br>
+                                       <strong>Status:</strong> ${statusBadge}<br>
+                                       <strong>Observações:</strong> ${item.observacao || 'Nenhuma'}<br>
+                                       <hr class="my-2">
+                                       <small class="text-muted">Agendado por: ${item.agendadopor_nome || item.agendadopor || 'Desconhecido'}</small>
+                                   </div>`,
+                            icon: 'info',
+                            confirmButtonColor: '#9b59b6'
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('[View Appointment Details Error]', err);
+            } finally {
+                hideGlobalLoader();
+            }
         }
 
         // ── Evolução do Caso ──────────────────────────────────────────────────────

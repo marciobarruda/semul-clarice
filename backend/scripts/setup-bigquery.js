@@ -154,6 +154,32 @@ async function setup() {
       { name: 'traficosereshumanos', type: 'STRING', mode: 'REPEATED' },
       { name: 'discriminarbens', type: 'STRING' },
     ],
+    agendamento: [
+      { name: 'id', type: 'STRING' },
+      { name: 'numeroprontuario', type: 'STRING' },
+      { name: 'nomeusuaria', type: 'STRING' },
+      { name: 'cpfusuaria', type: 'STRING' },
+      { name: 'datanascimento', type: 'DATE' },
+      { name: 'nomemae', type: 'STRING' },
+      { name: 'tipoatendimento', type: 'STRING' },
+      { name: 'tecnica_login', type: 'STRING' },
+      { name: 'tecnica_nome', type: 'STRING' },
+      { name: 'datahorario', type: 'TIMESTAMP' },
+      { name: 'status', type: 'STRING' },
+      { name: 'observacao', type: 'STRING' },
+      { name: 'createdat', type: 'TIMESTAMP' },
+      { name: 'updatedat', type: 'TIMESTAMP' },
+      { name: 'agendadopor', type: 'STRING' },
+      { name: 'agendadopor_nome', type: 'STRING' }
+    ],
+    agenda_config: [
+      { name: 'login', type: 'STRING' },
+      { name: 'nome', type: 'STRING' },
+      { name: 'funcao', type: 'STRING' },
+      { name: 'agenda_aberta', type: 'BOOL' },
+      { name: 'updatedat', type: 'TIMESTAMP' },
+      { name: 'updatedby', type: 'STRING' }
+    ]
   };
 
   // 3. Criar Tabelas
